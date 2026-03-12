@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list>
+            <!-- Fill layer – lighter version of original -->
+            <item>
+                <shape>
+                    <solid android:color="@color/btn_timeframe_3m_light" />
+                    <corners android:radius="24dp" />
+                </shape>
+            </item>
+            <!-- Inner shadow layer -->
+            <item>
+                <shape>
+                    <solid android:color="#20000000" />
+                    <corners android:radius="24dp" />
+                    <stroke
+                        android:width="4dp"
+                        android:color="#40000000" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/btn_timeframe_3m" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+</selector>

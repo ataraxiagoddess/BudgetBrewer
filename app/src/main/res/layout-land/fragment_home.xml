@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacer_top"
+                android:visibility="invisible" />
+
+            <!-- Row 1: Income vs Expenses + Expenses Breakdown -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="16dp">
+
+                <!-- Income vs Expenses Chart -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/category_background"
+                    android:padding="16dp"
+                    android:elevation="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_income_vs_expenses"
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_marginBottom="16dp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/incomeCircle"
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="false"
+                            app:indicatorSize="140dp"
+                            app:trackThickness="70dp"
+                            app:trackColor="@color/chart_income"
+                            app:indicatorColor="@color/chart_income"
+                            app:showAnimationBehavior="none" />
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/expensesRing"
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="false"
+                            app:indicatorSize="140dp"
+                            app:trackThickness="12dp"
+                            app:trackColor="@android:color/transparent"
+                            app:indicatorColor="@color/chart_expenses"
+                            app:showAnimationBehavior="none" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal">
+
+                            <TextView
+                                android:id="@+id/tvIncomeCenter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_on_main"
+                                android:fontFamily="@font/exo_regular"
+                                tools:text="$0.00" />
+
+                            <TextView
+                                android:id="@+id/tvIncomeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/income"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_on_main"
+                                android:fontFamily="@font/exo_regular" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp">
+
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@color/chart_expenses"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvExpensesData"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                            android:fontFamily="@font/exo_regular"
+                            tools:text="Expenses: $12.34 (5.5%)" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Expenses Breakdown (Donut Chart) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/category_background"
+                    android:padding="16dp"
+                    android:elevation="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_expenses_breakdown"
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_marginBottom="16dp" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chartExpensesBreakdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/expensesLegendContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Row 2: Savings Comparison + Spending Trends -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="16dp">
+
+                <!-- Savings Comparison -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/category_background"
+                    android:padding="16dp"
+                    android:elevation="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_savings_comparison"
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_marginBottom="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/savingsProgressIndicator"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:indeterminate="false"
+                            app:indicatorSize="100dp"
+                            app:trackThickness="12dp"
+                            app:trackColor="@color/chart_target"
+                            android:layout_marginBottom="8dp"
+                            app:indicatorColor="@color/chart_actual"
+                            android:fontFamily="@font/exo_regular" />
+
+                        <TextView
+                            android:id="@+id/tvSavingsPercentage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_on_container"
+                            android:fontFamily="@font/exo_regular"
+                            tools:text="0%" />
+                    </LinearLayout>
+
+                    <!-- Savings Comparison Legend (vertical stack) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <!-- Target -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="4dp">
+
+                            <View
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:background="@color/chart_target"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/savings_target"
+                                style="@style/TextAppearance.BudgetBrewer.Body.Container" />
+                        </LinearLayout>
+
+                        <!-- Actual -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <View
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:background="@color/chart_actual"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/actual_savings"
+                                style="@style/TextAppearance.BudgetBrewer.Body.Container" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvSavingsData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                        android:fontFamily="@font/exo_regular"
+                        tools:text="Target: $800.00  |  Actual: $500.00" />
+                </LinearLayout>
+
+                <!-- Spending Trends -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/category_background"
+                    android:padding="16dp"
+                    android:elevation="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chart_spending_trends"
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Timeframe selector -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/category_background"
+                        android:padding="4dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe1m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="2dp"
+                            android:text="@string/timeframe_1m"
+                            android:checkable="true"
+                            android:background="@drawable/bg_timeframe_button_1m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe3m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="2dp"
+                            android:text="@string/timeframe_3m"
+                            android:checkable="true"
+                            android:background="@drawable/bg_timeframe_button_3m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe6m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="2dp"
+                            android:text="@string/timeframe_6m"
+                            android:checkable="true"
+                            android:background="@drawable/bg_timeframe_button_6m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe1y"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:text="@string/timeframe_1y"
+                            android:checkable="true"
+                            android:background="@drawable/bg_timeframe_button_1y" />
+                    </LinearLayout>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chartSpendingTrends"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_marginBottom="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/spendingDataContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacer_bottom"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@android:color/transparent"
+        android:elevation="4dp" />
+
+</FrameLayout>

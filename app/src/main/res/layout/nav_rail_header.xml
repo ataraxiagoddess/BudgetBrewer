@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <Spinner
+        android:id="@+id/monthSpinnerRail"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@drawable/popup_background_rounded"
+        android:spinnerMode="dropdown"
+        android:paddingStart="12dp"
+        android:paddingEnd="40dp" />
+</LinearLayout>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#EF00A496"/>
+    <corners android:radius="50dp"/>    <!-- large radius → pill shape -->
+</shape>

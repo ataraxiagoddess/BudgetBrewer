@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxWidth="280dp"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:gravity="center_horizontal"
+    tools:ignore="TextFields,ButtonStyle">
+
+    <EditText
+        android:id="@+id/etExpenseDescription"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/expense_description_hint"
+        android:inputType="text"
+        android:autofillHints="name"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <EditText
+        android:id="@+id/etExpenseAmount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/expense_amount_hint"
+        android:inputType="numberDecimal"
+        android:autofillHints="amount"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <!-- Button now wraps content -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectDate"
+        style="@style/Widget.BudgetBrewer.Button.Dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:maxWidth="280dp"
+        android:text="@string/select_due_date"
+        tools:ignore="TextContrastCheck" />
+
+    <CheckBox
+        android:id="@+id/cbRecurring"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="@string/expense_recurring"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/text_on_dialog"
+        android:buttonTint="@color/text_on_dialog"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <LinearLayout
+        android:id="@+id/recurrenceOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <RadioButton
+                android:id="@+id/radioMonthly"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/recurring_monthly_same_day"
+                android:textColor="@color/text_on_dialog"
+                android:buttonTint="@color/text_on_dialog"
+                android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+            <RadioButton
+                android:id="@+id/radioEveryX"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/recurring_every_x_days"
+                android:textColor="@color/text_on_dialog"
+                android:buttonTint="@color/text_on_dialog"
+                android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/etEveryXDays"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/every_x_days_hint"
+            android:inputType="number"
+            android:autofillHints="number"
+            android:paddingHorizontal="8dp"
+            android:background="@drawable/edittext_background_everyx"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+    </LinearLayout>
+</LinearLayout>

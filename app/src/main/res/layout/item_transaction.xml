@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    android:background="@drawable/category_background"
+    android:layout_marginBottom="2dp">
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/TextAppearance.BudgetBrewer.Body.Container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        tools:text="12/31/25"
+        android:fontFamily="@font/exo_regular"/>
+
+    <TextView
+        android:id="@+id/tvSource"
+        style="@style/TextAppearance.BudgetBrewer.Body.Container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        tools:text="Groceries" />
+
+    <TextView
+        android:id="@+id/tvAmount"
+        style="@style/TextAppearance.BudgetBrewer.Body.Container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:maxLines="1"
+        tools:text="$12.34" />
+
+    <ImageButton
+        android:id="@+id/btnEdit"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/edit"
+        android:src="@android:drawable/ic_menu_edit"
+        app:tint="@color/edit_icon_color" />
+
+    <ImageButton
+        android:id="@+id/btnDelete"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/delete"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="@color/delete_icon_color" />
+
+</LinearLayout>

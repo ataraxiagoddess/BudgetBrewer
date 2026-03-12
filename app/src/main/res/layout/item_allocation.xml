@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="4dp"
+    android:background="@null">
+
+    <TextView
+        android:id="@+id/tvAllocationAmount"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/allocation_amount_default"
+        android:textColor="@color/text_on_container"
+        android:textSize="16sp"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvAllocationPercent"
+        style="@style/TextAppearance.BudgetBrewer.BodySmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/allocation_percent_default"
+        android:textColor="@color/text_on_container"
+        tools:ignore="TextContrastCheck" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/btnEditAllocation"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/edit"
+            android:src="@android:drawable/ic_menu_edit"
+            app:tint="@color/edit_icon_color"
+            tools:ignore="Contrast,ImageContrastCheck" />
+
+        <ImageButton
+            android:id="@+id/btnDeleteAllocation"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/delete"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="@color/delete_icon_color"
+            tools:ignore="Contrast,ImageContrastCheck" />
+    </LinearLayout>
+</LinearLayout>

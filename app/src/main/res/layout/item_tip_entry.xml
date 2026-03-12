@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="1dp"
+    android:paddingHorizontal="4dp"
+    android:layout_marginBottom="0dp"
+    android:gravity="center_vertical"
+    android:background="@null">
+
+    <!-- Source and amount container – wraps content -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@null">
+
+        <!-- Scrollable source with max width, but wraps its content -->
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:scrollbars="none"
+            android:fadeScrollbars="false"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@null">
+
+            <TextView
+                android:id="@+id/tvTipSource"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.BudgetBrewer.BodySmall"
+                android:textColor="@color/text_on_container"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:background="@null" />
+        </HorizontalScrollView>
+
+        <!-- Amount text, directly after source -->
+        <TextView
+            android:id="@+id/tvTipAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            style="@style/TextAppearance.BudgetBrewer.BodySmall"
+            android:textColor="@color/text_on_container"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:background="@null" />
+    </LinearLayout>
+
+    <!-- Spacer that pushes buttons to the right -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@null" />
+
+    <ImageButton
+        android:id="@+id/btnEditTip"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/edit"
+        android:src="@android:drawable/ic_menu_edit"
+        app:tint="@color/edit_icon_color"
+        tools:ignore="ImageContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/btnDeleteTip"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/delete"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="@color/delete_icon_color"
+        tools:ignore="ImageContrastCheck" />
+</LinearLayout>

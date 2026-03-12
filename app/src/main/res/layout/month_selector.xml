@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:elevation="0dp"
+    android:padding="0dp"
+    android:layout_margin="0dp">
+
+    <Spinner
+        android:id="@+id/monthSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/spinner_background_blur"
+        android:popupBackground="@drawable/popup_background_rounded"
+        android:spinnerMode="dropdown"
+        android:paddingStart="24dp"
+        android:paddingEnd="48dp"
+        android:dropDownWidth="wrap_content"
+        android:dropDownHorizontalOffset="0dp"
+        android:dropDownVerticalOffset="4dp" />
+
+</LinearLayout>

@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <!-- Back button (stays outside ScrollView) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        style="@style/Widget.BudgetBrewer.Button.Container"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp"
+        android:text="@string/back"
+        app:icon="@drawable/ic_chevron_left"
+        app:iconGravity="textStart" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="32dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp">
+
+            <ImageView
+                android:id="@+id/ivAppIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/budget_brewer_logo"
+                app:tint="@null" />
+
+            <TextView
+                android:id="@+id/tvAppName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/blkchcry"
+                android:text="@string/app_name"
+                android:textColor="@color/text_on_main"
+                android:textSize="32sp" />
+
+            <!-- Email Field -->
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:background="@drawable/edittext_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp"
+                android:textColorHint="@color/text_disabled"
+                android:textColor="@color/text_on_container"
+                android:fontFamily="@font/exo_regular"
+                android:textSize="14sp"
+                android:includeFontPadding="false"
+                android:gravity="center_vertical" />
+
+            <!-- Confirm Email Field -->
+            <EditText
+                android:id="@+id/etConfirmEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/confirm_email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:background="@drawable/edittext_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp"
+                android:textColorHint="@color/text_disabled"
+                android:textColor="@color/text_on_container"
+                android:fontFamily="@font/exo_regular"
+                android:textSize="14sp"
+                android:includeFontPadding="false"
+                android:gravity="center_vertical" />
+
+            <!-- Password Field with toggle -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:autofillHints="password"
+                    android:background="@drawable/edittext_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="12dp"
+                    android:paddingEnd="48dp"
+                    android:textColorHint="@color/text_disabled"
+                    android:textColor="@color/text_on_container"
+                    android:fontFamily="@font/exo_regular"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:gravity="center_vertical" />
+
+                <ImageButton
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility_off"
+                    android:contentDescription="@string/toggle_password_visibility"
+                    app:tint="@color/ic_button_tint" />
+            </FrameLayout>
+
+            <!-- Confirm Password Field -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="@string/confirm_password"
+                    android:inputType="textPassword"
+                    android:autofillHints="password"
+                    android:background="@drawable/edittext_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="12dp"
+                    android:paddingEnd="48dp"
+                    android:textColorHint="@color/text_disabled"
+                    android:textColor="@color/text_on_container"
+                    android:fontFamily="@font/exo_regular"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:gravity="center_vertical" />
+
+                <ImageButton
+                    android:id="@+id/btnToggleConfirmPassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility_off"
+                    android:contentDescription="@string/toggle_password_visibility"
+                    app:tint="@color/ic_button_tint" />
+            </FrameLayout>
+
+            <!-- Password strength hint -->
+            <TextView
+                android:id="@+id/tvPasswordStrength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_on_main"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:fontFamily="@font/exo_regular"
+                android:paddingTop="4dp"
+                android:paddingBottom="2dp" />
+
+            <!-- Password requirements -->
+            <TextView
+                android:id="@+id/tvPasswordRequirements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_on_main"
+                android:textSize="12sp"
+                android:fontFamily="@font/exo_regular"
+                android:text="@string/password_requirements"
+                android:paddingBottom="16dp" />
+
+            <!-- Sign Up Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSignUp"
+                style="@style/Widget.BudgetBrewer.Button.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/sign_up" />
+
+            <!-- Sign In Prompt -->
+            <TextView
+                android:id="@+id/tvSignInPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/sign_in_prompt"
+                android:textColor="@color/text_on_main"
+                android:textSize="14sp"
+                android:fontFamily="@font/exo_regular" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ProgressBar overlay -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

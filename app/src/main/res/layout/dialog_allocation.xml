@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxWidth="280dp"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:gravity="center_horizontal"
+    tools:ignore="TextFields">
+
+    <TextView
+        android:id="@+id/tvAllocationDescription"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/allocation_dialog_description"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/etAllocationAmount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:inputType="numberDecimal"
+        android:hint="@string/allocation_amount_hint"
+        android:autofillHints="amount"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvAllocationError"
+        style="@style/TextAppearance.BudgetBrewer.Error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+</LinearLayout>

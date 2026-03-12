@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxWidth="280dp"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:gravity="center_horizontal"
+    tools:ignore="TextFields,ButtonStyle">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectDate"
+        style="@style/Widget.BudgetBrewer.Button.Dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:maxWidth="280dp"
+        android:text="@string/transaction_date_hint"
+        tools:ignore="TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/etSource"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/transaction_source_hint"
+        android:inputType="textPersonName"
+        android:autofillHints="name"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <EditText
+        android:id="@+id/etAmount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/transaction_amount_hint"
+        android:inputType="numberDecimal"
+        android:autofillHints="amount"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <!-- Warning message -->
+    <TextView
+        android:id="@+id/tvWarning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/net_negative"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/exo_regular"
+        android:text="@string/transaction_exceeds_warning" />
+
+</LinearLayout>

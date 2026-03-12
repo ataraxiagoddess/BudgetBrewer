@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Top spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacer_top"
+                android:visibility="invisible" />
+
+            <!-- Spending Allocation and Remaining Bubbles -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvSpendingAllocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_bubble"
+                    android:padding="12dp"
+                    android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textColor="@color/text_on_container"
+                    tools:text="Spending: $0.00" />
+
+                <TextView
+                    android:id="@+id/tvRemaining"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bubble"
+                    android:padding="12dp"
+                    android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textColor="@color/text_on_container"
+                    tools:text="Remaining: $0.00" />
+            </LinearLayout>
+
+            <!-- Add Transaction Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddTransaction"
+                style="@style/Widget.BudgetBrewer.Button.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/add_transaction" />
+
+            <!-- RecyclerView for transactions -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/category_background"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp"
+                android:nestedScrollingEnabled="false" />
+
+            <!-- Empty state TextView (hidden by default) -->
+            <TextView
+                android:id="@+id/tvEmpty"
+                style="@style/TextAppearance.BudgetBrewer.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/no_transactions"
+                android:textAlignment="center"
+                android:textColor="@color/text_on_main"
+                android:visibility="gone" />
+
+            <!-- Bottom spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacer_bottom"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>

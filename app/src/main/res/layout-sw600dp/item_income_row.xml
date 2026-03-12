@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="4dp"
+    android:paddingHorizontal="12dp"
+    android:layout_marginBottom="2dp"
+    android:gravity="center_vertical"
+    android:background="@null">
+
+    <!-- Time frame column – wraps content, single line -->
+    <TextView
+        android:id="@+id/tvTimeFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.BudgetBrewer.Subtext"
+        android:textColor="@color/text_on_container"
+        android:layout_marginEnd="12dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:background="@null"/>
+
+    <!-- Source column – takes remaining space -->
+    <TextView
+        android:id="@+id/tvSource"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:textColor="@color/text_on_container"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:background="@null"/>
+
+    <!-- Amount column – wraps content, left aligned -->
+    <TextView
+        android:id="@+id/tvAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:textColor="@color/text_on_container"
+        android:layout_marginEnd="24dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:background="@null"/>
+
+    <!-- Buttons (unchanged) -->
+    <ImageButton
+        android:id="@+id/btnAddIncome"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_add"
+        app:tint="@color/ic_button_tint"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/add"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/btnEditIncome"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_edit"
+        app:tint="@color/ic_button_tint"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/edit"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/btnDeleteIncome"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="@color/ic_button_tint"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/delete"
+        android:visibility="gone" />
+</LinearLayout>

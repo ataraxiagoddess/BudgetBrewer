@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- PIN field with toggle -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/etPin"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="@string/enter_pin"
+            android:inputType="numberPassword"
+            android:maxLength="4"
+            android:background="@drawable/edittext_background"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:paddingEnd="48dp"
+            android:textColorHint="@color/text_disabled"
+            android:textColor="@color/text_on_container"
+            android:fontFamily="@font/exo_regular"
+            android:textSize="14sp"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical" />
+
+        <ImageButton
+            android:id="@+id/btnTogglePin"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_visibility_off"
+            android:contentDescription="@string/toggle_password_visibility"
+            app:tint="@color/ic_button_tint" />
+    </FrameLayout>
+
+    <!-- Confirm PIN field with toggle -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/etConfirmPin"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="@string/confirm_pin"
+            android:inputType="numberPassword"
+            android:maxLength="4"
+            android:background="@drawable/edittext_background"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:paddingEnd="48dp"
+            android:textColorHint="@color/text_disabled"
+            android:textColor="@color/text_on_container"
+            android:fontFamily="@font/exo_regular"
+            android:textSize="14sp"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical" />
+
+        <ImageButton
+            android:id="@+id/btnToggleConfirmPin"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_visibility_off"
+            android:contentDescription="@string/toggle_password_visibility"
+            app:tint="@color/ic_button_tint" />
+    </FrameLayout>
+
+    <!-- Error message -->
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/net_negative"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:fontFamily="@font/exo_regular" />
+
+</LinearLayout>

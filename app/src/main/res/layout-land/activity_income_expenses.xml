@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:baselineAligned="false" >
+
+                <!-- Left column: Income + Tips -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacer_top"
+                        android:visibility="invisible" />
+
+                    <!-- Income Section Header -->
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/income_section_title"
+                        android:textColor="@color/text_on_main" />
+
+                    <!-- Pay Frequency Label -->
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/pay_frequency_label"
+                        android:textColor="@color/text_on_main" />
+
+                    <!-- Pay Frequency Spinner -->
+                    <Spinner
+                        android:id="@+id/spinnerFrequency"
+                        style="@style/Widget.BudgetBrewer.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/spinner_background"
+                        android:popupTheme="@style/ThemeOverlay.BudgetBrewer.SpinnerPopup"
+                        android:popupBackground="@drawable/popup_background_rounded"
+                        android:dropDownWidth="@dimen/spinner_dropdown_width"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="40dp" />
+
+                    <!-- Income Section Container (card) -->
+                    <LinearLayout
+                        android:id="@+id/incomeSectionContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/category_background"
+                        android:padding="0dp"
+                        android:layout_marginBottom="16dp"
+                        android:elevation="4dp">
+
+                        <LinearLayout
+                            android:id="@+id/incomeFieldsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="0dp"
+                            android:background="@null" />
+                    </LinearLayout>
+
+                    <!-- Tips/Misc Checkbox -->
+                    <CheckBox
+                        android:id="@+id/checkBoxTips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/tips_misc"
+                        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+                        android:textColor="@color/text_on_main"
+                        android:buttonTint="@color/text_on_main"/>
+
+                    <!-- Tips Section Container (card) -->
+                    <LinearLayout
+                        android:id="@+id/tipsSectionContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/category_background"
+                        android:padding="0dp"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone"
+                        android:elevation="4dp">
+
+                        <LinearLayout
+                            android:id="@+id/tipsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="8dp"
+                            android:background="@null" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddTip"
+                            style="@style/Widget.BudgetBrewer.Button.Container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_gravity="bottom|end"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/add_tip"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Right column: Categories + Leftover -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacer_top"
+                        android:visibility="invisible" />
+
+                    <!-- Expenses Section Header -->
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/expenses_section_title" />
+
+                    <!-- Add Category Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAddCategory"
+                        style="@style/Widget.BudgetBrewer.Button.Main"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:text="@string/add_category_button"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Horizontal scrollable categories -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/categoriesRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:clipToPadding="false"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <!-- Swipe hint -->
+                    <TextView
+                        android:id="@+id/tvSwipeHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/swipe_hint"
+                        android:textAlignment="center"
+                        android:textColor="@color/text_on_main"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="16dp"
+                        style="@style/TextAppearance.BudgetBrewer.Body" />
+
+                    <!-- Empty state message -->
+                    <TextView
+                        android:id="@+id/tvEmptyCategories"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_categories"
+                        android:textAlignment="center"
+                        android:textColor="@color/text_on_main"
+                        android:visibility="gone"
+                        style="@style/TextAppearance.BudgetBrewer.Body"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Leftover Section Container (card) -->
+                    <LinearLayout
+                        android:id="@+id/leftoverSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/category_background"
+                        android:padding="12dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="24dp"
+                        android:elevation="4dp"
+                        android:baselineAligned="false">
+
+                        <!-- Leftover content -->
+                        <TextView
+                            android:id="@+id/tvLeftoverHeader"
+                            style="@style/TextAppearance.BudgetBrewer.Header"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/leftover_funds_title"
+                            android:layout_marginBottom="4dp"
+                            android:textColor="@color/text_on_container" />
+
+                        <TextView
+                            android:id="@+id/tvLeftoverDescription"
+                            style="@style/TextAppearance.BudgetBrewer.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/leftover_description"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="@color/text_on_container" />
+
+                        <!-- Amount and percent row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:layout_marginBottom="16dp">
+
+                            <TextView
+                                android:id="@+id/tvLeftoverAmount"
+                                style="@style/TextAppearance.BudgetBrewer.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_amount_zero"
+                                android:textColor="@color/text_on_container"
+                                android:textSize="18sp"
+                                android:layout_marginEnd="16dp" />
+
+                            <TextView
+                                android:id="@+id/tvLeftoverPercent"
+                                style="@style/TextAppearance.BudgetBrewer.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_percent_zero"
+                                android:textColor="@color/text_on_container"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <!-- Savings and Spending allocation rows -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="8dp"
+                            android:baselineAligned="false">
+
+                            <LinearLayout
+                                android:id="@+id/savingsColumn"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:padding="4dp">
+
+                                <TextView
+                                    android:id="@+id/tvSavingsHeader"
+                                    style="@style/TextAppearance.BudgetBrewer.Subheader"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/savings_title"
+                                    android:textColor="@color/text_on_container"
+                                    android:layout_marginBottom="4dp" />
+
+                                <FrameLayout
+                                    android:id="@+id/savingsPlaceholder"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/spendingColumn"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center_horizontal"
+                                android:padding="4dp">
+
+                                <TextView
+                                    android:id="@+id/tvSpendingHeader"
+                                    style="@style/TextAppearance.BudgetBrewer.Subheader"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/spending_title"
+                                    android:textColor="@color/text_on_container"
+                                    android:layout_marginBottom="4dp" />
+
+                                <FrameLayout
+                                    android:id="@+id/spendingPlaceholder"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Status message -->
+                        <TextView
+                            android:id="@+id/tvAllocationStatus"
+                            style="@style/TextAppearance.BudgetBrewer.Body"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:text=""
+                            android:textColor="@color/text_on_container"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacer_bottom"
+                        android:visibility="invisible" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ProgressBar overlay -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+        </FrameLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

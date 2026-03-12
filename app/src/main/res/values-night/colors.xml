@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===== BACKGROUNDS ===== -->
+    <color name="bg_main">#004C4D</color>                <!-- Main app background (dark teal) -->
+    <color name="bg_container">#2D2A3A</color>           <!-- Card / container background (dark purple) -->
+    <color name="bg_container_disabled">#202E38</color>  <!-- Disabled container (dark grey) -->
+    <color name="bg_container_empty">#2A3A4A</color>     <!-- Empty row background (dark blue‑gray) -->
+    <color name="bg_dialog">#1E4A3A</color>              <!-- Dialog background (dark mint) -->
+    <color name="bg_popup">#2E5A4A</color>                <!-- Popup / dropdown background (lighter mint) -->
+
+    <!-- ===== TEXT COLORS ===== -->
+    <color name="text_on_main">#E0E0E0</color>            <!-- Text on main background -->
+    <color name="text_on_container">#F0F0F0</color>       <!-- Text on cards/containers -->
+    <color name="text_on_dialog">#F0F0F0</color>          <!-- Text on dialogs -->
+    <color name="text_disabled">#A0A0A0</color>           <!-- Disabled text -->
+    <color name="dialog_content_text">#C7A2D9</color>     <!-- Light purple for dialog content -->
+    <color name="net_positive">#81C784</color>            <!-- Positive net total (light green) -->
+    <color name="net_negative">#E57373</color>            <!-- Negative net total (light red) -->
+    <color name="net_zero">#64B5F6</color>                <!-- Zero net total (light blue) -->
+
+    <!-- ===== BUTTON COLORS ===== -->
+    <color name="btn_on_main">#C084C0</color>             <!-- Buttons on main background (lighter purple) -->
+    <color name="btn_on_container">#3F9A9B</color>        <!-- Buttons on container background (tealish) -->
+    <color name="btn_on_dialog">#B59ED9</color>           <!-- Buttons on dialog background (lavender) -->
+    <color name="ic_button_tint">#E0E0E0</color>          <!-- Icon tint for buttons -->
+    <color name="btn_disabled">#80B59ED9</color>          <!-- Disabled button (semi‑transparent lavender) -->
+    <color name="focus_highlight">#80C0B0A0</color>       <!-- Focus highlight (semi‑transparent light) -->
+
+    <color name="edit_icon_color">#64B5F6</color>       <!-- Lighter blue for dark mode -->
+    <color name="delete_icon_color">#81C784</color>     <!-- Lighter green for dark mode -->
+
+    <!-- ===== NAVIGATION BUTTON GRADIENTS ===== -->
+    <color name="nav_green_start">#185719</color>
+    <color name="nav_green_end">#578523</color>
+    <color name="nav_teal_start">#005F56</color>
+    <color name="nav_teal_end">#22766E</color>
+    <color name="nav_blue_start">#162473</color>
+    <color name="nav_blue_end">#3D4A8A</color>
+    <color name="nav_purple_start">#660576</color>
+    <color name="nav_purple_end">#7E318E</color>
+    <color name="nav_magenta_start">#4A006B</color>
+    <color name="nav_magenta_end">#7D0092</color>
+    <color name="nav_pink_start">#7A0074</color>
+    <color name="nav_pink_end">#A00997</color>
+
+    <!-- ===== CHART COLORS ===== -->
+    <color name="chart_income">#6AB06A</color>            <!-- Brighter soft green -->
+    <color name="chart_expenses">#FDADFB</color>          <!-- Brighter soft red/magenta -->
+    <color name="chart_spending">#F8E3B2</color>          <!-- Darker orange -->
+    <color name="chart_target">#7AB0D9</color>            <!-- Soft blue (target) -->
+    <color name="chart_actual">#B59ED9</color>            <!-- Lavender (actual) -->
+    <color name="chart_trend_line">#8CCFAF</color>        <!-- Mint (trend line) -->
+    <color name="chart_trend_dot">#B59ED9</color>         <!-- Lavender (trend dots) -->
+
+    <!-- ===== CATEGORY COLORS (20 distinct, brighter for dark) ===== -->
+    <color name="category_color_1">#c7a2d9</color>   <!-- brighter lavender -->
+    <color name="category_color_2">#8ccfaf</color>   <!-- mint -->
+    <color name="category_color_3">#ffb999</color>   <!-- brighter peach -->
+    <color name="category_color_4">#ff99a3</color>   <!-- brighter pink -->
+    <color name="category_color_5">#d4a5d9</color>   <!-- lilac -->
+    <color name="category_color_6">#8ab9c9</color>   <!-- teal -->
+    <color name="category_color_7">#e0bbe4</color>   <!-- lilac -->
+    <color name="category_color_8">#ff8a82</color>   <!-- coral -->
+    <color name="category_color_9">#a6d9a6</color>   <!-- sage -->
+    <color name="category_color_10">#fdb0f2</color>  <!-- rose -->
+    <color name="category_color_11">#9fb6d9</color>  <!-- steel blue -->
+    <color name="category_color_12">#f0b53d</color>  <!-- gold -->
+    <color name="category_color_13">#99cc99</color>  <!-- green -->
+    <color name="category_color_14">#ffbb77</color>  <!-- apricot -->
+    <color name="category_color_15">#c299ff</color>  <!-- violet -->
+    <color name="category_color_16">#7ab0e0</color>  <!-- sky blue -->
+    <color name="category_color_17">#f7a9a9</color>  <!-- rose -->
+    <color name="category_color_18">#a8d48c</color>  <!-- lime -->
+    <color name="category_color_19">#f4a3a3</color>  <!-- blush -->
+    <color name="category_color_20">#a8d9d4</color>  <!-- seafoam -->
+
+    <!-- ===== TIMEFRAME BUTTON COLORS ===== -->
+    <color name="btn_timeframe_1m">#5A7A9A</color>        <!-- darker light blue -->
+    <color name="btn_timeframe_3m">#4A6A8A</color>        <!-- darker medium‑light blue -->
+    <color name="btn_timeframe_6m">#3A5A7A</color>        <!-- darker medium‑dark blue -->
+    <color name="btn_timeframe_1y">#2A4A6A</color>        <!-- darker dark blue -->
+    <!-- selected state -->
+
+    <!-- Light variants for selected states -->
+    <color name="btn_timeframe_1m_light">#A0C0FF</color>
+    <color name="btn_timeframe_3m_light">#90B0FF</color>
+    <color name="btn_timeframe_6m_light">#80A0FF</color>
+    <color name="btn_timeframe_1y_light">#70A0FF</color>
+
+    <!-- ===== EDIT TEXT FIELDS ===== -->
+    <color name="edittext_background">#2A3A4A</color>          <!-- dark blue‑gray -->
+    <color name="edittext_stroke">#5A7A9A</color>              <!-- lighter blue stroke -->
+    <color name="edittext_stroke_focused">#80C0B0A0</color>   <!-- semi‑transparent highlight -->
+    <color name="edittext_disabled_background">#3A4A5A</color>
+    <color name="edittext_disabled_stroke">#6A8AA0</color>
+
+    <!-- ===== UTILITY ===== -->
+    <!-- (transparent is defined in light mode; not needed here unless used) -->
+</resources>

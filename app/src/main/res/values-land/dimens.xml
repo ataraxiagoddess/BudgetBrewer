@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="category_card_width_land">280dp</dimen>
+    <dimen name="spacer_top">16dp</dimen>
+    <dimen name="spacer_bottom">24dp</dimen>
+</resources>

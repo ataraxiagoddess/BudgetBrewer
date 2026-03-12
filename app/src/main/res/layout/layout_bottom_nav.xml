@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eightbitlab.com.blurview.BlurView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/blurNav"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:importantForAccessibility="no"
+        android:scrollbars="none"
+        tools:ignore="ContentDescription">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonHome"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_home"
+                android:text="@string/nav_home"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonFinances"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_finances"
+                android:text="@string/nav_finances"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonExpenses"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_expenses"
+                android:text="@string/nav_expenses"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonSpending"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_spending"
+                android:text="@string/nav_spending"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonCalendar"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_calendar"
+                android:text="@string/nav_calendar"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonSettings"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_settings"
+                android:text="@string/settings"
+                android:visibility="visible" />   <!-- always visible -->
+
+        </LinearLayout>
+    </HorizontalScrollView>
+</eightbitlab.com.blurview.BlurView>

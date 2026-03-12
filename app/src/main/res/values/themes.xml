@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ===== BASE APPLICATION THEME ===== -->
+    <style name="Theme.BudgetBrewer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/bg_main</item>
+        <item name="android:colorBackground">@color/bg_main</item>
+        <item name="android:textColor">@color/text_on_main</item>
+        <item name="colorControlActivated">@color/focus_highlight</item>
+        <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+        <item name="android:statusBarColor">@color/bg_main</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:textColorHighlight">@color/focus_highlight</item>
+    </style>
+
+    <!-- Activity transition animations -->
+    <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <!-- ===== TEXT APPEARANCES ===== -->
+    <!-- Headers & Titles -->
+    <style name="TextAppearance.BudgetBrewer.Header">
+        <item name="android:fontFamily">@font/exo_semi_bold_italic</item>
+        <item name="android:textSize">@dimen/text_size_header</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.Subheader">
+        <item name="android:fontFamily">@font/exo_medium_italic</item>
+        <item name="android:textSize">@dimen/text_size_subheader</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.Subheader.Container">
+        <item name="android:fontFamily">@font/exo_medium_italic</item>
+        <item name="android:textSize">@dimen/text_size_subheader</item>
+        <item name="android:textColor">@color/text_on_container</item>
+    </style>
+
+    <!-- Body Text -->
+    <style name="TextAppearance.BudgetBrewer.Body">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.Body.Container">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:textColor">@color/text_on_container</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.BodyCompact">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_body</item>
+        <item name="android:textColor">@color/text_on_container</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.BodySmall">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_body_small</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <!-- Supporting Text -->
+    <style name="TextAppearance.BudgetBrewer.Subtext">
+        <item name="android:fontFamily">@font/exo_light</item>
+        <item name="android:textSize">@dimen/text_size_subtext</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <!-- Hint text appearance for TextInputLayout -->
+
+    <style name="TextAppearance.BudgetBrewer.Dropdown">
+        <item name="android:fontFamily">@font/exo_italic</item>
+        <item name="android:textSize">@dimen/text_size_dropdown</item>
+        <item name="android:textColor">@color/text_on_dialog</item>
+    </style>
+
+    <!-- Dialog Text -->
+    <style name="TextAppearance.BudgetBrewer.DialogTitle">
+        <item name="android:fontFamily">@font/exo_semi_bold_italic</item>
+        <item name="android:textSize">@dimen/text_size_dialog_title</item>
+        <item name="android:textColor">@color/text_on_dialog</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.DialogMessage">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_dialog_message</item>
+        <item name="android:textColor">@color/text_on_dialog</item>
+    </style>
+
+    <!-- App Name (auth screens) -->
+
+    <!-- Error Text -->
+    <style name="TextAppearance.BudgetBrewer.Error">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_error</item>
+        <item name="android:textColor">#FF0000</item>
+    </style>
+
+    <!-- ===== SHAPES ===== -->
+    <style name="ShapeAppearance.BudgetBrewer.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">100dp</item>
+    </style>
+
+    <!-- ===== BUTTON STYLES ===== -->
+    <!-- Base Button -->
+    <style name="Widget.BudgetBrewer.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Body</item>
+        <item name="android:insetTop">4dp</item>
+        <item name="android:insetBottom">4dp</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.BudgetBrewer.Pill</item>
+        <item name="android:background">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:layout_marginHorizontal" tools:ignore="NewApi">10dp</item>
+    </style>
+
+    <!-- Button on main background -->
+    <style name="Widget.BudgetBrewer.Button.Main" parent="Widget.BudgetBrewer.Button">
+        <item name="backgroundTint">@color/btn_on_main</item>
+        <item name="android:textColor">@color/text_on_main</item>
+    </style>
+
+    <!-- Button on container background -->
+    <style name="Widget.BudgetBrewer.Button.Container" parent="Widget.BudgetBrewer.Button">
+        <item name="backgroundTint">@color/btn_on_container</item>
+        <item name="android:textColor">@color/text_on_container</item>
+    </style>
+
+    <!-- Button on dialog background -->
+    <style name="Widget.BudgetBrewer.Button.Dialog" parent="Widget.BudgetBrewer.Button">
+        <item name="backgroundTint">@color/btn_dialog_selector</item>
+        <item name="android:textColor">@color/text_on_dialog</item>
+        <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Body</item>
+    </style>
+
+    <!-- Navigation buttons (bottom bar) -->
+    <style name="Widget.BudgetBrewer.NavButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Body</item>
+        <item name="android:textColor">@color/text_on_main</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">4dp</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="android:shadowColor">#33000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">4</item>
+        <item name="android:shadowRadius">8</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
+    <style name="TextAppearance.BudgetBrewer.TimeframeButton">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/timeframe_button_text_size</item>
+        <item name="android:textColor">@color/text_on_container</item>
+    </style>
+
+    <!-- Timeframe selector buttons (Home screen) -->
+    <style name="Widget.BudgetBrewer.TimeframeButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.TimeframeButton</item>
+        <item name="android:textColor">@color/text_on_container</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:checkable">true</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
+    <!-- Settings section headers -->
+    <style name="Widget.BudgetBrewer.SettingsSection" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Subheader</item>
+        <item name="android:textColor">@color/text_on_container</item>
+        <item name="iconTint">@color/text_on_container</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">left|center_vertical</item>
+    </style>
+
+    <!-- ===== SPINNER STYLES ===== -->
+    <style name="Widget.BudgetBrewer.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/text_on_dialog</item>
+    </style>
+
+    <style name="ThemeOverlay.BudgetBrewer.SpinnerPopup" parent="">
+        <item name="android:divider">@color/text_on_dialog</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <!-- ===== DIALOG THEMES ===== -->
+    <style name="DialogAnimation" parent="android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="AlertDialogTheme.BudgetBrewer" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background_rounded</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BudgetBrewer.Button.Dialog</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BudgetBrewer.Button.Dialog</item>
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
+    <!-- ===== DATEPICKER THEME ===== -->
+    <style name="ThemeOverlay.BudgetBrewer.DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background_rounded</item>
+        <item name="android:colorAccent">@color/focus_highlight</item>
+    </style>
+
+    <!-- Custom TextInputLayout style -->
+
+    <!-- Placeholder -->
+    <style name="TextAppearance.BudgetBrewer" parent="TextAppearance.AppCompat" />
+
+</resources>

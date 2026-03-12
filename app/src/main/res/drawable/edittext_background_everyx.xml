@@ -1,0 +1,16 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true">
+        <shape>
+            <solid android:color="@color/edittext_background"/>
+            <stroke android:width="1dp" android:color="@color/edittext_stroke"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape>
+            <solid android:color="@color/edittext_disabled_background"/>
+            <stroke android:width="1dp" android:color="@color/edittext_disabled_stroke"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+</selector>

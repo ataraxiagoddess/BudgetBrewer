@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===== SPACERS (for month selector and bottom nav) ===== -->
+    <dimen name="spacer_top">80dp</dimen>      <!-- Pushes content below month selector -->
+    <dimen name="spacer_bottom">88dp</dimen>   <!-- Pushes content above bottom navigation -->
+
+    <!-- ===== CALENDAR DOTS ===== -->
+    <dimen name="dot_size">6dp</dimen>
+    <dimen name="dot_margin">2dp</dimen>
+
+    <!-- ===== SPACING ===== -->
+    <dimen name="spacing_small">4dp</dimen>
+    <dimen name="spacing_medium">8dp</dimen>
+
+    <!-- ===== CATEGORY CARD DIMENSIONS ===== -->
+    <dimen name="card_margin">24dp</dimen>                <!-- Gap between cards -->
+    <dimen name="activity_horizontal_margin">16dp</dimen> <!-- Screen padding -->
+    <dimen name="card_width_reduction">6dp</dimen>        <!-- Extra reduction for card width -->
+    <dimen name="expenses_scrollview_max_height">240dp</dimen>
+
+    <!-- ===== SNACKBAR ===== -->
+    <dimen name="snackbar_bottom_offset">80dp</dimen>     <!-- Positions snackbar above bottom nav -->
+
+    <!-- Base spacing (phones) -->
+
+    <!-- Text sizes -->
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_header">24sp</dimen>
+    <dimen name="text_size_subheader">20sp</dimen>
+    <dimen name="text_size_body_small">12sp</dimen>
+    <dimen name="text_size_dropdown">16sp</dimen>
+    <dimen name="text_size_dialog_title">24sp</dimen>
+    <dimen name="text_size_dialog_message">14sp</dimen>
+    <dimen name="text_size_subtext">12sp</dimen>
+    <dimen name="text_size_error">12sp</dimen>
+    <dimen name="text_size_calendar">10sp</dimen>
+    <dimen name="month_row_text_size">@dimen/text_size_body</dimen>
+    <dimen name="week_pill_text_size_tablet_land">18sp</dimen>
+    <dimen name="timeframe_button_text_size">@dimen/text_size_body</dimen>
+
+    <!-- Component sizes -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="category_card_width_land">300dp</dimen>
+    <dimen name="spinner_dropdown_width">140dp</dimen>
+    <dimen name="week_end_row_spacing">8dp</dimen>
+    <dimen name="pill_horizontal_spacing">8dp</dimen>
+    <dimen name="navigation_rail_width">72dp</dimen>
+
+    <dimen name="snackbar_max_width_tablet">400dp</dimen>
+
+    <dimen name="expenses_grid_spacing">8dp</dimen>
+</resources>

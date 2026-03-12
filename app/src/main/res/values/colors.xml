@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===== BACKGROUNDS ===== -->
+    <color name="bg_main">#007A7C</color>                <!-- Main app background -->
+    <color name="bg_container">#E8DDFD</color>           <!-- Card / container background -->
+    <color name="bg_container_disabled">#CCCCCC</color>  <!-- Disabled container -->
+    <color name="bg_container_empty">#F0F0F0</color>     <!-- Empty row background -->
+    <color name="bg_dialog">#8DCCAD</color>              <!-- Dialog background (mint) -->
+    <color name="bg_popup">#A0CEB0</color>                <!-- Popup / dropdown background -->
+
+    <!-- ===== TEXT COLORS ===== -->
+    <color name="text_on_main">#FFFFFF</color>            <!-- Text on main background -->
+    <color name="text_on_container">#000000</color>       <!-- Text on cards/containers -->
+    <color name="text_on_dialog">#FFFFFF</color>          <!-- Text on dialogs -->
+    <color name="text_disabled">#757575</color>           <!-- Disabled text -->
+    <color name="dialog_content_text">#5E3A7C</color>     <!-- Dark purple for dialog content -->
+    <color name="net_positive">#2E7D32</color>            <!-- Positive net total -->
+    <color name="net_negative">#C62828</color>            <!-- Negative net total -->
+    <color name="net_zero">#1565C0</color>                <!-- Zero net total -->
+
+    <!-- ===== BUTTON COLORS ===== -->
+    <color name="btn_on_main">#7C007A</color>             <!-- Buttons on main background -->
+    <color name="btn_on_container">#a8f2ff</color>        <!-- Buttons on container background -->
+    <color name="btn_on_dialog">#A080BE</color>           <!-- Buttons on dialog background -->
+    <color name="ic_button_tint">#212121</color>          <!-- Icon tint for buttons -->
+    <color name="btn_disabled">#80A080BE</color>          <!-- Disabled button (semi‑transparent) -->
+    <color name="focus_highlight">#8000B8AE</color>       <!-- Focus highlight (50% teal) -->
+
+    <!-- Icon colors -->
+    <color name="edit_icon_color">#1976D2</color>       <!-- Strong blue -->
+    <color name="delete_icon_color">#2E7D32</color>     <!-- Deep green -->
+
+    <!-- ===== NAVIGATION BUTTON GRADIENTS ===== -->
+    <color name="nav_green_start">#4CAF50</color>
+    <color name="nav_green_end">#8BC34A</color>
+    <color name="nav_teal_start">#009688</color>
+    <color name="nav_teal_end">#4DB6AC</color>
+    <color name="nav_blue_start">#3F51B5</color>
+    <color name="nav_blue_end">#7986CB</color>
+    <color name="nav_purple_start">#9C27B0</color>
+    <color name="nav_purple_end">#BA68C8</color>
+    <color name="nav_magenta_start">#AA00FF</color>
+    <color name="nav_magenta_end">#E040FB</color>
+    <color name="nav_pink_start">#AF2BA8</color>
+    <color name="nav_pink_end">#F854EF</color>
+
+    <!-- ===== CHART COLORS ===== -->
+    <color name="chart_income">#b2d8b2</color>            <!-- Soft green -->
+    <color name="chart_expenses">#FB50A6</color>          <!-- Soft red/magenta -->
+    <color name="chart_spending">#FFCC7A</color>          <!-- Soft orange -->
+    <color name="chart_target">#8fc1e0</color>            <!-- Soft blue (target) -->
+    <color name="chart_actual">#b8a9d9</color>            <!-- Soft lavender (actual) -->
+    <color name="chart_trend_line">#a8e6cf</color>        <!-- Soft mint (trend line) -->
+    <color name="chart_trend_dot">#b8a9d9</color>         <!-- Soft lavender (trend dots) -->
+
+    <!-- ===== CATEGORY COLORS (20 distinct pastels) ===== -->
+    <color name="category_color_1">#b8a9d9</color>   <!-- soft lavender -->
+    <color name="category_color_2">#a8e6cf</color>   <!-- soft mint -->
+    <color name="category_color_3">#ffd3b6</color>   <!-- soft peach -->
+    <color name="category_color_4">#ffb3ba</color>   <!-- soft pink -->
+    <color name="category_color_5">#d4b5e8</color>   <!-- soft purple -->
+    <color name="category_color_6">#9ad0d9</color>   <!-- soft teal -->
+    <color name="category_color_7">#e0bbe4</color>   <!-- soft lilac -->
+    <color name="category_color_8">#ffaaa5</color>   <!-- soft coral -->
+    <color name="category_color_9">#c1e1c1</color>   <!-- soft sage -->
+    <color name="category_color_10">#fdd0f2</color>  <!-- soft rose -->
+    <color name="category_color_11">#b0c4de</color>  <!-- light steel blue -->
+    <color name="category_color_12">#f4c542</color>  <!-- soft gold -->
+    <color name="category_color_13">#b2d8b2</color>  <!-- soft green -->
+    <color name="category_color_14">#ffcc99</color>  <!-- light apricot -->
+    <color name="category_color_15">#dab3ff</color>  <!-- light violet -->
+    <color name="category_color_16">#a3c9f1</color>  <!-- soft sky blue -->
+    <color name="category_color_17">#f7cac9</color>  <!-- soft rose -->
+    <color name="category_color_18">#c5e0b4</color>  <!-- soft lime -->
+    <color name="category_color_19">#f4c3c3</color>  <!-- soft blush -->
+    <color name="category_color_20">#c9e4de</color>  <!-- soft seafoam -->
+
+    <!-- ===== TIMEFRAME BUTTON COLORS ===== -->
+    <color name="btn_timeframe_1m">#b8d1e0</color>        <!-- Lightest blue -->
+    <color name="btn_timeframe_3m">#9fb8d9</color>        <!-- Medium‑light blue -->
+    <color name="btn_timeframe_6m">#86a0d2</color>        <!-- Medium‑dark blue -->
+    <color name="btn_timeframe_1y">#6d88cb</color>        <!-- Darkest blue -->
+    <!-- Selected state -->
+
+    <!-- Light variants for selected states -->
+    <color name="btn_timeframe_1m_light">#E0F0FF</color>
+    <color name="btn_timeframe_3m_light">#D0E0FF</color>
+    <color name="btn_timeframe_6m_light">#C0D0FF</color>
+    <color name="btn_timeframe_1y_light">#B0C0FF</color>
+
+    <!-- ===== EDIT TEXT FIELDS ===== -->
+    <color name="edittext_background">#FFFFFF</color>
+    <color name="edittext_stroke">#CCCCCC</color>
+    <color name="edittext_stroke_focused">@color/focus_highlight</color>
+    <color name="edittext_disabled_background">#A0A0A0</color>
+    <color name="edittext_disabled_stroke">#888888</color>
+
+    <!-- ===== UTILITY ===== -->
+</resources>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <!-- Back button (stays outside ScrollView) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        style="@style/Widget.BudgetBrewer.Button.Container"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/back"
+        app:icon="@drawable/ic_chevron_left"
+        app:iconGravity="textStart"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp" />
+
+    <!-- ScrollView wraps the main content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingHorizontal="32dp"
+            android:layout_marginTop="-32dp">
+
+            <ImageView
+                android:id="@+id/ivAppIcon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/budget_brewer_logo" />
+
+            <TextView
+                android:id="@+id/tvAppName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textSize="32sp"
+                android:textColor="@color/text_on_main"
+                android:fontFamily="@font/blkchcry"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Email Field -->
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:background="@drawable/edittext_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp"
+                android:textColorHint="@color/text_disabled"
+                android:textColor="@color/text_on_container"
+                android:fontFamily="@font/exo_regular"
+                android:textSize="14sp"
+                android:includeFontPadding="false"
+                android:gravity="center_vertical" />
+
+            <!-- Password Field with custom visibility toggle -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:autofillHints="password"
+                    android:background="@drawable/edittext_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="12dp"
+                    android:paddingEnd="48dp"
+                    android:textColorHint="@color/text_disabled"
+                    android:textColor="@color/text_on_container"
+                    android:fontFamily="@font/exo_regular"
+                    android:textSize="14sp"
+                    android:includeFontPadding="false"
+                    android:gravity="center_vertical" />
+
+                <ImageButton
+                    android:id="@+id/btnTogglePassword"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="4dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility_off"
+                    android:contentDescription="@string/toggle_password_visibility"
+                    app:tint="@color/ic_button_tint" />
+            </FrameLayout>
+
+            <!-- Forgot Password Link -->
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password"
+                android:textColor="@color/text_on_main"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:layout_marginBottom="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/exo_regular" />
+
+            <!-- Sign In Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSignIn"
+                style="@style/Widget.BudgetBrewer.Button.Main"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/sign_in"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Sign Up Prompt -->
+            <TextView
+                android:id="@+id/tvSignUpPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_up_prompt"
+                android:textColor="@color/text_on_main"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/exo_regular" />
+
+            <!-- Extra bottom padding for scrolling -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

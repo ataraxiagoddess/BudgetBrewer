@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top spacer (accounts for month selector) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacer_top"
+            android:visibility="invisible" />
+
+        <!-- Month Start Amount Row -->
+        <LinearLayout
+            android:id="@+id/monthStartRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/category_background"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <!-- Day Header -->
+        <LinearLayout
+            android:id="@+id/dayHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <!-- CalendarView (takes remaining space) -->
+        <com.kizitonwose.calendar.view.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="4dp"
+            app:cv_dayViewResource="@layout/calendar_day_layout" />
+
+        <!-- Legend -->
+        <LinearLayout
+            android:id="@+id/legendContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/category_background">
+
+            <!-- Expense dot + label -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/circle_expense"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="4dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/legend_expenses"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textColor="@color/text_on_container" />
+            </LinearLayout>
+
+            <!-- Spending dot + label -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/circle_spending"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="4dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/legend_spending"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textColor="@color/text_on_container" />
+            </LinearLayout>
+
+            <!-- Income dot + label -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/circle_income"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="4dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/legend_income"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textColor="@color/text_on_container" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Week End Totals Row -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="none">
+            <LinearLayout
+                android:id="@+id/weekEndContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp" />
+        </HorizontalScrollView>
+
+        <!-- Month End Amount Row -->
+        <LinearLayout
+            android:id="@+id/monthEndRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/category_background"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <!-- Bottom spacer (accounts for bottom nav) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacer_bottom"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+    <!-- ProgressBar overlay -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>
