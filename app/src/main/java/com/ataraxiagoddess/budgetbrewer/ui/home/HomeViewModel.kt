@@ -27,12 +27,16 @@ class HomeViewModel(
     }
 
     init {
-        loadData()
+        viewModelScope.launch {
+            loadData()
+        }
     }
 
     fun setTimeframe(timeframe: Timeframe) {
         _timeframe.value = timeframe
-        loadData()
+        viewModelScope.launch {
+            loadData()
+        }
     }
 
     fun updateMonth(month: Month) {
@@ -45,48 +49,46 @@ class HomeViewModel(
         }
     }
 
-    private fun loadData() {
-        viewModelScope.launch {
-            _uiState.value = HomeUiState.Loading
-            try {
-                val incomes = repository.getIncomesForBudget(budgetId).first()
-                val expenses = repository.getExpensesForBudget(budgetId).first()
-                val categories = repository.getCategoriesForBudget(budgetId).first()
-                val allocation = repository.getAllocationForBudget(budgetId).first()
-                val spendingTotals = repository.getMonthlySpendingTotals(budgetId).first()
+    private suspend fun loadData() {
+        _uiState.value = HomeUiState.Loading
+        try {
+            val incomes = repository.getIncomesForBudget(budgetId).first()
+            val expenses = repository.getExpensesForBudget(budgetId).first()
+            val categories = repository.getCategoriesForBudget(budgetId).first()
+            val allocation = repository.getAllocationForBudget(budgetId).first()
 
-                val totalIncome = incomes.sumOf { it.amount }
-                val totalExpenses = expenses.sumOf { it.amount }
+            val totalIncome = incomes.sumOf { it.amount }
+            val totalExpenses = expenses.sumOf { it.amount }
 
-                val expensesByCategory = categories.map { category ->
-                    val categoryTotal = expenses
-                        .filter { it.categoryId == category.id }
-                        .sumOf { it.amount }
-                    val percentage = if (totalExpenses > 0) categoryTotal / totalExpenses * 100 else 0.0
-                    CategoryExpense(category, categoryTotal, percentage)
-                }.filter { it.amount > 0 }
+            val expensesByCategory = categories.map { category ->
+                val categoryTotal = expenses
+                    .filter { it.categoryId == category.id }
+                    .sumOf { it.amount }
+                val percentage = if (totalExpenses > 0) categoryTotal / totalExpenses * 100 else 0.0
+                CategoryExpense(category, categoryTotal, percentage)
+            }.filter { it.amount > 0 }
 
-                val savingsTarget = totalIncome * 0.2
-                val savingsAmount = allocation?.savingsAmount ?: 0.0
+            val savingsTarget = totalIncome * 0.2
+            val savingsAmount = allocation?.savingsAmount ?: 0.0
 
-                val spendingHistory = filterSpendingByTimeframe(spendingTotals)
+            // Compute spending history for the selected timeframe
+            val spendingHistory = buildSpendingHistory()
 
-                _uiState.value = HomeUiState.Success(
-                    totalIncome = totalIncome,
-                    totalExpenses = totalExpenses,
-                    expensesByCategory = expensesByCategory,
-                    savingsAmount = savingsAmount,
-                    savingsTarget = savingsTarget,
-                    spendingHistory = spendingHistory
-                )
-            } catch (e: Exception) {
-                _uiState.value = HomeUiState.Error("Failed to load data: ${e.message}")
-                emitError(R.string.error_load_data, e)
-            }
+            _uiState.value = HomeUiState.Success(
+                totalIncome = totalIncome,
+                totalExpenses = totalExpenses,
+                expensesByCategory = expensesByCategory,
+                savingsAmount = savingsAmount,
+                savingsTarget = savingsTarget,
+                spendingHistory = spendingHistory
+            )
+        } catch (e: Exception) {
+            _uiState.value = HomeUiState.Error("Failed to load data: ${e.message}")
+            emitError(R.string.error_load_data, e)
         }
     }
 
-    private fun filterSpendingByTimeframe(fullList: List<MonthlySpending>): List<MonthlySpending> {
+    private suspend fun buildSpendingHistory(): List<MonthlySpending> {
         val monthsToInclude = when (_timeframe.value) {
             Timeframe.ONE_MONTH -> 2
             Timeframe.THREE_MONTHS -> 3
@@ -101,8 +103,13 @@ class HomeViewModel(
                 month += 12
                 year -= 1
             }
-            val existing = fullList.find { it.month == month && it.year == year }
-            val amount = existing?.amount ?: 0.0
+            // Get budget ID if it exists, otherwise 0
+            val budgetId = repository.getBudgetIdIfExists(month, year)
+            val amount = if (budgetId != null) {
+                repository.getSpendingTotalForBudget(budgetId)
+            } else {
+                0.0
+            }
             result.add(0, MonthlySpending(month, year, amount))
         }
         return result

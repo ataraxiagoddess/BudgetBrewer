@@ -1,7 +1,6 @@
 package com.ataraxiagoddess.budgetbrewer.data
 
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
-import com.ataraxiagoddess.budgetbrewer.ui.home.MonthlySpending
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
@@ -57,9 +56,6 @@ class BudgetRepository(private val db: AppDatabase) {
     fun getSpendingEntriesForBudget(budgetId: String): Flow<List<SpendingEntry>> =
         db.spendingEntryDao().getSpendingEntriesForBudget(budgetId)
 
-    fun getMonthlySpendingTotals(budgetId: String): Flow<List<MonthlySpending>> =
-        db.spendingEntryDao().getMonthlySpendingTotals(budgetId)
-
     suspend fun insertSpendingEntry(entry: SpendingEntry) =
         db.spendingEntryDao().insert(entry)
 
@@ -68,6 +64,14 @@ class BudgetRepository(private val db: AppDatabase) {
 
     suspend fun deleteSpendingEntry(entry: SpendingEntry) =
         db.spendingEntryDao().delete(entry)
+
+    suspend fun getBudgetIdIfExists(month: Int, year: Int): String? {
+        return db.budgetDao().getBudget(month, year).first()?.id
+    }
+
+    suspend fun getSpendingTotalForBudget(budgetId: String): Double {
+        return db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf { it.amount }
+    }
 
     // --- Month Settings ---
     suspend fun getMonthEndAmount(budgetId: String): Double {
