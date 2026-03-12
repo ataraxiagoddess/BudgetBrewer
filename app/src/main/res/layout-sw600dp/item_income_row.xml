@@ -52,15 +52,14 @@
         android:background="@null"/>
 
     <!-- Buttons (unchanged) -->
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAddIncome"
-        android:layout_width="48dp"
+        style="@style/Widget.BudgetBrewer.Button.Container"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:src="@android:drawable/ic_menu_add"
-        app:tint="@color/ic_button_tint"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/add"
-        android:visibility="gone" />
+        android:text="@string/add_income_button"
+        android:visibility="gone"
+        app:icon="@null" />
 
     <ImageButton
         android:id="@+id/btnEditIncome"
