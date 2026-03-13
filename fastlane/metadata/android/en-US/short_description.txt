@@ -1,0 +1,1 @@
+A budgeting companion app, based on the zero dollar model and 50/30/20 model
