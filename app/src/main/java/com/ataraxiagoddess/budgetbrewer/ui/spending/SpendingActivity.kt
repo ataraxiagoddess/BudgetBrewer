@@ -37,9 +37,7 @@ import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class SpendingActivity : BaseActivity(), MonthChangeListener {
 
@@ -97,7 +95,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         }
 
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.isNestedScrollingEnabled = false
+        //binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     private fun setupAddButton() {
