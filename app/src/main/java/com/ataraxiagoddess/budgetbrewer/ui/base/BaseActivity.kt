@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
@@ -21,12 +22,15 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import com.ataraxiagoddess.budgetbrewer.R
+import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.databinding.LayoutBottomNavBinding
 import com.ataraxiagoddess.budgetbrewer.databinding.MonthSelectorBinding
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavigationManager
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
+import com.ataraxiagoddess.budgetbrewer.ui.lock.LockActivity
+import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigationrail.NavigationRailView
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +40,14 @@ import timber.log.Timber
 import java.util.Calendar
 
 abstract class BaseActivity : AppCompatActivity() {
+
+    private val appLockGraceMs = 5 * 60 * 1000L
+    private val navPrefs by lazy { getSharedPreferences("nav_prefs", MODE_PRIVATE) }
+    private val keyBottomScrollX = "bottom_nav_scroll_x"
+    private val keyRailScrollY = "rail_nav_scroll_y"
+
+    private var bottomNavScrollView: HorizontalScrollView? = null
+    private var railNavScrollView: NestedScrollView? = null
 
     protected lateinit var navBinding: LayoutBottomNavBinding
     protected lateinit var monthSelectorBinding: MonthSelectorBinding
@@ -167,6 +179,7 @@ abstract class BaseActivity : AppCompatActivity() {
                     isScrollContainer = true
                     isNestedScrollingEnabled = true
                 }
+                railNavScrollView = railContainer
 
                 val buttonBar = LinearLayout(this@BaseActivity).apply {
                     layoutParams = ViewGroup.LayoutParams(
@@ -197,6 +210,9 @@ abstract class BaseActivity : AppCompatActivity() {
                         backgroundTintList = null
                         iconTint = ContextCompat.getColorStateList(context, R.color.text_on_main)
                         setOnClickListener {
+                            if (destination == currentNavDestination) {
+                                return@setOnClickListener
+                            }
                             when (destination) {
                                 NavDestination.HOME -> navigateToHome()
                                 NavDestination.FINANCES -> navigateToFinances()
@@ -205,7 +221,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                 NavDestination.CALENDAR -> navigateToCalendar()
                                 NavDestination.SETTINGS -> navigateToSettings()
                             }
-                            // Update rail visibility after navigation
+                            // Update rail state after navigation
                             updateRailSelection(destination)
                         }
                     }
@@ -281,6 +297,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 navBinding = LayoutBottomNavBinding.inflate(layoutInflater, this, true)
                 (navBinding.root.layoutParams as? FrameLayout.LayoutParams)?.gravity = Gravity.BOTTOM
                 val bottomBlurView = navBinding.root
+                bottomNavScrollView = navBinding.root.findViewById(R.id.bottomNavScroll)
 
                 // Configure blur for both BlurViews
                 bottomBlurView.setupWith(blurTarget)
@@ -472,6 +489,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        enforceAppLockIfNeeded()
         val savedMonth = prefs.getInt("selected_month", Calendar.getInstance().get(Calendar.MONTH) + 1)
         val savedYear = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
         if (selectedMonth.month != savedMonth || selectedMonth.year != savedYear) {
@@ -492,6 +510,24 @@ abstract class BaseActivity : AppCompatActivity() {
         if (useRail) {
             updateRailSelection(currentNavDestination)
         }
+        restoreNavScroll()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveNavScroll()
+    }
+
+    private fun enforceAppLockIfNeeded() {
+        if (!AppLockManager.isPinEnabled()) return
+        if (AuthManager.getUserId(this) == null) return
+        if (!AppLockManager.shouldRequireUnlock(appLockGraceMs)) return
+
+        AppLockManager.lock()
+
+        startActivity(Intent(this, LockActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
     }
 
     private fun updateMonthSelector() {
@@ -509,9 +545,28 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun updateRailSelection(destination: NavDestination) {
         // Only used in rail mode
         if (!useRail) return
+        railButtons.forEach { (_, button) ->
+            button.visibility = View.VISIBLE
+        }
+    }
 
-        railButtons.forEach { (dest, button) ->
-            button.visibility = if (dest == destination) View.GONE else View.VISIBLE
+    private fun saveNavScroll() {
+        if (useRail) {
+            val y = railNavScrollView?.scrollY ?: return
+            navPrefs.edit { putInt(keyRailScrollY, y) }
+        } else {
+            val x = bottomNavScrollView?.scrollX ?: return
+            navPrefs.edit { putInt(keyBottomScrollX, x) }
+        }
+    }
+
+    private fun restoreNavScroll() {
+        if (useRail) {
+            val y = navPrefs.getInt(keyRailScrollY, 0)
+            railNavScrollView?.post { railNavScrollView?.scrollTo(0, y) }
+        } else {
+            val x = navPrefs.getInt(keyBottomScrollX, 0)
+            bottomNavScrollView?.post { bottomNavScrollView?.scrollTo(x, 0) }
         }
     }
 

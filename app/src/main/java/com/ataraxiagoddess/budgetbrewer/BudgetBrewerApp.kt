@@ -5,6 +5,9 @@ import android.net.ConnectivityManager
 import android.net.Network
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -26,9 +29,9 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-class BudgetBrewerApp : Application() {
+class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
     override fun onCreate() {
-        super.onCreate()
+        super<Application>.onCreate()
 
         // Initialize Supabase with session persistence
         SupabaseClient.initialize(this)
@@ -43,6 +46,7 @@ class BudgetBrewerApp : Application() {
 
         // Initialize AppLockManager (secure storage)
         AppLockManager.init(this)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         val prefs = getSharedPreferences("budget_prefs", MODE_PRIVATE)
         val calendar = Calendar.getInstance()
@@ -95,8 +99,6 @@ class BudgetBrewerApp : Application() {
         )
     }
 
-    // In BudgetBrewerApp.kt, inside onCreate, after scheduleMonthRollover()
-
     private fun scheduleSyncWorker() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -114,6 +116,12 @@ class BudgetBrewerApp : Application() {
             ExistingPeriodicWorkPolicy.KEEP,
             syncRequest
         )
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        if (AppLockManager.isPinEnabled()) {
+            AppLockManager.markBackgrounded()
+        }
     }
 
     private fun calculateTimeToMidnight(): Long {

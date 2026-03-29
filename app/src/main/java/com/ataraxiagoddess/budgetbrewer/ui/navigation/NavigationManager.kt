@@ -42,9 +42,8 @@ class NavigationManager(
         Timber.d("updateForDestination: $destination (was $currentDestination)")
         currentDestination = destination
         buttonMap.forEach { (button, dest) ->
-            val visibility = if (dest == destination) View.GONE else View.VISIBLE
-            button.visibility = visibility
-            Timber.d("Button ${button.text} visibility: ${if (visibility == View.VISIBLE) "VISIBLE" else "GONE"}")
+            button.visibility = View.VISIBLE
+            Timber.d("Button ${button.text} visibility: VISIBLE")
         }
     }
 }

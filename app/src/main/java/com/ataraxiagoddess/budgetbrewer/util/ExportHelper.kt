@@ -35,6 +35,7 @@ object ExportHelper {
     // CSV Export
     // ------------------------------------------------------------------------
     suspend fun exportToCSV(context: Context): Uri? = withContext(Dispatchers.IO) {
+        CurrencyPrefs.init(context)
         val db = AppDatabase.getDatabase(context)
         val csvContent = buildCSV(db)
         saveToDownloads(context, "BudgetBrewer_Export.csv", csvContent)
@@ -42,6 +43,7 @@ object ExportHelper {
 
     private suspend fun buildCSV(db: AppDatabase): ByteArray {
         val sb = StringBuilder()
+        val locale = Locale.getDefault()
 
         fun writeSection(title: String) {
             sb.append("\n\n").append(title).append("\n")
@@ -51,8 +53,9 @@ object ExportHelper {
             sb.append(values.joinToString(",") { escapeCSV(it) }).append("\n")
         }
 
-        // Helper to format currency
-        fun formatAmount(amount: Double, currency: String) = "$currency$amount"
+        fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
+        fun formatWithCurrency(amount: Double, currencyValue: String) =
+            CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
 
         // 1. Budgets
         writeSection("BUDGETS")
@@ -67,7 +70,7 @@ object ExportHelper {
         db.incomeDao().getAllIncomesSync().forEach { inc ->
             val budget = db.budgetDao().getBudgetById(inc.budgetId)
             val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            writeRow(monthYear, inc.sourceName, formatAmount(inc.amount, inc.currency),
+            writeRow(monthYear, inc.sourceName, formatWithCurrency(inc.amount, inc.currency),
                 inc.frequency.name, if (inc.isTips) "Yes" else "No")
         }
 
@@ -93,7 +96,7 @@ object ExportHelper {
                 RecurrenceType.MONTHLY_SAME_DAY -> "Monthly"
                 RecurrenceType.EVERY_X_DAYS -> "Every ${exp.recurrenceInterval} days"
             }
-            writeRow(monthYear, catName, exp.description, formatAmount(exp.amount, "$"),
+            writeRow(monthYear, catName, exp.description, formatCurrent(exp.amount),
                 shortDateFormat.format(Date(exp.dueDate)), recurrence)
         }
 
@@ -103,8 +106,8 @@ object ExportHelper {
         db.allocationDao().getAllAllocationsSync().forEach { alloc ->
             val budget = db.budgetDao().getBudgetById(alloc.budgetId)
             val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatAmount(alloc.savingsAmount, "$")
-            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatAmount(alloc.spendingAmount, "$")
+            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
+            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
             writeRow(monthYear, savings, spending)
         }
 
@@ -127,7 +130,7 @@ object ExportHelper {
             val budget = db.budgetDao().getBudgetById(entry.budgetId)
             val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
             writeRow(monthYear, shortDateFormat.format(Date(entry.date)), entry.source,
-                formatAmount(entry.amount, "$"))
+                formatCurrent(entry.amount))
         }
 
         // 8. Month Settings
@@ -136,7 +139,7 @@ object ExportHelper {
         db.monthSettingsDao().getAllMonthSettingsSync().forEach { ms ->
             val budget = db.budgetDao().getBudgetById(ms.budgetId)
             val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            writeRow(monthYear, formatAmount(ms.monthStartAmount, "$"), if (ms.monthStartOverridden) "Yes" else "No")
+            writeRow(monthYear, formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No")
         }
 
         // 9. Daily Income Assignments
@@ -163,6 +166,7 @@ object ExportHelper {
     // PDF Export (simplified, readable layout)
     // ------------------------------------------------------------------------
     suspend fun exportToPDF(context: Context): Uri? = withContext(Dispatchers.IO) {
+        CurrencyPrefs.init(context)
         val db = AppDatabase.getDatabase(context)
         val pdfBytes = buildPDF(context, db)
         saveToDownloads(context, "BudgetBrewer_Export.pdf", pdfBytes)
@@ -170,6 +174,7 @@ object ExportHelper {
 
     private suspend fun buildPDF(context: Context, db: AppDatabase): ByteArray {
         val document = PdfDocument()
+        val locale = Locale.getDefault()
         val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 portrait
         val regularTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular) ?: Typeface.DEFAULT
         val boldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold) ?: Typeface.DEFAULT_BOLD
@@ -196,6 +201,9 @@ object ExportHelper {
         val indent = 20f
         var y = 40f
         val lineHeight = 16f
+        fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
+        fun formatWithCurrency(amount: Double, currencyValue: String) =
+            CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
 
         fun checkNewPage() {
             if (y > pageInfo.pageHeight - 60) {
@@ -232,7 +240,8 @@ object ExportHelper {
         val incomes = db.incomeDao().getAllIncomesSync().map { inc ->
             val budget = db.budgetDao().getBudgetById(inc.budgetId)
             val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            "${inc.sourceName}: ${inc.currency}${inc.amount} (${inc.frequency}) - ${if (inc.isTips) "Tips" else "Regular"} – $month"
+            val amountDisplay = formatWithCurrency(inc.amount, inc.currency)
+            "${inc.sourceName}: $amountDisplay (${inc.frequency}) - ${if (inc.isTips) "Tips" else "Regular"} – $month"
         }
         writeSection("INCOMES", incomes)
 
@@ -253,15 +262,15 @@ object ExportHelper {
                 RecurrenceType.MONTHLY_SAME_DAY -> "Monthly"
                 RecurrenceType.EVERY_X_DAYS -> "Every ${exp.recurrenceInterval} days"
             }
-            "${exp.description}: $${exp.amount} due ${shortDateFormat.format(Date(exp.dueDate))} (${recurrence}) – $catName – $month"
+            "${exp.description}: ${formatCurrent(exp.amount)} due ${shortDateFormat.format(Date(exp.dueDate))} (${recurrence}) – $catName – $month"
         }
         writeSection("EXPENSES", expenses)
 
         val allocations = db.allocationDao().getAllAllocationsSync().map { alloc ->
             val budget = db.budgetDao().getBudgetById(alloc.budgetId)
             val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else "$${alloc.savingsAmount}"
-            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else "$${alloc.spendingAmount}"
+            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
+            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
             "Savings: $savings, Spending: $spending – $month"
         }
         writeSection("ALLOCATIONS", allocations)
@@ -269,7 +278,7 @@ object ExportHelper {
         val spendingEntries = db.spendingEntryDao().getAllSpendingEntriesSync().map { entry ->
             val budget = db.budgetDao().getBudgetById(entry.budgetId)
             val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            "${shortDateFormat.format(Date(entry.date))}: ${entry.source} – $${entry.amount} – $month"
+            "${shortDateFormat.format(Date(entry.date))}: ${entry.source} – ${formatCurrent(entry.amount)} – $month"
         }
         writeSection("SPENDING ENTRIES", spendingEntries)
 
@@ -286,7 +295,7 @@ object ExportHelper {
         val monthSettings = db.monthSettingsDao().getAllMonthSettingsSync().map { ms ->
             val budget = db.budgetDao().getBudgetById(ms.budgetId)
             val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            "Start amount: $${ms.monthStartAmount} (overridden: ${if (ms.monthStartOverridden) "Yes" else "No"}) – $month"
+            "Start amount: ${formatCurrent(ms.monthStartAmount)} (overridden: ${if (ms.monthStartOverridden) "Yes" else "No"}) – $month"
         }
         writeSection("MONTH SETTINGS", monthSettings)
 

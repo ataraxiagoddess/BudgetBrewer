@@ -4,19 +4,27 @@ import android.content.res.Resources
 import com.ataraxiagoddess.budgetbrewer.R
 import java.util.Locale
 
+private fun localeFrom(resources: Resources): Locale {
+    val locales = resources.configuration.locales
+    return if (locales.isEmpty) Locale.getDefault() else locales[0]
+}
+
 fun Double.toCurrencyDisplay(resources: Resources): String {
-    return String.format(resources.getString(R.string.currency_display), CurrencyPrefs.currentSymbol, this)
+    return CurrencyPrefs.format(this, localeFrom(resources))
 }
 
 fun Double.toCurrencyEdit(resources: Resources): String {
-    return String.format(resources.getString(R.string.currency_edit), this)
+    return CurrencyPrefs.formatPlain(this, localeFrom(resources))
 }
 
 fun Double.toPercentDisplay(resources: Resources): String {
     return String.format(resources.getString(R.string.percent_display), this)
 }
 
-fun Double.toCurrencyFormat(currency: String = CurrencyPrefs.currentSymbol, resources: Resources): String {
-    val formatted = String.format(Locale.US, "%.2f", this)
-    return String.format(resources.getString(R.string.currency_with_symbol), currency, formatted)
+fun Double.toCurrencyFormat(currency: String = CurrencyPrefs.currentCode, resources: Resources): String {
+    return CurrencyPrefs.formatWithCurrency(this, currency, localeFrom(resources))
+}
+
+fun String.toAmountOrNull(resources: Resources): Double? {
+    return CurrencyPrefs.parseAmount(this, localeFrom(resources))
 }

@@ -239,18 +239,21 @@ class SettingsActivity : BaseActivity() {
         binding.spinnerCurrency.adapter = adapter
 
         val defaultCurrency = currencies[0]  // first item, e.g., "$ (USD)"
-        val savedCurrency = settingsPrefs.getString("currency", defaultCurrency)
-        val position = currencies.indexOf(savedCurrency).takeIf { it >= 0 } ?: 0
+        val savedCurrency = settingsPrefs.getString("currency", defaultCurrency) ?: defaultCurrency
+        val position = currencies.indexOf(savedCurrency).takeIf { it >= 0 }
+            ?: currencies.indexOfFirst { it.contains("($savedCurrency)") }.takeIf { it >= 0 }
+            ?: 0
         binding.spinnerCurrency.setSelection(position)
 
         binding.spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selected = currencies[position]
-                settingsPrefs.edit { putString("currency", selected) }
-                CurrencyPrefs.updateSymbol(selected)
+                val code = CurrencyPrefs.extractCode(selected)
+                settingsPrefs.edit { putString("currency", code) }
+                CurrencyPrefs.updateCurrency(code)
 
                 lifecycleScope.launch {
-                    repository.updateAllIncomesCurrency(CurrencyPrefs.currentSymbol)
+                    repository.updateAllIncomesCurrency(CurrencyPrefs.currentCode)
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}

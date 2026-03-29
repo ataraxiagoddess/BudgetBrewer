@@ -3,8 +3,11 @@ package com.ataraxiagoddess.budgetbrewer.ui.lock
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.view.Gravity
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -14,6 +17,7 @@ import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivityLockBinding
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
+import com.google.android.material.snackbar.Snackbar
 
 class LockActivity : AppCompatActivity() {
 
@@ -34,10 +38,10 @@ class LockActivity : AppCompatActivity() {
                 if (AppLockManager.verifyPin(pin)) {
                     unlockAndProceed()
                 } else {
-                    Toast.makeText(this, R.string.incorrect_pin, Toast.LENGTH_SHORT).show()
+                    showSnackbar(getString(R.string.incorrect_pin))
                 }
             } else {
-                Toast.makeText(this, R.string.enter_valid_pin, Toast.LENGTH_SHORT).show()
+                showSnackbar(getString(R.string.enter_valid_pin))
             }
         }
 
@@ -90,12 +94,12 @@ class LockActivity : AppCompatActivity() {
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON &&
                     errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
-                    Toast.makeText(this@LockActivity, errString, Toast.LENGTH_SHORT).show()
+                    showSnackbar(errString.toString())
                 }
             }
 
             override fun onAuthenticationFailed() {
-                Toast.makeText(this@LockActivity, R.string.biometric_failed, Toast.LENGTH_SHORT).show()
+                showSnackbar(getString(R.string.biometric_failed))
             }
         }
         biometricPrompt = BiometricPrompt(this, executor, callback)
@@ -117,5 +121,34 @@ class LockActivity : AppCompatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
         finish()
+    }
+
+    private fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+        val snackbar = Snackbar.make(findViewById(android.R.id.content), "", duration)
+        snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
+        val snackbarView = snackbar.view
+
+        val params = snackbarView.layoutParams as FrameLayout.LayoutParams
+        params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.snackbar_bottom_offset)
+        params.leftMargin = 0
+        params.rightMargin = 0
+        snackbarView.layoutParams = params
+
+        snackbarView.background = ContextCompat.getDrawable(this, R.drawable.snackbar_background)
+
+        val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        defaultText.visibility = View.GONE
+
+        val customText = layoutInflater.inflate(R.layout.snackbar_custom, snackbarView as ViewGroup, false) as TextView
+        customText.text = message
+        customText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
+        customText.setTextColor(ContextCompat.getColor(this, R.color.text_on_container))
+        customText.textSize = 18f
+        customText.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        snackbarView.addView(customText)
+
+        snackbar.show()
     }
 }

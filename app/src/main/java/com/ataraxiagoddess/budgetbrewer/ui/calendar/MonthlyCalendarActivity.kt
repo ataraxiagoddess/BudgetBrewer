@@ -5,6 +5,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,9 @@ import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
+import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
+import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
+import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.google.android.material.snackbar.Snackbar
@@ -412,6 +416,17 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
         }
     }
 
+    private fun currencyInputFilters(): Array<InputFilter> {
+        val locales = resources.configuration.locales
+        val locale = if (locales.isEmpty) Locale.getDefault() else locales[0]
+        return arrayOf(
+            DecimalDigitsInputFilter(
+                CurrencyPrefs.currentFractionDigits,
+                CurrencyPrefs.decimalSeparators(locale)
+            )
+        )
+    }
+
     @SuppressLint("InflateParams")
     private fun showEditAmountDialog(
         title: String,
@@ -424,6 +439,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
         val etAmount = dialogView.findViewById<EditText>(R.id.etAllocationAmount)
         val tvWarning = dialogView.findViewById<TextView>(R.id.tvAllocationError)
 
+        etAmount.filters = currencyInputFilters()
         etAmount.setText(currentAmount.toCurrencyEdit(resources))
 
         val dialog = showBudgetBrewerDialog(
@@ -444,7 +460,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
             }
 
             saveButton.setOnClickListener {
-                val newAmount = etAmount.text.toString().toDoubleOrNull()
+                val newAmount = etAmount.text.toString().toAmountOrNull(resources)
                 if (newAmount != null && newAmount >= 0) {
                     showConfirmationDialog(newAmount, onSave, dialog, confirmationMessageResId)
                 }

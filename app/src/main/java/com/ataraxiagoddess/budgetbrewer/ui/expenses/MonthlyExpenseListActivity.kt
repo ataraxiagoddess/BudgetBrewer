@@ -22,6 +22,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.GridSpacingItemDecoration
+import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -42,6 +43,9 @@ class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMonthlyExpenseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.tvTotalAmount.text = 0.0.toCurrencyDisplay(resources)
+        binding.tvRemainingAmount.text = 0.0.toCurrencyDisplay(resources)
 
         val db = AppDatabase.getDatabase(this)
         repository = BudgetRepository(db)
@@ -101,16 +105,12 @@ class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
                     is MonthlyExpenseListViewModel.MonthlyExpenseListUiState.Success -> {
                         binding.progressBar.visibility = android.view.View.GONE
                         adapter.submitList(state.days)
-                        binding.tvTotalAmount.text = getString(R.string.total_expenses_format, state.totalAmount)
-                        binding.tvRemainingAmount.text = getString(R.string.remaining_expenses_format, state.remainingAmount)
+                        binding.tvTotalAmount.text = state.totalAmount.toCurrencyDisplay(resources)
+                        binding.tvRemainingAmount.text = state.remainingAmount.toCurrencyDisplay(resources)
                     }
                     is MonthlyExpenseListViewModel.MonthlyExpenseListUiState.Error -> {
                         binding.progressBar.visibility = android.view.View.GONE
-                        android.widget.Toast.makeText(
-                            this@MonthlyExpenseListActivity,
-                            state.message,
-                            android.widget.Toast.LENGTH_LONG
-                        ).show()
+                        showSnackbar(state.message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
                     }
                 }
             }

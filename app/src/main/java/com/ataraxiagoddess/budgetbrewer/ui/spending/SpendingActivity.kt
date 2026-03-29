@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
@@ -31,7 +32,9 @@ import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.util.Constants.DateFormats.FULL
+import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
+import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.google.android.material.snackbar.Snackbar
@@ -98,6 +101,17 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         //binding.recyclerView.isNestedScrollingEnabled = false
     }
 
+    private fun currencyInputFilters(): Array<InputFilter> {
+        val locales = resources.configuration.locales
+        val locale = if (locales.isEmpty) java.util.Locale.getDefault() else locales[0]
+        return arrayOf(
+            DecimalDigitsInputFilter(
+                CurrencyPrefs.currentFractionDigits,
+                CurrencyPrefs.decimalSeparators(locale)
+            )
+        )
+    }
+
     private fun setupAddButton() {
         binding.btnAddTransaction.setOnClickListener {
             val state = viewModel.uiState.value
@@ -160,7 +174,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
     private fun showAddTransactionDialog(remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
-        dialogBinding.etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        dialogBinding.etAmount.filters = currencyInputFilters()
 
         var selectedDate: Long? = null
 
@@ -205,9 +219,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = dialogBinding.etSource.text.toString().trim()
-                val amount = dialogBinding.etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
                 val date = selectedDate
-                if (date != null && source.isNotEmpty() && amount > 0 && amount <= remaining) {
+                if (date != null && source.isNotEmpty() && amount != null && amount > 0 && amount <= remaining) {
                     viewModel.addEntry(date, source, amount)
                     dialog.dismiss()
                 }
@@ -220,7 +234,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun validateAddDialog(dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, remaining: Double) {
         val sourceValid = !binding.etSource.text.isNullOrBlank()
         val amountText = binding.etAmount.text.toString()
-        val amount = amountText.toDoubleOrNull()
+        val amount = amountText.toAmountOrNull(resources)
         val amountValid = amount != null && amount > 0
         val dateValid = date != null
         val withinLimit = amount != null && amount <= remaining
@@ -232,7 +246,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
     private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
-        dialogBinding.etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        dialogBinding.etAmount.filters = currencyInputFilters()
 
         // Pre-fill
         dialogBinding.etSource.setText(entry.source)
@@ -286,9 +300,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, remaining)
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newSource = dialogBinding.etSource.text.toString().trim()
-                val newAmount = dialogBinding.etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val newAmount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
                 val newDate = selectedDate
-                if (newDate != null && newSource.isNotEmpty() && newAmount > 0 && newAmount <= remaining) {
+                if (newDate != null && newSource.isNotEmpty() && newAmount != null && newAmount > 0 && newAmount <= remaining) {
                     val updatedEntry = entry.copy(
                         source = newSource,
                         amount = newAmount,
@@ -314,16 +328,17 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     ) {
         val source = binding.etSource.text.toString().trim()
         val amountText = binding.etAmount.text.toString().trim()
-        val amount = amountText.toDoubleOrNull() ?: 0.0
+        val amount = amountText.toAmountOrNull(resources)
 
         val sourceValid = source.isNotEmpty()
-        val amountValid = amount > 0
+        val amountValid = amount != null && amount > 0
         val dateValid = date != null
-        val withinLimit = amount <= remaining
+        val withinLimit = amount != null && amount <= remaining
 
-        val changed = source != originalSource || amount != originalAmount || date != originalDate
+        val amountValue = amount ?: 0.0
+        val changed = source != originalSource || amountValue != originalAmount || date != originalDate
 
-        binding.tvWarning.visibility = if (amount > 0 && !withinLimit) View.VISIBLE else View.GONE
+        binding.tvWarning.visibility = if (amount != null && amount > 0 && !withinLimit) View.VISIBLE else View.GONE
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit && changed
     }

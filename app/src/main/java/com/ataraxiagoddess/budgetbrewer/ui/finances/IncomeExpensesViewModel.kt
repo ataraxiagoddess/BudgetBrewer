@@ -220,7 +220,7 @@ class IncomeExpensesViewModel(
                 budgetId = budgetId,
                 sourceName = sourceName,
                 amount = amount,
-                currency = currency ?: CurrencyPrefs.currentSymbol,
+                currency = currency ?: CurrencyPrefs.currentCode,
                 frequency = frequency,
                 weekNumber = weekNumber
             )
@@ -271,7 +271,7 @@ class IncomeExpensesViewModel(
                 frequency = Frequency.MONTHLY,
                 isTips = true,
                 tipsOrder = tipsOrder,
-                currency = currency ?: CurrencyPrefs.currentSymbol
+                currency = currency ?: CurrencyPrefs.currentCode
             )
             repository.insertIncome(tip)
             val userId = AuthManager.getUserId(appContext)

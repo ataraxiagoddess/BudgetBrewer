@@ -17,7 +17,7 @@ data class Income(
     @SerialName("source_name")
     val sourceName: String,
     @SerialName("currency")
-    val currency: String = "$",
+    val currency: String = "USD",
     @SerialName("amount")
     val amount: Double,
     @SerialName("frequency")

@@ -8,6 +8,7 @@
     android:background="@android:color/transparent">
 
     <HorizontalScrollView
+        android:id="@+id/bottomNavScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fadeScrollbars="false"
@@ -30,7 +31,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_home"
                 android:text="@string/nav_home"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonFinances"
@@ -40,7 +41,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_finances"
                 android:text="@string/nav_finances"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonExpenses"
@@ -50,7 +51,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_expenses"
                 android:text="@string/nav_expenses"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSpending"
@@ -60,7 +61,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_spending"
                 android:text="@string/nav_spending"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonCalendar"
@@ -70,7 +71,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_calendar"
                 android:text="@string/nav_calendar"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSettings"

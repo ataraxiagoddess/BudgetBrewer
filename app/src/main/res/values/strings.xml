@@ -46,14 +46,14 @@
     <string name="leftover_description">Amount after Expenses to allocate to Savings or Spending:</string>
     <string name="savings_title">Savings</string>
     <string name="spending_title">Spending</string>
-    <string name="default_amount_zero">$0.00</string>
+    <string name="default_amount_zero">0.00</string>
     <string name="default_percent_zero">(0.00000%)</string>
 
     <!-- Allocation Status Messages -->
     <string name="allocation_status_overallocated">More funds than available have been allocated, please reduce your allocations</string>
     <string name="allocation_status_fully_allocated">All funds have been allocated</string>
     <string name="allocation_status_available">Funds are still available to allocate</string>
-    <string name="allocation_exceeds_funds">Exceeds available funds by $%s</string>
+    <string name="allocation_exceeds_funds">Exceeds available funds by %s</string>
     <string name="allocation_status_expenses_exceed">Expenses exceed income, no funds available to allocate</string>
     <string name="allocation_status_no_funds">No funds available to allocate</string>
 
@@ -99,8 +99,8 @@
     <!-- ==================== EXPENSES PAGE ==================== -->
     <string name="total_expenses_label">Total Expenses</string>
     <string name="remaining_expenses_label">Remaining</string>
-    <string name="total_expenses_format">$%.2f</string>
-    <string name="remaining_expenses_format">$%.2f</string>
+    <string name="total_expenses_format">%s</string>
+    <string name="remaining_expenses_format">%s</string>
 
     <!-- ==================== SPENDING PAGE ==================== -->
     <string name="add_transaction">+ Transaction</string>
@@ -288,7 +288,7 @@
     </string-array>
 
     <!-- ==================== ALLOCATION ITEM STRINGS ==================== -->
-    <string name="allocation_amount_default">$0.00</string>
+    <string name="allocation_amount_default">0.00</string>
     <string name="allocation_percent_default">(0.00000%)</string>
 
     <!-- ==================== SETTINGS & AUTH ==================== -->

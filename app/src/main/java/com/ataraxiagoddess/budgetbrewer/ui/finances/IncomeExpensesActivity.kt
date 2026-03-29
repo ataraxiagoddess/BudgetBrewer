@@ -54,8 +54,10 @@ import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.Constants
+import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
 import com.ataraxiagoddess.budgetbrewer.util.FULL
+import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyFormat
@@ -140,7 +142,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             val textWatcher = createSimpleTextWatcher {
                 val sourceValid = !etSource.text.isNullOrBlank()
-                val amountValid = etAmount.text.toString().toDoubleOrNull() != null
+                val amountValid = etAmount.text.toString().toAmountOrNull(resources) != null
                 addButton.isEnabled = sourceValid && amountValid
             }
             etSource.addTextChangedListener(textWatcher)
@@ -148,11 +150,21 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             addButton.setOnClickListener {
                 val source = etSource.text.toString().trim()
-                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 onValidated(source, amount)
                 dialog.dismiss()
             }
         }
+    }
+
+    private fun currencyInputFilters(): Array<InputFilter> {
+        val locale = resources.configuration.locales[0]
+        return arrayOf(
+            DecimalDigitsInputFilter(
+                CurrencyPrefs.currentFractionDigits,
+                CurrencyPrefs.decimalSeparators(locale)
+            )
+        )
     }
 
     private fun hideKeyboard(view: View) {
@@ -171,6 +183,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
         binding = ActivityIncomeExpensesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.tvLeftoverAmount.text = 0.0.toCurrencyDisplay(resources)
         // Snap helper for category cards
         snapHelper = PagerSnapHelper()
         snapHelper?.attachToRecyclerView(binding.categoriesRecyclerView)
@@ -553,7 +566,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null,false)
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
@@ -577,7 +590,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
         etSource.setText(income.sourceName)
         etAmount.setText(income.amount.toCurrencyEdit(resources))
 
@@ -596,7 +609,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         fun validate() {
             val source = etSource.text.toString().trim()
             val amountText = etAmount.text.toString().trim()
-            val amount = amountText.toDoubleOrNull() ?: 0.0
+            val amount = amountText.toAmountOrNull(resources) ?: 0.0
             val changed = source != originalSource || amount != originalAmount
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = changed
         }
@@ -613,7 +626,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             validate() // initially disabled
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = etSource.text.toString().trim()
-                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 if (source.isNotEmpty() && amount > 0) {
                     val updated = income.copy(sourceName = source, amount = amount)
                     viewModel.updateIncome(updated)
@@ -632,7 +645,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_tip, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etTipSource)
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
@@ -656,7 +669,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_tip, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etTipSource)
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
         etSource.setText(tip.sourceName)
         etAmount.setText(tip.amount.toCurrencyEdit(resources))
 
@@ -675,7 +688,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         fun validate() {
             val source = etSource.text.toString().trim()
             val amountText = etAmount.text.toString().trim()
-            val amount = amountText.toDoubleOrNull() ?: 0.0
+            val amount = amountText.toAmountOrNull(resources) ?: 0.0
             val changed = source != originalSource || amount != originalAmount
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = changed
         }
@@ -692,7 +705,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             validate()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = etSource.text.toString().trim()
-                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 if (source.isNotEmpty() && amount > 0) {
                     val updated = tip.copy(sourceName = source, amount = amount)
                     viewModel.updateTip(updated)
@@ -825,7 +838,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_expense, null, false)
         val etDescription = dialogView.findViewById<EditText>(R.id.etExpenseDescription)
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
         val cbRecurring = dialogView.findViewById<CheckBox>(R.id.cbRecurring)
         val recurrenceOptions = dialogView.findViewById<LinearLayout>(R.id.recurrenceOptions)
@@ -865,7 +878,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         fun validateAndEnable() {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE) ?: return
             val descriptionValid = !etDescription.text.isNullOrBlank()
-            val amountValid = etAmount.text.toString().toDoubleOrNull() != null
+            val amountValid = etAmount.text.toString().toAmountOrNull(resources) != null
             val dateValid = selectedDate != null
 
             var recurrenceValid = true
@@ -930,7 +943,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val description = etDescription.text.toString().trim()
-                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 val date = selectedDate
                 if (date != null && description.isNotEmpty()) {
                     val recurrenceType = if (cbRecurring.isChecked) {
@@ -959,7 +972,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_expense, null, false)
         val etDescription = dialogView.findViewById<EditText>(R.id.etExpenseDescription)
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
         val cbRecurring = dialogView.findViewById<CheckBox>(R.id.cbRecurring)
         val recurrenceOptions = dialogView.findViewById<LinearLayout>(R.id.recurrenceOptions)
@@ -1037,7 +1050,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         fun validate() {
             val description = etDescription.text.toString().trim()
             val amountText = etAmount.text.toString().trim()
-            val amount = amountText.toDoubleOrNull() ?: 0.0
+            val amount = amountText.toAmountOrNull(resources) ?: 0.0
             val dateValid = selectedDate != null
             val descriptionValid = description.isNotEmpty()
             val amountValid = amount > 0
@@ -1125,7 +1138,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             validate() // initially disabled
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val description = etDescription.text.toString().trim()
-                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 val date = selectedDate
                 if (date != null && description.isNotEmpty() && amount > 0) {
                     val recurrenceType = getCurrentRecurrenceType()
@@ -1152,7 +1165,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_allocation, null, false)
         val etAmount = dialogView.findViewById<EditText>(R.id.etAllocationAmount)
-        etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        etAmount.filters = currencyInputFilters()
         val tvError = dialogView.findViewById<TextView>(R.id.tvAllocationError)
         if (existingAmount > 0) etAmount.setText(existingAmount.toCurrencyEdit(resources))
 
@@ -1181,7 +1194,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             etAmount.addTextChangedListener(createSimpleTextWatcher { s ->
                 val input = s.toString().trim()
-                val amount = input.toDoubleOrNull()
+                val amount = input.toAmountOrNull(resources)
 
                 val isValid = amount != null && amount > 0.0
                 val withinLimit = amount != null && (amount + otherAllocated) <= leftover + Constants.EPSILON
@@ -1191,8 +1204,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 if (amount != null && amount > 0.0 && !withinLimit) {
                     val excess = amount + otherAllocated - leftover
                     tvError.text = getString(
-                        R.string.allocation_exceeds_funds, String.format(
-                            Locale.US, "%.2f", excess))
+                        R.string.allocation_exceeds_funds, excess.toCurrencyDisplay(resources)
+                    )
                     tvError.visibility = View.VISIBLE
                 } else {
                     tvError.visibility = View.GONE
@@ -1200,7 +1213,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             })
 
             saveButton.setOnClickListener {
-                val amount = etAmount.text.toString().trim().toDoubleOrNull() ?: 0.0
+                val amount = etAmount.text.toString().trim().toAmountOrNull(resources) ?: 0.0
                 if (type == AllocationType.Savings) {
                     viewModel.setSavingsAllocation(amount)
                 } else {
