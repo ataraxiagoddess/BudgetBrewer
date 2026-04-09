@@ -29,7 +29,7 @@
         android:id="@+id/tvSource"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8f"
+        android:layout_weight="0.8"
         style="@style/TextAppearance.BudgetBrewer.Body"
         android:textColor="@color/text_on_container"
         android:paddingStart="2dp"
