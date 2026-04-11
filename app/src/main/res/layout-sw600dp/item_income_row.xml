@@ -15,11 +15,12 @@
         android:id="@+id/tvTimeFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="45dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         style="@style/TextAppearance.BudgetBrewer.Subtext"
         android:textColor="@color/text_on_container"
         android:layout_marginEnd="12dp"
-        android:maxLines="1"
-        android:ellipsize="end"
         android:gravity="start"
         android:background="@null"/>
 
@@ -29,13 +30,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:maxWidth="200dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         style="@style/TextAppearance.BudgetBrewer.Body"
         android:textColor="@color/text_on_container"
         android:paddingStart="16dp"
         android:paddingEnd="12dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="start"
+        android:gravity="center"
         android:background="@null"/>
 
     <!-- Amount column – wraps content, left aligned -->
@@ -43,12 +45,13 @@
         android:id="@+id/tvAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="120dp"
+        android:maxLines="2"
+        android:ellipsize="end"
         style="@style/TextAppearance.BudgetBrewer.Body"
         android:textColor="@color/text_on_container"
         android:layout_marginEnd="24dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:gravity="start"
+        android:gravity="center"
         android:background="@null"/>
 
     <!-- Buttons (unchanged) -->
