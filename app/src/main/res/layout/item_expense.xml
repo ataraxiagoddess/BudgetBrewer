@@ -39,7 +39,7 @@
 
     <!-- Right side: Amount and Date stacked -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
         android:gravity="start"
