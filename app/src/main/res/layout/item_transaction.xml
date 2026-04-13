@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/tvSource"
-            style="@style/TextAppearance.BudgetBrewer.Subtext"
+            style="@style/TextAppearance.BudgetBrewer.Body.Container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/tvAmount"
-            style="@style/TextAppearance.BudgetBrewer.Subtext"
+            style="@style/TextAppearance.BudgetBrewer.Body.Container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"

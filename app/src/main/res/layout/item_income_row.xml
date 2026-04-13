@@ -15,7 +15,7 @@
         android:id="@+id/tvTimeFrame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="70dp"
+        android:maxWidth="45dp"
         android:maxLines="2"
         android:ellipsize="end"
         style="@style/TextAppearance.BudgetBrewer.Subtext"
@@ -42,7 +42,7 @@
             android:paddingEnd="2dp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:gravity="start"
+            android:gravity="center"
             android:background="@null"/>
 
         <TextView
@@ -55,7 +55,7 @@
             android:paddingEnd="2dp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:gravity="end"
+            android:gravity="center"
             android:background="@null"/>
     </LinearLayout>
 
