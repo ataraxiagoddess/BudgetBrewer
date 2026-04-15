@@ -63,7 +63,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "budget_brewer.db"
                 )
-                    .addMigrations()
+                    .addMigrations(Migration)
                     .build()
                 INSTANCE = instance
                 instance
