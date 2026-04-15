@@ -2,6 +2,7 @@ package com.ataraxiagoddess.budgetbrewer.database
 
 import androidx.room.*
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
+import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
