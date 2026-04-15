@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clipDrawable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clipOrientation="vertical"
+    android:drawable="@drawable/ic_jar_liquid" />

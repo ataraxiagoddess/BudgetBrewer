@@ -75,6 +75,28 @@
     <color name="category_color_19">#f4c3c3</color>  <!-- soft blush -->
     <color name="category_color_20">#c9e4de</color>  <!-- soft seafoam -->
 
+    <!-- ===== BUCKET COLORS (20 distinct vibrant colors) ===== -->
+    <color name="bucket_color_1">#FF6B6B</color>        <!-- Red -->
+    <color name="bucket_color_2">#FF8E53</color>        <!-- Orange -->
+    <color name="bucket_color_3">#FFD93D</color>        <!-- Yellow -->
+    <color name="bucket_color_4">#6BCB77</color>        <!-- Green -->
+    <color name="bucket_color_5">#4D96FF</color>        <!-- Blue -->
+    <color name="bucket_color_6">#6B5B95</color>        <!-- Purple -->
+    <color name="bucket_color_7">#9D4EDD</color>        <!-- Violet -->
+    <color name="bucket_color_8">#FF6B9D</color>        <!-- Pink -->
+    <color name="bucket_color_9">#FF8E72</color>        <!-- Coral -->
+    <color name="bucket_color_10">#FFA868</color>       <!-- Peach -->
+    <color name="bucket_color_11">#FFC8A8</color>       <!-- Light Orange -->
+    <color name="bucket_color_12">#FFE8A8</color>       <!-- Light Yellow -->
+    <color name="bucket_color_13">#A8FFE8</color>       <!-- Light Mint -->
+    <color name="bucket_color_14">#A8E8FF</color>       <!-- Light Blue -->
+    <color name="bucket_color_15">#A8D8FF</color>       <!-- Sky Blue -->
+    <color name="bucket_color_16">#A8C8FF</color>       <!-- Steel Blue -->
+    <color name="bucket_color_17">#A8B8FF</color>       <!-- Indigo -->
+    <color name="bucket_color_18">#A8A8FF</color>       <!-- Violet -->
+    <color name="bucket_color_19">#A898FF</color>       <!-- Purple -->
+    <color name="bucket_color_20">#A888FF</color>       <!-- Deep Purple -->
+
     <!-- ===== TIMEFRAME BUTTON COLORS ===== -->
     <color name="btn_timeframe_1m">#b8d1e0</color>        <!-- Lightest blue -->
     <color name="btn_timeframe_3m">#9fb8d9</color>        <!-- Medium‑light blue -->

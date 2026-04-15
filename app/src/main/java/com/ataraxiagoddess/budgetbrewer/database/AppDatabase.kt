@@ -14,6 +14,8 @@ import com.ataraxiagoddess.budgetbrewer.data.ExpenseCategory
 import com.ataraxiagoddess.budgetbrewer.data.Income
 import com.ataraxiagoddess.budgetbrewer.data.MonthSettings
 import com.ataraxiagoddess.budgetbrewer.data.PendingSync
+import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
+import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
 
 @Database(
@@ -27,9 +29,11 @@ import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
         SpendingEntry::class,
         MonthSettings::class,
         DailyIncomeAssignment::class,
-        PendingSync::class
+        PendingSync::class,
+        SavingsBucket::class,
+        SavingsTransaction::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -45,6 +49,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun monthSettingsDao(): MonthSettingsDao
     abstract fun dailyIncomeAssignmentDao(): DailyIncomeAssignmentDao
     abstract fun pendingSyncDao(): PendingSyncDao
+    abstract fun savingsBucketDao(): SavingsBucketDao
+    abstract fun savingsTransactionDao(): SavingsTransactionDao
 
     companion object {
         @Volatile

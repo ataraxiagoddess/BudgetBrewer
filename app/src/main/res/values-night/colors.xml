@@ -26,8 +26,9 @@
     <color name="btn_disabled">#80B59ED9</color>          <!-- Disabled button (semi‑transparent lavender) -->
     <color name="focus_highlight">#80C0B0A0</color>       <!-- Focus highlight (semi‑transparent light) -->
 
-    <color name="edit_icon_color">#64B5F6</color>       <!-- Lighter blue for dark mode -->
-    <color name="delete_icon_color">#81C784</color>     <!-- Lighter green for dark mode -->
+    <!-- Icon colors -->
+    <color name="edit_icon_color">#64B5F6</color>         <!-- Lighter blue for dark mode -->
+    <color name="delete_icon_color">#81C784</color>       <!-- Lighter green for dark mode -->
 
     <!-- ===== NAVIGATION BUTTON GRADIENTS ===== -->
     <color name="nav_green_start">#185719</color>
@@ -44,13 +45,13 @@
     <color name="nav_pink_end">#A00997</color>
 
     <!-- ===== CHART COLORS ===== -->
-    <color name="chart_income">#6AB06A</color>            <!-- Brighter soft green -->
-    <color name="chart_expenses">#FDADFB</color>          <!-- Brighter soft red/magenta -->
-    <color name="chart_spending">#F8E3B2</color>          <!-- Darker orange -->
-    <color name="chart_target">#7AB0D9</color>            <!-- Soft blue (target) -->
-    <color name="chart_actual">#B59ED9</color>            <!-- Lavender (actual) -->
-    <color name="chart_trend_line">#8CCFAF</color>        <!-- Mint (trend line) -->
-    <color name="chart_trend_dot">#B59ED9</color>         <!-- Lavender (trend dots) -->
+    <color name="chart_income">#6AB06A</color>             <!-- Brighter soft green -->
+    <color name="chart_expenses">#FDADFB</color>           <!-- Brighter soft red/magenta -->
+    <color name="chart_spending">#F8E3B2</color>           <!-- Darker orange -->
+    <color name="chart_target">#7AB0D9</color>             <!-- Soft blue (target) -->
+    <color name="chart_actual">#B59ED9</color>             <!-- Lavender (actual) -->
+    <color name="chart_trend_line">#8CCFAF</color>         <!-- Mint (trend line) -->
+    <color name="chart_trend_dot">#B59ED9</color>          <!-- Lavender (trend dots) -->
 
     <!-- ===== CATEGORY COLORS (20 distinct, brighter for dark) ===== -->
     <color name="category_color_1">#c7a2d9</color>   <!-- brighter lavender -->
@@ -74,6 +75,28 @@
     <color name="category_color_19">#f4a3a3</color>  <!-- blush -->
     <color name="category_color_20">#a8d9d4</color>  <!-- seafoam -->
 
+    <!-- ===== BUCKET COLORS (20 distinct vibrant colors - same as light mode) ===== -->
+    <color name="bucket_color_1">#FF6B6B</color>        <!-- Red -->
+    <color name="bucket_color_2">#FF8E53</color>        <!-- Orange -->
+    <color name="bucket_color_3">#FFD93D</color>        <!-- Yellow -->
+    <color name="bucket_color_4">#6BCB77</color>        <!-- Green -->
+    <color name="bucket_color_5">#4D96FF</color>        <!-- Blue -->
+    <color name="bucket_color_6">#6B5B95</color>        <!-- Purple -->
+    <color name="bucket_color_7">#9D4EDD</color>        <!-- Violet -->
+    <color name="bucket_color_8">#FF6B9D</color>        <!-- Pink -->
+    <color name="bucket_color_9">#FF8E72</color>        <!-- Coral -->
+    <color name="bucket_color_10">#FFA868</color>       <!-- Peach -->
+    <color name="bucket_color_11">#FFC8A8</color>       <!-- Light Orange -->
+    <color name="bucket_color_12">#FFE8A8</color>       <!-- Light Yellow -->
+    <color name="bucket_color_13">#A8FFE8</color>       <!-- Light Mint -->
+    <color name="bucket_color_14">#A8E8FF</color>       <!-- Light Blue -->
+    <color name="bucket_color_15">#A8D8FF</color>       <!-- Sky Blue -->
+    <color name="bucket_color_16">#A8C8FF</color>       <!-- Steel Blue -->
+    <color name="bucket_color_17">#A8B8FF</color>       <!-- Indigo -->
+    <color name="bucket_color_18">#A8A8FF</color>       <!-- Violet -->
+    <color name="bucket_color_19">#A898FF</color>       <!-- Purple -->
+    <color name="bucket_color_20">#A888FF</color>       <!-- Deep Purple -->
+
     <!-- ===== TIMEFRAME BUTTON COLORS ===== -->
     <color name="btn_timeframe_1m">#5A7A9A</color>        <!-- darker light blue -->
     <color name="btn_timeframe_3m">#4A6A8A</color>        <!-- darker medium‑light blue -->
@@ -95,5 +118,4 @@
     <color name="edittext_disabled_stroke">#6A8AA0</color>
 
     <!-- ===== UTILITY ===== -->
-    <!-- (transparent is defined in light mode; not needed here unless used) -->
 </resources>
