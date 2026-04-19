@@ -5,6 +5,7 @@ import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -51,6 +52,8 @@ class SyncManager(private val context: Context) {
                 uploadAllSpendingEntries(userId)
                 uploadAllMonthSettings(userId)
                 uploadAllDailyIncomeAssignments(userId)
+                uploadAllSavingsBuckets(userId)
+                uploadAllSavingsTransactions(userId)
                 Timber.d("All data uploaded for user $userId")
             } catch (e: Exception) {
                 Timber.e(e, "Upload all data failed")
@@ -248,6 +251,50 @@ class SyncManager(private val context: Context) {
         }
     }
 
+    // --- Savings Buckets Sync ---
+    suspend fun uploadSavingsBucket(bucket: SavingsBucket, userId: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val payload = SavingsBucketPayload(
+                    id = bucket.id,
+                    budget_id = bucket.budget_id,
+                    user_id = userId,  // ✅ From AuthManager.currentUser.id
+                    name = bucket.name,
+                    type = bucket.type.name,
+                    current_amount = bucket.current_amount,
+                    target_amount = bucket.target_amount,
+                    color_hex = bucket.color_hex,
+                    is_archived = bucket.is_archived,
+                    created_at = bucket.created_at,
+                    updated_at = bucket.updated_at
+                )
+                supabase.postgrest["savings_buckets"].upsert(payload, onConflict = "id")
+            } catch (e: Exception) {
+                Timber.e(e, "uploadSavingsBucket failed, queueing")
+                // Queue for retry via PendingSync
+            }
+        }
+    }
+
+    // --- Savings Transactions Sync ---
+    suspend fun uploadSavingsTransaction(transaction: SavingsTransaction, userId: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val payload = SavingsTransactionPayload(
+                    id = transaction.id,
+                    bucket_id = transaction.bucket_id,
+                    amount = transaction.amount,
+                    date = transaction.date,
+                    type = transaction.type.name,
+                    created_at = transaction.created_at
+                )
+                supabase.postgrest["savings_transactions"].upsert(payload, onConflict = "id")
+            } catch (e: Exception) {
+                Timber.e(e, "uploadSavingsTransaction failed, queueing")
+            }
+        }
+    }
+
     /**
      * Upload a single month setting.
      */
@@ -391,6 +438,21 @@ class SyncManager(private val context: Context) {
         }
     }
 
+    suspend fun deleteSavingsBucket(bucketId: String, userId: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                supabase.postgrest["savings_buckets"].delete {
+                    filter {
+                        eq("id", bucketId)
+                        eq("user_id", userId)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "deleteSavingsBucket failed, queueing")
+            }
+        }
+    }
+
     suspend fun deleteDailyChecklistItem(itemId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
@@ -460,6 +522,8 @@ class SyncManager(private val context: Context) {
                 downloadSpendingEntries(userId)
                 downloadMonthSettings(userId)
                 downloadDailyIncomeAssignments(userId)
+                downloadSavingsBuckets(userId)
+                downloadSavingsTransactions(userId)
                 Timber.d("All data downloaded for user $userId")
             } catch (e: Exception) {
                 Timber.e(e, "Download all data failed")
@@ -516,6 +580,24 @@ class SyncManager(private val context: Context) {
         response.forEach { db.spendingEntryDao().insert(it) }
     }
 
+    private suspend fun downloadSavingsBuckets(userId: String) {
+        val response = supabase.postgrest["savings_buckets"].select(Columns.raw("*")) {
+            filter { eq("user_id", userId) }
+        }.decodeList<SavingsBucket>()
+        response.forEach { db.savingsBucketDao().insert(it) }
+    }
+
+    private suspend fun downloadSavingsTransactions(userId: String) {
+        // Get local bucket IDs to filter transactions
+        val bucketIds = db.savingsBucketDao().getAllBuckets().first().map { it.id }
+        if (bucketIds.isEmpty()) return
+
+        val response = supabase.postgrest["savings_transactions"].select(Columns.raw("*")) {
+            filter { "bucket_id.in.(${bucketIds.joinToString(",")})" }
+        }.decodeList<SavingsTransaction>()
+        response.forEach { db.savingsTransactionDao().insert(it) }
+    }
+
     private suspend fun downloadMonthSettings(userId: String) {
         val response = supabase.postgrest["month_settings"].select(Columns.raw("*")) {
             filter { eq("user_id", userId) }
@@ -560,6 +642,14 @@ class SyncManager(private val context: Context) {
         db.spendingEntryDao().getAllSpendingEntriesSync().forEach { uploadSpendingEntry(it, userId) }
     }
 
+    private suspend fun uploadAllSavingsBuckets(userId: String) {
+        db.savingsBucketDao().getAllBucketsSync().forEach { uploadSavingsBucket(it, userId) }
+    }
+
+    private suspend fun uploadAllSavingsTransactions(userId: String) {
+        db.savingsTransactionDao().getAllTransactionsSync().forEach { uploadSavingsTransaction(it, userId) }
+    }
+
     private suspend fun uploadAllMonthSettings(userId: String) {
         db.monthSettingsDao().getAllMonthSettingsSync().forEach { uploadMonthSetting(it, userId) }
     }
@@ -580,6 +670,8 @@ class SyncManager(private val context: Context) {
         db.incomeDao().deleteAll()
         db.allocationDao().deleteAll()
         db.monthSettingsDao().deleteAll()
+        db.savingsBucketDao().deleteAll()
+        db.savingsTransactionDao().deleteAll()
         db.budgetDao().deleteAll()
     }
 }

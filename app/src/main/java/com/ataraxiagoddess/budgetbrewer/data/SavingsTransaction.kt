@@ -2,41 +2,42 @@ package com.ataraxiagoddess.budgetbrewer.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.ForeignKey
-import androidx.room.ColumnInfo
+import androidx.room.Index
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import java.util.UUID
 
+@Serializable
 @Entity(
     tableName = "savings_transactions",
-    foreignKeys = [
-        ForeignKey(
-            entity = SavingsBucket::class,
-            parentColumns = ["id"],
-            childColumns = ["bucketId"],
-            onDelete = ForeignKey.CASCADE
-        )
+    indices = [
+        Index(value = ["bucket_id"]),  // ✅ Speeds up getTransactionsByBucket()
+        Index(value = ["date"]),       // ✅ Speeds up date-based queries
+        Index(value = ["type"])        // ✅ Speeds up type filtering
     ]
 )
 data class SavingsTransaction(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long = 0,
-    
-    @ColumnInfo(name = "bucket_id")
-    val bucketId: Long,
-    
-    @ColumnInfo(name = "amount")
+    @PrimaryKey
+    @SerialName("id")
+    val id: String = UUID.randomUUID().toString(),
+
+    @SerialName("bucket_id")
+    val bucket_id: String,
+
+    @SerialName("amount")
     val amount: Double,
-    
-    @ColumnInfo(name = "date")
+
+    @SerialName("date")
     val date: Long,
-    
-    @ColumnInfo(name = "type")
+
+    @SerialName("type")
     val type: SavingsTransactionType,
-    
-    @ColumnInfo(name = "description")
-    val description: String
+
+    @SerialName("created_at")
+    val created_at: Long = System.currentTimeMillis()
 )
 
+@Serializable
 enum class SavingsTransactionType {
     ALLOCATION,
     DEDUCTION,

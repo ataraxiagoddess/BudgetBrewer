@@ -84,6 +84,30 @@ class SyncWorker(
             }
         }
 
+        suspend fun processSavingsBucket(pending: PendingSync) {
+            when (pending.operation) {
+                "INSERT", "UPDATE" -> {
+                    val bucket = db.savingsBucketDao().getBucketById(pending.recordId) ?: return
+                    syncManager.uploadSavingsBucket(bucket, pending.userId)
+                }
+                "DELETE" -> {
+                    syncManager.deleteSavingsBucket(pending.recordId, pending.userId)
+                }
+            }
+        }
+
+        suspend fun processSavingsTransaction(pending: PendingSync) {
+            when (pending.operation) {
+                "INSERT", "UPDATE" -> {
+                    val transaction = db.savingsTransactionDao().getTransactionById(pending.recordId) ?: return
+                    syncManager.uploadSavingsTransaction(transaction, pending.userId)
+                }
+                "DELETE" -> {
+                    // Transactions are rarely deleted directly; handle if needed
+                }
+            }
+        }
+
         suspend fun processDailyChecklist(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {

@@ -73,6 +73,29 @@ class BudgetRepository(private val db: AppDatabase) {
         return db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf { it.amount }
     }
 
+    // --- Savings Buckets ---
+    fun getSavingsBucketsForBudget(budgetId: String): Flow<List<SavingsBucket>> =
+        db.savingsBucketDao().getBucketsForBudget(budgetId)
+
+    suspend fun insertSavingsBucket(bucket: SavingsBucket): String =
+        db.savingsBucketDao().insert(bucket)
+
+    suspend fun updateSavingsBucket(bucket: SavingsBucket) =
+        db.savingsBucketDao().update(bucket)
+
+    suspend fun deleteSavingsBucket(bucket: SavingsBucket) {
+        // Manual cascade delete of transactions first
+        db.savingsTransactionDao().deleteByBucketId(bucket.id)
+        db.savingsBucketDao().delete(bucket)
+    }
+
+    // --- Savings Transactions ---
+    fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> =
+        db.savingsTransactionDao().getTransactionsByBucket(bucketId)
+
+    suspend fun insertSavingsTransaction(transaction: SavingsTransaction): String =
+        db.savingsTransactionDao().insert(transaction)
+
     // --- Month Settings ---
     suspend fun getMonthEndAmount(budgetId: String): Double {
         // Fetch all necessary data

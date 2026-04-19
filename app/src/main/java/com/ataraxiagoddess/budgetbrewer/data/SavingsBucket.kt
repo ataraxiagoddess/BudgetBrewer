@@ -2,33 +2,53 @@ package com.ataraxiagoddess.budgetbrewer.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.ColumnInfo
+import androidx.room.Index
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import java.util.UUID
 
-@Entity(tableName = "savings_buckets")
+@Serializable
+@Entity(
+    tableName = "savings_buckets",
+    indices = [
+        Index(value = ["budget_id"]),   // ✅ Only budget_id is needed for Room scoping
+        Index(value = ["type"])         // ✅ Speeds up filtering by Goal/Growth
+    ]
+)
 data class SavingsBucket(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    val id: Long = 0,
-    
-    @ColumnInfo(name = "name")
+    @PrimaryKey
+    @SerialName("id")
+    val id: String = UUID.randomUUID().toString(),
+
+    @SerialName("budget_id")
+    val budget_id: String,
+
+    @SerialName("name")
     val name: String,
-    
-    @ColumnInfo(name = "type")
+
+    @SerialName("type")
     val type: SavingsBucketType,
-    
-    @ColumnInfo(name = "current_amount")
-    val currentAmount: Double = 0.0,
-    
-    @ColumnInfo(name = "target_amount")
-    val targetAmount: Double = 0.0,
-    
-    @ColumnInfo(name = "color")
-    val color: String,
-    
-    @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+
+    @SerialName("current_amount")
+    val current_amount: Double = 0.0,
+
+    @SerialName("target_amount")
+    val target_amount: Double?,
+
+    @SerialName("color_hex")
+    val color_hex: String = "#78b4e7",
+
+    @SerialName("is_archived")
+    val is_archived: Boolean = false,
+
+    @SerialName("created_at")
+    val created_at: Long = System.currentTimeMillis(),
+
+    @SerialName("updated_at")
+    val updated_at: Long = System.currentTimeMillis()
 )
 
+@Serializable
 enum class SavingsBucketType {
     GOAL,
     GROWTH

@@ -111,3 +111,28 @@ data class DailyIncomeAssignmentPayload(
     val updated_at: Long,
     val user_id: String
 )
+
+@Serializable
+data class SavingsBucketPayload(
+    val id: String,
+    val budget_id: String,
+    val user_id: String,
+    val name: String,
+    val type: String,
+    val current_amount: Double,
+    val target_amount: Double?,
+    val color_hex: String,
+    val is_archived: Boolean,
+    val created_at: Long,
+    val updated_at: Long
+)
+
+@Serializable
+data class SavingsTransactionPayload(
+    val id: String,
+    val bucket_id: String,
+    val amount: Double,
+    val date: Long,
+    val type: String,
+    val created_at: Long
+)
