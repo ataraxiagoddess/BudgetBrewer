@@ -156,6 +156,8 @@ class SyncWorker(
                     "daily_checklist" -> processDailyChecklist(pending)
                     "month_settings" -> processMonthSettings(pending)
                     "daily_income_assignments" -> processDailyIncomeAssignment(pending)
+                    "savings_buckets" -> processSavingsBucket(pending)
+                    "savings_transactions" -> processSavingsTransaction(pending)
                 }
                 // On success, remove from queue
                 db.pendingSyncDao().delete(pending)

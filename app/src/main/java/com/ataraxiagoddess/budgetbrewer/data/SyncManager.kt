@@ -271,7 +271,7 @@ class SyncManager(private val context: Context) {
                 supabase.postgrest["savings_buckets"].upsert(payload, onConflict = "id")
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsBucket failed, queueing")
-                // Queue for retry via PendingSync
+                queueOperation("INSERT", "savings_buckets", bucket.id, userId)
             }
         }
     }
@@ -291,6 +291,7 @@ class SyncManager(private val context: Context) {
                 supabase.postgrest["savings_transactions"].upsert(payload, onConflict = "id")
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsTransaction failed, queueing")
+                queueOperation("INSERT", "savings_transactions", transaction.id, userId)
             }
         }
     }
@@ -670,8 +671,8 @@ class SyncManager(private val context: Context) {
         db.incomeDao().deleteAll()
         db.allocationDao().deleteAll()
         db.monthSettingsDao().deleteAll()
-        db.savingsBucketDao().deleteAll()
         db.savingsTransactionDao().deleteAll()
+        db.savingsBucketDao().deleteAll()
         db.budgetDao().deleteAll()
     }
 }
