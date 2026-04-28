@@ -19,6 +19,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
+import com.ataraxiagoddess.budgetbrewer.ui.savings.SavingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.GridSpacingItemDecoration
@@ -129,6 +130,11 @@ class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
 
     override fun navigateToFinances() {
         val intent = Intent(this, IncomeExpensesActivity::class.java)
+        startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+    }
+
+    override fun navigateToSavings() {
+        val intent = Intent(this, SavingsActivity::class.java)
         startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
     }
 

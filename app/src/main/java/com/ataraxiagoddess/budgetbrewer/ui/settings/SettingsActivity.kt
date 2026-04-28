@@ -47,6 +47,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity
 import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
+import com.ataraxiagoddess.budgetbrewer.ui.savings.SavingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
 import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
@@ -116,6 +117,7 @@ class SettingsActivity : BaseActivity() {
             monthSelectorBinding.root.visibility = View.GONE
             navBinding.navButtonHome.visibility = View.VISIBLE
             navBinding.navButtonFinances.visibility = View.VISIBLE
+            navBinding.navButtonSavings?.visibility = View.VISIBLE
             navBinding.navButtonExpenses.visibility = View.VISIBLE
             navBinding.navButtonSpending.visibility = View.VISIBLE
             navBinding.navButtonCalendar.visibility = View.VISIBLE
@@ -528,6 +530,8 @@ class SettingsActivity : BaseActivity() {
                 SupabaseClient.client.postgrest["incomes"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["allocations"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["month_settings"].delete { filter { eq("user_id", userId) } }
+                SupabaseClient.client.postgrest["savings_transactions"].delete { filter { eq("user_id", userId) } }
+                SupabaseClient.client.postgrest["savings_buckets"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["budgets"].delete { filter { eq("user_id", userId) } }
 
                 // 3. Delete the user's auth account via Edge Function
@@ -684,6 +688,11 @@ class SettingsActivity : BaseActivity() {
     override fun navigateToFinances() {
         startActivity(Intent(this, IncomeExpensesActivity::class.java),
             ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+    }
+
+    override fun navigateToSavings() {
+        val intent = Intent(this, SavingsActivity::class.java)
+        startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
     }
 
     override fun navigateToExpenses() {

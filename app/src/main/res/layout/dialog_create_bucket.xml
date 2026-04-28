@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_bucket"
+        style="@style/TextAppearance.BudgetBrewer.DialogTitle"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Bucket Name -->
+    <EditText
+        android:id="@+id/editTextBucketName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/bucket_name"
+        android:inputType="text"
+        android:background="@drawable/edittext_background"
+        android:paddingHorizontal="8dp"
+        android:textColor="@color/text_on_dialog"
+        android:textColorHint="@color/text_disabled"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Goal vs Growth Radio Group -->
+    <RadioGroup
+        android:id="@+id/radioGroupType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <RadioButton
+            android:id="@+id/radioGoal"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/goal"
+            android:checked="true"
+            android:textColor="@color/text_on_dialog"
+            android:buttonTint="@color/text_on_dialog"
+            style="@style/TextAppearance.BudgetBrewer.Body" />
+
+        <RadioButton
+            android:id="@+id/radioGrowth"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/growth"
+            android:textColor="@color/text_on_dialog"
+            android:buttonTint="@color/text_on_dialog"
+            style="@style/TextAppearance.BudgetBrewer.Body" />
+    </RadioGroup>
+
+    <!-- Target Amount (visible when Goal selected) -->
+    <EditText
+        android:id="@+id/editTextTargetAmount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/target_amount"
+        android:inputType="numberDecimal"
+        android:background="@drawable/edittext_background"
+        android:paddingHorizontal="8dp"
+        android:textColor="@color/text_on_dialog"
+        android:textColorHint="@color/text_disabled"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Color Picker Grid -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_color"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="8dp" />
+
+    <GridView
+        android:id="@+id/gridViewColors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp"
+        android:listSelector="@android:color/transparent"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancel"
+            style="@style/Widget.BudgetBrewer.Button.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCreate"
+            style="@style/Widget.BudgetBrewer.Button.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/create_bucket" />
+    </LinearLayout>
+</LinearLayout>

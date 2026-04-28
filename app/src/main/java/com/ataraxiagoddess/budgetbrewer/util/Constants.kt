@@ -8,6 +8,7 @@ object Constants {
     const val MAX_TIPS = 6
     const val MAX_CATEGORIES = 20
     const val MAX_EXPENSES_PER_CATEGORY = 20
+    const val MAX_SAVINGS_BUCKETS = 20
 
     object DateFormats {
         val FULL = SimpleDateFormat("EEE, MMM d, yyyy", Locale.US)

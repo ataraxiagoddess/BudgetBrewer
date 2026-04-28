@@ -1,5 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.navigation
 
 enum class NavDestination {
-    HOME, FINANCES, EXPENSES, SPENDING, CALENDAR, SETTINGS
+    HOME, FINANCES, SAVINGS, EXPENSES, SPENDING, CALENDAR, SETTINGS
 }

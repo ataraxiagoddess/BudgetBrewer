@@ -51,6 +51,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
+import com.ataraxiagoddess.budgetbrewer.ui.savings.SavingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.Constants
@@ -298,6 +299,11 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
     override fun navigateToHome() {
         val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+    }
+
+    override fun navigateToSavings() {
+        val intent = Intent(this, SavingsActivity::class.java)
         startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
     }
 

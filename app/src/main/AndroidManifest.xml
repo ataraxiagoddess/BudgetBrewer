@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.finances.IncomeExpensesActivity" />
+        <activity android:name=".ui.savings.SavingsActivity" />
         <activity android:name=".ui.expenses.MonthlyExpenseListActivity" />
         <activity android:name=".ui.spending.SpendingActivity" />
         <activity android:name=".ui.calendar.MonthlyCalendarActivity" />

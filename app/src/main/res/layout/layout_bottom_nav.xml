@@ -44,6 +44,16 @@
                 android:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/navButtonSavings"
+                style="@style/Widget.BudgetBrewer.NavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_nav_button_savings"
+                android:text="@string/nav_savings"
+                android:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonExpenses"
                 style="@style/Widget.BudgetBrewer.NavButton"
                 android:layout_width="wrap_content"

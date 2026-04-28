@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SavingsTransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(transaction: SavingsTransaction): String  // ✅ Return String ID
+    suspend fun insert(transaction: SavingsTransaction)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(transactions: List<SavingsTransaction>): List<String>
+    suspend fun insert(transactions: List<SavingsTransaction>)
 
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId ORDER BY date DESC")
     fun getTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>>  // ✅ String parameter

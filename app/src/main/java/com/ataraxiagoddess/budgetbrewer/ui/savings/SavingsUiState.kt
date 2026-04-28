@@ -1,0 +1,13 @@
+package com.ataraxiagoddess.budgetbrewer.ui.savings
+
+import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
+
+sealed class SavingsUiState {
+    object Loading : SavingsUiState()
+    data class Success(
+        val buckets: List<SavingsBucket>,
+        val isEmpty: Boolean,
+        val maxBucketsReached: Boolean = false
+    ) : SavingsUiState()
+    data class Error(val message: String) : SavingsUiState()
+}

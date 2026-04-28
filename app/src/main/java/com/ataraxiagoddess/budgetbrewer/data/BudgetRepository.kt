@@ -77,7 +77,7 @@ class BudgetRepository(private val db: AppDatabase) {
     fun getSavingsBucketsForBudget(budgetId: String): Flow<List<SavingsBucket>> =
         db.savingsBucketDao().getBucketsForBudget(budgetId)
 
-    suspend fun insertSavingsBucket(bucket: SavingsBucket): String =
+    suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)
 
     suspend fun updateSavingsBucket(bucket: SavingsBucket) =
@@ -93,7 +93,7 @@ class BudgetRepository(private val db: AppDatabase) {
     fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> =
         db.savingsTransactionDao().getTransactionsByBucket(bucketId)
 
-    suspend fun insertSavingsTransaction(transaction: SavingsTransaction): String =
+    suspend fun insertSavingsTransaction(transaction: SavingsTransaction) =
         db.savingsTransactionDao().insert(transaction)
 
     // --- Month Settings ---

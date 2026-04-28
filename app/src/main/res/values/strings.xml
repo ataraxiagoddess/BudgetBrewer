@@ -91,10 +91,25 @@
     <!-- ==================== NAVIGATION ==================== -->
     <string name="nav_home">Home</string>
     <string name="nav_finances">Finances</string>
+    <string name="nav_savings">Savings</string>
     <string name="nav_expenses">Expenses</string>
     <string name="nav_spending">Spending</string>
     <string name="nav_calendar">Calendar</string>
     <string name="settings">Settings</string>
+
+    <!-- ==================== SAVINGS PAGE ==================== -->
+    <string name="savings_bucket_title">Savings Buckets</string>
+    <string name="empty_savings_title">No Savings Buckets Yet</string>
+    <string name="empty_savings_message">Start saving for your goals! Tap the button below to create your first bucket.</string>
+    <string name="add_bucket">Add Bucket</string>
+    <string name="create_bucket">Create Bucket</string>
+    <string name="bucket_name">Bucket Name</string>
+    <string name="bucket_name_required">Please enter a bucket name</string>
+    <string name="goal">Goal</string>
+    <string name="growth">Growth</string>
+    <string name="target_amount">Target Amount</string>
+    <string name="select_color">Select Color</string>
+    <string name="bucket_added">Bucket added</string>
 
     <!-- ==================== EXPENSES PAGE ==================== -->
     <string name="total_expenses_label">Total Expenses</string>

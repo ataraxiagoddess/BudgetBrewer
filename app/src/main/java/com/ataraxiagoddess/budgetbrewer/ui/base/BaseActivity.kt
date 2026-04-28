@@ -216,6 +216,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             when (destination) {
                                 NavDestination.HOME -> navigateToHome()
                                 NavDestination.FINANCES -> navigateToFinances()
+                                NavDestination.SAVINGS -> navigateToSavings()
                                 NavDestination.EXPENSES -> navigateToExpenses()
                                 NavDestination.SPENDING -> navigateToSpending()
                                 NavDestination.CALENDAR -> navigateToCalendar()
@@ -240,6 +241,13 @@ abstract class BaseActivity : AppCompatActivity() {
                     R.drawable.bg_nav_button_finances
                 )
                 buttonBar.addView(railButtons[NavDestination.FINANCES])
+
+                railButtons[NavDestination.SAVINGS] = createNavButton(
+                    NavDestination.SAVINGS,
+                    R.drawable.ic_savings,
+                    R.drawable.bg_nav_button_savings
+                )
+                buttonBar.addView(railButtons[NavDestination.SAVINGS])
 
                 railButtons[NavDestination.EXPENSES] = createNavButton(
                     NavDestination.EXPENSES,
@@ -349,6 +357,7 @@ abstract class BaseActivity : AppCompatActivity() {
             when (destination) {
                 NavDestination.HOME -> navigateToHome()
                 NavDestination.FINANCES -> navigateToFinances()
+                NavDestination.SAVINGS -> navigateToSavings()
                 NavDestination.EXPENSES -> navigateToExpenses()
                 NavDestination.SPENDING -> navigateToSpending()
                 NavDestination.CALENDAR -> navigateToCalendar()
@@ -575,6 +584,7 @@ abstract class BaseActivity : AppCompatActivity() {
     // ----------------------------------------------------------------------
     protected open fun navigateToHome() { }
     protected open fun navigateToFinances() { }
+    protected open fun navigateToSavings() { }
     protected open fun navigateToExpenses() { }
     protected open fun navigateToSpending() { }
     protected open fun navigateToCalendar() { }

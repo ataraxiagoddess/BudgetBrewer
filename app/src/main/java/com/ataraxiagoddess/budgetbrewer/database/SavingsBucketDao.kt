@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SavingsBucketDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(bucket: SavingsBucket): String  // ✅ Return String ID
+    suspend fun insert(bucket: SavingsBucket)
 
     @Update
     suspend fun update(bucket: SavingsBucket)

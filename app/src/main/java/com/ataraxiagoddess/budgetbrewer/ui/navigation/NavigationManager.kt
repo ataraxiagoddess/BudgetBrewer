@@ -14,6 +14,7 @@ class NavigationManager(
     private val buttonMap = mapOf(
         binding.navButtonHome to NavDestination.HOME,
         binding.navButtonFinances to NavDestination.FINANCES,
+        binding.navButtonSavings to NavDestination.SAVINGS,
         binding.navButtonExpenses to NavDestination.EXPENSES,
         binding.navButtonSpending to NavDestination.SPENDING,
         binding.navButtonCalendar to NavDestination.CALENDAR,
@@ -26,7 +27,7 @@ class NavigationManager(
 
     private fun setupClickListeners() {
         buttonMap.forEach { (button, destination) ->
-            button.setOnClickListener {
+            button?.setOnClickListener {
                 Timber.d("Button clicked: ${button.text} (destination=$destination, current=$currentDestination)")
                 if (currentDestination != destination) {
                     Timber.d("Navigating to $destination")
@@ -42,8 +43,8 @@ class NavigationManager(
         Timber.d("updateForDestination: $destination (was $currentDestination)")
         currentDestination = destination
         buttonMap.forEach { (button, dest) ->
-            button.visibility = View.VISIBLE
-            Timber.d("Button ${button.text} visibility: VISIBLE")
+            button?.visibility = View.VISIBLE
+            Timber.d("Button ${button?.text} visibility: VISIBLE")
         }
     }
 }
