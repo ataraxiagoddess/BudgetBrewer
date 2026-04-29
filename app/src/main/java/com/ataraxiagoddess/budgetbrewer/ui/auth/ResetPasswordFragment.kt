@@ -126,7 +126,7 @@ class ResetPasswordFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
                 binding.btnResend.isEnabled = true
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.reset_code_sent_toast))
+                (activity as? AuthActivity)?.showSnackbar(getString(R.string.reset_code_sent_snackbar))
             } catch (e: Exception) {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true

@@ -1,51 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="12dp"
-    app:contentPadding="16dp"
-    app:strokeWidth="0dp"
-    android:background="@drawable/category_background">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/category_background"
+    android:padding="8dp"
+    android:layout_marginBottom="2dp"
+    android:elevation="2dp">
+
+    <!-- Jar area (80dp x 80dp) -->
+    <FrameLayout
+        android:id="@+id/jarContainer"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="12dp">
+
+        <!-- Liquid view – placed behind the jar outline, anchored to bottom -->
+        <ImageView
+            android:id="@+id/imageLiquid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/jar_liquid_clip"
+            android:scaleType="fitXY"
+            android:contentDescription="@null" />
+
+        <!-- Jar outline (ic_jar_outline) – transparent interior shows liquid -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_jar_outline"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/savings_title" />
+    </FrameLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:orientation="vertical"
         android:gravity="center_vertical">
 
-        <!-- Color indicator circle (programmatic tint) -->
-        <View
-            android:id="@+id/viewColorIndicator"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_color_circle" />
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/textViewBucketName"
+            style="@style/TextAppearance.BudgetBrewer.Subheader"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textViewBucketName"
-                style="@style/TextAppearance.BudgetBrewer.Subheader"
-                android:textColor="@color/text_on_container" />
-
-            <TextView
-                android:id="@+id/textViewBucketType"
-                style="@style/TextAppearance.BudgetBrewer.BodySmall"
-                android:textColor="@color/text_on_container"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
+            android:textColor="@color/text_on_container" />
 
         <TextView
-            android:id="@+id/textViewTargetAmount"
-            style="@style/TextAppearance.BudgetBrewer.Subheader"
+            android:id="@+id/textViewBucketType"
+            style="@style/TextAppearance.BudgetBrewer.BodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="@color/text_on_container"
-            android:visibility="gone" />
+            android:layout_marginTop="4dp" />
+
+        <!-- Goal exceeded label (hidden by default) -->
+        <TextView
+            android:id="@+id/textViewGoalExceeded"
+            style="@style/TextAppearance.BudgetBrewer.BodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/net_negative"
+            android:visibility="gone"
+            android:text="@string/goal_exceeded"
+            android:layout_marginTop="4dp" />
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/textViewTargetAmount"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_on_container"
+        android:visibility="gone" />
+</LinearLayout>

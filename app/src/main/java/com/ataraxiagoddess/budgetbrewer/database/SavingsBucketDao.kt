@@ -28,13 +28,6 @@ interface SavingsBucketDao {
     @Query("SELECT * FROM savings_buckets WHERE name LIKE '%' || :searchTerm || '%'")
     fun searchBuckets(searchTerm: String): Flow<List<SavingsBucket>>
 
-    // ✅ Budget-scoped queries (matching IncomeDao pattern)
-    @Query("SELECT * FROM savings_buckets WHERE budget_id = :budgetId ORDER BY created_at DESC")
-    fun getBucketsForBudget(budgetId: String): Flow<List<SavingsBucket>>
-
-    @Query("SELECT * FROM savings_buckets WHERE budget_id = :budgetId AND type = :type ORDER BY created_at DESC")
-    fun getBucketsForBudgetByType(budgetId: String, type: SavingsBucketType): Flow<List<SavingsBucket>>
-
     @Query("DELETE FROM savings_buckets")
     suspend fun deleteAll()
 

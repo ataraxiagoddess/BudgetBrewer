@@ -257,7 +257,6 @@ class SyncManager(private val context: Context) {
             try {
                 val payload = SavingsBucketPayload(
                     id = bucket.id,
-                    budget_id = bucket.budget_id,
                     user_id = userId,  // ✅ From AuthManager.currentUser.id
                     name = bucket.name,
                     type = bucket.type.name,

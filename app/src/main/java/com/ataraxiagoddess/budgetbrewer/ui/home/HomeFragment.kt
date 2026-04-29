@@ -46,6 +46,11 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private lateinit var repository: BudgetRepository
 
+    private var snackbarCallback: ((String) -> Unit)? = null
+    fun setSnackbarCallback(callback: (String) -> Unit) {
+        snackbarCallback = callback
+    }
+
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(repository, requireContext())
     }
@@ -216,9 +221,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
                     }
                     is HomeUiState.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        Snackbar.make(binding.root,
-                            getString(R.string.error_loading_charts),
-                            Snackbar.LENGTH_LONG).show()
+                        snackbarCallback?.invoke(getString(R.string.error_loading_charts))
                     }
                 }
             }

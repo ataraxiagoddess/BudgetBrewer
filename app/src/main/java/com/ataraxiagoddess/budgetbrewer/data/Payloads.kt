@@ -115,7 +115,6 @@ data class DailyIncomeAssignmentPayload(
 @Serializable
 data class SavingsBucketPayload(
     val id: String,
-    val budget_id: String,
     val user_id: String,
     val name: String,
     val type: String,

@@ -74,8 +74,8 @@ class BudgetRepository(private val db: AppDatabase) {
     }
 
     // --- Savings Buckets ---
-    fun getSavingsBucketsForBudget(budgetId: String): Flow<List<SavingsBucket>> =
-        db.savingsBucketDao().getBucketsForBudget(budgetId)
+    fun getSavingsBuckets(): Flow<List<SavingsBucket>> =
+        db.savingsBucketDao().getAllBuckets()
 
     suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)

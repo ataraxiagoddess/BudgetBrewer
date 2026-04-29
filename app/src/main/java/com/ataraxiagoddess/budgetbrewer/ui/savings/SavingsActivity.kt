@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
+import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivitySavingsBinding
@@ -40,10 +41,9 @@ class SavingsActivity : BaseActivity() {
         setContentView(binding.root)
 
         // Create ViewModel with SavedStateHandle support
-        val factory = SavingsViewModelFactory(
-            owner = this,
-            database = AppDatabase.getDatabase(this)
-        )
+        val db = AppDatabase.getDatabase(this)
+        val repository = BudgetRepository(db)
+        val factory = SavingsViewModelFactory(repository, this)
         viewModel = ViewModelProvider(this, factory)[SavingsViewModel::class.java]
 
         // Set up RecyclerView
@@ -109,9 +109,10 @@ class SavingsActivity : BaseActivity() {
     }
 
     private fun showCreateBucketDialog() {
-        val dialog = CreateBucketDialogFragment { bucket ->
-            viewModel.createBucket(bucket)
-        }
+        val dialog = CreateBucketDialogFragment(
+            onBucketCreated = { bucket -> viewModel.createBucket(bucket) },
+            onShowSnackbar = { message -> this.showSnackbar(message) }
+        )
         dialog.show(supportFragmentManager, "CreateBucketDialog")
     }
 

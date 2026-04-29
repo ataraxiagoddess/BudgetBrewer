@@ -110,6 +110,7 @@
     <string name="target_amount">Target Amount</string>
     <string name="select_color">Select Color</string>
     <string name="bucket_added">Bucket added</string>
+    <string name="goal_exceeded">GOAL EXCEEDED</string>
 
     <!-- ==================== EXPENSES PAGE ==================== -->
     <string name="total_expenses_label">Total Expenses</string>
@@ -364,7 +365,7 @@
     <string name="new_password">New password</string>
     <string name="reset_password">Reset password</string>
     <string name="reset_code_sent">A reset code has been sent to %s.\nPlease enter it below and choose a new password.</string>
-    <string name="reset_code_sent_toast">Reset code sent! Check your email.</string>
+    <string name="reset_code_sent_snackbar">Reset code sent! Check your email.</string>
     <string name="reset_request_failed">Failed to send reset code: %s</string>
     <string name="password_reset_success">Password reset successfully! You can now sign in.</string>
     <string name="password_same_as_old">New password must be different from old password</string>

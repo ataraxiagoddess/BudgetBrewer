@@ -51,8 +51,12 @@ class MainActivity : BaseActivity() {
         }
 
         if (savedInstanceState == null) {
+            val homeFragment = HomeFragment()
+            homeFragment.setSnackbarCallback { message ->
+                showSnackbar(message)
+            }
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment())
+                .replace(R.id.fragment_container, homeFragment)
                 .commit()
         }
     }

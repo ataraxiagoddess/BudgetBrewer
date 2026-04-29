@@ -10,8 +10,7 @@ import java.util.UUID
 @Serializable
 @Entity(
     tableName = "savings_buckets",
-    indices = [
-        Index(value = ["budget_id"]),   // ✅ Only budget_id is needed for Room scoping
+    indices = [  // ✅ Only budget_id is needed for Room scoping
         Index(value = ["type"])         // ✅ Speeds up filtering by Goal/Growth
     ]
 )
@@ -19,9 +18,6 @@ data class SavingsBucket(
     @PrimaryKey
     @SerialName("id")
     val id: String = UUID.randomUUID().toString(),
-
-    @SerialName("budget_id")
-    val budget_id: String,
 
     @SerialName("name")
     val name: String,

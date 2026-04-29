@@ -1,12 +1,10 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,34 +25,53 @@ class SavingsBucketAdapter : ListAdapter<SavingsBucket, SavingsBucketAdapter.Vie
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(private val binding: ItemSavingsBucketBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: ItemSavingsBucketBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bucket: SavingsBucket) {
             binding.textViewBucketName.text = bucket.name
             binding.textViewBucketType.text = if (bucket.type == SavingsBucketType.GOAL) "Goal" else "Growth"
 
-            // Set target amount visibility
-            if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
+            // --- Liquid fill logic ---
+            val liquidColor = parseColor(bucket.color_hex)
+            val isGoal = bucket.type == SavingsBucketType.GOAL
+            val target = bucket.target_amount ?: 0.0
+            val current = bucket.current_amount
+
+            val fillFraction: Float
+            if (isGoal) {
+                fillFraction = if (target > 0) (current / target).toFloat().coerceIn(0f, 1f) else 0f
+                // Show "GOAL EXCEEDED" if current > target
+                binding.textViewGoalExceeded.visibility = if (current > target && target > 0) View.VISIBLE else View.GONE
+            } else { // Growth
+                fillFraction = if (current > 0) 0.5f else 0f
+                binding.textViewGoalExceeded.visibility = View.GONE
+            }
+
+            // Apply tint and clip level to the liquid drawable
+            val liquidDrawable = binding.imageLiquid.drawable
+            liquidDrawable.mutate()
+            liquidDrawable.setTint(liquidColor)
+
+            // Clip level: 0 = empty, 10000 = full
+            val level = (fillFraction * 10000).toInt().coerceIn(0, 10000)
+            liquidDrawable.level = level
+
+            // Update target amount display for goal buckets
+            if (isGoal && bucket.target_amount != null) {
                 binding.textViewTargetAmount.visibility = View.VISIBLE
-                binding.textViewTargetAmount.text = String.format("$%.2f", bucket.target_amount)
+                binding.textViewTargetAmount.text = "$${String.format("%.2f", bucket.target_amount)}"
             } else {
                 binding.textViewTargetAmount.visibility = View.GONE
             }
+        }
 
-            // Apply color from hex string
-            val color = parseColor(bucket.color_hex)
-            (binding.viewColorIndicator.background as? GradientDrawable)?.setColor(color)
-                ?: binding.viewColorIndicator.setBackgroundColor(color)
+        private fun parseColor(hex: String): Int {
+            return try {
+                hex.toColorInt()
+            } catch (e: Exception) {
+                "#78b4e7".toColorInt() // fallback to default blue
+            }
         }
     }
-
-    private fun parseColor(hex: String?): Int {
-        return try {
-            (hex ?: "#FF6B6B").toColorInt()
-        } catch (e: Exception) {
-            "#FF6B6B".toColorInt() // fallback
-        }
-    }
-
 
     object DiffCallback : DiffUtil.ItemCallback<SavingsBucket>() {
         override fun areItemsTheSame(oldItem: SavingsBucket, oldItem2: SavingsBucket): Boolean {

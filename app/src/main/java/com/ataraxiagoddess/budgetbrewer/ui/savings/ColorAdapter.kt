@@ -5,38 +5,39 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.ataraxiagoddess.budgetbrewer.R
 
 class ColorAdapter(
     private val context: Context,
-    private val colors: List<Int>
-) : BaseAdapter() {
+    private val colors: List<Int>,
+    private val onItemClicked: (Int) -> Unit
+) : RecyclerView.Adapter<ColorAdapter.ViewHolder>() {
 
     var selectedPosition: Int = 0
 
-    override fun getCount(): Int = colors.size
-    override fun getItem(position: Int): Int = colors[position]
-    override fun getItemId(position: Int): Long = position.toLong()
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val swatch: View = itemView.findViewById(R.id.swatchImage)
+        val border: View = itemView.findViewById(R.id.swatchBorder)
+    }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_color_swatch, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_color_swatch, parent, false)
+        return ViewHolder(view)
+    }
 
-        val swatch: View = view.findViewById(R.id.swatchImage)
-        val border: View = view.findViewById(R.id.swatchBorder)
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val colorInt = ContextCompat.getColor(context, colors[position])
-
-        // Create a circular drawable with the selected color
         val circle = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             setColor(colorInt)
         }
-        swatch.background = circle
-
-        border.visibility = if (position == selectedPosition) View.VISIBLE else View.GONE
-
-        return view
+        holder.swatch.background = circle
+        holder.border.visibility = if (position == selectedPosition) View.VISIBLE else View.GONE
+        holder.itemView.setOnClickListener { onItemClicked(position) }
     }
+
+    override fun getItemCount(): Int = colors.size
 }

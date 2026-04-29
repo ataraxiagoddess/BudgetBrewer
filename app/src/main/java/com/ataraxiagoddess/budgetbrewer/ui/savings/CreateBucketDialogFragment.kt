@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
@@ -16,8 +17,13 @@ import com.ataraxiagoddess.budgetbrewer.util.SavingsBucketColors
 import java.util.*
 
 class CreateBucketDialogFragment(
-    private val onBucketCreated: (SavingsBucket) -> Unit
+    private val onBucketCreated: (SavingsBucket) -> Unit,
+    private val onShowSnackbar: (String) -> Unit
 ) : DialogFragment() {
+
+    init {
+        setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
+    }
 
     private var _binding: DialogCreateBucketBinding? = null
     private val binding get() = _binding!!
@@ -25,10 +31,10 @@ class CreateBucketDialogFragment(
     private var selectedColorRes: Int = SavingsBucketColors.colors.first()
     private var bucketType: SavingsBucketType = SavingsBucketType.GOAL
 
+    private lateinit var colorAdapter: ColorAdapter
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState).apply {
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
+        return super.onCreateDialog(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -39,17 +45,26 @@ class CreateBucketDialogFragment(
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Fill 90% width and full height
+        dialog?.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Setup color grid
-        val colorAdapter = ColorAdapter(requireContext(), SavingsBucketColors.colors.toList())
-        binding.gridViewColors.adapter = colorAdapter
-        binding.gridViewColors.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        // Setup color RecyclerView with GridLayoutManager (4 columns)
+        binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)
+        colorAdapter = ColorAdapter(requireContext(), SavingsBucketColors.colors.toList()) { position ->
             selectedColorRes = SavingsBucketColors.colors[position]
             colorAdapter.selectedPosition = position
             colorAdapter.notifyDataSetChanged()
         }
+        binding.recyclerViewColors.adapter = colorAdapter
 
         // Radio group listener
         binding.radioGroupType.setOnCheckedChangeListener { _, checkedId ->
@@ -69,7 +84,7 @@ class CreateBucketDialogFragment(
         binding.buttonCreate.setOnClickListener {
             val name = binding.editTextBucketName.text.toString().trim()
             if (name.isEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.bucket_name_required), Toast.LENGTH_SHORT).show()
+                onShowSnackbar(getString(R.string.bucket_name_required))
                 return@setOnClickListener
             }
 
@@ -79,9 +94,8 @@ class CreateBucketDialogFragment(
 
             val bucket = SavingsBucket(
                 id = UUID.randomUUID().toString(),
-                budget_id = "", // will be filled by repository
                 name = name,
-                type = bucketType,           // ← use "type", not "bucket_type"
+                type = bucketType,
                 target_amount = targetAmount,
                 color_hex = colorResToHex(selectedColorRes),
                 is_archived = false,
@@ -93,20 +107,12 @@ class CreateBucketDialogFragment(
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-    }
-
     private fun colorResToHex(colorRes: Int): String {
         return try {
             val colorInt = ContextCompat.getColor(requireContext(), colorRes)
             String.format("#%06X", 0xFFFFFF and colorInt)
         } catch (e: Exception) {
-            "#FF6B6B" // fallback
+            "#FF6B6B"
         }
     }
 

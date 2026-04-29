@@ -1,30 +1,31 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.app.Application
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
-import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
+import kotlinx.coroutines.runBlocking
+import java.util.Calendar
 
+@Suppress("UNCHECKED_CAST")
 class SavingsViewModelFactory(
-    owner: SavedStateRegistryOwner,
-    private val database: AppDatabase,
-    defaultArgs: Bundle? = null
-) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    private val repository: BudgetRepository,
+    private val context: Context
+) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ): T {
-        if (modelClass.isAssignableFrom(SavingsViewModel::class.java)) {
-            val repository = BudgetRepository(database)
-            @Suppress("UNCHECKED_CAST")
-            return SavingsViewModel(repository, handle) as T
+    @SuppressLint("VisibleForTests")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val prefs = context.getSharedPreferences("budget_prefs", Context.MODE_PRIVATE)
+        val month = prefs.getInt("selected_month", Calendar.getInstance().get(Calendar.MONTH) + 1)
+        val year = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
+
+        val budgetId = runBlocking {
+            repository.getOrCreateBudgetChain(month, year)
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+
+        val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
+        return SavingsViewModel(repository, savedStateHandle, context.applicationContext) as T
     }
 }
