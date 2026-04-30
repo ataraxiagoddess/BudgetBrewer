@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.BudgetBrewer.DialogTitle"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="8dp"
+        android:text="@string/distribute" />
+
+    <TextView
+        android:id="@+id/tvBucketName"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="16dp"
+        tools:text="Bucket Name" />
+
+    <TextView
+        android:id="@+id/tvAvailablePool"
+        style="@style/TextAppearance.BudgetBrewer.BodySmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_on_dialog"
+        android:layout_marginBottom="8dp"
+        android:text="@string/available_pool_label" />
+
+    <EditText
+        android:id="@+id/etAmount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/amount_hint"
+        android:inputType="numberDecimal|numberSigned"
+        android:background="@drawable/edittext_background"
+        android:paddingHorizontal="8dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+        android:textColorHint="@color/text_disabled"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/tvError"
+        style="@style/TextAppearance.BudgetBrewer.Error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancel"
+            style="@style/Widget.BudgetBrewer.Button.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/cancel" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSave"
+            style="@style/Widget.BudgetBrewer.Button.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/save" />
+    </LinearLayout>
+</LinearLayout>

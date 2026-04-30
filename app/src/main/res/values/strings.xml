@@ -111,6 +111,20 @@
     <string name="select_color">Select Color</string>
     <string name="bucket_added">Bucket added</string>
     <string name="goal_exceeded">GOAL EXCEEDED</string>
+    <string name="error_update_bucket">Unable to update bucket</string>
+    <string name="error_delete_bucket">Error occurred while deleting bucket</string>
+    <string name="error_distribute">Error adding distribution</string>
+    <string name="distribute">Distribute</string>
+    <string name="available_pool_label">Available to allocate: $%1$.2f</string>
+    <string name="bucket_updated">Bucket updated</string>
+    <string name="bucket_deleted">Bucket deleted</string>
+    <string name="funds_distributed">Funds distributed</string>
+    <string name="delete_bucket_title">Delete Bucket</string>
+    <string name="delete_bucket_message">Permanently delete \"%1$s\" and its transactions?</string>
+    <string name="target_label">Target:</string>
+    <string name="actual_label">Actual:</string>
+    <string name="deduct">Deduct</string>
+    <string name="max_deduction_label">Max deduction: $%1$.2f</string>
 
     <!-- ==================== EXPENSES PAGE ==================== -->
     <string name="total_expenses_label">Total Expenses</string>

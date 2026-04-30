@@ -3,12 +3,16 @@ package com.ataraxiagoddess.budgetbrewer.database
 import androidx.room.*
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
+import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SavingsBucketDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bucket: SavingsBucket)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTransaction(transaction: SavingsTransaction)
 
     @Update
     suspend fun update(bucket: SavingsBucket)

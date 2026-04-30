@@ -1,79 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
+    android:orientation="vertical"
     android:background="@drawable/category_background"
     android:padding="8dp"
     android:layout_marginBottom="2dp"
-    android:elevation="2dp">
+    android:elevation="2dp"
+    android:clickable="true"
+    android:focusable="true">
 
-    <!-- Jar area (80dp x 80dp) -->
-    <FrameLayout
-        android:id="@+id/jarContainer"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="12dp">
-
-        <!-- Liquid view – placed behind the jar outline, anchored to bottom -->
-        <ImageView
-            android:id="@+id/imageLiquid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/jar_liquid_clip"
-            android:scaleType="fitXY"
-            android:contentDescription="@null" />
-
-        <!-- Jar outline (ic_jar_outline) – transparent interior shows liquid -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_jar_outline"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/savings_title" />
-    </FrameLayout>
-
+    <!-- Row 1: name + type + edit button -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:id="@+id/textViewBucketName"
-            style="@style/TextAppearance.BudgetBrewer.Subheader"
-            android:layout_width="wrap_content"
+            style="@style/TextAppearance.BudgetBrewer.Body"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_on_container" />
+            android:layout_weight="1"
+            android:textColor="@color/text_on_container"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textViewBucketType"
-            style="@style/TextAppearance.BudgetBrewer.BodySmall"
+            style="@style/TextAppearance.BudgetBrewer.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textColor="@color/text_on_container"
-            android:layout_marginTop="4dp" />
+            android:layout_marginStart="8dp" />
 
-        <!-- Goal exceeded label (hidden by default) -->
-        <TextView
-            android:id="@+id/textViewGoalExceeded"
-            style="@style/TextAppearance.BudgetBrewer.BodySmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/net_negative"
-            android:visibility="gone"
-            android:text="@string/goal_exceeded"
-            android:layout_marginTop="4dp" />
+        <ImageButton
+            android:id="@+id/btnEditBucket"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="@string/edit"
+            app:tint="@color/edit_icon_color"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewTargetAmount"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_width="wrap_content"
+    <!-- Row 2: Jar + Target/Actual (inline) -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_on_container"
-        android:visibility="gone" />
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Jar (80x80) -->
+        <FrameLayout
+            android:id="@+id/jarContainer"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="12dp">
+
+            <ImageView
+                android:id="@+id/imageLiquid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/jar_liquid_clip"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_jar_outline"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/savings_title" />
+        </FrameLayout>
+
+        <!-- Target + Actual labels -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tvTargetLabel"
+                    style="@style/TextAppearance.BudgetBrewer.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/target_label"
+                    android:textColor="@color/text_on_container"
+                    android:layout_marginEnd="4dp" />
+
+                <TextView
+                    android:id="@+id/textViewTargetAmount"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_on_container"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvActualLabel"
+                    style="@style/TextAppearance.BudgetBrewer.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/actual_label"
+                    android:textColor="@color/text_on_container"
+                    android:layout_marginEnd="4dp" />
+
+                <TextView
+                    android:id="@+id/textViewActualAmount"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_on_container" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Row 3: Action buttons (+, -, delete) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnDistribute"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_input_add"
+            android:contentDescription="@string/distribute"
+            app:tint="@color/edit_icon_color" />
+
+        <ImageButton
+            android:id="@+id/btnDeduct"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_minus"
+            android:contentDescription="@string/deduct"
+            app:tint="@color/edit_icon_color"
+            android:layout_marginStart="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnDeleteBucket"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_delete"
+            android:contentDescription="@string/delete"
+            app:tint="@color/delete_icon_color"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 </LinearLayout>

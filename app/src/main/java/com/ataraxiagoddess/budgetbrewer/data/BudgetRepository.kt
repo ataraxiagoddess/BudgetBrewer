@@ -80,6 +80,21 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)
 
+    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double, budgetId: String) {
+        val transaction = SavingsTransaction(
+            bucket_id = bucket.id,
+            amount = amount,
+            date = System.currentTimeMillis(),
+            type = if (amount >= 0) SavingsTransactionType.ALLOCATION else SavingsTransactionType.DEDUCTION
+        )
+        db.savingsTransactionDao().insert(transaction)
+
+        // Update current_amount on the bucket
+        val total = db.savingsTransactionDao().getTotalForBucket(bucket.id)
+        val updatedBucket = bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
+        db.savingsBucketDao().update(updatedBucket)
+    }
+
     suspend fun updateSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().update(bucket)
 

@@ -2,6 +2,10 @@ package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 
+data class DistributeRequest(
+    val bucket: SavingsBucket,
+    val availablePool: Double
+)
 sealed class SavingsUiState {
     object Loading : SavingsUiState()
     data class Success(

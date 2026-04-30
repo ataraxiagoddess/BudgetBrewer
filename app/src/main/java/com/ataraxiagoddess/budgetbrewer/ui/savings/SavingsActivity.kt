@@ -16,6 +16,7 @@ import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivitySavingsBinding
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity
+import com.ataraxiagoddess.budgetbrewer.ui.base.showBudgetBrewerDialog
 import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity
 import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
@@ -47,7 +48,13 @@ class SavingsActivity : BaseActivity() {
         viewModel = ViewModelProvider(this, factory)[SavingsViewModel::class.java]
 
         // Set up RecyclerView
-        adapter = SavingsBucketAdapter()
+        adapter = SavingsBucketAdapter(
+            onDistributeClick = { bucket -> viewModel.requestDistribute(bucket) },
+            onDeductClick = { bucket -> showDeductDialog(bucket) },
+            onEditClick = { bucket -> showEditBucketDialog(bucket) },
+            onDeleteClick = { bucket -> showDeleteConfirmationDialog(bucket) },
+            onCardClick = { bucket -> showHistoryDialog(bucket) }
+        )
         binding.recyclerViewBuckets.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewBuckets.adapter = adapter
 
@@ -83,7 +90,7 @@ class SavingsActivity : BaseActivity() {
                     }
                     is SavingsUiState.Error -> {
                         hideLoading()
-                        Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
+                        showSnackbar(state.message)
                     }
                 }
             }
@@ -93,14 +100,22 @@ class SavingsActivity : BaseActivity() {
         lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is SavingsUiEvent.BucketAdded -> {
-                        Snackbar.make(binding.root, getString(R.string.bucket_added), Snackbar.LENGTH_SHORT).show()
-                    }
+                    is SavingsUiEvent.BucketAdded -> showSnackbar(getString(R.string.bucket_added))
+                    is SavingsUiEvent.BucketUpdated -> showSnackbar(getString(R.string.bucket_updated))
+                    is SavingsUiEvent.BucketDeleted -> showSnackbar(getString(R.string.bucket_deleted))
+                    is SavingsUiEvent.FundsDistributed -> showSnackbar(getString(R.string.funds_distributed))
                     is SavingsUiEvent.ShowError -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                     }
                     else -> {}
                 }
+            }
+        }
+
+        // Observe distribute requests
+        lifecycleScope.launch {
+            viewModel.bucketEvents.collect { request ->
+                showDistributeDialog(request.bucket, request.availablePool)
             }
         }
 
@@ -114,6 +129,58 @@ class SavingsActivity : BaseActivity() {
             onShowSnackbar = { message -> this.showSnackbar(message) }
         )
         dialog.show(supportFragmentManager, "CreateBucketDialog")
+    }
+
+    private fun showDeductDialog(bucket: SavingsBucket) {
+        val dialog = DistributeDialogFragment(
+            bucket = bucket,
+            availablePool = 0.0, // not used
+            isDeduction = true,
+            onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool) },
+            onShowSnackbar = { message -> showSnackbar(message) }
+        )
+        dialog.show(supportFragmentManager, "DeductDialog")
+    }
+
+    private fun showEditBucketDialog(bucket: SavingsBucket) {
+        val dialog = EditBucketDialogFragment(
+            existingBucket = bucket,
+            onBucketUpdated = { updated -> viewModel.editBucket(updated) },
+            onShowSnackbar = { message -> showSnackbar(message) }
+        )
+        dialog.show(supportFragmentManager, "EditBucketDialog")
+    }
+
+    private fun showDistributeDialog(bucket: SavingsBucket, availablePool: Double) {
+        val dialog = DistributeDialogFragment(
+            bucket = bucket,
+            availablePool = availablePool,
+            isDeduction = false,
+            onDistribute = { amount -> viewModel.distributeFunds(bucket, amount, availablePool) },
+            onShowSnackbar = { message -> showSnackbar(message) }
+        )
+        dialog.show(supportFragmentManager, "DistributeDialog")
+    }
+
+    private fun showHistoryDialog(bucket: SavingsBucket) {
+        val db = AppDatabase.getDatabase(this)
+        val repository = BudgetRepository(db)
+        val dialog = BucketHistoryDialogFragment(bucket.name, bucket.id, repository)
+        dialog.show(supportFragmentManager, "BucketHistory")
+    }
+
+    private fun showDeleteConfirmationDialog(bucket: SavingsBucket) {
+        showBudgetBrewerDialog(
+            inflater = layoutInflater,
+            context = this,
+            title = getString(R.string.delete_bucket_title),
+            message = getString(R.string.delete_bucket_message, bucket.name),
+            positiveButton = getString(R.string.delete),
+            negativeButton = getString(R.string.cancel),
+            onPositive = {
+                viewModel.deleteBucket(bucket)
+            }
+        ).show()
     }
 
     private fun showEmptyState() {

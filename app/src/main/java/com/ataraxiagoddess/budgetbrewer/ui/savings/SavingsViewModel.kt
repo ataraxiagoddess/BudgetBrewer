@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SavingsViewModel(
@@ -25,11 +26,19 @@ class SavingsViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val appContext: Context
 ) : BaseViewModel() {
+
+    private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
+
     private val _uiState = MutableStateFlow<SavingsUiState>(SavingsUiState.Loading)
     val uiState: StateFlow<SavingsUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<SavingsUiEvent>()
     val events = _events.asSharedFlow()
+
+    private val _bucketEvents = MutableSharedFlow<DistributeRequest>()
+    val bucketEvents = _bucketEvents.asSharedFlow()
+
+    val availablePool: Double get() = 200.0 // placeholder for now
 
     init {
         loadData()
@@ -37,6 +46,10 @@ class SavingsViewModel(
 
     fun updateMonth(month: Month) {
         viewModelScope.launch {
+            val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
+            budgetId = newBudgetId
+            savedStateHandle["budgetId"] = newBudgetId
+            loadData()
         }
     }
 
@@ -74,6 +87,61 @@ class SavingsViewModel(
             }
 
             _events.emit(SavingsUiEvent.BucketAdded)
+        }
+    }
+
+    fun editBucket(bucket: SavingsBucket) {
+        safeLaunch(R.string.error_update_bucket) {
+            repository.updateSavingsBucket(bucket)
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadSavingsBucket(bucket, userId)
+            }
+            _events.emit(SavingsUiEvent.BucketUpdated)
+        }
+    }
+
+    fun deleteBucket(bucket: SavingsBucket) {
+        safeLaunch(R.string.error_delete_bucket) {
+            repository.deleteSavingsBucket(bucket)
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).deleteSavingsBucket(bucket.id, userId)
+            }
+            _events.emit(SavingsUiEvent.BucketDeleted)
+        }
+    }
+
+    fun distributeFunds(bucket: SavingsBucket, amount: Double, availablePool: Double) {
+        safeLaunch(R.string.error_distribute) {
+            if (amount > availablePool && amount > 0) {
+                _events.emit(SavingsUiEvent.ShowError("Not enough funds available"))
+                return@safeLaunch
+            }
+            repository.distributeFunds(bucket, amount, budgetId)
+            // Sync the new transaction and updated bucket
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                // Upload the updated bucket
+                val updatedBucket = repository.getSavingsBuckets().first().find { it.id == bucket.id }
+                if (updatedBucket != null) {
+                    SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
+                }
+                // Upload the transaction (simplified: we trust the repository to have dealt with it)
+            }
+            _events.emit(SavingsUiEvent.FundsDistributed)
+        }
+    }
+
+    /**
+     * Called by the Activity when the user taps "Distribute" on a bucket card.
+     * Emits a DistributeRequest event so the Activity can show the dialog.
+     */
+    fun requestDistribute(bucket: SavingsBucket) {
+        viewModelScope.launch {
+            // Compute available pool (dummy: to be wired in Phase 4)
+            val availablePool = 200.0 // placeholder
+            _bucketEvents.emit(DistributeRequest(bucket, availablePool))
         }
     }
 }

@@ -13,6 +13,9 @@ interface SavingsTransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(transactions: List<SavingsTransaction>)
 
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM savings_transactions WHERE bucket_id = :bucketId")
+    suspend fun getTotalForBucket(bucketId: String): Double
+
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId ORDER BY date DESC")
     fun getTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>>  // ✅ String parameter
 
