@@ -6,7 +6,7 @@
 
     <!-- ===== CALENDAR DOTS ===== -->
     <dimen name="dot_size">6dp</dimen>
-    <dimen name="dot_margin">2dp</dimen>
+    <dimen name="dot_spacing">2dp</dimen>
 
     <!-- ===== SPACING ===== -->
     <dimen name="spacing_small">4dp</dimen>

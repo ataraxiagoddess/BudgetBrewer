@@ -11,13 +11,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.helper.widget.Grid
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginEnd
 import androidx.lifecycle.lifecycleScope
 import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
@@ -80,7 +83,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
 
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         private val tvDayNumber: TextView? = view.findViewById(R.id.tvDayNumber)
-        private val dotContainer: LinearLayout? = view.findViewById(R.id.dotContainer)
+        private val dotContainer: GridLayout? = view.findViewById(R.id.dotContainer)
 
         init {
             tvDayNumber?.typeface = ResourcesCompat.getFont(this@MonthlyCalendarActivity, R.font.exo_regular)
@@ -128,15 +131,26 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
             if (dayData.assignedIncomes.isNotEmpty()) {
                 dotContainer?.addView(createDot(R.drawable.circle_income))
             }
+            if (dayData.savingsDistributed != 0.0) {
+                dotContainer?.addView(createDot(R.drawable.circle_savings))
+            }
         }
 
         private fun createDot(drawableRes: Int): ImageView {
             return ImageView(view.context).apply {
                 setImageResource(drawableRes)
-                layoutParams = LinearLayout.LayoutParams(
-                    resources.getDimensionPixelSize(R.dimen.dot_size),
-                    resources.getDimensionPixelSize(R.dimen.dot_size)
-                ).apply { marginEnd = resources.getDimensionPixelSize(R.dimen.dot_margin) }
+
+                val dotSize = resources.getDimensionPixelSize(R.dimen.dot_size)
+                // Use an existing dimen like dot_margin, or create R.dimen.dot_spacing in dimens.xml
+                val spacing = resources.getDimensionPixelSize(R.dimen.dot_spacing)
+
+                // Use MarginLayoutParams to control grid spacing
+                layoutParams = ViewGroup.MarginLayoutParams(dotSize, dotSize).apply {
+                    leftMargin = spacing
+                    topMargin = spacing
+                    rightMargin = spacing
+                    bottomMargin = spacing
+                }
             }
         }
     }
@@ -401,7 +415,8 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                         expenses = dayData.expenses,
                         spendingEntries = dayData.spendingEntries,
                         assignedIncomes = dayData.assignedIncomes,
-                        dayTotal = dayData.dayTotal
+                        dayTotal = dayData.dayTotal,
+                        savingsDistributed = dayData.savingsDistributed
                     ),
                     state.data.unassignedIncomes
                 ).apply {

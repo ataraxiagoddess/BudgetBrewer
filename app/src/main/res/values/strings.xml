@@ -56,6 +56,9 @@
     <string name="allocation_exceeds_funds">Exceeds available funds by %s</string>
     <string name="allocation_status_expenses_exceed">Expenses exceed income, no funds available to allocate</string>
     <string name="allocation_status_no_funds">No funds available to allocate</string>
+    <string name="savings_allocation_conflict">Cannot reduce savings allocation below already distributed amount.</string>
+    <string name="savings_allocation_conflict_title">Cannot Reduce Allocation</string>
+    <string name="savings_allocation_conflict_message">You have already distributed %1$s to savings buckets. You must reduce the total distributed before lowering your savings allocation.</string>
 
     <!-- ==================== DIALOG TITLES ==================== -->
     <!-- Income Dialogs -->
@@ -115,7 +118,8 @@
     <string name="error_delete_bucket">Error occurred while deleting bucket</string>
     <string name="error_distribute">Error adding distribution</string>
     <string name="distribute">Distribute</string>
-    <string name="available_pool_label">Available to allocate: $%1$.2f</string>
+    <string name="available_pool_label">Available to allocate:</string>
+    <string name="available_pool_amount">Available to allocate: $%1$.2f</string>
     <string name="bucket_updated">Bucket updated</string>
     <string name="bucket_deleted">Bucket deleted</string>
     <string name="funds_distributed">Funds distributed</string>
@@ -173,6 +177,7 @@
     <string name="legend_expenses">Expenses</string>
     <string name="legend_spending">Spending</string>
     <string name="legend_income">Income</string>
+    <string name="legend_savings">Savings</string>
     <string name="close">Close</string>
     <string name="overwrite_confirmation">This action will overwrite the existing month start value, previous value will be lost. Week End and Month End values will also be updated to reflect this change. Do you wish to continue?</string>
     <string name="overwrite_month_start">Overwrite Month Start Amount</string>

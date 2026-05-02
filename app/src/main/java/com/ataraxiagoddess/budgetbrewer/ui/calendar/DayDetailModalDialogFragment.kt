@@ -44,7 +44,8 @@ class DayDetailModalDialogFragment : DialogFragment() {
         val expenses: List<Expense>,
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
-        val dayTotal: Double
+        val dayTotal: Double,
+        val savingsDistributed: Double = 0.0
     ) : java.io.Serializable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,6 +152,18 @@ class DayDetailModalDialogFragment : DialogFragment() {
                 }
                 incomeContainer.addView(itemView)
             }
+        }
+
+        // --- Savings Allocation ---
+        val tvSavingsLabel = view.findViewById<TextView>(R.id.tvSavingsLabel)
+        val tvSavingsAmount = view.findViewById<TextView>(R.id.tvSavingsAmount)
+        if (dayData.savingsDistributed != 0.0) {
+            tvSavingsLabel.visibility = View.VISIBLE
+            tvSavingsAmount.visibility = View.VISIBLE
+            tvSavingsAmount.text = dayData.savingsDistributed.toCurrencyDisplay(resources)
+        } else {
+            tvSavingsLabel.visibility = View.GONE
+            tvSavingsAmount.visibility = View.GONE
         }
 
         // Net total

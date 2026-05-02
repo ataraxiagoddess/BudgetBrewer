@@ -41,7 +41,8 @@ class MonthlyCalendarViewModel(
         val expenses: List<Expense>,
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
-        val dayTotal: Double
+        val dayTotal: Double,
+        val savingsDistributed: Double = 0.0
     )
 
     data class WeekEndTotal(
@@ -104,6 +105,10 @@ class MonthlyCalendarViewModel(
                 val spendingEntries = repository.getSpendingEntriesForBudget(budgetId).first()
                 val assignments = repository.getIncomeAssignmentsForBudget(budgetId).first()
                 val settings = repository.getMonthSettings(budgetId).first()
+                val savingsTransactions = repository.getAllSavingsTransactions()
+                val savingsByDay = savingsTransactions
+                    .groupBy { getDayOfMonth(it.date) }
+                    .mapValues { entry -> entry.value.sumOf { it.amount } }
 
                 val previousMonthEnd = getPreviousMonthEndAmount(month)
                 val (monthStartAmount, monthStartOverridden) = if (settings?.monthStartOverridden == true) {
@@ -150,7 +155,8 @@ class MonthlyCalendarViewModel(
                             expenses = dayExpenses,
                             spendingEntries = daySpending,
                             assignedIncomes = assigned,
-                            dayTotal = dayTotal
+                            dayTotal = dayTotal,
+                            savingsDistributed = savingsByDay[day] ?: 0.0
                         )
                     )
                 }

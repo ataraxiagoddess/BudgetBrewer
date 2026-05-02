@@ -84,6 +84,23 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
 
+    <TextView
+        android:id="@+id/tvSavingsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Savings Allocation"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvSavingsAmount"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_on_container"
+        android:visibility="gone"
+        android:paddingStart="16dp" />
+
     <!-- Net total -->
     <TextView
         android:id="@+id/tvNetTotal"
