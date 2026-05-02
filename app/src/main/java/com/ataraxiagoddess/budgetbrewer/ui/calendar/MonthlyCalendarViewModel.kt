@@ -147,7 +147,7 @@ class MonthlyCalendarViewModel(
                     val assigned = assignmentMap[day]?.mapNotNull { incomesById[it.incomeId] } ?: emptyList()
                     val dayIncomeTotal = assigned.sumOf { it.amount }
                     val dayExpenseTotal = dayExpenses.sumOf { it.amount } + daySpending.sumOf { it.amount }
-                    val dayTotal = dayIncomeTotal - dayExpenseTotal
+                    val dayTotal = dayIncomeTotal - dayExpenseTotal - (savingsByDay[day] ?: 0.0)
                     allDays.add(
                         CalendarDay(
                             dayOfMonth = day,

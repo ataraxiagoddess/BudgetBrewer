@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
@@ -67,6 +68,8 @@ class EditBucketDialogFragment(
         }
 
         // Setup colour grid
+        binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)
+
         colorAdapter = ColorAdapter(
             requireContext(),
             SavingsBucketColors.colors.toList(),
@@ -78,7 +81,7 @@ class EditBucketDialogFragment(
         )
         binding.recyclerViewColors.adapter = colorAdapter
 
-// Pre‑select the bucket's existing color
+        // Pre‑select the bucket's existing color
         val colorHex = existingBucket.color_hex
         selectedColorRes = SavingsBucketColors.colors.firstOrNull {
             colorResToHex(it) == colorHex

@@ -2,6 +2,7 @@ package com.ataraxiagoddess.budgetbrewer.data
 
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import java.util.Calendar
@@ -74,8 +75,11 @@ class BudgetRepository(private val db: AppDatabase) {
     }
 
     // --- Savings Buckets ---
-    fun getSavingsBuckets(): Flow<List<SavingsBucket>> =
-        db.savingsBucketDao().getAllBuckets()
+    fun getActiveSavingsBuckets(): Flow<List<SavingsBucket>> =
+        db.savingsBucketDao().getNonArchivedBuckets()
+
+    fun getArchivedSavingsBuckets(): Flow<List<SavingsBucket>> =
+        db.savingsBucketDao().getArchivedBuckets()
 
     suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)
@@ -104,12 +108,99 @@ class BudgetRepository(private val db: AppDatabase) {
         db.savingsBucketDao().delete(bucket)
     }
 
+    /**
+     * Total amount allocated to savings across all budgets.
+     */
+    suspend fun getTotalSavingsAllocated(): Double {
+        return db.allocationDao().getAllAllocations().first().sumOf { it.savingsAmount }
+    }
+
+    /**
+     * Total amount distributed to all savings buckets.
+     * (This is the sum of all savings transactions – allocations are positive, deductions negative.)
+     */
+    suspend fun getTotalDistributedToBuckets(): Double {
+        return db.savingsTransactionDao().getAllTransactionsSync().sumOf { it.amount }
+    }
+
+    suspend fun archiveBucket(bucket: SavingsBucket) {
+        val updatedBucket = bucket.copy(
+            is_archived = true,
+            updated_at = System.currentTimeMillis()
+        )
+        db.savingsBucketDao().update(updatedBucket)
+    }
+
+    suspend fun getSavingsBucketById(bucketId: String): SavingsBucket? =
+        db.savingsBucketDao().getBucketById(bucketId)
+
+    suspend fun restoreBucket(bucket: SavingsBucket) {
+        val updatedBucket = bucket.copy(
+            is_archived = false,
+            updated_at = System.currentTimeMillis()
+        )
+        db.savingsBucketDao().update(updatedBucket)
+    }
+
+    suspend fun editTransactionAmount(transaction: SavingsTransaction, newAmount: Double) {
+        val updated = transaction.copy(amount = newAmount)
+        db.savingsTransactionDao().updateTransaction(updated)
+
+        // Recalculate current_amount for the bucket
+        val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
+        val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
+        db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
+    }
+
+    suspend fun deleteTransaction(transaction: SavingsTransaction) {
+        db.savingsTransactionDao().deleteTransactionById(transaction.id)
+
+        val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
+        val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
+        db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
+    }
+
+    /**
+     * Withdraw all funds and delete the bucket.
+     * (Already handled by deleteSavingsBucket, but explicit for clarity.)
+     */
+    suspend fun withdrawAndDeleteBucket(bucket: SavingsBucket) {
+        // Insert a WITHDRAWAL record so the pool calculation ignores the old allocations
+        val withdrawalTx = SavingsTransaction(
+            bucket_id = bucket.id,
+            amount = 0.0,
+            date = System.currentTimeMillis(),
+            type = SavingsTransactionType.WITHDRAWAL
+        )
+        db.savingsTransactionDao().insert(withdrawalTx)
+
+        // Delete only the bucket, leaving all transactions (including the new WITHDRAWAL)
+        db.savingsBucketDao().delete(bucket)
+    }
+
+    fun getAvailableSavingsPool(): Flow<Double> {
+        return combine(
+            db.allocationDao().getAllAllocations(),
+            db.savingsTransactionDao().getAllTransactions()   // we need a Flow version
+        ) { allocations, transactions ->
+            val totalAllocated = allocations.sumOf { it.savingsAmount }
+            val totalDistributed = transactions
+                .filter { it.type != SavingsTransactionType.WITHDRAWAL }
+                .sumOf { it.amount }
+            totalAllocated - totalDistributed
+        }
+    }
+
     // --- Savings Transactions ---
     fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> =
         db.savingsTransactionDao().getTransactionsByBucket(bucketId)
 
     suspend fun insertSavingsTransaction(transaction: SavingsTransaction) =
         db.savingsTransactionDao().insert(transaction)
+
+    suspend fun getAllSavingsTransactions(): List<SavingsTransaction> {
+        return db.savingsTransactionDao().getAllTransactions().first()
+    }
 
     // --- Month Settings ---
     suspend fun getMonthEndAmount(budgetId: String): Double {

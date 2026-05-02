@@ -47,6 +47,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity
 import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
+import com.ataraxiagoddess.budgetbrewer.ui.savings.ArchivedBucketsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.savings.SavingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
@@ -89,6 +90,7 @@ class SettingsActivity : BaseActivity() {
     private var isAccountExpanded = false
     private var isAppearanceExpanded = false
     private var isCurrencyExpanded = false
+    private var isArchiveExpanded = false
     companion object {
         const val EXTRA_START_FRAGMENT = "start_fragment"
         const val FRAGMENT_SIGN_IN = "sign_in"
@@ -100,6 +102,7 @@ class SettingsActivity : BaseActivity() {
         outState.putBoolean("account_expanded", isAccountExpanded)
         outState.putBoolean("appearance_expanded", isAppearanceExpanded)
         outState.putBoolean("currency_expanded", isCurrencyExpanded)
+        outState.putBoolean("archive_expanded", isArchiveExpanded)
     }
 
     @OptIn(FlowPreview::class)
@@ -127,6 +130,7 @@ class SettingsActivity : BaseActivity() {
             isAccountExpanded = savedInstanceState.getBoolean("account_expanded", false)
             isAppearanceExpanded = savedInstanceState.getBoolean("appearance_expanded", false)
             isCurrencyExpanded = savedInstanceState.getBoolean("currency_expanded", false)
+            isArchiveExpanded = savedInstanceState.getBoolean("archive_expanded", false)
         }
 
         setupSectionToggles()
@@ -156,10 +160,12 @@ class SettingsActivity : BaseActivity() {
         binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
         binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
         binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
+        binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
 
         binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+        binding.btnArchive.setIconResource((if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right))
 
         // Set click listeners
         binding.btnAccount.setOnClickListener {
@@ -176,6 +182,18 @@ class SettingsActivity : BaseActivity() {
             isCurrencyExpanded = !isCurrencyExpanded
             binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
             binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+        }
+        binding.btnArchive.setOnClickListener {
+            isArchiveExpanded = !isArchiveExpanded
+            binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
+            binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+        }
+        binding.btnArchivedMonths.setOnClickListener {
+            showSnackbar(getString(R.string.archive_months_placeholder))
+        }
+        binding.btnArchivedBuckets.setOnClickListener {
+            val intent = Intent(this, ArchivedBucketsActivity::class.java)
+            startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
         }
     }
 

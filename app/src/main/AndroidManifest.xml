@@ -31,6 +31,7 @@
         <activity android:name=".ui.spending.SpendingActivity" />
         <activity android:name=".ui.calendar.MonthlyCalendarActivity" />
         <activity android:name=".ui.settings.SettingsActivity" />
+        <activity android:name=".ui.savings.ArchivedBucketsActivity" />
         <activity android:name=".ui.auth.AuthActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ui.lock.LockActivity"

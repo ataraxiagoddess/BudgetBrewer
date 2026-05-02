@@ -20,6 +20,39 @@
                 android:layout_height="@dimen/spacer_top"
                 android:visibility="invisible" />
 
+            <!-- ===== Available Pool Card (always visible) ===== -->
+            <LinearLayout
+                android:id="@+id/availablePoolCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/category_background"
+                android:padding="12dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/available_pool_label"
+                    android:textColor="@color/text_on_container" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:id="@+id/tvAvailablePoolAmount"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_on_container" />
+            </LinearLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

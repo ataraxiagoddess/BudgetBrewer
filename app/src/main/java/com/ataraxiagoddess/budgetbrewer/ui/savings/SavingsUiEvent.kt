@@ -5,5 +5,10 @@ sealed class SavingsUiEvent {
     object BucketUpdated : SavingsUiEvent()
     object BucketDeleted : SavingsUiEvent()
     object FundsDistributed : SavingsUiEvent()
+    object BucketWithdrawn : SavingsUiEvent()
+    object BucketArchived : SavingsUiEvent()
+    object BucketRestored : SavingsUiEvent()
+    object TransactionEdited : SavingsUiEvent()
+    object TransactionDeleted : SavingsUiEvent()
     data class ShowError(val message: String) : SavingsUiEvent()
 }

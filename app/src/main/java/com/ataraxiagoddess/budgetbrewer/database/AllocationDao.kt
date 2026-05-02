@@ -23,6 +23,9 @@ interface AllocationDao {
     @Query("SELECT * FROM allocations WHERE id = :id")
     suspend fun getAllocationById(id: String): Allocation?
 
+    @Query("SELECT * FROM allocations")
+    fun getAllAllocations(): Flow<List<Allocation>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(allocation: Allocation)
 

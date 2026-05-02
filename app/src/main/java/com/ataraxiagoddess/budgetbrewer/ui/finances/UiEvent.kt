@@ -28,6 +28,10 @@ sealed class UiEvent {
     object SpendingUpdated : UiEvent()
     object SpendingDeleted : UiEvent()
 
+    data class SavingsAllocationConflict(
+        val requestedAmount: Double,
+        val distributedTotal: Double
+    ) : UiEvent()
 
     // Messages with string resources (for localized text)
     data class ShowMessage(@param:StringRes val messageResId: Int) : UiEvent()

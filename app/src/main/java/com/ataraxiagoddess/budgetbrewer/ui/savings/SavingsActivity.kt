@@ -13,6 +13,7 @@ import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
+import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivitySavingsBinding
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity
@@ -24,6 +25,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
+import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -51,6 +53,7 @@ class SavingsActivity : BaseActivity() {
         adapter = SavingsBucketAdapter(
             onDistributeClick = { bucket -> viewModel.requestDistribute(bucket) },
             onDeductClick = { bucket -> showDeductDialog(bucket) },
+            onWithdrawClick = { bucket -> showWithdrawDialog(bucket) },
             onEditClick = { bucket -> showEditBucketDialog(bucket) },
             onDeleteClick = { bucket -> showDeleteConfirmationDialog(bucket) },
             onCardClick = { bucket -> showHistoryDialog(bucket) }
@@ -65,6 +68,13 @@ class SavingsActivity : BaseActivity() {
         // Click listener for Add Bucket button (in empty state)
         binding.emptyStateContainer.buttonAddBucket.setOnClickListener {
             showCreateBucketDialog()
+        }
+
+        // Observe available pool and update the card
+        lifecycleScope.launch {
+            viewModel.availablePool.collect { pool ->
+                binding.tvAvailablePoolAmount.text = pool.toCurrencyDisplay(resources)
+            }
         }
 
         // Observe UI state
@@ -107,6 +117,11 @@ class SavingsActivity : BaseActivity() {
                     is SavingsUiEvent.ShowError -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                     }
+                    is SavingsUiEvent.BucketWithdrawn -> showSnackbar(getString(R.string.funds_withdrawn))
+                    is SavingsUiEvent.BucketArchived -> showSnackbar(getString(R.string.bucket_archived))
+                    is SavingsUiEvent.BucketRestored -> showSnackbar(getString(R.string.bucket_restored))
+                    is SavingsUiEvent.TransactionEdited -> showSnackbar(getString(R.string.transaction_edited))
+                    is SavingsUiEvent.TransactionDeleted -> showSnackbar(getString(R.string.transaction_deleted))
                     else -> {}
                 }
             }
@@ -136,10 +151,34 @@ class SavingsActivity : BaseActivity() {
             bucket = bucket,
             availablePool = 0.0, // not used
             isDeduction = true,
-            onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool) },
+            onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool.value) },
             onShowSnackbar = { message -> showSnackbar(message) }
         )
         dialog.show(supportFragmentManager, "DeductDialog")
+    }
+
+    private fun showEditTransactionDialog(transaction: SavingsTransaction) {
+        val dialog = EditTransactionDialogFragment(
+            currentAmount = transaction.amount,
+            onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) },
+            onShowSnackbar = { message -> showSnackbar(message) }
+        )
+        dialog.show(supportFragmentManager, "EditTransactionDialog")
+    }
+
+    private fun showWithdrawDialog(bucket: SavingsBucket) {
+        // Step 1: Confirmation dialog
+        showBudgetBrewerDialog(
+            inflater = layoutInflater,
+            context = this,
+            title = getString(R.string.withdraw_title),
+            message = getString(R.string.withdraw_confirmation, bucket.name, bucket.current_amount.toCurrencyDisplay(resources)),
+            positiveButton = getString(R.string.withdraw),
+            negativeButton = getString(R.string.cancel),
+            onPositive = {
+                viewModel.archiveBucket(bucket)
+            }
+        ).show()
     }
 
     private fun showEditBucketDialog(bucket: SavingsBucket) {
@@ -165,7 +204,14 @@ class SavingsActivity : BaseActivity() {
     private fun showHistoryDialog(bucket: SavingsBucket) {
         val db = AppDatabase.getDatabase(this)
         val repository = BudgetRepository(db)
-        val dialog = BucketHistoryDialogFragment(bucket.name, bucket.id, repository)
+        val dialog = BucketHistoryDialogFragment(
+            bucketName = bucket.name,
+            bucketId = bucket.id,
+            repository = repository,
+            isArchived = false,
+            onEditTransaction = { tx -> showEditTransactionDialog(tx) },
+            onDeleteTransaction = { tx -> viewModel.deleteTransaction(tx) }
+        )
         dialog.show(supportFragmentManager, "BucketHistory")
     }
 
@@ -186,11 +232,13 @@ class SavingsActivity : BaseActivity() {
     private fun showEmptyState() {
         binding.emptyStateContainer.root.visibility = View.VISIBLE
         binding.recyclerViewBuckets.visibility = View.GONE
+        binding.fabAddBucket.visibility = View.GONE
     }
 
     private fun showBucketList(buckets: List<SavingsBucket>) {
         binding.emptyStateContainer.root.visibility = View.GONE
         binding.recyclerViewBuckets.visibility = View.VISIBLE
+        binding.fabAddBucket.visibility = View.VISIBLE
         adapter.submitList(buckets)
     }
 

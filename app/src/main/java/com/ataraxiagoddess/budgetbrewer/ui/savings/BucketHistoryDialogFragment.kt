@@ -18,7 +18,11 @@ import kotlinx.coroutines.launch
 class BucketHistoryDialogFragment(
     private val bucketName: String,
     private val bucketId: String,
-    private val repository: BudgetRepository
+    private val repository: BudgetRepository,
+    private val isArchived: Boolean = false,
+    // Callbacks for editing/deleting transactions (null when read‑only)
+    private val onEditTransaction: ((SavingsTransaction) -> Unit)? = null,
+    private val onDeleteTransaction: ((SavingsTransaction) -> Unit)? = null
 ) : DialogFragment() {
 
     init {
@@ -45,9 +49,21 @@ class BucketHistoryDialogFragment(
         super.onViewCreated(view, savedInstanceState)
         binding.tvBucketName.text = bucketName
         binding.recyclerViewTransactions.layoutManager = LinearLayoutManager(requireContext())
+
         lifecycleScope.launch {
-            val transactions = repository.getSavingsTransactionsByBucket(bucketId).first()
-            val adapter = TransactionHistoryAdapter(transactions)
+            val allTransactions = repository.getSavingsTransactionsByBucket(bucketId).first()
+            val visibleTransactions = if (isArchived) {
+                allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }
+            } else {
+                allTransactions
+            }
+
+            // For archived buckets, no edit/delete callbacks → buttons hidden
+            val adapter = TransactionHistoryAdapter(
+                transactions = visibleTransactions,
+                onEditClick = if (isArchived) null else onEditTransaction,
+                onDeleteClick = if (isArchived) null else onDeleteTransaction
+            )
             binding.recyclerViewTransactions.adapter = adapter
         }
     }

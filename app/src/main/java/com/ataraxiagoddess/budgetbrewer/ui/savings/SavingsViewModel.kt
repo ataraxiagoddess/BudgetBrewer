@@ -7,18 +7,20 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
+import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.util.Constants
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SavingsViewModel(
@@ -38,7 +40,9 @@ class SavingsViewModel(
     private val _bucketEvents = MutableSharedFlow<DistributeRequest>()
     val bucketEvents = _bucketEvents.asSharedFlow()
 
-    val availablePool: Double get() = 200.0 // placeholder for now
+    /** Reactive available pool – recalculates automatically when allocations or transactions change */
+    val availablePool: StateFlow<Double> = repository.getAvailableSavingsPool()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     init {
         loadData()
@@ -57,7 +61,7 @@ class SavingsViewModel(
         viewModelScope.launch {
             _uiState.value = SavingsUiState.Loading
             try {
-                repository.getSavingsBuckets()
+                repository.getActiveSavingsBuckets()
                     .catch { e ->
                         _uiState.value = SavingsUiState.Error(e.message ?: "Unknown error")
                         emitError(R.string.error_load_data, e)
@@ -79,13 +83,10 @@ class SavingsViewModel(
     fun createBucket(bucket: SavingsBucket) {
         safeLaunch(R.string.error_add_transaction) {
             repository.insertSavingsBucket(bucket)
-
-            // Sync after insert
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadSavingsBucket(bucket, userId)
             }
-
             _events.emit(SavingsUiEvent.BucketAdded)
         }
     }
@@ -114,34 +115,74 @@ class SavingsViewModel(
 
     fun distributeFunds(bucket: SavingsBucket, amount: Double, availablePool: Double) {
         safeLaunch(R.string.error_distribute) {
+            // Validate against the provided pool (which is the current value at the time the dialog was shown)
             if (amount > availablePool && amount > 0) {
                 _events.emit(SavingsUiEvent.ShowError("Not enough funds available"))
                 return@safeLaunch
             }
             repository.distributeFunds(bucket, amount, budgetId)
-            // Sync the new transaction and updated bucket
+
+            // Sync the updated bucket (the flow will recalculate the pool automatically)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
-                // Upload the updated bucket
-                val updatedBucket = repository.getSavingsBuckets().first().find { it.id == bucket.id }
+                val updatedBucket = repository.getActiveSavingsBuckets().first().find { it.id == bucket.id }
                 if (updatedBucket != null) {
                     SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
                 }
-                // Upload the transaction (simplified: we trust the repository to have dealt with it)
             }
             _events.emit(SavingsUiEvent.FundsDistributed)
         }
     }
 
-    /**
-     * Called by the Activity when the user taps "Distribute" on a bucket card.
-     * Emits a DistributeRequest event so the Activity can show the dialog.
-     */
     fun requestDistribute(bucket: SavingsBucket) {
         viewModelScope.launch {
-            // Compute available pool (dummy: to be wired in Phase 4)
-            val availablePool = 200.0 // placeholder
-            _bucketEvents.emit(DistributeRequest(bucket, availablePool))
+            // Emit a DistributeRequest with the current pool value (reactive)
+            _bucketEvents.emit(DistributeRequest(bucket, availablePool.value))
+        }
+    }
+
+    fun archiveBucket(bucket: SavingsBucket) {
+        safeLaunch(R.string.error_distribute) {
+            repository.archiveBucket(bucket)
+
+            // Sync the updated (archived) bucket
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                val updatedBucket = repository.getSavingsBucketById(bucket.id)
+                if (updatedBucket != null) {
+                    SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
+                }
+            }
+            _events.emit(SavingsUiEvent.BucketArchived)
+        }
+    }
+
+    fun restoreBucket(bucket: SavingsBucket) {
+        safeLaunch(R.string.error_restore) {
+            repository.restoreBucket(bucket)
+
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                val updatedBucket = repository.getSavingsBucketById(bucket.id)
+                if (updatedBucket != null) {
+                    SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
+                }
+            }
+            _events.emit(SavingsUiEvent.BucketRestored)
+        }
+    }
+
+    fun editTransaction(transaction: SavingsTransaction, newAmount: Double) {
+        safeLaunch(R.string.error_distribute) {
+            repository.editTransactionAmount(transaction, newAmount)
+            _events.emit(SavingsUiEvent.TransactionEdited)
+        }
+    }
+
+    fun deleteTransaction(transaction: SavingsTransaction) {
+        safeLaunch(R.string.error_distribute) {
+            repository.deleteTransaction(transaction)
+            _events.emit(SavingsUiEvent.TransactionDeleted)
         }
     }
 }

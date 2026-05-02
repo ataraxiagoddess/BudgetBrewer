@@ -67,6 +67,23 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
 
+    <TextView
+        android:id="@+id/tvSavingsLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/savings_allocation"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvSavingsAmount"
+        style="@style/TextAppearance.BudgetBrewer.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dialog_content_text"
+        android:visibility="gone"
+        android:paddingStart="16dp" />
+
     <!-- Income section -->
     <TextView
         android:id="@+id/tvIncomeLabel"
@@ -83,23 +100,6 @@
         android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
-
-    <TextView
-        android:id="@+id/tvSavingsLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Savings Allocation"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/tvSavingsAmount"
-        style="@style/TextAppearance.BudgetBrewer.Body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_on_container"
-        android:visibility="gone"
-        android:paddingStart="16dp" />
 
     <!-- Net total -->
     <TextView

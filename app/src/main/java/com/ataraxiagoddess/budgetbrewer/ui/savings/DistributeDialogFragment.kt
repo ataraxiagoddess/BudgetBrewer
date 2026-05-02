@@ -57,7 +57,7 @@ class DistributeDialogFragment(
         if (isDeduction) {
             binding.tvAvailablePool.text = getString(R.string.max_deduction_label, maxAllowed)
         } else {
-            binding.tvAvailablePool.text = getString(R.string.available_pool_label, availablePool)
+            binding.tvAvailablePool.text = getString(R.string.available_pool_amount, availablePool)
         }
 
         val saveButton = binding.buttonSave

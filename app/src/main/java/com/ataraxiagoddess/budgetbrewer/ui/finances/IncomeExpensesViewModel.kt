@@ -85,11 +85,23 @@ class IncomeExpensesViewModel(
     // Allocation Actions
     fun setSavingsAllocation(amount: Double) {
         safeLaunch(R.string.error_save_allocation) {
+            // Check conflict: cannot reduce below already distributed total
+            val distributedTotal = repository.getTotalDistributedToBuckets()
+            if (amount < distributedTotal) {
+                emitError(
+                    R.string.savings_allocation_conflict,
+                    Exception("Requested $amount but distributed $distributedTotal")
+                )
+                // Also emit a detailed event so the Activity can show a dialog
+                // Using a specific event
+                _event.emit(UiEvent.SavingsAllocationConflict(amount, distributedTotal))
+                return@safeLaunch
+            }
+
             val current = _allocation.value
             if (current != null) {
                 val updated = current.copy(savingsAmount = amount, savingsIsPercentage = false)
                 repository.updateAllocation(updated)
-                // Sync after update
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
                     SyncManager(appContext).uploadAllocation(updated, userId)
@@ -103,7 +115,6 @@ class IncomeExpensesViewModel(
                     spendingIsPercentage = false
                 )
                 repository.insertAllocation(newAllocation)
-                // Sync after insert
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
                     SyncManager(appContext).uploadAllocation(newAllocation, userId)

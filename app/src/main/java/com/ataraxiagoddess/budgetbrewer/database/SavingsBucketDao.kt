@@ -26,6 +26,12 @@ interface SavingsBucketDao {
     @Query("SELECT * FROM savings_buckets ORDER BY created_at DESC")
     fun getAllBuckets(): Flow<List<SavingsBucket>>
 
+    @Query("SELECT * FROM savings_buckets WHERE is_archived = 0 ORDER BY created_at DESC")
+    fun getNonArchivedBuckets(): Flow<List<SavingsBucket>>
+
+    @Query("SELECT * FROM savings_buckets WHERE is_archived = 1 ORDER BY created_at DESC")
+    fun getArchivedBuckets(): Flow<List<SavingsBucket>>
+
     @Query("SELECT * FROM savings_buckets WHERE type = :type ORDER BY created_at DESC")
     fun getBucketsByType(type: SavingsBucketType): Flow<List<SavingsBucket>>
 

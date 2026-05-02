@@ -111,7 +111,36 @@ object ExportHelper {
             writeRow(monthYear, savings, spending)
         }
 
-        // 6. Daily Checklist – only days that actually have expenses
+        // 6. Savings Buckets
+        writeSection("SAVINGS BUCKETS")
+        writeRow("Bucket Name", "Type", "Target", "Current", "Archived")
+        val allBuckets = db.savingsBucketDao().getAllBucketsSync()
+        allBuckets.forEach { bucket ->
+            val target = bucket.target_amount?.let { formatCurrent(it) } ?: ""
+            writeRow(
+                bucket.name,
+                bucket.type.name,
+                target,
+                formatCurrent(bucket.current_amount),
+                if (bucket.is_archived) "Yes" else "No"
+            )
+        }
+
+        // 7. Savings Transactions
+        writeSection("SAVINGS TRANSACTIONS")
+        writeRow("Bucket Name", "Amount", "Date", "Type")
+        val bucketMap = allBuckets.associateBy { it.id }
+        db.savingsTransactionDao().getAllTransactionsSync().forEach { tx ->
+            val bucketName = bucketMap[tx.bucket_id]?.name ?: "Unknown"
+            writeRow(
+                bucketName,
+                formatCurrent(tx.amount),
+                shortDateFormat.format(Date(tx.date)),
+                tx.type.name
+            )
+        }
+
+        // 8. Daily Checklist – only days that actually have expenses
         writeSection("DAILY CHECKLIST")
         writeRow("Budget Month", "Day", "Checked?")
         val activeDays = getActiveDays(db)   // <-- replaced the long block with this
@@ -123,7 +152,7 @@ object ExportHelper {
             }
         }
 
-        // 7. Spending Entries
+        // 9. Spending Entries
         writeSection("SPENDING ENTRIES")
         writeRow("Budget Month", "Date", "Source", "Amount")
         db.spendingEntryDao().getAllSpendingEntriesSync().forEach { entry ->
@@ -133,7 +162,7 @@ object ExportHelper {
                 formatCurrent(entry.amount))
         }
 
-        // 8. Month Settings
+        // 10. Month Settings
         writeSection("MONTH SETTINGS")
         writeRow("Budget Month", "Start Amount", "Overridden?")
         db.monthSettingsDao().getAllMonthSettingsSync().forEach { ms ->
@@ -142,7 +171,7 @@ object ExportHelper {
             writeRow(monthYear, formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No")
         }
 
-        // 9. Daily Income Assignments
+        // 11. Daily Income Assignments
         writeSection("DAILY INCOME ASSIGNMENTS")
         writeRow("Budget Month", "Income Source", "Day")
         db.dailyIncomeAssignmentDao().getAllAssignmentsSync().forEach { dia ->
@@ -274,6 +303,23 @@ object ExportHelper {
             "Savings: $savings, Spending: $spending – $month"
         }
         writeSection("ALLOCATIONS", allocations)
+
+        // Savings Buckets
+        val savingsBucketList = db.savingsBucketDao().getAllBucketsSync().map { bucket ->
+            val targetStr = bucket.target_amount?.let { "Target: ${formatCurrent(it)}" } ?: ""
+            val archived = if (bucket.is_archived) " [Archived]" else ""
+            "${bucket.name} (${bucket.type.name}) – $targetStr Current: ${formatCurrent(bucket.current_amount)}$archived"
+        }
+        writeSection("SAVINGS BUCKETS", savingsBucketList)
+
+        // Savings Transactions
+        val allTx = db.savingsTransactionDao().getAllTransactionsSync()
+        val txBucketMap = db.savingsBucketDao().getAllBucketsSync().associateBy { it.id }
+        val savingsTxList = allTx.map { tx ->
+            val bucketName = txBucketMap[tx.bucket_id]?.name ?: "Unknown"
+            "${shortDateFormat.format(Date(tx.date))} – ${tx.type.name}: ${formatCurrent(tx.amount)} (Bucket: $bucketName)"
+        }
+        writeSection("SAVINGS TRANSACTIONS", savingsTxList)
 
         val spendingEntries = db.spendingEntryDao().getAllSpendingEntriesSync().map { entry ->
             val budget = db.budgetDao().getBudgetById(entry.budgetId)

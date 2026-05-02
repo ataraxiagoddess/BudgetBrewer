@@ -129,6 +129,23 @@
     <string name="actual_label">Actual:</string>
     <string name="deduct">Deduct</string>
     <string name="max_deduction_label">Max deduction: $%1$.2f</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="withdraw_title">Withdraw Funds</string>
+    <string name="withdraw_confirmation">Withdraw all %2$s from \"%1$s\"? This will archive the bucket.</string>
+    <string name="withdraw_choice">What would you like to do with the bucket?</string>
+    <string name="reuse_bucket">Reuse Bucket</string>
+    <string name="delete_bucket">Delete Bucket</string>
+    <string name="funds_withdrawn">Funds withdrawn</string>
+    <string name="error_restore">Failed to restore bucket</string>
+    <string name="no_archived_buckets">No buckets have been archived yet</string>
+    <string name="restore">Restore</string>
+    <string name="settings_archive">Archive</string>
+    <string name="archive_months">Months</string>
+    <string name="archive_buckets">Buckets</string>
+    <string name="archive_months_placeholder">Archived months coming soon</string>
+    <string name="bucket_archived">Bucket archived</string>
+    <string name="bucket_restored">Bucket restored</string>
+    <string name="transaction_edited">Transaction updated</string>
 
     <!-- ==================== EXPENSES PAGE ==================== -->
     <string name="total_expenses_label">Total Expenses</string>
@@ -169,6 +186,8 @@
     <string name="no_expenses_for_day">No expenses</string>
     <string name="no_spending_for_day">No spending</string>
     <string name="no_income_for_day">No income assigned</string>
+    <string name="no_savings_for_day">No savings allocated</string>
+    <string name="savings_allocation">Savings Allocation</string>
     <string name="select_income">Select Income</string>
     <string name="day_x">Day %d</string>
     <string name="expense_item_format">%s: %s</string>

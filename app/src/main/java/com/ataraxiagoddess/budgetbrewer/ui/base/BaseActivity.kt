@@ -47,7 +47,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private val keyRailScrollY = "rail_nav_scroll_y"
 
     private var bottomNavScrollView: HorizontalScrollView? = null
-    private var railNavScrollView: NestedScrollView? = null
+    protected var railNavScrollView: NestedScrollView? = null
 
     protected lateinit var navBinding: LayoutBottomNavBinding
     protected lateinit var monthSelectorBinding: MonthSelectorBinding
@@ -590,5 +590,30 @@ abstract class BaseActivity : AppCompatActivity() {
     protected open fun navigateToCalendar() { }
     protected open fun navigateToSettings() {
         startActivity(Intent(this, SettingsActivity::class.java))
+    }
+    protected fun hideNavigation() {
+        if (useRail) {
+            railNavScrollView?.visibility = View.GONE
+        } else {
+            if (::navBinding.isInitialized) {
+                navBinding.root.visibility = View.GONE
+            }
+            if (::monthSelectorBinding.isInitialized) {
+                monthSelectorBinding.root.visibility = View.GONE
+            }
+        }
+    }
+
+    protected fun showNavigation() {
+        if (useRail) {
+            railNavScrollView?.visibility = View.VISIBLE
+        } else {
+            if (::navBinding.isInitialized) {
+                navBinding.root.visibility = View.VISIBLE
+            }
+            if (::monthSelectorBinding.isInitialized) {
+                monthSelectorBinding.root.visibility = View.VISIBLE
+            }
+        }
     }
 }

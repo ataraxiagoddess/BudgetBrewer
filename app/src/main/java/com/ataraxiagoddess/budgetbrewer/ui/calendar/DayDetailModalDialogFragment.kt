@@ -82,6 +82,8 @@ class DayDetailModalDialogFragment : DialogFragment() {
         val tvDayTitle = view.findViewById<TextView>(R.id.tvDayTitle)
         val expensesContainer = view.findViewById<LinearLayout>(R.id.expensesContainer)
         val spendingContainer = view.findViewById<LinearLayout>(R.id.spendingContainer)
+        val tvSavingsLabel = view.findViewById<TextView>(R.id.tvSavingsLabel)
+        val tvSavingsAmount = view.findViewById<TextView>(R.id.tvSavingsAmount)
         val incomeContainer = view.findViewById<LinearLayout>(R.id.incomeContainer)
         val tvNetTotal = view.findViewById<TextView>(R.id.tvNetTotal)
         val btnAssignIncome = view.findViewById<Button>(R.id.btnAssignIncome)
@@ -155,8 +157,6 @@ class DayDetailModalDialogFragment : DialogFragment() {
         }
 
         // --- Savings Allocation ---
-        val tvSavingsLabel = view.findViewById<TextView>(R.id.tvSavingsLabel)
-        val tvSavingsAmount = view.findViewById<TextView>(R.id.tvSavingsAmount)
         if (dayData.savingsDistributed != 0.0) {
             tvSavingsLabel.visibility = View.VISIBLE
             tvSavingsAmount.visibility = View.VISIBLE

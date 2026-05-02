@@ -13,6 +13,12 @@ interface SavingsTransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(transactions: List<SavingsTransaction>)
 
+    @Update
+    suspend fun updateTransaction(transaction: SavingsTransaction)
+
+    @Query("DELETE FROM savings_transactions WHERE id = :transactionId")
+    suspend fun deleteTransactionById(transactionId: String)
+
     @Query("SELECT COALESCE(SUM(amount), 0.0) FROM savings_transactions WHERE bucket_id = :bucketId")
     suspend fun getTotalForBucket(bucketId: String): Double
 
@@ -43,4 +49,7 @@ interface SavingsTransactionDao {
 
     @Query("SELECT * FROM savings_transactions")
     suspend fun getAllTransactionsSync(): List<SavingsTransaction>
+
+    @Query("SELECT * FROM savings_transactions")
+    fun getAllTransactions(): Flow<List<SavingsTransaction>>
 }

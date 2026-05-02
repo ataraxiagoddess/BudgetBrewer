@@ -16,6 +16,7 @@ import com.ataraxiagoddess.budgetbrewer.databinding.ItemSavingsBucketBinding
 class SavingsBucketAdapter(
     private val onDistributeClick: (SavingsBucket) -> Unit,
     private val onDeductClick: (SavingsBucket) -> Unit,
+    private val onWithdrawClick: (SavingsBucket) -> Unit,
     private val onEditClick: (SavingsBucket) -> Unit,
     private val onDeleteClick: (SavingsBucket) -> Unit,
     private val onCardClick: (SavingsBucket) -> Unit
@@ -67,10 +68,14 @@ class SavingsBucketAdapter(
             val level = (fillFraction * 10000).toInt().coerceIn(0, 10000)
             liquidDrawable.level = level
 
+            // Show withdraw button only when bucket has funds
+            binding.btnWithdraw.visibility = if (bucket.current_amount > 0) View.VISIBLE else View.GONE
+
             // Wire buttons
             binding.btnDistribute.setOnClickListener { onDistributeClick(bucket) }
             binding.btnDeduct.setOnClickListener { onDeductClick(bucket) }
             binding.btnEditBucket.setOnClickListener { onEditClick(bucket) }
+            binding.btnWithdraw.setOnClickListener { onWithdrawClick(bucket) }
             binding.btnDeleteBucket.setOnClickListener { onDeleteClick(bucket) }
             binding.cardRoot.setOnClickListener { onCardClick(bucket) }
         }
