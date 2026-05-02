@@ -15,7 +15,7 @@
     <dimen name="text_size_calendar">18sp</dimen>
 
     <dimen name="dot_size">14dp</dimen>
-    <dimen name="dot_margin">10dp</dimen>
+    <dimen name="dot_spacing">10dp</dimen>
 
     <dimen name="button_height">64dp</dimen>
     <dimen name="spinner_dropdown_width">180dp</dimen>
