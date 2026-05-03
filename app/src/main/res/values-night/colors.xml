@@ -35,6 +35,8 @@
     <color name="nav_green_end">#578523</color>
     <color name="nav_teal_start">#005F56</color>
     <color name="nav_teal_end">#22766E</color>
+    <color name="nav_light_blue_start">#00496D</color>
+    <color name="nav_light_blue_end">#2680AF</color>
     <color name="nav_blue_start">#162473</color>
     <color name="nav_blue_end">#3D4A8A</color>
     <color name="nav_purple_start">#660576</color>

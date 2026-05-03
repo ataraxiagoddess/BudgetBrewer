@@ -164,6 +164,12 @@
         <item name="android:fontFamily">@font/exo_regular</item>
         <item name="android:textSize">@dimen/timeframe_button_text_size</item>
         <item name="android:textColor">@color/text_on_container</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">10sp</item>
+        <item name="autoSizeMaxTextSize">14sp</item>
+        <item name="autoSizeStepGranularity">1sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:lineSpacingMultiplier">0.9</item>
     </style>
 
     <!-- Timeframe selector buttons (Home screen) -->
@@ -178,6 +184,11 @@
         <item name="android:checkable">true</item>
         <item name="android:backgroundTint">@null</item>
         <item name="backgroundTint">@null</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <!-- Settings section headers -->

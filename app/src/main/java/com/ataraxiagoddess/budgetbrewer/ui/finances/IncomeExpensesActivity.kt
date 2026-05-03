@@ -1370,6 +1370,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         if (isTablet) {
             if (isLandscape) {
                 // Tablet landscape: use fixed width from dimension
+                val availableWidth = screenWidth - horizontalPadding - gap
                 contentWidth = resources.getDimensionPixelSize(R.dimen.category_card_width_land)
                 halfMargin = gap / 2
             } else {
@@ -1386,7 +1387,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             // Phone
             if (isLandscape) {
                 // Phone landscape: use fixed width from dimension
-                contentWidth = resources.getDimensionPixelSize(R.dimen.category_card_width_land)
+                val availableWidth = screenWidth - horizontalPadding - gap
+                contentWidth = (availableWidth * 0.40f).toInt().coerceAtMost(
+                    resources.getDimensionPixelSize(R.dimen.category_card_width_land)
+                )
                 halfMargin = gap / 2
             } else {
                 // Phone portrait: original calculation

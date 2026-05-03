@@ -295,7 +295,7 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:layout_marginEnd="2dp"
+                        android:layout_marginEnd="1dp"
                         android:text="@string/timeframe_1m"
                         android:checkable="true"
                         android:background="@drawable/bg_timeframe_button_1m" />
@@ -306,7 +306,7 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:layout_marginEnd="2dp"
+                        android:layout_marginEnd="1dp"
                         android:text="@string/timeframe_3m"
                         android:checkable="true"
                         android:background="@drawable/bg_timeframe_button_3m" />
@@ -317,7 +317,7 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:layout_marginEnd="2dp"
+                        android:layout_marginEnd="1dp"
                         android:text="@string/timeframe_6m"
                         android:checkable="true"
                         android:background="@drawable/bg_timeframe_button_6m" />
@@ -334,13 +334,14 @@
                 </LinearLayout>
 
                 <!-- Line Chart -->
+
+                <!-- Monthly data list -->
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chartSpendingTrends"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Monthly data list -->
                 <LinearLayout
                     android:id="@+id/spendingDataContainer"
                     android:layout_width="match_parent"

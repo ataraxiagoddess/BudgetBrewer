@@ -33,19 +33,22 @@ class SavingsBucketAdapter(
 
     inner class ViewHolder(private val binding: ItemSavingsBucketBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bucket: SavingsBucket) {
-            binding.textViewBucketName.text = bucket.name
-            binding.textViewBucketType.text = if (bucket.type == SavingsBucketType.GOAL) "Goal" else "Growth"
+            binding.tvBucketName.text = bucket.name
+            binding.tvBucketType.text = if (bucket.type == SavingsBucketType.GOAL) "Goal" else "Growth"
+            binding.icBucketType.setImageResource(
+                if (bucket.type == SavingsBucketType.GOAL) R.drawable.ic_goal else R.drawable.ic_growth
+            )
 
             // Actual amount
-            binding.textViewActualAmount.text = "$${String.format("%.2f", bucket.current_amount)}"
+            binding.tvActualAmount.text = "$${String.format("%.2f", bucket.current_amount)}"
 
             // Target amount
             if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
-                binding.textViewTargetAmount.visibility = View.VISIBLE
-                binding.textViewTargetAmount.text = "$${String.format("%.2f", bucket.target_amount)}"
+                binding.tvTargetAmount.visibility = View.VISIBLE
+                binding.tvTargetAmount.text = "$${String.format("%.2f", bucket.target_amount)}"
                 binding.tvTargetLabel.visibility = View.VISIBLE
             } else {
-                binding.textViewTargetAmount.visibility = View.GONE
+                binding.tvTargetAmount.visibility = View.GONE
                 binding.tvTargetLabel.visibility = View.GONE
             }
 

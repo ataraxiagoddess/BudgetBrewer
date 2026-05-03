@@ -3,11 +3,13 @@ package com.ataraxiagoddess.budgetbrewer.ui.savings
 import android.app.ActivityOptions
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
@@ -25,6 +27,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
+import com.ataraxiagoddess.budgetbrewer.util.GridSpacingItemDecoration
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -58,7 +61,36 @@ class SavingsActivity : BaseActivity() {
             onDeleteClick = { bucket -> showDeleteConfirmationDialog(bucket) },
             onCardClick = { bucket -> showHistoryDialog(bucket) }
         )
-        binding.recyclerViewBuckets.layoutManager = LinearLayoutManager(this)
+        val isTablet = resources.getBoolean(R.bool.is_tablet)
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        when {
+            isTablet -> {
+                val gridLayoutManager = GridLayoutManager(this, 2)
+                binding.recyclerViewBuckets.layoutManager = gridLayoutManager
+                val spacing = resources.getDimensionPixelSize(R.dimen.expenses_grid_spacing)
+                while (binding.recyclerViewBuckets.itemDecorationCount > 0) {
+                    binding.recyclerViewBuckets.removeItemDecorationAt(0)
+                }
+                binding.recyclerViewBuckets.addItemDecoration(
+                    GridSpacingItemDecoration(2, spacing, true)
+                )
+            }
+            !isTablet && isLandscape -> {
+                val gridLayoutManager = GridLayoutManager(this, 2)
+                binding.recyclerViewBuckets.layoutManager = gridLayoutManager
+                val spacing = resources.getDimensionPixelSize(R.dimen.expenses_grid_spacing)
+                while (binding.recyclerViewBuckets.itemDecorationCount > 0) {
+                    binding.recyclerViewBuckets.removeItemDecorationAt(0)
+                }
+                binding.recyclerViewBuckets.addItemDecoration(
+                    GridSpacingItemDecoration(2, spacing, true)
+                )
+            }
+            else -> {
+                binding.recyclerViewBuckets.layoutManager = LinearLayoutManager(this)
+            }
+        }
         binding.recyclerViewBuckets.adapter = adapter
 
         binding.fabAddBucket.setOnClickListener {
