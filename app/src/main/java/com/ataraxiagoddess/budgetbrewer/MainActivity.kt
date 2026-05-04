@@ -4,9 +4,15 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.data.SyncManager
+import com.ataraxiagoddess.budgetbrewer.data.SyncWorker
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity
 import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
@@ -43,9 +49,24 @@ class MainActivity : BaseActivity() {
                 val db = AppDatabase.getDatabase(this@MainActivity)
                 val budgetCount = db.budgetDao().getAllBudgetsSync().size
                 if (budgetCount == 0) {
-                    // No local data, download from cloud
-                    SyncManager(this@MainActivity).downloadAllData(userId)
-                    // No need to refresh manually – Room flows will update the UI
+                    // No local data yet – schedule a one‑time background download
+                    val inputData = androidx.work.Data.Builder()
+                        .putBoolean(SyncWorker.KEY_DOWNLOAD_ALL, true)
+                        .build()
+                    val workRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+                        .setInputData(inputData)
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        )
+                        .build()
+                    WorkManager.getInstance(this@MainActivity)
+                        .enqueueUniqueWork(
+                            "initial_download",
+                            ExistingWorkPolicy.KEEP,
+                            workRequest
+                        )
                 }
             }
         }

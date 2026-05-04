@@ -11,7 +11,25 @@ class SyncWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    companion object {
+        const val KEY_DOWNLOAD_ALL = "download_all"
+    }
+
     override suspend fun doWork(): Result {
+        // If this worker was scheduled for an initial download, do that and return
+        if (inputData.getBoolean(KEY_DOWNLOAD_ALL, false)) {
+            Timber.d("SyncWorker performing initial download")
+            val authManager = AuthManager
+            val userId = authManager.getUserId(applicationContext) ?: return Result.failure()
+            val syncManager = SyncManager(applicationContext)
+            try {
+                syncManager.downloadAllData(userId)
+                return Result.success()
+            } catch (e: Exception) {
+                Timber.e(e, "Initial download failed")
+                return Result.retry()
+            }
+        }
         Timber.d("SyncWorker started")
         val db = AppDatabase.getDatabase(applicationContext)
         val pendingList = db.pendingSyncDao().getAllPendingSync()

@@ -11,9 +11,9 @@ import java.util.UUID
 @Entity(
     tableName = "savings_transactions",
     indices = [
-        Index(value = ["bucket_id"]),  // ✅ Speeds up getTransactionsByBucket()
-        Index(value = ["date"]),       // ✅ Speeds up date-based queries
-        Index(value = ["type"])        // ✅ Speeds up type filtering
+        Index(value = ["bucket_id"]),
+        Index(value = ["date"]),
+        Index(value = ["type"])
     ]
 )
 data class SavingsTransaction(

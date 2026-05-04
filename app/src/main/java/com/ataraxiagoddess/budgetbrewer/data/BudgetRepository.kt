@@ -109,13 +109,6 @@ class BudgetRepository(private val db: AppDatabase) {
     }
 
     /**
-     * Total amount allocated to savings across all budgets.
-     */
-    suspend fun getTotalSavingsAllocated(): Double {
-        return db.allocationDao().getAllAllocations().first().sumOf { it.savingsAmount }
-    }
-
-    /**
      * Total amount distributed to all savings buckets.
      * (This is the sum of all savings transactions – allocations are positive, deductions negative.)
      */
@@ -160,24 +153,6 @@ class BudgetRepository(private val db: AppDatabase) {
         db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
     }
 
-    /**
-     * Withdraw all funds and delete the bucket.
-     * (Already handled by deleteSavingsBucket, but explicit for clarity.)
-     */
-    suspend fun withdrawAndDeleteBucket(bucket: SavingsBucket) {
-        // Insert a WITHDRAWAL record so the pool calculation ignores the old allocations
-        val withdrawalTx = SavingsTransaction(
-            bucket_id = bucket.id,
-            amount = 0.0,
-            date = System.currentTimeMillis(),
-            type = SavingsTransactionType.WITHDRAWAL
-        )
-        db.savingsTransactionDao().insert(withdrawalTx)
-
-        // Delete only the bucket, leaving all transactions (including the new WITHDRAWAL)
-        db.savingsBucketDao().delete(bucket)
-    }
-
     fun getAvailableSavingsPool(): Flow<Double> {
         return combine(
             db.allocationDao().getAllAllocations(),
@@ -194,9 +169,6 @@ class BudgetRepository(private val db: AppDatabase) {
     // --- Savings Transactions ---
     fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> =
         db.savingsTransactionDao().getTransactionsByBucket(bucketId)
-
-    suspend fun insertSavingsTransaction(transaction: SavingsTransaction) =
-        db.savingsTransactionDao().insert(transaction)
 
     suspend fun getAllSavingsTransactions(): List<SavingsTransaction> {
         return db.savingsTransactionDao().getAllTransactions().first()

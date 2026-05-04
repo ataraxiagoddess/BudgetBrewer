@@ -21,7 +21,7 @@ interface SavingsBucketDao {
     suspend fun delete(bucket: SavingsBucket)
 
     @Query("SELECT * FROM savings_buckets WHERE id = :id")
-    suspend fun getBucketById(id: String): SavingsBucket?  // ✅ String parameter
+    suspend fun getBucketById(id: String): SavingsBucket?
 
     @Query("SELECT * FROM savings_buckets ORDER BY created_at DESC")
     fun getAllBuckets(): Flow<List<SavingsBucket>>

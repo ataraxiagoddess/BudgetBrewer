@@ -10,8 +10,8 @@ import java.util.UUID
 @Serializable
 @Entity(
     tableName = "savings_buckets",
-    indices = [  // ✅ Only budget_id is needed for Room scoping
-        Index(value = ["type"])         // ✅ Speeds up filtering by Goal/Growth
+    indices = [
+        Index(value = ["type"])
     ]
 )
 data class SavingsBucket(

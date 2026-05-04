@@ -23,7 +23,7 @@ interface SavingsTransactionDao {
     suspend fun getTotalForBucket(bucketId: String): Double
 
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId ORDER BY date DESC")
-    fun getTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>>  // ✅ String parameter
+    fun getTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>>
 
     @Query("SELECT * FROM savings_transactions WHERE id = :id")
     suspend fun getTransactionById(id: String): SavingsTransaction?
@@ -40,7 +40,6 @@ interface SavingsTransactionDao {
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId AND type = :type ORDER BY date DESC")
     fun getTransactionsByBucketAndType(bucketId: String, type: SavingsTransactionType): Flow<List<SavingsTransaction>>
 
-    // ✅ Manual cascade delete (since we removed @ForeignKey)
     @Query("DELETE FROM savings_transactions WHERE bucket_id = :bucketId")
     suspend fun deleteByBucketId(bucketId: String)
 

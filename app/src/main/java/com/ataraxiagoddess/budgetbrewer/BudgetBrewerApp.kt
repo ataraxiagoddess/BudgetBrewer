@@ -34,12 +34,12 @@ class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
         super<Application>.onCreate()
 
         // Initialize Supabase with session persistence
-        SupabaseClient.initialize(this)
-
-        // Restore user ID if session exists
-        val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
-        if (userId != null) {
-            AuthManager.saveUserId(this, userId)
+        CoroutineScope(Dispatchers.IO).launch {
+            SupabaseClient.initialize(this@BudgetBrewerApp)
+            val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+            if (userId != null) {
+                AuthManager.saveUserId(this@BudgetBrewerApp, userId)
+            }
         }
 
         CurrencyPrefs.init(this)
