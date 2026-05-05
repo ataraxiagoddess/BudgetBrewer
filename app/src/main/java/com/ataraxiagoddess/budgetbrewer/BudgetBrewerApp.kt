@@ -33,12 +33,17 @@ class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
     override fun onCreate() {
         super<Application>.onCreate()
 
+        SupabaseClient.initialize(this)
+
         // Initialize Supabase with session persistence
         CoroutineScope(Dispatchers.IO).launch {
-            SupabaseClient.initialize(this@BudgetBrewerApp)
-            val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
-            if (userId != null) {
-                AuthManager.saveUserId(this@BudgetBrewerApp, userId)
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                if (userId != null) {
+                    AuthManager.saveUserId(this@BudgetBrewerApp, userId)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Session restore failed")
             }
         }
 
