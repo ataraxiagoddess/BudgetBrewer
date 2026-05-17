@@ -13,6 +13,8 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertBudget(budget: Budget) = db.budgetDao().insert(budget)
     fun getBudget(month: Int, year: Int): Flow<Budget?> = db.budgetDao().getBudget(month, year)
     suspend fun getBudgetById(id: String): Budget? = db.budgetDao().getBudgetById(id)
+    fun getPastBudgets(currentMonth: Int, currentYear: Int): Flow<List<Budget>> =
+        db.budgetDao().getPastBudgets(currentMonth, currentYear)
 
     // --- Income ---
     suspend fun insertIncome(income: Income) = db.incomeDao().insert(income)
