@@ -71,6 +71,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import timber.log.Timber
+import java.util.Calendar
 
 @Serializable
 private data class DeleteAccountResponse(
@@ -417,8 +418,14 @@ class SettingsActivity : BaseActivity() {
 
         binding.btnExportCSV.setOnClickListener {
             lifecycleScope.launch {
-                showSnackbar(getString(R.string.preparing_csv_export))
-                val uri = ExportHelper.exportToCSV(this@SettingsActivity)
+                val calendar = Calendar.getInstance()
+                val month = calendar.get(Calendar.MONTH) + 1
+                val year = calendar.get(Calendar.YEAR)
+                val budgetId = repository.getOrCreateBudgetChain(month, year)
+                val label = "${month}_${year}"
+                val uri = ExportHelper.exportBudgetToCSV(
+                    this@SettingsActivity, budgetId, label
+                )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, true)
                 } else {
@@ -429,8 +436,14 @@ class SettingsActivity : BaseActivity() {
 
         binding.btnExportPDF.setOnClickListener {
             lifecycleScope.launch {
-                showSnackbar(getString(R.string.preparing_pdf_export))
-                val uri = ExportHelper.exportToPDF(this@SettingsActivity)
+                val calendar = Calendar.getInstance()
+                val month = calendar.get(Calendar.MONTH) + 1
+                val year = calendar.get(Calendar.YEAR)
+                val budgetId = repository.getOrCreateBudgetChain(month, year)
+                val label = "${month}_${year}"
+                val uri = ExportHelper.exportBudgetToPDF(
+                    this@SettingsActivity, budgetId, label
+                )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, false)
                 } else {
