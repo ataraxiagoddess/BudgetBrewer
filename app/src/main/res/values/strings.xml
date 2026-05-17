@@ -352,8 +352,13 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_out">Sign Out</string>
-    <string name="export_csv">Export as CSV</string>
-    <string name="export_pdf">Export as PDF</string>
+    <string name="export_csv">Export Current Month as CSV</string>
+    <string name="export_pdf">Export Current Month as PDF</string>
+    <string name="past_months">Past Months</string>
+    <string name="export_month_csv">Export as CSV</string>
+    <string name="export_month_pdf">Export as PDF</string>
+    <string name="select_month">Select a month</string>
+    <string name="no_past_months">No past months available</string>
     <string name="enable_pin_lock">Lock app with PIN</string>
     <string name="enable_biometrics">Use biometrics</string>
     <string name="not_signed_in">Not signed in</string>
