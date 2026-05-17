@@ -188,8 +188,9 @@ class SettingsActivity : BaseActivity() {
             binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
             binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         }
-        binding.btnArchivedMonths.setOnClickListener {
-            showSnackbar(getString(R.string.archive_months_placeholder))
+        binding.btnPastMonths.setOnClickListener {
+            val intent = Intent(this, PastMonthsActivity::class.java)
+            startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
         }
         binding.btnArchivedBuckets.setOnClickListener {
             val intent = Intent(this, ArchivedBucketsActivity::class.java)
@@ -303,6 +304,7 @@ class SettingsActivity : BaseActivity() {
             binding.btnSignOut.visibility = View.VISIBLE
             binding.btnExportCSV.visibility = View.VISIBLE
             binding.btnExportPDF.visibility = View.VISIBLE
+            binding.btnPastMonths.visibility = View.VISIBLE
             binding.switchPinLock.visibility = View.VISIBLE
             binding.switchBiometrics.visibility = View.VISIBLE
             binding.btnChangePin.visibility = View.VISIBLE
@@ -399,6 +401,7 @@ class SettingsActivity : BaseActivity() {
             binding.btnSignOut.visibility = View.GONE
             binding.btnExportCSV.visibility = View.GONE
             binding.btnExportPDF.visibility = View.GONE
+            binding.btnPastMonths.visibility = View.GONE
             binding.switchPinLock.visibility = View.GONE
             binding.switchBiometrics.visibility = View.GONE
             binding.btnChangePin.visibility = View.GONE
