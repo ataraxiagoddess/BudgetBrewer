@@ -77,6 +77,13 @@ class PastMonthsActivity : BaseActivity() {
         val adapter = object : ArrayAdapter<String>(
             this, android.R.layout.simple_spinner_item, monthNames
         ) {
+            override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
+                view.setTextColor(getColor(R.color.text_on_main))
+                return view
+            }
+
             override fun getDropDownView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
                 val view = super.getDropDownView(position, convertView, parent) as TextView
                 view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
@@ -139,16 +146,19 @@ class PastMonthsActivity : BaseActivity() {
             orientation = android.widget.LinearLayout.HORIZONTAL
             setPadding(16, 8, 16, 8)
         }
+        val exoRegular = ResourcesCompat.getFont(this, R.font.exo_regular)
         val labelTv = TextView(this).apply {
             text = label
             setTextColor(getColor(R.color.text_on_main))
             textSize = 14f
+            typeface = exoRegular
             layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
         }
         val valueTv = TextView(this).apply {
             text = value
             setTextColor(getColor(R.color.text_on_main))
             textSize = 14f
+            typeface = exoRegular
         }
         row.addView(labelTv)
         row.addView(valueTv)
