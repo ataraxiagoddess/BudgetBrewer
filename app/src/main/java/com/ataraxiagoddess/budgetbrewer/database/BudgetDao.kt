@@ -20,6 +20,9 @@ interface BudgetDao {
     @Query("SELECT * FROM budgets")
     suspend fun getAllBudgetsSync(): List<Budget>
 
+    @Query("SELECT * FROM budgets WHERE (year < :currentYear OR (year = :currentYear AND month < :currentMonth)) ORDER BY year DESC, month DESC")
+    fun getPastBudgets(currentMonth: Int, currentYear: Int): Flow<List<Budget>>
+
     @Query("SELECT * FROM budgets WHERE id = :id")
     suspend fun getBudgetById(id: String): Budget?
 
