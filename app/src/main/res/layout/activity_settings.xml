@@ -92,6 +92,14 @@
                 android:text="@string/export_pdf"
                 android:visibility="gone" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPastMonths"
+                style="@style/Widget.BudgetBrewer.Button.Container"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="@string/past_months"
+                android:visibility="gone" />
+
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchPinLock"
                 android:layout_width="match_parent"
@@ -234,13 +242,6 @@
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
             android:visibility="gone">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnArchivedMonths"
-                style="@style/Widget.BudgetBrewer.Button.Container"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="@string/archive_months" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnArchivedBuckets"
