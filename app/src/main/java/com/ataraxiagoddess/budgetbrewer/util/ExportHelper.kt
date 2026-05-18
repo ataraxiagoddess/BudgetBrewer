@@ -220,37 +220,40 @@ object ExportHelper {
         val tableStartX = margin + 15f
         val usableWidth = pageInfo.pageWidth - 2 * margin
 
-        // Initialize page
+        // Load the budget
+        val budget = db.budgetDao().getBudgetById(budgetId) ?: return byteArrayOf()
+
+        // Initialize first page
         var page = document.startPage(pageInfo)
         var canvas = page.canvas
         canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
-        var y = margin
 
-        // Header background
+        // Header background (same on every page)
         val headerBgPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
-        canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 110f, headerBgPaint)
-
-        // Logo
-        val logo = BitmapFactory.decodeResource(context.resources, R.drawable.budget_brewer_logo)
-        val logoSize = 80f
-        canvas.drawBitmap(logo.scale(logoSize.toInt(), logoSize.toInt()), margin + 20f, y + 15f, null)
-
-        // Budget month/year subtitle
-        val budget = db.budgetDao().getBudgetById(budgetId) ?: return byteArrayOf()
-        canvas.drawText("Budget Brewer", margin + 20f + logoSize + 15f, y + logoSize / 2 + 15f, titlePaint)
-        canvas.drawText("${budget.month}/${budget.year}", margin + 20f + logoSize + 15f, y + logoSize / 2 + 35f, subtitlePaint)
-
-        y += 110f
-        // Generation date strip
         val genBgPaint = Paint().apply { color = lavender; style = Paint.Style.FILL }
-        canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 30f, genBgPaint)
         val genPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = regularTypeface; textSize = 12f; color = darkText
         }
-        canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, y + 20f, genPaint)
-        y += 40f
 
-        // ===== TABLE DRAWING HELPERS =====
+        // ---- Page‑header drawing lambda (used for first page and page breaks) ----
+        fun drawPageHeader(canvas: Canvas, startingY: Float): Float {
+            var yPos = startingY
+            // Teal strip
+            canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 110f, headerBgPaint)
+            // Titles
+            canvas.drawText("Budget Brewer", margin + 20f, yPos + 55f, titlePaint)
+            canvas.drawText("${budget.month}/${budget.year}", margin + 20f, yPos + 75f, subtitlePaint)
+            yPos += 110f
+            // Lavender generation‑date strip
+            canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 30f, genBgPaint)
+            canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, yPos + 20f, genPaint)
+            yPos += 30f + 40f   // gap after header
+            return yPos
+        }
+
+        var y = drawPageHeader(canvas, margin)
+
+        // ===== TABLE HELPERS =====
         fun drawTableHeader(cols: List<Pair<String, Float>>) {
             val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
             var x = tableStartX
@@ -287,15 +290,7 @@ object ExportHelper {
                 page = document.startPage(pageInfo)
                 canvas = page.canvas
                 canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
-                y = margin
-                canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 80f, headerBgPaint)
-                canvas.drawBitmap(logo.scale(logoSize.toInt(), logoSize.toInt()), margin + 20f, y + 10f, null)
-                canvas.drawText("Budget Brewer", margin + 20f + logoSize + 15f, y + logoSize / 2 + 15f, titlePaint)
-                canvas.drawText("${budget.month}/${budget.year}", margin + 20f + logoSize + 15f, y + logoSize / 2 + 35f, subtitlePaint)
-                y += 80f
-                canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 20f, genBgPaint)
-                canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, y + 14f, genPaint)
-                y += 30f
+                y = drawPageHeader(canvas, margin)   // full header on new page
             }
         }
 
@@ -316,7 +311,7 @@ object ExportHelper {
             y += 10f
         }
 
-        // ===== SECTIONS =====
+        // ===== SECTIONS (unchanged) =====
         val budgetRows = listOf(listOf("${budget.month}/${budget.year}", budget.year.toString()))
         drawSection("BUDGET", listOf("Month" to 1f, "Year" to 1f), budgetRows)
 
@@ -402,7 +397,6 @@ object ExportHelper {
             }
         drawSection("DAILY INCOME ASSIGNMENTS", listOf("Income Source" to 2f, "Day" to 1f), diaRows)
 
-        // Footer
         drawFooter(canvas, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
 
         document.finishPage(page)
