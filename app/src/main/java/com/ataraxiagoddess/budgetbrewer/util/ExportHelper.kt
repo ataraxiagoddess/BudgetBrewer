@@ -3,16 +3,17 @@ package com.ataraxiagoddess.budgetbrewer.util
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.scale
+import androidx.core.graphics.toColorInt
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.RecurrenceType
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
@@ -32,354 +33,9 @@ object ExportHelper {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
     private val shortDateFormat = SimpleDateFormat("MMM d, yyyy", Locale.US)
 
-    // ------------------------------------------------------------------------
-    // CSV Export
-    // ------------------------------------------------------------------------
-    suspend fun exportToCSV(context: Context): Uri? = withContext(Dispatchers.IO) {
-        CurrencyPrefs.init(context)
-        val db = AppDatabase.getDatabase(context)
-        val csvContent = buildCSV(db)
-        saveToDownloads(context, "BudgetBrewer_Export.csv", csvContent)
-    }
-
-    private suspend fun buildCSV(db: AppDatabase): ByteArray {
-        val sb = StringBuilder()
-        val locale = Locale.getDefault()
-
-        fun writeSection(title: String) {
-            sb.append("\n\n").append(title).append("\n")
-        }
-
-        fun writeRow(vararg values: String) {
-            sb.append(values.joinToString(",") { escapeCSV(it) }).append("\n")
-        }
-
-        fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
-        fun formatWithCurrency(amount: Double, currencyValue: String) =
-            CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
-
-        // 1. Budgets
-        writeSection("BUDGETS")
-        writeRow("Month", "Year")
-        db.budgetDao().getAllBudgetsSync().forEach { budget ->
-            writeRow("${budget.month}/${budget.year}", budget.year.toString())
-        }
-
-        // 2. Incomes
-        writeSection("INCOMES")
-        writeRow("Budget Month", "Source", "Amount", "Frequency", "Tips?")
-        db.incomeDao().getAllIncomesSync().forEach { inc ->
-            val budget = db.budgetDao().getBudgetById(inc.budgetId)
-            val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            writeRow(monthYear, inc.sourceName, formatWithCurrency(inc.amount, inc.currency),
-                inc.frequency.name, if (inc.isTips) "Yes" else "No")
-        }
-
-        // 3. Expense Categories
-        writeSection("EXPENSE CATEGORIES")
-        writeRow("Budget Month", "Category Name")
-        db.expenseCategoryDao().getAllCategoriesSync().forEach { cat ->
-            val budget = db.budgetDao().getBudgetById(cat.budgetId)
-            val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            writeRow(monthYear, cat.name)
-        }
-
-        // 4. Expenses
-        writeSection("EXPENSES")
-        writeRow("Budget Month", "Category", "Description", "Amount", "Due Date", "Recurrence")
-        db.expenseDao().getAllExpensesSync()
-            .sortedBy { it.dueDate }
-            .forEach { exp ->
-                val category = db.expenseCategoryDao().getCategoryById(exp.categoryId)
-                val catName = category?.name ?: "Unknown"
-                val budget = if (category != null) db.budgetDao().getBudgetById(category.budgetId) else null
-                val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                val recurrence = when (exp.recurrenceType) {
-                    RecurrenceType.NONE -> "One‑time"
-                    RecurrenceType.MONTHLY_SAME_DAY -> "Monthly"
-                    RecurrenceType.EVERY_X_DAYS -> "Every ${exp.recurrenceInterval} days"
-                }
-                writeRow(monthYear, catName, exp.description, formatCurrent(exp.amount),
-                    shortDateFormat.format(Date(exp.dueDate)), recurrence)
-            }
-
-        // 5. Allocations
-        writeSection("ALLOCATIONS")
-        writeRow("Budget Month", "Savings", "Spending")
-        db.allocationDao().getAllAllocationsSync().forEach { alloc ->
-            val budget = db.budgetDao().getBudgetById(alloc.budgetId)
-            val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
-            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
-            writeRow(monthYear, savings, spending)
-        }
-
-        // 6. Savings Buckets
-        writeSection("SAVINGS BUCKETS")
-        writeRow("Bucket Name", "Type", "Target", "Current", "Archived")
-        val allBuckets = db.savingsBucketDao().getAllBucketsSync()
-        allBuckets.forEach { bucket ->
-            val target = bucket.target_amount?.let { formatCurrent(it) } ?: ""
-            writeRow(
-                bucket.name,
-                bucket.type.name,
-                target,
-                formatCurrent(bucket.current_amount),
-                if (bucket.is_archived) "Yes" else "No"
-            )
-        }
-
-        // 7. Savings Transactions
-        writeSection("SAVINGS TRANSACTIONS")
-        writeRow("Bucket Name", "Amount", "Date", "Type")
-        val bucketMap = allBuckets.associateBy { it.id }
-        db.savingsTransactionDao().getAllTransactionsSync()
-            .sortedBy { it.date }
-            .forEach { tx ->
-                val bucketName = bucketMap[tx.bucket_id]?.name ?: "Unknown"
-                writeRow(
-                    bucketName,
-                    formatCurrent(tx.amount),
-                    shortDateFormat.format(Date(tx.date)),
-                    tx.type.name
-                )
-            }
-
-        // 8. Daily Checklist – only days that actually have expenses
-        writeSection("DAILY CHECKLIST")
-        writeRow("Budget Month", "Day", "Checked?")
-        val activeDays = getActiveDays(db)
-        db.dailyChecklistDao().getAllChecklistSync()
-            .filter { activeDays.contains(Pair(it.budgetId, it.dayOfMonth)) }
-            .sortedBy { it.dayOfMonth }
-            .forEach { item ->
-                val budget = db.budgetDao().getBudgetById(item.budgetId)
-                val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                writeRow(monthYear, item.dayOfMonth.toString(), if (item.isChecked) "Yes" else "No")
-            }
-
-        // 9. Spending Entries
-        writeSection("SPENDING ENTRIES")
-        writeRow("Budget Month", "Date", "Source", "Amount")
-        db.spendingEntryDao().getAllSpendingEntriesSync()
-            .sortedBy { it.date }
-            .forEach { entry ->
-                val budget = db.budgetDao().getBudgetById(entry.budgetId)
-                val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                writeRow(monthYear, shortDateFormat.format(Date(entry.date)), entry.source,
-                    formatCurrent(entry.amount))
-            }
-
-        // 10. Month Settings
-        writeSection("MONTH SETTINGS")
-        writeRow("Budget Month", "Start Amount", "Overridden?")
-        db.monthSettingsDao().getAllMonthSettingsSync().forEach { ms ->
-            val budget = db.budgetDao().getBudgetById(ms.budgetId)
-            val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            writeRow(monthYear, formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No")
-        }
-
-        // 11. Daily Income Assignments
-        writeSection("DAILY INCOME ASSIGNMENTS")
-        writeRow("Budget Month", "Income Source", "Day")
-        db.dailyIncomeAssignmentDao().getAllAssignmentsSync()
-            .sortedBy { it.dayOfMonth }
-            .forEach { dia ->
-                val income = db.incomeDao().getIncomeById(dia.incomeId)
-                val source = income?.sourceName ?: "Unknown"
-                val budget = db.budgetDao().getBudgetById(dia.budgetId)
-                val monthYear = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                writeRow(monthYear, source, dia.dayOfMonth.toString())
-            }
-
-        return sb.toString().toByteArray()
-    }
-
-    private fun escapeCSV(value: String): String {
-        return if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
-            "\"" + value.replace("\"", "\"\"") + "\""
-        } else value
-    }
-
-    // ------------------------------------------------------------------------
-    // PDF Export (simplified, readable layout)
-    // ------------------------------------------------------------------------
-    suspend fun exportToPDF(context: Context): Uri? = withContext(Dispatchers.IO) {
-        CurrencyPrefs.init(context)
-        val db = AppDatabase.getDatabase(context)
-        val pdfBytes = buildPDF(context, db)
-        saveToDownloads(context, "BudgetBrewer_Export.pdf", pdfBytes)
-    }
-
-    private suspend fun buildPDF(context: Context, db: AppDatabase): ByteArray {
-        val document = PdfDocument()
-        val locale = Locale.getDefault()
-        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4 portrait
-        val regularTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular) ?: Typeface.DEFAULT
-        val boldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold) ?: Typeface.DEFAULT_BOLD
-        var page = document.startPage(pageInfo)
-        var canvas = page.canvas
-
-        val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 18f
-            color = Color.BLACK
-            typeface = boldTypeface
-        }
-        val headingPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 14f
-            color = Color.BLACK
-            typeface = boldTypeface
-        }
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 10f
-            color = Color.DKGRAY
-            typeface = regularTypeface
-        }
-
-        val leftMargin = 40f
-        val indent = 20f
-        var y = 40f
-        val lineHeight = 16f
-        fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
-        fun formatWithCurrency(amount: Double, currencyValue: String) =
-            CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
-
-        fun checkNewPage() {
-            if (y > pageInfo.pageHeight - 60) {
-                document.finishPage(page)
-                page = document.startPage(pageInfo)
-                canvas = page.canvas
-                y = 40f
-            }
-        }
-
-        // Title
-        canvas.drawText("Budget Brewer Export", leftMargin, y, titlePaint)
-        y += lineHeight * 1.5f
-        canvas.drawText("Generated: ${dateFormat.format(Date())}", leftMargin, y, textPaint)
-        y += lineHeight * 2f
-
-        // Helper to write a section
-        fun writeSection(title: String, content: List<String>) {
-            checkNewPage()
-            canvas.drawText(title, leftMargin, y, headingPaint)
-            y += lineHeight
-            content.forEach { line ->
-                checkNewPage()
-                canvas.drawText("• $line", leftMargin + indent, y, textPaint)
-                y += lineHeight
-            }
-            y += lineHeight
-        }
-
-        // Build content lists
-        val budgets = db.budgetDao().getAllBudgetsSync().map { "${it.month}/${it.year}" }
-        writeSection("BUDGETS", budgets)
-
-        val incomes = db.incomeDao().getAllIncomesSync().map { inc ->
-            val budget = db.budgetDao().getBudgetById(inc.budgetId)
-            val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            val amountDisplay = formatWithCurrency(inc.amount, inc.currency)
-            "${inc.sourceName}: $amountDisplay (${inc.frequency}) - ${if (inc.isTips) "Tips" else "Regular"} – $month"
-        }
-        writeSection("INCOMES", incomes)
-
-        val categories = db.expenseCategoryDao().getAllCategoriesSync().map { cat ->
-            val budget = db.budgetDao().getBudgetById(cat.budgetId)
-            val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            "${cat.name} – $month"
-        }
-        writeSection("EXPENSE CATEGORIES", categories)
-
-        val expenses = db.expenseDao().getAllExpensesSync()
-            .sortedBy { it.dueDate }
-            .map { exp ->
-                val cat = db.expenseCategoryDao().getCategoryById(exp.categoryId)
-                val catName = cat?.name ?: "Unknown"
-                val budget = if (cat != null) db.budgetDao().getBudgetById(cat.budgetId) else null
-                val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                val recurrence = when (exp.recurrenceType) {
-                    RecurrenceType.NONE -> "One‑time"
-                    RecurrenceType.MONTHLY_SAME_DAY -> "Monthly"
-                    RecurrenceType.EVERY_X_DAYS -> "Every ${exp.recurrenceInterval} days"
-                }
-                "${exp.description}: ${formatCurrent(exp.amount)} due ${shortDateFormat.format(Date(exp.dueDate))} (${recurrence}) – $catName – $month"
-            }
-        writeSection("EXPENSES", expenses)
-
-        val allocations = db.allocationDao().getAllAllocationsSync().map { alloc ->
-            val budget = db.budgetDao().getBudgetById(alloc.budgetId)
-            val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
-            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
-            "Savings: $savings, Spending: $spending – $month"
-        }
-        writeSection("ALLOCATIONS", allocations)
-
-        // Savings Buckets
-        val savingsBucketList = db.savingsBucketDao().getAllBucketsSync().map { bucket ->
-            val targetStr = bucket.target_amount?.let { "Target: ${formatCurrent(it)}" } ?: ""
-            val archived = if (bucket.is_archived) " [Archived]" else ""
-            "${bucket.name} (${bucket.type.name}) – $targetStr Current: ${formatCurrent(bucket.current_amount)}$archived"
-        }
-        writeSection("SAVINGS BUCKETS", savingsBucketList)
-
-        // Savings Transactions
-        val allTx = db.savingsTransactionDao().getAllTransactionsSync()
-            .sortedBy { it.date }
-        val txBucketMap = db.savingsBucketDao().getAllBucketsSync().associateBy { it.id }
-        val savingsTxList = allTx.map { tx ->
-            val bucketName = txBucketMap[tx.bucket_id]?.name ?: "Unknown"
-            "${shortDateFormat.format(Date(tx.date))} – ${tx.type.name}: ${formatCurrent(tx.amount)} (Bucket: $bucketName)"
-        }
-        writeSection("SAVINGS TRANSACTIONS", savingsTxList)
-
-        val spendingEntries = db.spendingEntryDao().getAllSpendingEntriesSync()
-            .sortedBy { it.date }
-            .map { entry ->
-                val budget = db.budgetDao().getBudgetById(entry.budgetId)
-                val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                "${shortDateFormat.format(Date(entry.date))}: ${entry.source} – ${formatCurrent(entry.amount)} – $month"
-            }
-        writeSection("SPENDING ENTRIES", spendingEntries)
-
-        val activeDays = getActiveDays(db)
-        val checklist = db.dailyChecklistDao().getAllChecklistSync()
-            .filter { item -> activeDays.contains(Pair(item.budgetId, item.dayOfMonth)) }
-            .sortedBy { it.dayOfMonth }
-            .map { item ->
-                val budget = db.budgetDao().getBudgetById(item.budgetId)
-                val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                "Day ${item.dayOfMonth}: ${if (item.isChecked) "✓" else "✗"} – $month"
-            }
-        writeSection("DAILY CHECKLIST", checklist)
-
-        val monthSettings = db.monthSettingsDao().getAllMonthSettingsSync().map { ms ->
-            val budget = db.budgetDao().getBudgetById(ms.budgetId)
-            val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-            "Start amount: ${formatCurrent(ms.monthStartAmount)} (overridden: ${if (ms.monthStartOverridden) "Yes" else "No"}) – $month"
-        }
-        writeSection("MONTH SETTINGS", monthSettings)
-
-        val incomeAssignments = db.dailyIncomeAssignmentDao().getAllAssignmentsSync()
-            .sortedBy { it.dayOfMonth }
-            .map { dia ->
-                val income = db.incomeDao().getIncomeById(dia.incomeId)
-                val source = income?.sourceName ?: "Unknown"
-                val budget = db.budgetDao().getBudgetById(dia.budgetId)
-                val month = if (budget != null) "${budget.month}/${budget.year}" else "Unknown"
-                "$source assigned to day ${dia.dayOfMonth} – $month"
-            }
-        writeSection("DAILY INCOME ASSIGNMENTS", incomeAssignments)
-
-        document.finishPage(page)
-        val stream = ByteArrayOutputStream()
-        document.writeTo(stream)
-        document.close()
-        return stream.toByteArray()
-    }
-
-    // Budget-scoped CSV export
+    // ========================================================================
+    // Budget‑scoped CSV export
+    // ========================================================================
     suspend fun exportBudgetToCSV(context: Context, budgetId: String, monthLabel: String): Uri? =
         withContext(Dispatchers.IO) {
             CurrencyPrefs.init(context)
@@ -453,13 +109,8 @@ object ExportHelper {
         val allBuckets = db.savingsBucketDao().getAllBucketsSync()
         allBuckets.forEach { bucket ->
             val target = bucket.target_amount?.let { formatCurrent(it) } ?: ""
-            writeRow(
-                bucket.name,
-                bucket.type.name,
-                target,
-                formatCurrent(bucket.current_amount),
-                if (bucket.is_archived) "Yes" else "No"
-            )
+            writeRow(bucket.name, bucket.type.name, target, formatCurrent(bucket.current_amount),
+                if (bucket.is_archived) "Yes" else "No")
         }
 
         // Savings Transactions
@@ -470,12 +121,8 @@ object ExportHelper {
             .sortedBy { it.date }
             .forEach { tx ->
                 val bucketName = bucketMap[tx.bucket_id]?.name ?: "Unknown"
-                writeRow(
-                    bucketName,
-                    formatCurrent(tx.amount),
-                    shortDateFormat.format(Date(tx.date)),
-                    tx.type.name
-                )
+                writeRow(bucketName, formatCurrent(tx.amount),
+                    shortDateFormat.format(Date(tx.date)), tx.type.name)
             }
 
         // Spending Entries
@@ -520,7 +167,15 @@ object ExportHelper {
         return sb.toString().toByteArray()
     }
 
-    // Budget-scoped PDF export
+    private fun escapeCSV(value: String): String {
+        return if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            "\"" + value.replace("\"", "\"\"") + "\""
+        } else value
+    }
+
+    // ========================================================================
+    // Budget‑scoped PDF export (beautified with tables and branded header)
+    // ========================================================================
     suspend fun exportBudgetToPDF(context: Context, budgetId: String, monthLabel: String): Uri? =
         withContext(Dispatchers.IO) {
             CurrencyPrefs.init(context)
@@ -533,126 +188,222 @@ object ExportHelper {
         val document = PdfDocument()
         val locale = Locale.getDefault()
         val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
-        val regularTypeface = ResourcesCompat.getFont(context, R.font.roboto_regular) ?: Typeface.DEFAULT
-        val boldTypeface = ResourcesCompat.getFont(context, R.font.roboto_bold) ?: Typeface.DEFAULT_BOLD
-        var page = document.startPage(pageInfo)
-        var canvas = page.canvas
+
+        val regularTypeface = ResourcesCompat.getFont(context, R.font.exo_regular) ?: Typeface.DEFAULT
+        val boldTypeface = ResourcesCompat.getFont(context, R.font.exo_semi_bold) ?: Typeface.DEFAULT_BOLD
+
+        val teal = ContextCompat.getColor(context, R.color.md_theme_light_primary)
+        val lavender = ContextCompat.getColor(context, R.color.lavender)
+        val darkText = "#2E2E2E".toColorInt()
 
         val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 18f; color = Color.BLACK; typeface = boldTypeface
+            typeface = ResourcesCompat.getFont(context, R.font.blkchcry) ?: boldTypeface
+            textSize = 36f; color = Color.WHITE; isFakeBoldText = true
+        }
+        val subtitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularTypeface; textSize = 18f; color = Color.WHITE
         }
         val headingPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 14f; color = Color.BLACK; typeface = boldTypeface
+            typeface = boldTypeface; textSize = 13f; color = darkText
         }
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = 10f; color = Color.DKGRAY; typeface = regularTypeface
+        val cellPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularTypeface; textSize = 10f; color = darkText
         }
+        val linePaint = Paint().apply { color = Color.LTGRAY; strokeWidth = 0.5f }
+        val borderPaint = Paint().apply { color = teal; strokeWidth = 4f; style = Paint.Style.STROKE }
 
-        val leftMargin = 40f; val indent = 20f; var y = 40f; val lineHeight = 16f
         fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
         fun formatWithCurrency(amount: Double, currencyValue: String) =
             CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
 
+        val margin = 30f
+        val tableStartX = margin + 15f
+        val usableWidth = pageInfo.pageWidth - 2 * margin
+
+        // Initialize page
+        var page = document.startPage(pageInfo)
+        var canvas = page.canvas
+        canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
+        var y = margin
+
+        // Header background
+        val headerBgPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
+        canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 110f, headerBgPaint)
+
+        // Logo
+        val logo = BitmapFactory.decodeResource(context.resources, R.drawable.budget_brewer_logo)
+        val logoSize = 80f
+        canvas.drawBitmap(logo.scale(logoSize.toInt(), logoSize.toInt()), margin + 20f, y + 15f, null)
+
+        // Budget month/year subtitle
+        val budget = db.budgetDao().getBudgetById(budgetId) ?: return byteArrayOf()
+        canvas.drawText("Budget Brewer", margin + 20f + logoSize + 15f, y + logoSize / 2 + 15f, titlePaint)
+        canvas.drawText("${budget.month}/${budget.year}", margin + 20f + logoSize + 15f, y + logoSize / 2 + 35f, subtitlePaint)
+
+        y += 110f
+        // Generation date strip
+        val genBgPaint = Paint().apply { color = lavender; style = Paint.Style.FILL }
+        canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 30f, genBgPaint)
+        val genPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularTypeface; textSize = 12f; color = darkText
+        }
+        canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, y + 20f, genPaint)
+        y += 40f
+
+        // ===== TABLE DRAWING HELPERS =====
+        fun drawTableHeader(cols: List<Pair<String, Float>>) {
+            val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
+            var x = tableStartX
+            val headerRectPaint = Paint().apply { color = lavender; style = Paint.Style.FILL }
+            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 22f, headerRectPaint)
+            for ((label, weight) in cols) {
+                val colWidth = (usableWidth - 30f) * (weight / totalWeight)
+                canvas.drawText(label, x + 3f, y + 15f, headingPaint)
+                x += colWidth + 10f
+            }
+            y += 24f
+        }
+
+        fun drawRow(cells: List<String>, cols: List<Pair<String, Float>>, isAlternate: Boolean) {
+            if (isAlternate) {
+                val altPaint = Paint().apply { color = lavender; style = Paint.Style.FILL; alpha = 80 }
+                canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 20f, altPaint)
+            }
+            val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
+            var x = tableStartX
+            for ((cell, col) in cells.zip(cols)) {
+                val colWidth = (usableWidth - 30f) * (col.second / totalWeight)
+                canvas.drawText(cell, x + 3f, y + 14f, cellPaint)
+                x += colWidth + 10f
+            }
+            y += 18f
+            canvas.drawLine(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y, linePaint)
+        }
+
         fun checkNewPage() {
-            if (y > pageInfo.pageHeight - 60) {
+            if (y > pageInfo.pageHeight - margin - 60f) {
+                drawFooter(canvas, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
                 document.finishPage(page)
                 page = document.startPage(pageInfo)
                 canvas = page.canvas
-                y = 40f
+                canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
+                y = margin
+                canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 80f, headerBgPaint)
+                canvas.drawBitmap(logo.scale(logoSize.toInt(), logoSize.toInt()), margin + 20f, y + 10f, null)
+                canvas.drawText("Budget Brewer", margin + 20f + logoSize + 15f, y + logoSize / 2 + 15f, titlePaint)
+                canvas.drawText("${budget.month}/${budget.year}", margin + 20f + logoSize + 15f, y + logoSize / 2 + 35f, subtitlePaint)
+                y += 80f
+                canvas.drawRect(margin, y, pageInfo.pageWidth - margin, y + 20f, genBgPaint)
+                canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, y + 14f, genPaint)
+                y += 30f
             }
         }
 
-        fun writeSection(title: String, content: List<String>) {
+        fun drawSection(title: String, cols: List<Pair<String, Float>>, rows: List<List<String>>) {
             checkNewPage()
-            canvas.drawText(title, leftMargin, y, headingPaint)
-            y += lineHeight
-            content.forEach { line ->
-                checkNewPage()
-                canvas.drawText("• $line", leftMargin + indent, y, textPaint)
-                y += lineHeight
+            val sectionPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
+            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 24f, sectionPaint)
+            val sectionTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                typeface = boldTypeface; textSize = 14f; color = Color.WHITE
             }
-            y += lineHeight
+            canvas.drawText(title, tableStartX + 5f, y + 17f, sectionTextPaint)
+            y += 28f
+            drawTableHeader(cols)
+            rows.forEachIndexed { idx, row ->
+                checkNewPage()
+                drawRow(row, cols, idx % 2 == 1)
+            }
+            y += 10f
         }
 
-        val budget = db.budgetDao().getBudgetById(budgetId) ?: return byteArrayOf()
-        canvas.drawText("Budget Brewer Export - ${budget.month}/${budget.year}", leftMargin, y, titlePaint)
-        y += lineHeight * 1.5f
-        canvas.drawText("Generated: ${dateFormat.format(Date())}", leftMargin, y, textPaint)
-        y += lineHeight * 2f
+        // ===== SECTIONS =====
+        val budgetRows = listOf(listOf("${budget.month}/${budget.year}", budget.year.toString()))
+        drawSection("BUDGET", listOf("Month" to 1f, "Year" to 1f), budgetRows)
 
-        val incomes = db.incomeDao().getIncomesForBudget(budgetId).first().map { inc ->
-            "${inc.sourceName}: ${formatWithCurrency(inc.amount, inc.currency)} (${inc.frequency})${if (inc.isTips) " - Tips" else ""}"
+        val incomeRows = db.incomeDao().getIncomesForBudget(budgetId).first().map { inc ->
+            listOf(inc.sourceName, formatWithCurrency(inc.amount, inc.currency),
+                inc.frequency.name, if (inc.isTips) "Yes" else "No")
         }
-        writeSection("INCOMES", incomes)
+        drawSection("INCOMES", listOf("Source" to 1.5f, "Amount" to 1f, "Frequency" to 0.8f, "Tips?" to 0.5f), incomeRows)
 
-        val categories = db.expenseCategoryDao().getCategoriesForBudget(budgetId).first().map { it.name }
-        writeSection("EXPENSE CATEGORIES", categories)
+        val catRows = db.expenseCategoryDao().getCategoriesForBudget(budgetId).first().map { listOf(it.name) }
+        drawSection("EXPENSE CATEGORIES", listOf("Category Name" to 2f), catRows)
 
-        val expenses = db.expenseDao().getExpensesForBudget(budgetId).first()
+        val expenseRows = db.expenseDao().getExpensesForBudget(budgetId).first()
             .sortedBy { it.dueDate }
             .map { exp ->
-                val cat = db.expenseCategoryDao().getCategoryById(exp.categoryId)
-                "${exp.description}: ${formatCurrent(exp.amount)} due ${shortDateFormat.format(Date(exp.dueDate))} - ${cat?.name ?: "Unknown"}"
+                val category = db.expenseCategoryDao().getCategoryById(exp.categoryId)
+                val catName = category?.name ?: "Unknown"
+                val recurrence = when (exp.recurrenceType) {
+                    RecurrenceType.NONE -> "One‑time"
+                    RecurrenceType.MONTHLY_SAME_DAY -> "Monthly"
+                    RecurrenceType.EVERY_X_DAYS -> "Every ${exp.recurrenceInterval} days"
+                }
+                listOf(catName, exp.description, formatCurrent(exp.amount),
+                    shortDateFormat.format(Date(exp.dueDate)), recurrence)
             }
-        writeSection("EXPENSES", expenses)
+        drawSection("EXPENSES", listOf("Category" to 1f, "Description" to 2f, "Amount" to 1f,
+            "Due Date" to 1.5f, "Recurrence" to 1.5f), expenseRows)
 
-        val allocations = db.allocationDao().getAllocationForBudget(budgetId).first()?.let { alloc ->
+        val allocRows = db.allocationDao().getAllocationForBudget(budgetId).first()?.let { alloc ->
             val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
             val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
-            listOf("Savings: $savings, Spending: $spending")
+            listOf(listOf(savings, spending))
         } ?: emptyList()
-        writeSection("ALLOCATIONS", allocations)
-
-        // Savings Buckets
-        val savingsBucketList = db.savingsBucketDao().getAllBucketsSync().map { bucket ->
-            val targetStr = bucket.target_amount?.let { "Target: ${formatCurrent(it)}" } ?: ""
-            val archived = if (bucket.is_archived) " [Archived]" else ""
-            "${bucket.name} (${bucket.type.name}) – $targetStr Current: ${formatCurrent(bucket.current_amount)}$archived"
+        if (allocRows.isNotEmpty()) {
+            drawSection("ALLOCATIONS", listOf("Savings" to 1f, "Spending" to 1f), allocRows)
         }
-        writeSection("SAVINGS BUCKETS", savingsBucketList)
 
-        // Savings Transactions
-        val allTx = db.savingsTransactionDao().getAllTransactionsSync()
+        val allBuckets = db.savingsBucketDao().getAllBucketsSync()
+        val bucketRows = allBuckets.map { bucket ->
+            val target = bucket.target_amount?.let { formatCurrent(it) } ?: ""
+            listOf(bucket.name, bucket.type.name, target, formatCurrent(bucket.current_amount),
+                if (bucket.is_archived) "Yes" else "No")
+        }
+        drawSection("SAVINGS BUCKETS", listOf("Bucket Name" to 2f, "Type" to 1f, "Target" to 1f,
+            "Current" to 1f, "Archived" to 1f), bucketRows)
+
+        val txRows = db.savingsTransactionDao().getAllTransactionsSync()
             .sortedBy { it.date }
-        val txBucketMap = db.savingsBucketDao().getAllBucketsSync().associateBy { it.id }
-        val savingsTxList = allTx.map { tx ->
-            val bucketName = txBucketMap[tx.bucket_id]?.name ?: "Unknown"
-            "${shortDateFormat.format(Date(tx.date))} – ${tx.type.name}: ${formatCurrent(tx.amount)} (Bucket: $bucketName)"
-        }
-        writeSection("SAVINGS TRANSACTIONS", savingsTxList)
+            .map { tx ->
+                val bucketName = allBuckets.associateBy { it.id }[tx.bucket_id]?.name ?: "Unknown"
+                listOf(bucketName, formatCurrent(tx.amount), shortDateFormat.format(Date(tx.date)), tx.type.name)
+            }
+        drawSection("SAVINGS TRANSACTIONS", listOf("Bucket Name" to 2f, "Amount" to 1f,
+            "Date" to 1.5f, "Type" to 1f), txRows)
 
-        val spendingEntries = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first()
+        val spendingRows = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first()
             .sortedBy { it.date }
             .map { entry ->
-                "${shortDateFormat.format(Date(entry.date))}: ${entry.source} - ${formatCurrent(entry.amount)}"
+                listOf(shortDateFormat.format(Date(entry.date)), entry.source, formatCurrent(entry.amount))
             }
-        writeSection("SPENDING ENTRIES", spendingEntries)
+        drawSection("SPENDING ENTRIES", listOf("Date" to 1.5f, "Source" to 1.5f, "Amount" to 1f), spendingRows)
 
-        // Daily Checklist
         val activeDays = getActiveDaysForBudget(db, budgetId)
-        val checklist = db.dailyChecklistDao().getChecklistForBudget(budgetId).first()
-            .filter { item -> activeDays.contains(Pair(item.budgetId, item.dayOfMonth)) }
+        val checklistRows = db.dailyChecklistDao().getChecklistForBudget(budgetId).first()
+            .filter { activeDays.contains(Pair(it.budgetId, it.dayOfMonth)) }
             .sortedBy { it.dayOfMonth }
-            .map { item ->
-                "Day ${item.dayOfMonth}: ${if (item.isChecked) "✓" else "✗"}"
-            }
-        writeSection("DAILY CHECKLIST", checklist)
+            .map { listOf(it.dayOfMonth.toString(), if (it.isChecked) "Yes" else "No") }
+        drawSection("DAILY CHECKLIST", listOf("Day" to 1f, "Checked?" to 1f), checklistRows)
 
-        // Month Settings
-        val monthSettings = db.monthSettingsDao().getSettingsForBudget(budgetId).first()?.let { ms ->
-            listOf("Start amount: ${formatCurrent(ms.monthStartAmount)} (overridden: ${if (ms.monthStartOverridden) "Yes" else "No"})")
+        val monthSettingRows = db.monthSettingsDao().getSettingsForBudget(budgetId).first()?.let { ms ->
+            listOf(listOf(formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No"))
         } ?: emptyList()
-        writeSection("MONTH SETTINGS", monthSettings)
+        if (monthSettingRows.isNotEmpty()) {
+            drawSection("MONTH SETTINGS", listOf("Start Amount" to 1f, "Overridden?" to 1f), monthSettingRows)
+        }
 
-        // Daily Income Assignments
-        val incomeAssignments = db.dailyIncomeAssignmentDao().getAssignmentsForBudget(budgetId).first()
+        val diaRows = db.dailyIncomeAssignmentDao().getAssignmentsForBudget(budgetId).first()
             .sortedBy { it.dayOfMonth }
             .map { dia ->
                 val income = db.incomeDao().getIncomeById(dia.incomeId)
                 val source = income?.sourceName ?: "Unknown"
-                "$source assigned to day ${dia.dayOfMonth}"
+                listOf(source, dia.dayOfMonth.toString())
             }
-        writeSection("DAILY INCOME ASSIGNMENTS", incomeAssignments)
+        drawSection("DAILY INCOME ASSIGNMENTS", listOf("Income Source" to 2f, "Day" to 1f), diaRows)
+
+        // Footer
+        drawFooter(canvas, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
 
         document.finishPage(page)
         val stream = ByteArrayOutputStream()
@@ -661,12 +412,20 @@ object ExportHelper {
         return stream.toByteArray()
     }
 
-    // ------------------------------------------------------------------------
-    // Save to Downloads
-    // ------------------------------------------------------------------------
+    // ========================================================================
+    // Helper functions
+    // ========================================================================
+    private fun drawFooter(canvas: Canvas, left: Float, right: Float, bottom: Float, teal: Int, font: Typeface) {
+        val footerPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = font; textSize = 10f; color = Color.WHITE
+        }
+        canvas.drawRect(left, bottom - 30f, right, bottom, footerPaint)
+        canvas.drawText("Budget Brewer – Your zero‑dollar budget companion", left + 20f, bottom - 10f, textPaint)
+    }
+
     private fun saveToDownloads(context: Context, fileName: String, data: ByteArray): Uri? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android 10+ – use MediaStore
             val resolver = context.contentResolver
             val contentValues = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -675,22 +434,16 @@ object ExportHelper {
             }
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
             uri?.let {
-                resolver.openOutputStream(it)?.use { stream ->
-                    stream.write(data)
-                    return uri
-                }
+                resolver.openOutputStream(it)?.use { stream -> stream.write(data) }
+                return uri
             }
             null
         } else {
-            // Android 9 and below – use external storage and FileProvider
             val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             if (!downloadsDir.exists()) downloadsDir.mkdirs()
             val file = File(downloadsDir, fileName)
             try {
-                FileOutputStream(file).use { stream ->
-                    stream.write(data)
-                }
-                // Return a content URI via FileProvider
+                FileOutputStream(file).use { stream -> stream.write(data) }
                 return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -711,19 +464,6 @@ object ExportHelper {
     private fun getDayOfMonth(timestamp: Long): Int {
         val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
         return cal.get(Calendar.DAY_OF_MONTH)
-    }
-
-    private suspend fun getActiveDays(db: AppDatabase): Set<Pair<String, Int>> {
-        val allExpenses = db.expenseDao().getAllExpensesSync()
-        val activeDays = mutableSetOf<Pair<String, Int>>()
-        allExpenses.forEach { expense ->
-            val category = db.expenseCategoryDao().getCategoryById(expense.categoryId)
-            if (category != null) {
-                val day = getDayOfMonth(expense.dueDate)
-                activeDays.add(Pair(category.budgetId, day))
-            }
-        }
-        return activeDays
     }
 
     private suspend fun getActiveDaysForBudget(db: AppDatabase, budgetId: String): Set<Pair<String, Int>> {
