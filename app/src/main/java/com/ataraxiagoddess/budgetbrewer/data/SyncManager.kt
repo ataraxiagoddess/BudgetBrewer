@@ -254,10 +254,12 @@ class SyncManager(private val context: Context) {
     // --- Savings Buckets Sync ---
     suspend fun uploadSavingsBucket(bucket: SavingsBucket, userId: String) {
         withContext(Dispatchers.IO) {
+            Timber.d("uploadSavingsBucket – userId = $userId")
+            Timber.d("uploadSavingsBucket – upsert completed")
             try {
                 val payload = SavingsBucketPayload(
                     id = bucket.id,
-                    user_id = userId,  // ✅ From AuthManager.currentUser.id
+                    user_id = userId,
                     name = bucket.name,
                     type = bucket.type.name,
                     current_amount = bucket.current_amount,
