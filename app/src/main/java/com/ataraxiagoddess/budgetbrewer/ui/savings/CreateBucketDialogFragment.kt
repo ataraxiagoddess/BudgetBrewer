@@ -47,10 +47,10 @@ class CreateBucketDialogFragment(
 
     override fun onStart() {
         super.onStart()
-        // Fill 90% width and full height
+        // Fill 90% width and wrap height
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 

@@ -16,3 +16,5 @@ local.properties
 /app/build/
 /app/release/app-release.apk
 .aider*
+.goosehints.md
+AGENTS.md
