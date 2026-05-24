@@ -73,6 +73,11 @@ class MonthlyCalendarViewModel(
             val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
+            val budget = repository.getBudgetById(newBudgetId)
+            val userId = AuthManager.getUserId(appContext)
+            if (budget != null && userId != null) {
+                SyncManager(appContext).uploadBudget(budget, userId)
+            }
             loadData()
         }
     }
@@ -89,6 +94,10 @@ class MonthlyCalendarViewModel(
             // Sync after update
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadMonthSetting(updatedSettings, userId)
             }
             loadData()
@@ -99,6 +108,11 @@ class MonthlyCalendarViewModel(
         viewModelScope.launch {
             _uiState.value = CalendarUiState.Loading
             try {
+                val budget = repository.getBudgetById(budgetId)
+                val userId = AuthManager.getUserId(appContext)
+                if (budget != null && userId != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 val month = currentMonth
                 val incomes = repository.getIncomesForBudget(budgetId).first()
                 val expenses = repository.getExpensesForBudget(budgetId).first()
@@ -241,6 +255,10 @@ class MonthlyCalendarViewModel(
             if (assignment != null) {
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
+                    val budget = repository.getBudgetById(budgetId)
+                    if (budget != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
                     SyncManager(appContext).uploadDailyIncomeAssignment(assignment, userId)
                 }
             }

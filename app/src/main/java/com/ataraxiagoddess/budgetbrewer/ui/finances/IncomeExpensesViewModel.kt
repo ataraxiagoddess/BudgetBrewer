@@ -51,6 +51,12 @@ class IncomeExpensesViewModel(
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
 
+            val budget = repository.getBudgetById(newBudgetId)
+            val userId = AuthManager.getUserId(appContext)
+            if (budget != null && userId != null) {
+                SyncManager(appContext).uploadBudget(budget, userId)
+            }
+
             val targetExpenses = repository.getExpensesForBudget(budgetId).first()
             val hasRecurring = targetExpenses.any { it.recurrenceType != RecurrenceType.NONE }
             if (!hasRecurring) {
@@ -68,6 +74,11 @@ class IncomeExpensesViewModel(
         viewModelScope.launch {
             _uiState.value = IncomeExpensesUiState.Loading
             try {
+                val budget = repository.getBudgetById(budgetId)
+                val userId = AuthManager.getUserId(appContext)
+                if (budget != null && userId != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 val incomes = repository.getIncomesForBudget(budgetId).first()
                 val categories = repository.getCategoriesForBudget(budgetId).first()
                 val expenses = repository.getExpensesForBudget(budgetId).first()
@@ -117,6 +128,10 @@ class IncomeExpensesViewModel(
                 repository.insertAllocation(newAllocation)
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
+                    val budget = repository.getBudgetById(budgetId)
+                    if (budget != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
                     SyncManager(appContext).uploadAllocation(newAllocation, userId)
                 }
             }
@@ -145,6 +160,10 @@ class IncomeExpensesViewModel(
                 repository.insertAllocation(newAllocation)
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
+                    val budget = repository.getBudgetById(budgetId)
+                    if (budget != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
                     SyncManager(appContext).uploadAllocation(newAllocation, userId)
                 }
             }
@@ -157,14 +176,18 @@ class IncomeExpensesViewModel(
             val current = _allocation.value
             if (current != null) {
                 val updated = current.copy(savingsAmount = 0.0)
+                val userId = AuthManager.getUserId(appContext)
+
                 if (updated.savingsAmount == 0.0 && updated.spendingAmount == 0.0) {
                     repository.deleteAllocation(updated)
-                    val userId = AuthManager.getUserId(appContext)
                     if (userId != null) {
                         SyncManager(appContext).deleteAllocation(updated.id, userId)
                     }
                 } else {
                     repository.updateAllocation(updated)
+                    if (userId != null) {
+                        SyncManager(appContext).uploadAllocation(updated, userId)
+                    }
                 }
                 refreshAllocation()
             }
@@ -176,14 +199,18 @@ class IncomeExpensesViewModel(
             val current = _allocation.value
             if (current != null) {
                 val updated = current.copy(spendingAmount = 0.0)
+                val userId = AuthManager.getUserId(appContext)
+
                 if (updated.savingsAmount == 0.0 && updated.spendingAmount == 0.0) {
                     repository.deleteAllocation(updated)
-                    val userId = AuthManager.getUserId(appContext)
                     if (userId != null) {
                         SyncManager(appContext).deleteAllocation(updated.id, userId)
                     }
                 } else {
                     repository.updateAllocation(updated)
+                    if (userId != null) {
+                        SyncManager(appContext).uploadAllocation(updated, userId)
+                    }
                 }
                 refreshAllocation()
             }
@@ -240,6 +267,10 @@ class IncomeExpensesViewModel(
             val userId = AuthManager.getUserId(appContext)
             Timber.d("addIncome: userId = $userId")
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadIncome(income, userId)
             }
             emitSuccess(UiEvent.IncomeAdded)
@@ -250,7 +281,7 @@ class IncomeExpensesViewModel(
     fun updateIncome(income: Income) {
         safeLaunch(R.string.error_update_income) {
             val updated = income.copy(updatedAt = System.currentTimeMillis())
-            repository.updateIncome(income)
+            repository.updateIncome(updated) // FIXED
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadIncome(updated, userId)
@@ -287,6 +318,10 @@ class IncomeExpensesViewModel(
             repository.insertIncome(tip)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadIncome(tip, userId)
             }
             emitSuccess(UiEvent.TipAdded)
@@ -297,7 +332,7 @@ class IncomeExpensesViewModel(
     fun updateTip(tip: Income) {
         safeLaunch(R.string.error_update_tip) {
             val updated = tip.copy(updatedAt = System.currentTimeMillis())
-            repository.updateIncome(tip)
+            repository.updateIncome(updated) // FIXED
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadIncome(updated, userId)
@@ -334,6 +369,10 @@ class IncomeExpensesViewModel(
             repository.insertCategory(category)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadCategory(category, userId)
             }
             emitSuccess(UiEvent.CategoryAdded)
@@ -344,7 +383,7 @@ class IncomeExpensesViewModel(
     fun updateCategory(category: ExpenseCategory) {
         safeLaunch(R.string.error_update_category) {
             val updated = category.copy(updatedAt = System.currentTimeMillis())
-            repository.updateCategory(category)
+            repository.updateCategory(updated) // FIXED
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadCategory(updated, userId)
@@ -387,6 +426,10 @@ class IncomeExpensesViewModel(
             repository.insertExpense(expense)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadExpense(expense, userId)
             }
             emitSuccess(UiEvent.ExpenseAdded)
@@ -397,7 +440,7 @@ class IncomeExpensesViewModel(
     fun updateExpense(expense: Expense) {
         safeLaunch(R.string.error_update_expense) {
             val updated = expense.copy(updatedAt = System.currentTimeMillis())
-            repository.updateExpense(expense)
+            repository.updateExpense(updated) // FIXED
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadExpense(updated, userId)

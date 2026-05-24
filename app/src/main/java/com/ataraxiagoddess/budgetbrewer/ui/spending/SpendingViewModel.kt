@@ -46,6 +46,11 @@ class SpendingViewModel(
             val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
+            val budget = repository.getBudgetById(newBudgetId)
+            val userId = AuthManager.getUserId(appContext)
+            if (budget != null && userId != null) {
+                SyncManager(appContext).uploadBudget(budget, userId)
+            }
             loadData()
         }
     }
@@ -54,6 +59,11 @@ class SpendingViewModel(
         viewModelScope.launch {
             _uiState.value = SpendingUiState.Loading
             try {
+                val budget = repository.getBudgetById(budgetId)
+                val userId = AuthManager.getUserId(appContext)
+                if (budget != null && userId != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 combine(
                     repository.getSpendingEntriesForBudget(budgetId),
                     repository.getAllocationForBudget(budgetId)
@@ -84,6 +94,10 @@ class SpendingViewModel(
             // Sync after insert
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 SyncManager(appContext).uploadSpendingEntry(entry, userId)
             }
             emitSuccess(UiEvent.SpendingAdded)

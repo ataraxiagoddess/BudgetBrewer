@@ -68,9 +68,13 @@ class MonthlyExpenseListViewModel(
         viewModelScope.launch {
             _uiState.value = MonthlyExpenseListUiState.Loading
             try {
+                val budget = repository.getBudgetById(budgetId) ?: return@launch
+                val userId = AuthManager.getUserId(appContext)
+                if (budget != null && userId != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
                 val expenses = repository.getExpensesForBudget(budgetId).first()
                 val checklist = repository.getDailyChecklist(budgetId).first().associate { it.dayOfMonth to it.isChecked }
-                val budget = repository.getBudgetById(budgetId) ?: return@launch
 
                 val (days, totalAmount, remainingAmount) = withContext(Dispatchers.Default) {
                     val dayMap = mutableMapOf<Int, MutableList<Expense>>()
@@ -154,6 +158,10 @@ class MonthlyExpenseListViewModel(
                 // Sync after update
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
+                    val budget = repository.getBudgetById(budgetId)
+                    if (budget != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
                     SyncManager(appContext).uploadDailyChecklistItem(updated, userId)
                 }
             } else {
@@ -162,6 +170,10 @@ class MonthlyExpenseListViewModel(
                 // Sync after insert
                 val userId = AuthManager.getUserId(appContext)
                 if (userId != null) {
+                    val budget = repository.getBudgetById(budgetId)
+                    if (budget != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
                     SyncManager(appContext).uploadDailyChecklistItem(newItem, userId)
                 }
             }
