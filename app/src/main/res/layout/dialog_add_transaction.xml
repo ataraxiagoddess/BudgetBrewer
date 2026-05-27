@@ -39,19 +39,46 @@
         android:inputType="numberDecimal"
         android:autofillHints="amount"
         android:paddingHorizontal="8dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/edittext_background"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <EditText
+        android:id="@+id/etTag"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/tag_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/edittext_background"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <EditText
+        android:id="@+id/etNote"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/note_hint"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:maxLines="4"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
 
     <!-- Warning message -->
     <TextView
         android:id="@+id/tvWarning"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/net_negative"
-        android:textSize="12sp"
-        android:visibility="gone"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/exo_regular"
-        android:text="@string/transaction_exceeds_warning" />
+        android:text="@string/transaction_exceeds_warning"
+        android:textColor="@color/net_negative"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </LinearLayout>

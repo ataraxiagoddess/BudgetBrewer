@@ -12,6 +12,7 @@ import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.finances.UiEvent
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
+import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +30,9 @@ class SpendingViewModel(
     private val _uiState = MutableStateFlow<SpendingUiState>(SpendingUiState.Loading)
     val uiState: StateFlow<SpendingUiState> = _uiState.asStateFlow()
 
+    private val _tagsEnabled = MutableStateFlow(SpendingPrefs.isTagsEnabled(appContext))
+    val tagsEnabled: StateFlow<Boolean> = _tagsEnabled.asStateFlow()
+
     data class SpendingUiData(
         val entries: List<SpendingEntry> = emptyList(),
         val allocation: Allocation? = null,
@@ -39,6 +43,12 @@ class SpendingViewModel(
         object Loading : SpendingUiState()
         data class Success(val data: SpendingUiData) : SpendingUiState()
         data class Error(val message: String) : SpendingUiState()
+    }
+
+    fun toggleTagsEnabled() {
+        val newState = !_tagsEnabled.value
+        _tagsEnabled.value = newState
+        SpendingPrefs.setTagsEnabled(appContext, newState)
     }
 
     fun updateMonth(month: Month) {
@@ -82,13 +92,15 @@ class SpendingViewModel(
         }
     }
 
-    fun addEntry(date: Long, source: String, amount: Double) {
+    fun addEntry(date: Long, source: String, amount: Double, tag: String? = null, note: String? = null) {
         safeLaunch(R.string.error_add_transaction) {
             val entry = SpendingEntry(
                 budgetId = budgetId,
                 date = date,
                 source = source,
-                amount = amount
+                amount = amount,
+                tag = tag,
+                note = note
             )
             repository.insertSpendingEntry(entry)
             // Sync after insert

@@ -84,6 +84,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         observeData()
         observeEvents()
+        observeToggleState()
     }
 
     private fun setupRecyclerView() {
@@ -156,6 +157,17 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         }
     }
 
+    private fun observeToggleState() {
+        lifecycleScope.launch {
+            viewModel.tagsEnabled.collect { enabled ->
+                binding.switchTags.isChecked = enabled
+            }
+        }
+        binding.switchTags.setOnCheckedChangeListener { _, _ ->
+            viewModel.toggleTagsEnabled()
+        }
+    }
+
     private fun updateTransactionList(entries: List<SpendingEntry>) {
         adapter.submitList(entries)
         if (entries.isEmpty()) {
@@ -218,12 +230,20 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         dialog.setOnShowListener {
             validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
+            // Show/hide tag layout based on tagsEnabled state
+            lifecycleScope.launch {
+                viewModel.tagsEnabled.collect { enabled ->
+                    dialogBinding.etTag.visibility = if (enabled) View.VISIBLE else View.GONE
+                }
+            }
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = dialogBinding.etSource.text.toString().trim()
                 val amount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
                 val date = selectedDate
+                val tag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
+                val note = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
                 if (date != null && source.isNotEmpty() && amount != null && amount > 0 && amount <= remaining) {
-                    viewModel.addEntry(date, source, amount)
+                    viewModel.addEntry(date, source, amount, tag, note)
                     dialog.dismiss()
                 }
             }
@@ -252,6 +272,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         // Pre-fill
         dialogBinding.etSource.setText(entry.source)
         dialogBinding.etAmount.setText(entry.amount.toCurrencyEdit(resources))
+        dialogBinding.etTag.setText(entry.tag)
+        dialogBinding.etNote.setText(entry.note)
         val calendar = Calendar.getInstance().apply { timeInMillis = entry.date }
         dialogBinding.btnSelectDate.text = FULL.format(calendar.time)
 
@@ -259,6 +281,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val originalSource = entry.source
         val originalAmount = entry.amount
         val originalDate = entry.date
+        val originalNote = entry.note
+        val originalTag = entry.tag
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
@@ -278,7 +302,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                     cal.set(year, month, dayOfMonth)
                     selectedDate = cal.timeInMillis
                     dialogBinding.btnSelectDate.text = FULL.format(cal.time)
-                    validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, remaining)
+                    validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
@@ -289,25 +313,37 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, remaining)
+                validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
             }
             override fun afterTextChanged(s: Editable?) {}
         }
 
         dialogBinding.etSource.addTextChangedListener(textWatcher)
         dialogBinding.etAmount.addTextChangedListener(textWatcher)
+        dialogBinding.etNote.addTextChangedListener(textWatcher)
+        dialogBinding.etTag.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
-            validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, remaining)
+            validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
+            // Show/hide tag layout based on tagsEnabled state
+            lifecycleScope.launch {
+                viewModel.tagsEnabled.collect { enabled ->
+                    dialogBinding.etTag.visibility = if (enabled) View.VISIBLE else View.GONE
+                }
+            }
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newSource = dialogBinding.etSource.text.toString().trim()
                 val newAmount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
                 val newDate = selectedDate
+                val newTag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
+                val newNote = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
                 if (newDate != null && newSource.isNotEmpty() && newAmount != null && newAmount > 0 && newAmount <= remaining) {
                     val updatedEntry = entry.copy(
                         source = newSource,
                         amount = newAmount,
-                        date = newDate
+                        date = newDate,
+                        tag = newTag,
+                        note = newNote
                     )
                     viewModel.updateEntry(updatedEntry)
                     dialog.dismiss()
@@ -325,11 +361,15 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         originalSource: String,
         originalAmount: Double,
         originalDate: Long,
+        originalNote: String?,
+        originalTag: String?,
         remaining: Double
     ) {
         val source = binding.etSource.text.toString().trim()
         val amountText = binding.etAmount.text.toString().trim()
         val amount = amountText.toAmountOrNull(resources)
+        val note = binding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
+        val tag = binding.etTag.text.toString().trim().takeIf { it.isNotEmpty() }
 
         val sourceValid = source.isNotEmpty()
         val amountValid = amount != null && amount > 0
@@ -337,7 +377,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val withinLimit = amount != null && amount <= remaining
 
         val amountValue = amount ?: 0.0
-        val changed = source != originalSource || amountValue != originalAmount || date != originalDate
+        val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
 
         binding.tvWarning.visibility = if (amount != null && amount > 0 && !withinLimit) View.VISIBLE else View.GONE
 

@@ -22,6 +22,13 @@ interface SpendingEntryDao {
     @Query("SELECT * FROM spending_entries WHERE id = :id")
     suspend fun getSpendingEntryById(id: String): SpendingEntry?
 
+    // Get all unique tags for a budget (excluding null and empty)
+    @Query("SELECT DISTINCT tag FROM spending_entries WHERE budgetId = :budgetId AND tag IS NOT NULL AND tag != '' ORDER BY tag ASC")
+    fun getAllTagsByBudgetId(budgetId: String): Flow<List<String>>
+
+    // Get spending entries grouped by tag for a budget
+    @Query("SELECT * FROM spending_entries WHERE budgetId = :budgetId AND tag = :tag ORDER BY date ASC")
+    fun getSpendingByTag(budgetId: String, tag: String): Flow<List<SpendingEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: SpendingEntry)

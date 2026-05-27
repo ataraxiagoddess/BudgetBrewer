@@ -159,7 +159,7 @@
     <string name="add_transaction_title">Add Transaction</string>
     <string name="edit_transaction_title">Edit Transaction</string>
     <string name="transaction_date_hint">Select Date</string>
-    <string name="transaction_source_hint">e.g., Groceries</string>
+    <string name="transaction_source_hint">Enter a source: e.g., Groceries</string>
     <string name="transaction_amount_hint">Amount</string>
     <string name="delete_transaction_title">Delete Transaction</string>
     <string name="delete_transaction_message">Are you sure you want to delete this transaction?</string>
@@ -173,6 +173,12 @@
     <string name="spending_bubble">Spending: %s</string>
     <string name="remaining_bubble">Remaining: %s</string>
     <string name="transaction_exceeds_warning">Transaction exceeds available funds. Please consider reallocating funds in Finances</string>
+    <string name="tag_title">Tag</string>
+    <string name="tag_hint">Enter tag: e.g. "Fast Food"</string>
+    <string name="pound_icon">#</string>
+    <string name="note_title">Note</string>
+    <string name="note_hint">Add a note (optional)</string>
+    <string name="tags_toggle_label">Tags</string>
 
     <!-- ==================== CALENDAR PAGE ==================== -->
     <string name="assign">Assign</string>

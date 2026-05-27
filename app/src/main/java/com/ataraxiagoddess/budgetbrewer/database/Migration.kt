@@ -81,3 +81,11 @@ object Migration_2_3 : Migration(2, 3) {
         db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_buckets_type ON savings_buckets(type)")
     }
 }
+
+object Migration_3_4 : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Add tag and note columns to spending_entries table
+        db.execSQL("ALTER TABLE spending_entries ADD COLUMN tag TEXT")
+        db.execSQL("ALTER TABLE spending_entries ADD COLUMN note TEXT")
+    }
+}

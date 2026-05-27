@@ -20,6 +20,10 @@ data class SpendingEntry(
     val source: String,
     @SerialName("amount")
     val amount: Double,
+    @SerialName("tag")
+    val tag: String? = null,
+    @SerialName("note")
+    val note: String? = null,
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
