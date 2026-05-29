@@ -179,6 +179,8 @@
     <string name="note_title">Note</string>
     <string name="note_hint">Add a note (optional)</string>
     <string name="tags_toggle_label">Tags</string>
+    <string name="pound_symbol">Pound Symbol</string>
+    <string name="info_symbol">Info Symbol</string>
 
     <!-- ==================== CALENDAR PAGE ==================== -->
     <string name="assign">Assign</string>

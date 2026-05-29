@@ -10,14 +10,55 @@
     android:background="@drawable/category_background"
     android:layout_marginBottom="2dp">
 
-    <TextView
-        android:id="@+id/tvDate"
-        style="@style/TextAppearance.BudgetBrewer.Body.Container"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        tools:text="12/31/25"
-        android:fontFamily="@font/exo_regular"/>
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight=".3"
+        android:gravity="start"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDate"
+            style="@style/TextAppearance.BudgetBrewer.Body.Container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/exo_regular"
+            android:maxLines="1"
+            tools:text="12/31/25" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:columnCount="2">
+
+            <ImageView
+                android:id="@+id/tvTag"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/pound_symbol"
+                android:src="@drawable/ic_tag"
+                app:tint="@color/btn_on_main"
+                android:layout_gravity="start"
+                android:layout_marginStart="6dp"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/tvNote"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/info_symbol"
+                android:src="@android:drawable/ic_dialog_info"
+                app:tint="@color/btn_on_main"
+                android:layout_gravity="end"
+                android:layout_marginEnd="6dp"
+                tools:visibility="visible" />
+
+        </GridLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
