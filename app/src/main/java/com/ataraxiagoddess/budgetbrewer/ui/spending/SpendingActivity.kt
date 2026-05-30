@@ -77,6 +77,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             },
             onDeleteClick = { entry ->
                 showDeleteConfirmationDialog(entry)
+            },
+            onItemClick = { entry ->
+                showSpendingDetailDialog(entry)
             }
         )
 
@@ -398,9 +401,12 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         ).show()
     }
 
+    private fun showSpendingDetailDialog(entry: SpendingEntry) {
+        SpendingDetailDialogFragment(entry).show(supportFragmentManager, "spending_detail")
+    }
+
     override fun onMonthChanged(month: Month) {
         Timber.d("SpendingActivity month changed: ${month.getDisplayName(this)}")
-        viewModel.updateMonth(month)
     }
 
     override fun navigateToHome() {

@@ -2,6 +2,7 @@ package com.ataraxiagoddess.budgetbrewer.ui.spending
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
@@ -12,7 +13,9 @@ import java.util.Locale
 
 class SpendingEntryAdapter(
     private val onEditClick: (SpendingEntry) -> Unit,
-    private val onDeleteClick: (SpendingEntry) -> Unit
+    private val onDeleteClick: (SpendingEntry) -> Unit,
+    private val onItemClick: (SpendingEntry) -> Unit,
+    var tagsEnabled: Boolean = false
 ) : RecyclerView.Adapter<SpendingEntryAdapter.ViewHolder>() {
 
     private var entries: List<SpendingEntry> = emptyList()
@@ -40,9 +43,12 @@ class SpendingEntryAdapter(
             binding.tvDate.text = dateFormat.format(entry.date)
             binding.tvSource.text = entry.source
             binding.tvAmount.text = entry.amount.toCurrencyDisplay(itemView.resources)
+            binding.ivTag.visibility = if (tagsEnabled && !entry.tag.isNullOrEmpty()) View.VISIBLE else View.GONE
+            binding.ivNote.visibility = if (tagsEnabled && !entry.note.isNullOrEmpty()) View.VISIBLE else View.GONE
 
             binding.btnEdit.setOnClickListener { onEditClick(entry) }
             binding.btnDelete.setOnClickListener { onDeleteClick(entry) }
+            binding.root.setOnClickListener { onItemClick(entry) }
         }
     }
 }

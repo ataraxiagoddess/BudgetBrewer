@@ -35,7 +35,7 @@
             android:columnCount="2">
 
             <ImageView
-                android:id="@+id/tvTag"
+                android:id="@+id/ivTag"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:contentDescription="@string/pound_symbol"
@@ -43,10 +43,10 @@
                 app:tint="@color/btn_on_main"
                 android:layout_gravity="start"
                 android:layout_marginStart="6dp"
-                tools:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
-                android:id="@+id/tvNote"
+                android:id="@+id/ivNote"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:contentDescription="@string/info_symbol"
@@ -54,7 +54,7 @@
                 app:tint="@color/btn_on_main"
                 android:layout_gravity="end"
                 android:layout_marginEnd="6dp"
-                tools:visibility="visible" />
+                android:visibility="gone" />
 
         </GridLayout>
 
