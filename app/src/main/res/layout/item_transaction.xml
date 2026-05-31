@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight=".3"
+        android:layout_weight="1"
         android:gravity="start"
         android:orientation="vertical">
 
@@ -36,24 +36,25 @@
 
             <ImageView
                 android:id="@+id/ivTag"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:contentDescription="@string/pound_symbol"
                 android:src="@drawable/ic_tag"
                 app:tint="@color/btn_on_main"
-                android:layout_gravity="start"
-                android:layout_marginStart="6dp"
+                android:layout_gravity="end"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="6dp"
                 android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/ivNote"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:contentDescription="@string/info_symbol"
                 android:src="@android:drawable/ic_dialog_info"
                 app:tint="@color/btn_on_main"
-                android:layout_gravity="end"
-                android:layout_marginEnd="6dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="6dp"
                 android:visibility="gone" />
 
         </GridLayout>
@@ -61,7 +62,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"

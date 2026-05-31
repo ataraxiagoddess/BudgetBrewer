@@ -88,6 +88,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         observeData()
         observeEvents()
         observeToggleState()
+
+        viewModel.loadData()
     }
 
     private fun setupRecyclerView() {
@@ -164,6 +166,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         lifecycleScope.launch {
             viewModel.tagsEnabled.collect { enabled ->
                 binding.switchTags.isChecked = enabled
+                adapter.tagsEnabled = enabled
+                adapter.notifyDataSetChanged()
             }
         }
         binding.switchTags.setOnCheckedChangeListener { _, _ ->
@@ -234,11 +238,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialog.setOnShowListener {
             validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
             // Show/hide tag layout based on tagsEnabled state
-            lifecycleScope.launch {
-                viewModel.tagsEnabled.collect { enabled ->
-                    dialogBinding.etTag.visibility = if (enabled) View.VISIBLE else View.GONE
-                }
-            }
+            val tagsEnabled = viewModel.tagsEnabled.value
+            dialogBinding.etTag.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
+
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = dialogBinding.etSource.text.toString().trim()
                 val amount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
@@ -329,11 +331,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialog.setOnShowListener {
             validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
             // Show/hide tag layout based on tagsEnabled state
-            lifecycleScope.launch {
-                viewModel.tagsEnabled.collect { enabled ->
-                    dialogBinding.etTag.visibility = if (enabled) View.VISIBLE else View.GONE
-                }
-            }
+            val tagsEnabled = viewModel.tagsEnabled.value
+            dialogBinding.etTag.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
+
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newSource = dialogBinding.etSource.text.toString().trim()
                 val newAmount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
