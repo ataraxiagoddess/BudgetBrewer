@@ -42,9 +42,10 @@ import java.util.Calendar
 abstract class BaseActivity : AppCompatActivity() {
 
     private val appLockGraceMs = 5 * 60 * 1000L
-    private val navPrefs by lazy { getSharedPreferences("nav_prefs", MODE_PRIVATE) }
-    private val keyBottomScrollX = "bottom_nav_scroll_x"
-    private val keyRailScrollY = "rail_nav_scroll_y"
+    companion object {
+        private var tempBottomScrollX = 0
+        private var tempRailScrollY = 0
+    }
 
     private var bottomNavScrollView: HorizontalScrollView? = null
     protected var railNavScrollView: NestedScrollView? = null
@@ -561,21 +562,17 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun saveNavScroll() {
         if (useRail) {
-            val y = railNavScrollView?.scrollY ?: return
-            navPrefs.edit { putInt(keyRailScrollY, y) }
+            tempRailScrollY = railNavScrollView?.scrollY ?: 0
         } else {
-            val x = bottomNavScrollView?.scrollX ?: return
-            navPrefs.edit { putInt(keyBottomScrollX, x) }
+            tempBottomScrollX = bottomNavScrollView?.scrollX ?: 0
         }
     }
 
     private fun restoreNavScroll() {
         if (useRail) {
-            val y = navPrefs.getInt(keyRailScrollY, 0)
-            railNavScrollView?.post { railNavScrollView?.scrollTo(0, y) }
+            railNavScrollView?.post { railNavScrollView?.scrollTo(0, tempRailScrollY) }
         } else {
-            val x = navPrefs.getInt(keyBottomScrollX, 0)
-            bottomNavScrollView?.post { bottomNavScrollView?.scrollTo(x, 0) }
+            bottomNavScrollView?.post { bottomNavScrollView?.scrollTo(tempBottomScrollX, 0) }
         }
     }
 
