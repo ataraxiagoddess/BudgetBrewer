@@ -127,12 +127,17 @@ object ExportHelper {
 
         // Spending Entries
         writeSection("SPENDING ENTRIES")
-        writeRow("Date", "Source", "Amount")
+        writeRow("Date", "Source", "Amount", "Tag", "Note")
         db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first()
             .sortedBy { it.date }
             .forEach { entry ->
-                writeRow(shortDateFormat.format(Date(entry.date)), entry.source,
-                    formatCurrent(entry.amount))
+                writeRow(
+                    shortDateFormat.format(Date(entry.date)),
+                    entry.source,
+                    formatCurrent(entry.amount),
+                    entry.tag ?: "",
+                    entry.note ?: ""
+                )
             }
 
         // Daily Checklist
@@ -370,9 +375,15 @@ object ExportHelper {
         val spendingRows = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first()
             .sortedBy { it.date }
             .map { entry ->
-                listOf(shortDateFormat.format(Date(entry.date)), entry.source, formatCurrent(entry.amount))
+                listOf(
+                    shortDateFormat.format(Date(entry.date)),
+                    entry.source,
+                    formatCurrent(entry.amount),
+                    entry.tag ?: "",
+                    entry.note ?: ""
+                    )
             }
-        drawSection("SPENDING ENTRIES", listOf("Date" to 1.5f, "Source" to 1.5f, "Amount" to 1f), spendingRows)
+        drawSection("SPENDING ENTRIES", listOf("Date" to 1f, "Source" to 1.2f, "Amount" to 1f, "Tag" to 1f, "Note" to 1.5f), spendingRows)
 
         val activeDays = getActiveDaysForBudget(db, budgetId)
         val checklistRows = db.dailyChecklistDao().getChecklistForBudget(budgetId).first()
