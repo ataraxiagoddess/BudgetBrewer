@@ -217,6 +217,14 @@ object ExportHelper {
         val linePaint = Paint().apply { color = Color.LTGRAY; strokeWidth = 0.5f }
         val borderPaint = Paint().apply { color = teal; strokeWidth = 4f; style = Paint.Style.STROKE }
 
+        val options = BitmapFactory.Options().apply {
+            inPreferredConfig = Bitmap.Config.ARGB_8888
+        }
+
+        val originalLogo = BitmapFactory.decodeResource(context.resources, R.drawable.budget_brewer_logo, options)
+
+        val logoPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+
         fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
         fun formatWithCurrency(amount: Double, currencyValue: String) =
             CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
@@ -244,15 +252,23 @@ object ExportHelper {
         fun drawPageHeader(canvas: Canvas, startingY: Float): Float {
             var yPos = startingY
             // Teal strip
-            canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 110f, headerBgPaint)
+            canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 80f, headerBgPaint)
             // Titles
-            canvas.drawText("Budget Brewer", margin + 20f, yPos + 55f, titlePaint)
-            canvas.drawText("${budget.month}/${budget.year}", margin + 20f, yPos + 75f, subtitlePaint)
-            yPos += 110f
-            // Lavender generation‑date strip
-            canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 30f, genBgPaint)
-            canvas.drawText("Generated: ${dateFormat.format(Date())}", margin + 15f, yPos + 20f, genPaint)
-            yPos += 30f + 40f   // gap after header
+            canvas.drawText("Budget Brewer", margin + 20f, yPos + 45f, titlePaint)
+            canvas.drawText("${budget.month}/${budget.year}", margin + 20f, yPos + 70f, subtitlePaint)
+            // Logo
+            val logoWidth = 60f
+            val logoHeight = 60f
+            val logoX = pageInfo.pageWidth - margin - 20f -logoWidth
+            val logoY = yPos + (80f - logoHeight) / 2f
+
+            val srcRect = android.graphics.Rect(0, 0, originalLogo.width, originalLogo.height)
+            val dstRect = android.graphics.RectF(logoX, logoY, logoX + logoWidth, logoY + logoHeight)
+
+            canvas.drawBitmap(originalLogo, srcRect, dstRect, logoPaint)
+
+            yPos += 80f
+            yPos += 20f
             return yPos
         }
 
@@ -263,7 +279,7 @@ object ExportHelper {
             val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
             var x = tableStartX
             val headerRectPaint = Paint().apply { color = lavender; style = Paint.Style.FILL }
-            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 22f, headerRectPaint)
+            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 22f, headerRectPaint)
             for ((label, weight) in cols) {
                 val colWidth = (usableWidth - 30f) * (weight / totalWeight)
                 canvas.drawText(label, x + 3f, y + 15f, headingPaint)
@@ -275,7 +291,7 @@ object ExportHelper {
         fun drawRow(cells: List<String>, cols: List<Pair<String, Float>>, isAlternate: Boolean) {
             if (isAlternate) {
                 val altPaint = Paint().apply { color = lavender; style = Paint.Style.FILL; alpha = 80 }
-                canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 20f, altPaint)
+                canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 20f, altPaint)
             }
             val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
             var x = tableStartX
@@ -285,7 +301,7 @@ object ExportHelper {
                 x += colWidth + 10f
             }
             y += 18f
-            canvas.drawLine(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y, linePaint)
+            canvas.drawLine(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y, linePaint)
         }
 
         fun checkNewPage() {
@@ -302,7 +318,7 @@ object ExportHelper {
         fun drawSection(title: String, cols: List<Pair<String, Float>>, rows: List<List<String>>) {
             checkNewPage()
             val sectionPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
-            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 10f, y + 24f, sectionPaint)
+            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 24f, sectionPaint)
             val sectionTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 typeface = boldTypeface; textSize = 14f; color = Color.WHITE
             }
@@ -427,6 +443,9 @@ object ExportHelper {
         }
         canvas.drawRect(left, bottom - 30f, right, bottom, footerPaint)
         canvas.drawText("Budget Brewer – Your zero‑dollar budget companion", left + 20f, bottom - 10f, textPaint)
+        val generatedText = "Generated: ${dateFormat.format(Date())}"
+        val textWidth = textPaint.measureText(generatedText)
+        canvas.drawText(generatedText, right - textWidth - 20f, bottom - 10f, textPaint)
     }
 
     private fun saveToDownloads(context: Context, fileName: String, data: ByteArray): Uri? {
