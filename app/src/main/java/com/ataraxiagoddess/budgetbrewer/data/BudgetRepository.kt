@@ -4,10 +4,14 @@ import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import java.util.Calendar
 
 class BudgetRepository(private val db: AppDatabase) {
+
+    private val budgetChainMutex = Mutex()
 
     // --- Budget ---
     suspend fun insertBudget(budget: Budget) = db.budgetDao().insert(budget)
@@ -75,6 +79,9 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun getSpendingTotalForBudget(budgetId: String): Double {
         return db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf { it.amount }
     }
+
+    fun getSpendingTotalsByTag(budgetId: String): Flow<List<TagSpendingTotal>> =
+        db.spendingEntryDao().getSpendingTotalsByTag(budgetId)
 
     // --- Savings Buckets ---
     fun getActiveSavingsBuckets(): Flow<List<SavingsBucket>> =
@@ -370,38 +377,62 @@ class BudgetRepository(private val db: AppDatabase) {
             }
         }
 
+        val existingExpenses = db.expenseDao().getExpensesForBudget(toBudgetId).first()
+
         for (expense in recurringExpenses) {
             val targetCategoryId = categoryMapping[expense.categoryId] ?: continue
             when (expense.recurrenceType) {
                 RecurrenceType.MONTHLY_SAME_DAY -> {
-                    val newExpense = Expense(
-                        categoryId = targetCategoryId,
-                        description = expense.description,
-                        amount = expense.amount,
-                        dueDate = calculateNextMonthlyDate(expense.dueDate),
-                        recurrenceType = expense.recurrenceType,
-                        recurrenceInterval = expense.recurrenceInterval,
-                        createdAt = System.currentTimeMillis(),
-                        isActive = expense.isActive
-                    )
-                    db.expenseDao().insert(newExpense)
-                    Timber.d("Inserted monthly recurring expense: ${expense.description}")
+                    val nextDate = calculateNextMonthlyDate(expense.dueDate)
+                    val isDuplicate = existingExpenses.any {
+                        it.dueDate == nextDate &&
+                        it.categoryId == targetCategoryId &&
+                        it.description == expense.description
+                    }
+
+                    if (!isDuplicate) {
+                        val newExpense = Expense(
+                            categoryId = targetCategoryId,
+                            description = expense.description,
+                            amount = expense.amount,
+                            dueDate = nextDate,
+                            recurrenceType = expense.recurrenceType,
+                            recurrenceInterval = expense.recurrenceInterval,
+                            createdAt = System.currentTimeMillis(),
+                            isActive = expense.isActive
+                        )
+                        db.expenseDao().insert(newExpense)
+                        Timber.d("Inserted monthly recurring expense: ${expense.description}")
+                    } else {
+                        Timber.d("Skipping duplicate monthly recurring expense: ${expense.description}")
+                    }
                 }
                 RecurrenceType.EVERY_X_DAYS -> {
                     val interval = expense.recurrenceInterval ?: continue
                     val nextDate = calculateNextXDaysDate(expense.dueDate, interval)
-                    val newExpense = Expense(
-                        categoryId = targetCategoryId,
-                        description = expense.description,
-                        amount = expense.amount,
-                        dueDate = nextDate,
-                        recurrenceType = expense.recurrenceType,
-                        recurrenceInterval = expense.recurrenceInterval,
-                        createdAt = System.currentTimeMillis(),
-                        isActive = expense.isActive
-                    )
-                    db.expenseDao().insert(newExpense)
-                    Timber.d("Inserted X-day recurring expense: ${expense.description}")
+
+                    val isDuplicate = existingExpenses.any {
+                        it.dueDate == nextDate &&
+                                it.categoryId == targetCategoryId &&
+                                it.description == expense.description
+                    }
+
+                    if (!isDuplicate) {
+                        val newExpense = Expense(
+                            categoryId = targetCategoryId,
+                            description = expense.description,
+                            amount = expense.amount,
+                            dueDate = nextDate,
+                            recurrenceType = expense.recurrenceType,
+                            recurrenceInterval = expense.recurrenceInterval,
+                            createdAt = System.currentTimeMillis(),
+                            isActive = expense.isActive
+                        )
+                        db.expenseDao().insert(newExpense)
+                        Timber.d("Inserted X-day recurring expense: ${expense.description}")
+                    } else {
+                        Timber.d("Skipping duplicate X-day recurring expense: ${expense.description}")
+                    }
                 }
                 else -> {}
             }
@@ -410,43 +441,48 @@ class BudgetRepository(private val db: AppDatabase) {
     }
 
     suspend fun getOrCreateBudgetChain(targetMonth: Int, targetYear: Int): String {
-        Timber.d("getOrCreateBudgetChain: target $targetMonth/$targetYear")
-        val current = getBudget(targetMonth, targetYear).first()
-        if (current != null) {
-            Timber.d("Target budget already exists: id=${current.id}")
-            ensureMonthSettings(current.id)
-            return current.id
-        }
+        return budgetChainMutex.withLock {
+            Timber.d("getOrCreateBudgetChain: target $targetMonth/$targetYear")
+            val current = getBudget(targetMonth, targetYear).first()
+            if (current != null) {
+                Timber.d("Target budget already exists: id=${current.id}")
+                ensureMonthSettings(current.id)
+                return@withLock current.id
+            }
 
-        val previous = db.budgetDao().findPreviousBudget(targetMonth, targetYear)
-        if (previous == null) {
-            Timber.d("No previous budget found, creating target directly")
-            val newBudget = Budget(month = targetMonth, year = targetYear)
-            insertBudget(newBudget)
-            ensureMonthSettings(newBudget.id)
-            return newBudget.id
-        }
-        Timber.d("Previous budget found: ${previous.year}-${previous.month} id=${previous.id}")
+            val previous = db.budgetDao().findPreviousBudget(targetMonth, targetYear)
+            if (previous == null) {
+                Timber.d("No previous budget found, creating target directly")
+                val newBudget = Budget(month = targetMonth, year = targetYear)
+                insertBudget(newBudget)
+                ensureMonthSettings(newBudget.id)
+                return newBudget.id
+            }
+            Timber.d("Previous budget found: ${previous.year}-${previous.month} id=${previous.id}")
 
-        var fromBudgetId = previous.id
-        val cal = Calendar.getInstance().apply {
-            set(previous.year, previous.month - 1, 1)
-            add(Calendar.MONTH, 1)
+            var fromBudgetId = previous.id
+            val cal = Calendar.getInstance().apply {
+                set(previous.year, previous.month - 1, 1)
+                add(Calendar.MONTH, 1)
+            }
+            while (cal.get(Calendar.YEAR) < targetYear || (cal.get(Calendar.YEAR) == targetYear && cal.get(
+                    Calendar.MONTH
+                ) + 1 <= targetMonth)
+            ) {
+                val month = cal.get(Calendar.MONTH) + 1
+                val year = cal.get(Calendar.YEAR)
+                Timber.d("Creating budget for $year-$month")
+                val newBudget = Budget(month = month, year = year)
+                insertBudget(newBudget)
+                Timber.d("Propagating from $fromBudgetId to ${newBudget.id}")
+                propagateRecurringExpenses(fromBudgetId, newBudget.id)
+                ensureMonthSettings(newBudget.id)
+                fromBudgetId = newBudget.id
+                cal.add(Calendar.MONTH, 1)
+            }
+            Timber.d("Returning final budgetId: $fromBudgetId")
+            fromBudgetId
         }
-        while (cal.get(Calendar.YEAR) < targetYear || (cal.get(Calendar.YEAR) == targetYear && cal.get(Calendar.MONTH) + 1 <= targetMonth)) {
-            val month = cal.get(Calendar.MONTH) + 1
-            val year = cal.get(Calendar.YEAR)
-            Timber.d("Creating budget for $year-$month")
-            val newBudget = Budget(month = month, year = year)
-            insertBudget(newBudget)
-            Timber.d("Propagating from $fromBudgetId to ${newBudget.id}")
-            propagateRecurringExpenses(fromBudgetId, newBudget.id)
-            ensureMonthSettings(newBudget.id)
-            fromBudgetId = newBudget.id
-            cal.add(Calendar.MONTH, 1)
-        }
-        Timber.d("Returning final budgetId: $fromBudgetId")
-        return fromBudgetId
     }
 
     suspend fun updateAllIncomesCurrency(newCurrency: String) {

@@ -21,6 +21,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity
 import com.ataraxiagoddess.budgetbrewer.ui.base.MonthChangeListener
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.util.CategoryColors
+import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -78,6 +79,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
     override fun onResume() {
         super.onResume()
         (activity as? BaseActivity)?.addMonthChangeListener(this)
+        viewModel.refresh()
     }
 
     override fun onPause() {
@@ -202,6 +204,18 @@ class HomeFragment : Fragment(), MonthChangeListener {
             binding.chartSpendingTrends.setNoDataText("")
             binding.chartSpendingTrends.setNoDataTextTypeface(exoRegular)
         }
+
+        // Spending by Tag Chart setup
+        binding.chartSpendingByTag?.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
+            isDrawHoleEnabled = true
+            setHoleColor(Color.TRANSPARENT)
+            holeRadius = 40f
+            transparentCircleRadius = 45f
+            setDrawEntryLabels(false)
+            setUsePercentValues(true)
+        }
     }
 
     private fun observeData() {
@@ -218,6 +232,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
                         updateSavingsComparisonChart(state)
                         updateSpendingTrendsChart(state)
                         updateSpendingDataList(state)
+                        updateSpendingByTagChart(state)
                     }
                     is HomeUiState.Error -> {
                         binding.progressBar.visibility = View.GONE
@@ -459,6 +474,77 @@ class HomeFragment : Fragment(), MonthChangeListener {
             row.addView(monthText)
             row.addView(amountText)
             binding.spendingDataContainer.addView(row)
+        }
+    }
+
+    private fun updateSpendingByTagChart(data: HomeUiState.Success) {
+        if (data.spendingByTag.isEmpty() || !SpendingPrefs.isTagsEnabled(requireContext())) {
+            binding.layoutSpendingByTagContainer?.visibility = View.GONE
+            return
+        }
+
+        binding.layoutSpendingByTagContainer?.visibility = View.VISIBLE
+
+        val entries = data.spendingByTag.mapIndexed { index, tagExpense ->
+            PieEntry(tagExpense.amount.toFloat(), index)
+        }
+
+        val colors = CategoryColors.colors.map { colorRes ->
+            ContextCompat.getColor(requireContext(), colorRes)
+        }
+
+        val dataSet = PieDataSet(entries, "").apply {
+            sliceSpace = 2f
+            selectionShift = 5f
+            this.colors = colors
+        }
+
+        val pieData = PieData(dataSet).apply {
+            setValueFormatter(PercentFormatter(binding.chartSpendingByTag))
+            setValueTextSize(12f)
+            setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+            setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
+        }
+
+        binding.chartSpendingByTag?.data = pieData
+        binding.chartSpendingByTag?.invalidate()
+
+        binding.tagsLegendContainer?.removeAllViews()
+        val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
+
+        data.spendingByTag.forEachIndexed { index, tagExpense ->
+            val legendRow = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 4, 0, 4) }
+            }
+
+            val colorView = View(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(16, 16).apply { setMargins(0, 0, 8, 0) }
+                setBackgroundColor(colors[index % colors.size])
+            }
+
+            val textView = TextView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                text = getString(
+                    R.string.expense_category_format,
+                    tagExpense.tag,
+                    tagExpense.amount.toCurrencyDisplay(resources),
+                    tagExpense.percentage
+                )
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                textSize = 14f
+                typeface = exoRegular
+            }
+
+            legendRow.addView(colorView)
+            legendRow.addView(textView)
+            binding.tagsLegendContainer?.addView(legendRow)
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
+import com.ataraxiagoddess.budgetbrewer.data.TagSpendingTotal
 import com.ataraxiagoddess.budgetbrewer.ui.home.MonthlySpending
 import kotlinx.coroutines.flow.Flow
 
@@ -50,6 +51,16 @@ interface SpendingEntryDao {
         ORDER BY year DESC, month DESC
     """)
     fun getMonthlySpendingTotals(budgetId: String): Flow<List<MonthlySpending>>
+
+    @Query("""
+        SELECT 
+            CASE WHEN tag IS NULL OR tag = '' THEN 'untagged' ELSE tag END AS tag, 
+            SUM(amount) as total 
+        FROM spending_entries 
+        WHERE budgetId = :budgetId 
+        GROUP BY CASE WHEN tag IS NULL OR tag = '' THEN 'untagged' ELSE tag END
+    """)
+    fun getSpendingTotalsByTag(budgetId: String): Flow<List<TagSpendingTotal>>
 
     @Query("DELETE FROM spending_entries")
     suspend fun deleteAll()

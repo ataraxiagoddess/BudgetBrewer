@@ -239,6 +239,8 @@ class SyncManager(private val context: Context) {
                     date = entry.date,
                     source = entry.source,
                     amount = entry.amount,
+                    tag = entry.tag,
+                    note = entry.note,
                     created_at = entry.createdAt,
                     updated_at = entry.updatedAt,
                     user_id = userId

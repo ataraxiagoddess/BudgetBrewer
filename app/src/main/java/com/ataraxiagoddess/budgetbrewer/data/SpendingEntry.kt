@@ -29,3 +29,8 @@ data class SpendingEntry(
     @SerialName("updated_at")
     val updatedAt: Long = System.currentTimeMillis()
 )
+
+data class TagSpendingTotal(
+    val tag: String,
+    val total: Double
+)

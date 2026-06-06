@@ -25,6 +25,6 @@ class HomeViewModelFactory(
         }
 
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
-        return HomeViewModel(repository, savedStateHandle) as T
+        return HomeViewModel(repository, savedStateHandle, context) as T
     }
 }

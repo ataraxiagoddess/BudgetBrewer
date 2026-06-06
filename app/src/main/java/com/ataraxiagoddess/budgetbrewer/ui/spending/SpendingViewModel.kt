@@ -13,6 +13,8 @@ import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.finances.UiEvent
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,6 +34,8 @@ class SpendingViewModel(
 
     private val _tagsEnabled = MutableStateFlow(SpendingPrefs.isTagsEnabled(appContext))
     val tagsEnabled: StateFlow<Boolean> = _tagsEnabled.asStateFlow()
+
+    private var loadDataJob: Job? = null
 
     data class SpendingUiData(
         val entries: List<SpendingEntry> = emptyList(),
@@ -66,7 +70,8 @@ class SpendingViewModel(
     }
 
     fun loadData() {
-        viewModelScope.launch {
+        loadDataJob?.cancel()
+        loadDataJob = viewModelScope.launch {
             _uiState.value = SpendingUiState.Loading
             try {
                 val budget = repository.getBudgetById(budgetId)
@@ -85,6 +90,8 @@ class SpendingViewModel(
                 }.collect { data ->
                     _uiState.value = SpendingUiState.Success(data)
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = SpendingUiState.Error("Failed to load transactions: ${e.message}")
                 emitError(R.string.error_load_transactions, e)

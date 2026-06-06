@@ -263,30 +263,31 @@
             </LinearLayout>
 
             <!-- Spending Trends -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/category_background"
-                android:padding="16dp"
                 android:layout_marginBottom="16dp"
-                android:elevation="4dp">
+                android:background="@drawable/category_background"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
+                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/chart_spending_trends"
-                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/chart_spending_trends" />
 
                 <!-- Timeframe selector - individual buttons with gradient backgrounds -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/category_background"
+                    android:gravity="center"
+                    android:orientation="horizontal"
                     android:padding="4dp">
 
                     <com.google.android.material.button.MaterialButton
@@ -294,33 +295,33 @@
                         style="@style/Widget.BudgetBrewer.TimeframeButton"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
-                        android:layout_weight="1"
                         android:layout_marginEnd="1dp"
-                        android:text="@string/timeframe_1m"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_timeframe_button_1m"
                         android:checkable="true"
-                        android:background="@drawable/bg_timeframe_button_1m" />
+                        android:text="@string/timeframe_1m" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTimeframe3m"
                         style="@style/Widget.BudgetBrewer.TimeframeButton"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
-                        android:layout_weight="1"
                         android:layout_marginEnd="1dp"
-                        android:text="@string/timeframe_3m"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_timeframe_button_3m"
                         android:checkable="true"
-                        android:background="@drawable/bg_timeframe_button_3m" />
+                        android:text="@string/timeframe_3m" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTimeframe6m"
                         style="@style/Widget.BudgetBrewer.TimeframeButton"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
-                        android:layout_weight="1"
                         android:layout_marginEnd="1dp"
-                        android:text="@string/timeframe_6m"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_timeframe_button_6m"
                         android:checkable="true"
-                        android:background="@drawable/bg_timeframe_button_6m" />
+                        android:text="@string/timeframe_6m" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnTimeframe1y"
@@ -328,9 +329,9 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="@string/timeframe_1y"
+                        android:background="@drawable/bg_timeframe_button_1y"
                         android:checkable="true"
-                        android:background="@drawable/bg_timeframe_button_1y" />
+                        android:text="@string/timeframe_1y" />
                 </LinearLayout>
 
                 <!-- Line Chart -->
@@ -348,6 +349,40 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
             </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutSpendingByTagContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/category_background"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:id="@+id/tvSpendingByTagHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/spending_by_tag_header"
+                style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                android:layout_marginBottom="16dp" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chartSpendingByTag"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Legend will be populated dynamically -->
+            <LinearLayout
+                android:id="@+id/tagsLegendContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

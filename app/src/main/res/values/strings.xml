@@ -219,6 +219,7 @@
     <string name="chart_expenses_breakdown">Expenses by Category</string>
     <string name="chart_savings_comparison">Ideal Savings Comparison</string>
     <string name="chart_spending_trends">Spending Trends</string>
+    <string name="spending_by_tag_header">Spending by Tag</string>
     <string name="income">Income</string>
     <string name="expenses">Expenses</string>
     <string name="savings_target">Savings Target (20% of income)</string>

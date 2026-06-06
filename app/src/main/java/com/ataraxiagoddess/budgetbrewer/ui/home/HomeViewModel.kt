@@ -1,11 +1,16 @@
 package com.ataraxiagoddess.budgetbrewer.ui.home
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
+import com.ataraxiagoddess.budgetbrewer.data.TagSpendingTotal
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
+import com.ataraxiagoddess.budgetbrewer.ui.home.HomeUiState.Success
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
+import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: BudgetRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val context: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -49,6 +55,12 @@ class HomeViewModel(
         }
     }
 
+    fun refresh() {
+        viewModelScope.launch {
+            loadData()
+        }
+    }
+
     private suspend fun loadData() {
         _uiState.value = HomeUiState.Loading
         try {
@@ -74,14 +86,28 @@ class HomeViewModel(
             // Compute spending history for the selected timeframe
             val spendingHistory = buildSpendingHistory()
 
-            _uiState.value = HomeUiState.Success(
+            val spendingByTag = if (SpendingPrefs.isTagsEnabled(context)) {
+                val tagTotals = repository.getSpendingTotalsByTag(budgetId).first()
+                val totalTaggedAmount = tagTotals.sumOf { it.total }
+                tagTotals.map { tagTotal ->
+                    val percentage = if (totalTaggedAmount > 0) tagTotal.total / totalTaggedAmount * 100 else 0.0
+                    TagExpense(tagTotal.tag, tagTotal.total, percentage)
+                }.filter { it.amount > 0 }
+            } else {
+                emptyList()
+            }
+
+            _uiState.value = Success(
                 totalIncome = totalIncome,
                 totalExpenses = totalExpenses,
                 expensesByCategory = expensesByCategory,
                 savingsAmount = savingsAmount,
                 savingsTarget = savingsTarget,
-                spendingHistory = spendingHistory
+                spendingHistory = spendingHistory,
+                spendingByTag = spendingByTag
             )
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             _uiState.value = HomeUiState.Error("Failed to load data: ${e.message}")
             emitError(R.string.error_load_data, e)

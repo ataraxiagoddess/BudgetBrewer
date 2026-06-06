@@ -340,7 +340,13 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                 val newDate = selectedDate
                 val newTag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
                 val newNote = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
-                if (newDate != null && newSource.isNotEmpty() && newAmount != null && newAmount > 0 && newAmount <= remaining) {
+                val amountWithinLimit = if (newAmount == originalAmount) {
+                    true
+                } else {
+                    val difference = newAmount?.minus(originalAmount)
+                    difference!! <= remaining
+                }
+                if (newDate != null && newSource.isNotEmpty() && newAmount != null && newAmount > 0 && amountWithinLimit) {
                     val updatedEntry = entry.copy(
                         source = newSource,
                         amount = newAmount,
@@ -377,7 +383,13 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val sourceValid = source.isNotEmpty()
         val amountValid = amount != null && amount > 0
         val dateValid = date != null
-        val withinLimit = amount != null && amount <= remaining
+        val withinLimit = if (amount == originalAmount) {
+            true
+        } else {
+            val newAmountVal = amount ?: 0.0
+            val difference = newAmountVal - originalAmount
+            difference <= remaining
+        }
 
         val amountValue = amount ?: 0.0
         val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
@@ -407,6 +419,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
     override fun onMonthChanged(month: Month) {
         Timber.d("SpendingActivity month changed: ${month.getDisplayName(this)}")
+        viewModel.updateMonth(month)
     }
 
     override fun navigateToHome() {

@@ -10,7 +10,8 @@ sealed class HomeUiState {
         val expensesByCategory: List<CategoryExpense> = emptyList(),
         val savingsAmount: Double = 0.0,
         val savingsTarget: Double = 0.0,
-        val spendingHistory: List<MonthlySpending> = emptyList()
+        val spendingHistory: List<MonthlySpending> = emptyList(),
+        val spendingByTag: List<TagExpense> = emptyList()
     ) : HomeUiState()
     data class Error(val message: String) : HomeUiState()
 }
@@ -25,4 +26,10 @@ data class MonthlySpending(
     val month: Int,
     val year: Int,
     val amount: Double
+)
+
+data class TagExpense(
+    val tag: String,
+    val amount: Double,
+    val percentage: Double
 )
