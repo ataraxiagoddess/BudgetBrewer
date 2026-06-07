@@ -92,6 +92,8 @@ class SettingsActivity : BaseActivity() {
     private var isAppearanceExpanded = false
     private var isCurrencyExpanded = false
     private var isArchiveExpanded = false
+    private var isLegalExpanded = false
+
     companion object {
         const val EXTRA_START_FRAGMENT = "start_fragment"
         const val FRAGMENT_SIGN_IN = "sign_in"
@@ -104,6 +106,7 @@ class SettingsActivity : BaseActivity() {
         outState.putBoolean("appearance_expanded", isAppearanceExpanded)
         outState.putBoolean("currency_expanded", isCurrencyExpanded)
         outState.putBoolean("archive_expanded", isArchiveExpanded)
+        outState.putBoolean("legal_expanded", isLegalExpanded)
     }
 
     @OptIn(FlowPreview::class)
@@ -132,6 +135,7 @@ class SettingsActivity : BaseActivity() {
             isAppearanceExpanded = savedInstanceState.getBoolean("appearance_expanded", false)
             isCurrencyExpanded = savedInstanceState.getBoolean("currency_expanded", false)
             isArchiveExpanded = savedInstanceState.getBoolean("archive_expanded", false)
+            isLegalExpanded = savedInstanceState.getBoolean("legal_expanded", false)
         }
 
         setupSectionToggles()
@@ -162,11 +166,13 @@ class SettingsActivity : BaseActivity() {
         binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
         binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
         binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
+        binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
 
         binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
         binding.btnArchive.setIconResource((if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right))
+        binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
 
         // Set click listeners
         binding.btnAccount.setOnClickListener {
@@ -196,6 +202,19 @@ class SettingsActivity : BaseActivity() {
         binding.btnArchivedBuckets.setOnClickListener {
             val intent = Intent(this, ArchivedBucketsActivity::class.java)
             startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        }
+        binding.btnLegal.setOnClickListener {
+            isLegalExpanded = !isLegalExpanded
+            binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
+            binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)
+        }
+        binding.btnPrivacyPolicy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
+            startActivity(intent)
+        }
+        binding.btnTermsOfService.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerTOS.md".toUri())
+            startActivity(intent)
         }
     }
 
