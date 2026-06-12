@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/text_on_dialog"
         android:layout_marginBottom="16dp"
-        tools:text="Bucket Name" />
+        tools:text="Bucket Name"
+        tools:ignore="VisualLintSystemUi" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTransactions"

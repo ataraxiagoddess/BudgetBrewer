@@ -36,10 +36,12 @@ class SignInFragment : Fragment() {
                 // Switch to hidden
                 binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
                 // Switch to visible
                 binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
             // Move cursor to end
             binding.etPassword.text?.let { binding.etPassword.setSelection(it.length) }

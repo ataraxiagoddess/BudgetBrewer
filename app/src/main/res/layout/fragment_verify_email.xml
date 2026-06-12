@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main"
@@ -20,7 +21,8 @@
         android:paddingEnd="16dp"
         android:text="@string/back"
         app:icon="@drawable/ic_chevron_left"
-        app:iconGravity="textStart" />
+        app:iconGravity="textStart"
+        tools:ignore="VisualLintSystemUi" />
 
     <!-- Centered content -->
     <LinearLayout
@@ -36,7 +38,9 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/budget_brewer_logo" />
+            android:importantForAccessibility="no"
+            android:src="@drawable/budget_brewer_logo"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tvAppName"
@@ -68,6 +72,7 @@
             android:hint="@string/verification_code"
             android:inputType="number"
             android:maxLength="6"
+            android:importantForAutofill="no"
             android:background="@drawable/edittext_background"
             android:paddingHorizontal="12dp"
             android:paddingVertical="12dp"
@@ -77,7 +82,8 @@
             android:textSize="14sp"
             android:includeFontPadding="false"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <!-- Verify button -->
         <com.google.android.material.button.MaterialButton
@@ -92,7 +98,7 @@
         <TextView
             android:id="@+id/btnResend"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:text="@string/resend_code"
             android:textColor="@color/text_on_main"
             android:textSize="14sp"
@@ -120,7 +126,7 @@
         <TextView
             android:id="@+id/tvSignInInstead"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:text="@string/sign_in_instead"
             android:textColor="@color/text_on_main"
             android:textSize="14sp"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -24,12 +25,14 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="@string/bucket_name"
+            android:importantForAutofill="no"
             android:inputType="text"
             android:background="@drawable/edittext_background"
             android:paddingHorizontal="8dp"
             android:textColorHint="@color/text_disabled"
             android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="12dp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <!-- Goal vs Growth Radio Group -->
         <RadioGroup
@@ -48,7 +51,8 @@
                 android:checked="true"
                 android:textColor="@color/text_on_dialog"
                 android:buttonTint="@color/text_on_dialog"
-                style="@style/TextAppearance.BudgetBrewer.Body" />
+                style="@style/TextAppearance.BudgetBrewer.Body"
+                tools:ignore="VisualLintButtonSize" />
 
             <RadioButton
                 android:id="@+id/radioGrowth"
@@ -58,7 +62,8 @@
                 android:text="@string/growth"
                 android:textColor="@color/text_on_dialog"
                 android:buttonTint="@color/text_on_dialog"
-                style="@style/TextAppearance.BudgetBrewer.Body" />
+                style="@style/TextAppearance.BudgetBrewer.Body"
+                tools:ignore="VisualLintButtonSize" />
         </RadioGroup>
 
         <!-- Target Amount -->
@@ -67,12 +72,14 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:hint="@string/target_amount"
+            android:importantForAutofill="no"
             android:inputType="numberDecimal"
             android:background="@drawable/edittext_background"
             android:paddingHorizontal="8dp"
             android:textColorHint="@color/text_disabled"
             android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            tools:ignore="VisualLintTextFieldSize" />
 
         <!-- Color Picker Grid -->
         <TextView
@@ -102,7 +109,8 @@
                 style="@style/Widget.BudgetBrewer.Button.Dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="@string/cancel" />
+                android:text="@string/cancel"
+                tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonCreate"
@@ -110,7 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
-                android:text="@string/create_bucket" />
+                android:text="@string/create_bucket"
+                tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

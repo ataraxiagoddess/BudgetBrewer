@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -70,13 +71,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                tools:ignore="UseCompoundDrawables">
+
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
-                    android:src="@drawable/circle_expense"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/circle_expense"
+                    tools:ignore="ImageContrastCheck" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,14 +95,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                tools:ignore="UseCompoundDrawables">
+
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
-                    android:src="@drawable/circle_spending"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/circle_spending"
+                    tools:ignore="ImageContrastCheck" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,14 +121,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp">
+                android:layout_marginEnd="16dp"
+                tools:ignore="UseCompoundDrawables">
+
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
-                    android:src="@drawable/circle_income"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/circle_income"
+                    tools:ignore="ImageContrastCheck" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,14 +147,18 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:importantForAccessibility="no"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
-                    android:src="@drawable/circle_savings"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp" />
+                    android:layout_marginEnd="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/circle_savings"
+                    tools:ignore="ImageContrastCheck" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -156,7 +175,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:contentDescription="@string/week_end_horizontal_scroll"
             android:scrollbars="none">
+
             <LinearLayout
                 android:id="@+id/weekEndContainer"
                 android:layout_width="wrap_content"

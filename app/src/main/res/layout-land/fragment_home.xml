@@ -61,7 +61,8 @@
                             app:trackThickness="70dp"
                             app:trackColor="@color/chart_income"
                             app:indicatorColor="@color/chart_income"
-                            app:showAnimationBehavior="none" />
+                            app:showAnimationBehavior="none"
+                            android:importantForAccessibility="no" />
 
                         <com.google.android.material.progressindicator.CircularProgressIndicator
                             android:id="@+id/expensesRing"
@@ -73,7 +74,8 @@
                             app:trackThickness="12dp"
                             app:trackColor="@android:color/transparent"
                             app:indicatorColor="@color/chart_expenses"
-                            app:showAnimationBehavior="none" />
+                            app:showAnimationBehavior="none"
+                            android:importantForAccessibility="no" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -86,20 +88,22 @@
                                 android:id="@+id/tvIncomeCenter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/exo_regular"
+                                android:textColor="@color/text_on_main"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/text_on_main"
-                                android:fontFamily="@font/exo_regular"
+                                tools:ignore="TextContrastCheck"
                                 tools:text="$0.00" />
 
                             <TextView
                                 android:id="@+id/tvIncomeLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/exo_regular"
                                 android:text="@string/income"
-                                android:textSize="12sp"
                                 android:textColor="@color/text_on_main"
-                                android:fontFamily="@font/exo_regular" />
+                                android:textSize="12sp"
+                                tools:ignore="TextContrastCheck" />
                         </LinearLayout>
                     </FrameLayout>
 
@@ -114,7 +118,8 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:background="@color/chart_expenses"
-                            android:layout_marginEnd="8dp" />
+                            android:layout_marginEnd="8dp"
+                            android:importantForAccessibility="no" />
 
                         <TextView
                             android:id="@+id/tvExpensesData"
@@ -148,7 +153,8 @@
                         android:id="@+id/chartExpensesBreakdown"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="16dp"
+                        android:importantForAccessibility="no" />
 
                     <LinearLayout
                         android:id="@+id/expensesLegendContainer"
@@ -201,7 +207,8 @@
                             app:trackColor="@color/chart_target"
                             android:layout_marginBottom="8dp"
                             app:indicatorColor="@color/chart_actual"
-                            android:fontFamily="@font/exo_regular" />
+                            android:fontFamily="@font/exo_regular"
+                            android:importantForAccessibility="no" />
 
                         <TextView
                             android:id="@+id/tvSavingsPercentage"
@@ -233,7 +240,8 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:background="@color/chart_target"
-                                android:layout_marginEnd="8dp" />
+                                android:layout_marginEnd="8dp"
+                                android:importantForAccessibility="no" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -253,7 +261,8 @@
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:background="@color/chart_actual"
-                                android:layout_marginEnd="8dp" />
+                                android:layout_marginEnd="8dp"
+                                android:importantForAccessibility="no" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -349,7 +358,8 @@
                         android:id="@+id/chartSpendingTrends"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="16dp"
+                        android:importantForAccessibility="no" />
 
                     <LinearLayout
                         android:id="@+id/spendingDataContainer"

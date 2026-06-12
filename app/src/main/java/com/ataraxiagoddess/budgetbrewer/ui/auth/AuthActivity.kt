@@ -81,6 +81,7 @@ class AuthActivity : AppCompatActivity(), AuthNavigationListener {
 
         // Hide default text
         val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        defaultText.text = message
         defaultText.visibility = View.GONE
 
         // Add custom text

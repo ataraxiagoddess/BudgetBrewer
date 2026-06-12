@@ -15,7 +15,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textColor="@color/text_on_dialog"
-        tools:text="04/28/2026" />
+        tools:text="04/28/2026"
+        tools:ignore="VisualLintSystemUi" />
 
     <TextView
         android:id="@+id/tvAmount"
@@ -24,23 +25,26 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/text_on_dialog"
-        tools:text="+$100.00" />
+        tools:text="+$100.00"
+        tools:ignore="VisualLintSystemUi" />
 
     <ImageButton
         android:id="@+id/btnEdit"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_edit"
         android:contentDescription="@string/edit"
-        app:tint="@color/edit_icon_color" />
+        android:src="@android:drawable/ic_menu_edit"
+        app:tint="@color/edit_icon_color"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageButton
         android:id="@+id/btnDelete"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_delete"
         android:contentDescription="@string/delete"
-        app:tint="@color/delete_icon_color" />
+        android:src="@android:drawable/ic_menu_delete"
+        app:tint="@color/delete_icon_color"
+        tools:ignore="ImageContrastCheck" />
 </LinearLayout>

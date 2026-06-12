@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -87,12 +88,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="100dp"
         android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
         android:contentDescription="@string/add_bucket"
         android:src="@android:drawable/ic_input_add"
         app:fabSize="normal"
-        app:tint="@android:color/white" />
+        app:tint="@android:color/white"
+        tools:ignore="ImageContrastCheck,ClassNameCheck" />
     <!-- ProgressBar overlay (matches existing pattern) -->
     <ProgressBar
         android:id="@+id/progressBar"

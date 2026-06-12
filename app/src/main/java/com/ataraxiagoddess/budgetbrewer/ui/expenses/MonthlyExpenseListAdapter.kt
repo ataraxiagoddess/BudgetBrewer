@@ -42,6 +42,20 @@ class MonthlyExpenseListAdapter(
             binding.tvDayNumber.text = dayExpenses.day.toString()
             binding.checkbox.isChecked = dayExpenses.isChecked
 
+            binding.root.contentDescription = buildString {
+                append("Day ${dayExpenses.day}")
+                if (dayExpenses.expenses.isNotEmpty()) {
+                    append(", ${dayExpenses.expenses.size} expenses")
+                    append(", ${dayExpenses.formattedExpenses}")
+                } else {
+                    append(", no expenses")
+                }
+                if (dayExpenses.isChecked) {
+                    append(", checked")
+                }
+                append(", double tap to toggle complete")
+            }
+
             val context = binding.root.context
             val exoRegular = ResourcesCompat.getFont(context, R.font.exo_regular)
             val exoItalic = ResourcesCompat.getFont(context, R.font.exo_italic)

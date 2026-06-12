@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/category_background"
@@ -23,7 +24,8 @@
             android:layout_weight="1"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            android:textColor="@color/text_on_container" />
+            android:textColor="@color/text_on_container"
+            tools:ignore="VisualLintSystemUi" />
 
         <ImageButton
             android:id="@+id/btnEditCategory"
@@ -49,10 +51,11 @@
         android:id="@+id/expensesScrollView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/expenses_scrollview_max_height"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="false"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="4dp"
+        android:contentDescription="@string/expense_scroll"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:id="@+id/expensesContainer"

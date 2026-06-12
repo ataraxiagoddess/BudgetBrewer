@@ -4,4 +4,5 @@
     android:layout_width="wrap_content"
     android:layout_height="48dp"
     android:layout_gravity="center"
-    android:text="@string/add_symbol" />
+    android:text="@string/add_symbol"
+    android:contentDescription="@string/add_allocation" />

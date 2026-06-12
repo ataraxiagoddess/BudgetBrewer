@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -17,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:hint="@string/enter_pin"
+            android:importantForAutofill="no"
             android:inputType="numberPassword"
             android:maxLength="4"
             android:background="@drawable/edittext_background"
@@ -28,7 +30,8 @@
             android:fontFamily="@font/exo_regular"
             android:textSize="14sp"
             android:includeFontPadding="false"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            tools:ignore="RtlSymmetry,VisualLintTextFieldSize,VisualLintSystemUi" />
 
         <ImageButton
             android:id="@+id/btnTogglePin"
@@ -37,9 +40,10 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="4dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_visibility_off"
             android:contentDescription="@string/toggle_password_visibility"
-            app:tint="@color/ic_button_tint" />
+            android:src="@drawable/ic_visibility_off"
+            app:tint="@color/ic_button_tint"
+            tools:ignore="DuplicateSpeakableTextCheck" />
     </FrameLayout>
 
     <!-- Confirm PIN field with toggle -->
@@ -53,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:hint="@string/confirm_pin"
+            android:importantForAutofill="no"
             android:inputType="numberPassword"
             android:maxLength="4"
             android:background="@drawable/edittext_background"
@@ -64,7 +69,8 @@
             android:fontFamily="@font/exo_regular"
             android:textSize="14sp"
             android:includeFontPadding="false"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            tools:ignore="RtlSymmetry,VisualLintTextFieldSize" />
 
         <ImageButton
             android:id="@+id/btnToggleConfirmPin"

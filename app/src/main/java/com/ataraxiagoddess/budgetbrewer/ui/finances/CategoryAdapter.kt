@@ -18,6 +18,7 @@ import com.ataraxiagoddess.budgetbrewer.util.SHORT
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.google.android.material.button.MaterialButton
 import timber.log.Timber
+import java.text.DateFormat
 import java.util.Date
 
 class CategoryAdapter(
@@ -121,6 +122,18 @@ class CategoryAdapter(
 
             btnEdit.setOnClickListener { onEditExpense(expense) }
             btnDelete.setOnClickListener { onDeleteExpense(expense) }
+
+            expenseView.contentDescription = buildString {
+                append(expense.description)
+                append(", ")
+                append(expense.amount.toCurrencyDisplay(itemView.resources))
+                append(", due ")
+                append(DateFormat.getDateInstance(DateFormat.FULL).format(Date(expense.dueDate)))
+                if (expense.recurrenceType != RecurrenceType.NONE) {
+                    append(", recurring")
+                }
+                append(", double tap to edit or delete")
+            }
 
             return expenseView
         }

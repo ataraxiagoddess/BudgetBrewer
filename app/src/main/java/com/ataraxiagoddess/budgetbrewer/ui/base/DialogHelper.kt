@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
 import com.ataraxiagoddess.budgetbrewer.R
 
 @SuppressLint("InflateParams")
@@ -22,6 +23,7 @@ fun showBudgetBrewerDialog(
 ): AlertDialog {
     val titleView = inflater.inflate(R.layout.dialog_title, null, false) as TextView
     titleView.text = title
+    ViewCompat.setAccessibilityHeading(titleView, true)
 
     val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme_BudgetBrewer)
         .setCustomTitle(titleView)

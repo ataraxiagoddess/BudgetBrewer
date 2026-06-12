@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@null"
@@ -27,7 +28,8 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:singleLine="true"
-            android:textColor="@color/text_on_container" />
+            android:textColor="@color/text_on_container"
+            tools:ignore="VisualLintSystemUi" />
 
         <TextView
             android:id="@+id/tvExpenseAmount"
@@ -55,7 +57,8 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/edit"
         android:src="@android:drawable/ic_menu_edit"
-        app:tint="@color/edit_icon_color" />
+        app:tint="@color/edit_icon_color"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageButton
         android:id="@+id/btnDeleteExpense"
@@ -64,5 +67,6 @@
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="@color/delete_icon_color" />
+        app:tint="@color/delete_icon_color"
+        tools:ignore="ImageContrastCheck" />
 </LinearLayout>

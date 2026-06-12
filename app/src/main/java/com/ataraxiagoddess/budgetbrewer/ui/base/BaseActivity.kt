@@ -196,7 +196,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 buttonBar.addView(header)
 
                 // Helper to create an icon‑only nav button
-                fun createNavButton(destination: NavDestination, iconRes: Int, bgRes: Int): MaterialButton {
+                fun createNavButton(destination: NavDestination, iconRes: Int, bgRes: Int, labelRes: Int): MaterialButton {
                     return MaterialButton(this@BaseActivity).apply {
                         layoutParams = LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -210,6 +210,7 @@ abstract class BaseActivity : AppCompatActivity() {
                         setBackgroundResource(bgRes)
                         backgroundTintList = null
                         iconTint = ContextCompat.getColorStateList(context, R.color.text_on_main)
+                        contentDescription = getString(labelRes)
                         setOnClickListener {
                             if (destination == currentNavDestination) {
                                 return@setOnClickListener
@@ -232,49 +233,56 @@ abstract class BaseActivity : AppCompatActivity() {
                 railButtons[NavDestination.HOME] = createNavButton(
                     NavDestination.HOME,
                     R.drawable.ic_cottage,
-                    R.drawable.bg_nav_button_home
+                    R.drawable.bg_nav_button_home,
+                    R.string.nav_home
                 )
                 buttonBar.addView(railButtons[NavDestination.HOME])
 
                 railButtons[NavDestination.FINANCES] = createNavButton(
                     NavDestination.FINANCES,
                     R.drawable.ic_account_balance,
-                    R.drawable.bg_nav_button_finances
+                    R.drawable.bg_nav_button_finances,
+                    R.string.nav_finances
                 )
                 buttonBar.addView(railButtons[NavDestination.FINANCES])
 
                 railButtons[NavDestination.SAVINGS] = createNavButton(
                     NavDestination.SAVINGS,
                     R.drawable.ic_savings,
-                    R.drawable.bg_nav_button_savings
+                    R.drawable.bg_nav_button_savings,
+                    R.string.nav_savings
                 )
                 buttonBar.addView(railButtons[NavDestination.SAVINGS])
 
                 railButtons[NavDestination.EXPENSES] = createNavButton(
                     NavDestination.EXPENSES,
                     R.drawable.ic_receipt,
-                    R.drawable.bg_nav_button_expenses
+                    R.drawable.bg_nav_button_expenses,
+                    R.string.nav_expenses
                 )
                 buttonBar.addView(railButtons[NavDestination.EXPENSES])
 
                 railButtons[NavDestination.SPENDING] = createNavButton(
                     NavDestination.SPENDING,
                     R.drawable.ic_paid,
-                    R.drawable.bg_nav_button_spending
+                    R.drawable.bg_nav_button_spending,
+                    R.string.nav_spending
                 )
                 buttonBar.addView(railButtons[NavDestination.SPENDING])
 
                 railButtons[NavDestination.CALENDAR] = createNavButton(
                     NavDestination.CALENDAR,
                     R.drawable.ic_calendar_today,
-                    R.drawable.bg_nav_button_calendar
+                    R.drawable.bg_nav_button_calendar,
+                    R.string.nav_calendar
                 )
                 buttonBar.addView(railButtons[NavDestination.CALENDAR])
 
                 railButtons[NavDestination.SETTINGS] = createNavButton(
                     NavDestination.SETTINGS,
                     R.drawable.ic_settings,
-                    R.drawable.bg_nav_button_settings
+                    R.drawable.bg_nav_button_settings,
+                    R.string.settings
                 )
                 buttonBar.addView(railButtons[NavDestination.SETTINGS])
 
@@ -425,6 +433,8 @@ abstract class BaseActivity : AppCompatActivity() {
         monthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_month)
 
         spinner.adapter = monthAdapter
+
+        spinner.contentDescription = getString(R.string.select_month)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

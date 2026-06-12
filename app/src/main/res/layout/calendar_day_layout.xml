@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="90dp"
@@ -16,7 +17,8 @@
         android:textStyle="bold"
         android:padding="2dp"
         android:textColor="@color/text_on_container"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        tools:ignore="VisualLintSystemUi" />
 
     <GridLayout
         android:id="@+id/dotContainer"
@@ -29,6 +31,7 @@
         android:useDefaultMargins="false"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
-        android:gravity="bottom|center_vertical" />
+        android:gravity="bottom|center_vertical"
+        android:importantForAccessibility="no" />
 
 </LinearLayout>

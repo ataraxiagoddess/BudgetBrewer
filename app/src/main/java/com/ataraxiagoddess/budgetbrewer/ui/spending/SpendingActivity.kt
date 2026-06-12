@@ -236,6 +236,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialogBinding.etAmount.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
+            dialogBinding.etAmount.requestFocus()
             validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
@@ -265,7 +266,11 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val dateValid = date != null
         val withinLimit = amount != null && amount <= remaining
 
-        binding.tvWarning.visibility = if (amount != null && amount > 0 && !withinLimit) View.VISIBLE else View.GONE
+        val showWarning = amount != null && amount > 0 && !withinLimit
+        binding.tvWarning.visibility = if (showWarning) View.VISIBLE else View.GONE
+        if (showWarning) {
+            binding.tvWarning.announceForAccessibility(binding.tvWarning.text.toString())
+        }
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit
     }
@@ -329,6 +334,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialogBinding.etTag.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
+            dialogBinding.etAmount.requestFocus()
             validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
@@ -394,7 +400,11 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val amountValue = amount ?: 0.0
         val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
 
-        binding.tvWarning.visibility = if (amount != null && amount > 0 && !withinLimit) View.VISIBLE else View.GONE
+        val showWarning = amount != null && amount > 0 && !withinLimit
+        binding.tvWarning.visibility = if (showWarning) View.VISIBLE else View.GONE
+        if (showWarning) {
+            binding.tvWarning.announceForAccessibility(binding.tvWarning.text.toString())
+        }
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit && changed
     }

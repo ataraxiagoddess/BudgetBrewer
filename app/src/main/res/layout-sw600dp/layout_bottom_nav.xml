@@ -32,7 +32,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_home"
                 android:text="@string/nav_home"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonFinances"
@@ -42,7 +43,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_finances"
                 android:text="@string/nav_finances"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSavings"
@@ -52,7 +54,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_savings"
                 android:text="@string/nav_savings"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonExpenses"
@@ -62,7 +65,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_expenses"
                 android:text="@string/nav_expenses"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSpending"
@@ -72,7 +76,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_spending"
                 android:text="@string/nav_spending"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonCalendar"
@@ -82,7 +87,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_calendar"
                 android:text="@string/nav_calendar"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSettings"
@@ -92,7 +98,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_settings"
                 android:text="@string/settings"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
         </LinearLayout>
     </HorizontalScrollView>

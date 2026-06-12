@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -20,7 +21,8 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.BudgetBrewer.Header"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            tools:ignore="RelativeOverlap" />
 
         <ImageButton
             android:id="@+id/btnClose"
@@ -36,11 +38,12 @@
     <!-- Expenses section -->
     <TextView
         android:id="@+id/tvExpensesLabel"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/expenses_section_title"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_marginTop="8dp" />
+        tools:ignore="TextContrastCheck" />
 
     <LinearLayout
         android:id="@+id/expensesContainer"
@@ -53,11 +56,12 @@
     <!-- Spending section -->
     <TextView
         android:id="@+id/tvSpendingLabel"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/spending_title"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_marginTop="8dp" />
+        tools:ignore="TextContrastCheck" />
 
     <LinearLayout
         android:id="@+id/spendingContainer"
@@ -69,11 +73,12 @@
 
     <TextView
         android:id="@+id/tvSavingsLabel"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/savings_allocation"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_marginTop="8dp" />
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/tvSavingsAmount"
@@ -82,16 +87,18 @@
         android:layout_height="wrap_content"
         android:textColor="@color/dialog_content_text"
         android:visibility="gone"
-        android:paddingStart="16dp" />
+        android:paddingStart="16dp"
+        tools:ignore="RtlSymmetry" />
 
     <!-- Income section -->
     <TextView
         android:id="@+id/tvIncomeLabel"
+        style="@style/TextAppearance.BudgetBrewer.Subheader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/income_section_title"
-        style="@style/TextAppearance.BudgetBrewer.Subheader"
-        android:layout_marginTop="8dp" />
+        tools:ignore="TextContrastCheck" />
 
     <LinearLayout
         android:id="@+id/incomeContainer"

@@ -16,19 +16,21 @@
         android:layout_height="wrap_content"
         android:text="@string/allocation_dialog_description"
         android:textColor="@color/text_on_dialog"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        tools:ignore="VisualLintSystemUi" />
 
     <EditText
         android:id="@+id/etAllocationAmount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:inputType="numberDecimal"
-        android:hint="@string/allocation_amount_hint"
-        android:autofillHints="amount"
-        android:paddingHorizontal="8dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/edittext_background"
+        android:hint="@string/allocation_amount_hint"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
-        android:layout_marginBottom="4dp" />
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/tvAllocationError"

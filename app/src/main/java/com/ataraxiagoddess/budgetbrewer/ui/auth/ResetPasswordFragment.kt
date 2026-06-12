@@ -94,9 +94,11 @@ class ResetPasswordFragment : Fragment() {
             if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
                 binding.etNewPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
                 binding.etNewPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
             binding.etNewPassword.text?.let { binding.etNewPassword.setSelection(it.length) }
         }
@@ -106,9 +108,11 @@ class ResetPasswordFragment : Fragment() {
             if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
                 binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.show_password)
             } else {
                 binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.hide_password)
             }
             binding.etConfirmPassword.text?.let { binding.etConfirmPassword.setSelection(it.length) }
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,15 +13,18 @@
         android:text="@string/select_income"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
         android:textColor="@color/text_on_dialog"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        tools:ignore="VisualLintSystemUi" />
 
     <Spinner
         android:id="@+id/spinnerIncome"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/spinner_background"
-        android:popupBackground="@drawable/popup_background_rounded"
+        android:contentDescription="@string/select_income"
         android:dropDownWidth="match_parent"
-        android:dropDownVerticalOffset="4dp" />
+        android:dropDownVerticalOffset="4dp"
+        android:popupBackground="@drawable/popup_background_rounded"
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
 </LinearLayout>

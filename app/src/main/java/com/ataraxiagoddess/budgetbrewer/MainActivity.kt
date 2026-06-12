@@ -11,7 +11,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
-import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.data.SyncWorker
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity

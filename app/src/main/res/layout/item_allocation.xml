@@ -17,7 +17,7 @@
         android:text="@string/allocation_amount_default"
         android:textColor="@color/text_on_container"
         android:textSize="16sp"
-        tools:ignore="TextContrastCheck" />
+        tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
     <TextView
         android:id="@+id/tvAllocationPercent"

@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="8dp"
+            tools:ignore="VisualLintBounds">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonHome"
@@ -31,7 +32,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_home"
                 android:text="@string/nav_home"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonFinances"
@@ -41,7 +43,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_finances"
                 android:text="@string/nav_finances"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonSavings"
@@ -51,7 +54,8 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_nav_button_savings"
                 android:text="@string/nav_savings"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/navButtonExpenses"

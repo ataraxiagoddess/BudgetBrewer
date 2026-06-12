@@ -13,23 +13,24 @@
         android:id="@+id/etTipSource"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:minEms="10"
-        android:hint="@string/income_source_short_hint"
-        android:inputType="textPersonName"
-        android:autofillHints="name"
-        android:paddingHorizontal="8dp"
-        android:background="@drawable/edittext_background"
         android:layout_marginBottom="12dp"
-        android:textAppearance="@style/TextAppearance.BudgetBrewer.BodySmall" />
+        android:background="@drawable/edittext_background"
+        android:hint="@string/income_source_short_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:minEms="10"
+        android:paddingHorizontal="8dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.BodySmall"
+        tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
     <EditText
         android:id="@+id/etTipAmount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:importantForAutofill="no"
         android:minEms="10"
         android:hint="@string/amount_hint"
         android:inputType="numberDecimal"
-        android:autofillHints="amount"
         android:paddingHorizontal="8dp"
         android:background="@drawable/edittext_background"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.BodySmall" />

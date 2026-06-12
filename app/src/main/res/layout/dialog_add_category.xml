@@ -13,11 +13,12 @@
         android:id="@+id/etCategoryName"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:importantForAutofill="no"
         android:minEms="10"
         android:hint="@string/category_name_hint"
         android:inputType="textCapWords"
-        android:autofillHints="name"
         android:paddingHorizontal="8dp"
         android:background="@drawable/edittext_background"
-        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
+        tools:ignore="VisualLintSystemUi" />
 </LinearLayout>

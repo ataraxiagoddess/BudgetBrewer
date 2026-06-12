@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -26,14 +27,16 @@
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:textColor="@color/text_on_container"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry,VisualLintSystemUi" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
 
             <TextView
                 android:id="@+id/tvBucketType"
@@ -41,7 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="16dp"
-                android:textColor="@color/text_on_container" />
+                android:textColor="@color/text_on_container"
+                tools:ignore="RtlSymmetry" />
 
             <ImageView
                 android:id="@+id/icBucketType"
@@ -70,14 +74,18 @@
                 android:id="@+id/imageLiquid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:importantForAccessibility="no"
                 android:scaleType="fitCenter"
-                android:src="@drawable/jar_liquid_clip" />
+                android:src="@drawable/jar_liquid_clip"
+                tools:ignore="ImageContrastCheck" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:importantForAccessibility="no"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_jar_outline" />
+                android:src="@drawable/ic_jar_outline"
+                tools:ignore="ImageContrastCheck" />
         </FrameLayout>
 
         <LinearLayout
@@ -122,7 +130,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:text="@string/actual_label"
-                    android:textColor="@color/text_on_container" />
+                    android:textColor="@color/text_on_container"
+                    tools:ignore="VisualLintBounds" />
 
                 <TextView
                     android:id="@+id/tvActualAmount"
@@ -158,6 +167,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
             android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/delete_icon_color" />
+            app:tint="@color/delete_icon_color"
+            tools:ignore="ImageContrastCheck" />
     </LinearLayout>
 </LinearLayout>

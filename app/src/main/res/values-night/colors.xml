@@ -17,6 +17,7 @@
     <color name="net_positive">#81C784</color>            <!-- Positive net total (light green) -->
     <color name="net_negative">#E57373</color>            <!-- Negative net total (light red) -->
     <color name="net_zero">#64B5F6</color>                <!-- Zero net total (light blue) -->
+    <color name="text_warning_on_mint">#FF8A80</color>    <!-- Warning text (coral) -->
 
     <!-- ===== BUTTON COLORS ===== -->
     <color name="btn_on_main">#C084C0</color>             <!-- Buttons on main background (lighter purple) -->

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -37,19 +38,21 @@
             android:id="@+id/etPin"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:background="@drawable/edittext_background"
+            android:fontFamily="@font/exo_regular"
+            android:gravity="center_vertical"
             android:hint="@string/pin"
+            android:importantForAutofill="no"
+            android:includeFontPadding="false"
             android:inputType="numberPassword"
             android:maxLength="4"
-            android:background="@drawable/edittext_background"
             android:paddingHorizontal="12dp"
             android:paddingVertical="12dp"
             android:paddingEnd="48dp"
-            android:textColorHint="@color/text_disabled"
             android:textColor="@color/text_on_container"
-            android:fontFamily="@font/exo_regular"
+            android:textColorHint="@color/text_disabled"
             android:textSize="14sp"
-            android:includeFontPadding="false"
-            android:gravity="center_vertical" />
+            tools:ignore="RtlSymmetry,TextContrastCheck,VisualLintTextFieldSize" />
 
         <ImageButton
             android:id="@+id/btnTogglePassword"

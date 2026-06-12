@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +37,7 @@ class EditTransactionDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.etAmount.requestFocus()
 
         binding.tvBucketName.text = getString(R.string.edit_transaction_title)
         binding.tvAvailablePool.text = ""

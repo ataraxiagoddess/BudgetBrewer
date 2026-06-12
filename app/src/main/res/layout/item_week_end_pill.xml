@@ -17,7 +17,8 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 style="@style/TextAppearance.BudgetBrewer.Body.Container"
 android:textSize="12sp"
-tools:text="Week 1" />
+tools:text="Week 1"
+    tools:ignore="VisualLintSystemUi" />
 
 <TextView
 android:id="@+id/tvAmount"

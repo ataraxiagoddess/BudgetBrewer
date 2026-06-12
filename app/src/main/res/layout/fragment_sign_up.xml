@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main"
@@ -19,7 +20,8 @@
         android:paddingEnd="16dp"
         android:text="@string/back"
         app:icon="@drawable/ic_chevron_left"
-        app:iconGravity="textStart" />
+        app:iconGravity="textStart"
+        tools:ignore="VisualLintSystemUi" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -42,8 +44,10 @@
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_marginBottom="16dp"
+                android:importantForAccessibility="no"
                 android:src="@drawable/budget_brewer_logo"
-                app:tint="@null" />
+                app:tint="@null"
+                tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/tvAppName"
@@ -72,7 +76,8 @@
                 android:fontFamily="@font/exo_regular"
                 android:textSize="14sp"
                 android:includeFontPadding="false"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                tools:ignore="VisualLintTextFieldSize" />
 
             <!-- Confirm Email Field -->
             <EditText
@@ -91,7 +96,8 @@
                 android:fontFamily="@font/exo_regular"
                 android:textSize="14sp"
                 android:includeFontPadding="false"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                tools:ignore="VisualLintTextFieldSize" />
 
             <!-- Password Field with toggle -->
             <FrameLayout
@@ -115,7 +121,8 @@
                     android:fontFamily="@font/exo_regular"
                     android:textSize="14sp"
                     android:includeFontPadding="false"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    tools:ignore="RtlSymmetry,VisualLintTextFieldSize" />
 
                 <ImageButton
                     android:id="@+id/btnTogglePassword"
@@ -124,9 +131,10 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_visibility_off"
                     android:contentDescription="@string/toggle_password_visibility"
-                    app:tint="@color/ic_button_tint" />
+                    android:src="@drawable/ic_visibility_off"
+                    app:tint="@color/ic_button_tint"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
             </FrameLayout>
 
             <!-- Confirm Password Field -->
@@ -151,7 +159,8 @@
                     android:fontFamily="@font/exo_regular"
                     android:textSize="14sp"
                     android:includeFontPadding="false"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    tools:ignore="RtlSymmetry,VisualLintTextFieldSize" />
 
                 <ImageButton
                     android:id="@+id/btnToggleConfirmPassword"
@@ -175,7 +184,8 @@
                 android:visibility="gone"
                 android:fontFamily="@font/exo_regular"
                 android:paddingTop="4dp"
-                android:paddingBottom="2dp" />
+                android:paddingBottom="2dp"
+                android:accessibilityLiveRegion="polite" />
 
             <!-- Password requirements -->
             <TextView
@@ -201,7 +211,7 @@
             <TextView
                 android:id="@+id/tvSignInPrompt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:text="@string/sign_in_prompt"

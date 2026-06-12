@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -23,7 +24,8 @@
             android:textColor="@color/text_on_main"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:iconTint="@color/text_on_main" />
+            app:iconTint="@color/text_on_main"
+            tools:ignore="VisualLintButtonSize" />
 
         <LinearLayout
             android:id="@+id/accountContent"
@@ -147,7 +149,8 @@
             android:textColor="@color/text_on_main"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:iconTint="@color/text_on_main" />
+            app:iconTint="@color/text_on_main"
+            tools:ignore="VisualLintButtonSize" />
 
         <LinearLayout
             android:id="@+id/themeButtonContainer"
@@ -204,7 +207,8 @@
             android:textColor="@color/text_on_main"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:iconTint="@color/text_on_main" />
+            app:iconTint="@color/text_on_main"
+            tools:ignore="VisualLintButtonSize" />
 
         <Spinner
             android:id="@+id/spinnerCurrency"
@@ -230,7 +234,8 @@
             android:textColor="@color/text_on_main"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:iconTint="@color/text_on_main" />
+            app:iconTint="@color/text_on_main"
+            tools:ignore="VisualLintButtonSize" />
 
         <LinearLayout
             android:id="@+id/archiveContent"
@@ -262,7 +267,8 @@
             android:textColor="@color/text_on_main"
             app:icon="@drawable/ic_chevron_right"
             app:iconGravity="textEnd"
-            app:iconTint="@color/text_on_main" />
+            app:iconTint="@color/text_on_main"
+            tools:ignore="VisualLintButtonSize" />
 
         <LinearLayout
             android:id="@+id/legalContent"

@@ -1,7 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.settings
 
-import android.app.ActivityOptions
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -92,6 +90,7 @@ class PastMonthsActivity : BaseActivity() {
         }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerPastMonths.adapter = adapter
+        binding.spinnerPastMonths.contentDescription = getString(R.string.select_month)
 
         binding.spinnerPastMonths.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -137,6 +136,7 @@ class PastMonthsActivity : BaseActivity() {
             textSize = 18f
             typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_semi_bold)
             setPadding(0, 16, 0, 8)
+            androidx.core.view.ViewCompat.setAccessibilityHeading(this, true)
         }
         binding.previewContainer.addView(tv)
     }
@@ -162,6 +162,7 @@ class PastMonthsActivity : BaseActivity() {
         }
         row.addView(labelTv)
         row.addView(valueTv)
+        row.contentDescription = "$label, $value"
         binding.previewContainer.addView(row)
     }
 

@@ -17,10 +17,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.helper.widget.Grid
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginEnd
 import androidx.lifecycle.lifecycleScope
 import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
@@ -122,6 +120,15 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
             view.setBackgroundResource(R.drawable.category_background)
             dotContainer?.removeAllViews()
 
+            view.contentDescription = buildString {
+                append("Day ${dayData.dayOfMonth}")
+                val expenseCount = dayData.expenses.size + dayData.spendingEntries.size
+                if (expenseCount > 0) append(", $expenseCount expenses")
+                if (dayData.assignedIncomes.isNotEmpty()) append(", ${dayData.assignedIncomes.size} incomes")
+                append(", net total ${dayData.dayTotal.toCurrencyDisplay(resources)}")
+                append(", double tap for details")
+            }
+
             if (dayData.expenses.isNotEmpty()) {
                 dotContainer?.addView(createDot(R.drawable.circle_expense))
             }
@@ -139,6 +146,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
         private fun createDot(drawableRes: Int): ImageView {
             return ImageView(view.context).apply {
                 setImageResource(drawableRes)
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 
                 val dotSize = resources.getDimensionPixelSize(R.dimen.dot_size)
                 // Use an existing dimen like dot_margin, or create R.dimen.dot_spacing in dimens.xml
@@ -212,6 +220,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                 typeface = exoRegular
                 if (weekPillTextSize != null) textSize = weekPillTextSize
             }
+            pill1.contentDescription = "Week ${weekEndTotals[i].weekNumber} total, ${weekEndTotals[i].total.toCurrencyDisplay(resources)}"
             pill1.setOnClickListener { showSnackbar(getString(R.string.week_end_not_editable)) }
             pill1.layoutParams = LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f
@@ -231,6 +240,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                     typeface = exoRegular
                     if (weekPillTextSize != null) textSize = weekPillTextSize
                 }
+                pill2.contentDescription = "Week ${weekEndTotals[i + 1].weekNumber} total, ${weekEndTotals[i + 1].total.toCurrencyDisplay(resources)}"
                 pill2.setOnClickListener { showSnackbar(getString(R.string.week_end_not_editable)) }
                 pill2.layoutParams = LinearLayout.LayoutParams(
                     0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f
@@ -266,6 +276,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                     layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                     setTextColor(ContextCompat.getColor(this@MonthlyCalendarActivity, R.color.text_on_main))
                     typeface = exoRegular
+                    androidx.core.view.ViewCompat.setAccessibilityHeading(this, true)
                 })
             }
         } else {
@@ -398,6 +409,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                 text = weekEnd.total.toCurrencyDisplay(resources)
                 typeface = exoRegular
             }
+            pill.contentDescription = "Week ${index + 1} total, ${weekEnd.total.toCurrencyDisplay(resources)}"
             pill.setOnClickListener {
                 showSnackbar(getString(R.string.week_end_not_editable))
             }

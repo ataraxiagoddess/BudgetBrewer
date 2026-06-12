@@ -110,6 +110,7 @@ class DayDetailDialogFragment : DialogFragment() {
                         text = getString(R.string.assign_income)
                         typeface = ResourcesCompat.getFont(requireContext(), R.font.exo_medium_italic)
                     }
+                    androidx.core.view.ViewCompat.setAccessibilityHeading(this, true)
                 }
             )
             .setView(view)

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -53,14 +54,16 @@
                     android:id="@+id/spinnerFrequency"
                     style="@style/Widget.BudgetBrewer.Spinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="53dp"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/spinner_background"
-                    android:popupTheme="@style/ThemeOverlay.BudgetBrewer.SpinnerPopup"
-                    android:popupBackground="@drawable/popup_background_rounded"
+                    android:contentDescription="@string/pay_frequency_label"
                     android:dropDownWidth="@dimen/spinner_dropdown_width"
                     android:paddingStart="12dp"
-                    android:paddingEnd="40dp" />
+                    android:paddingEnd="40dp"
+                    android:popupBackground="@drawable/popup_background_rounded"
+                    android:popupTheme="@style/ThemeOverlay.BudgetBrewer.SpinnerPopup"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
 
                 <!-- Income Section Container (card) -->
                 <LinearLayout

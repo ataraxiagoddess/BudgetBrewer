@@ -40,6 +40,16 @@ class TransactionHistoryAdapter(
         holder.binding.btnDelete.visibility = if (onDeleteClick != null) View.VISIBLE else View.GONE
         holder.binding.btnEdit.setOnClickListener { onEditClick?.invoke(tx) }
         holder.binding.btnDelete.setOnClickListener { onDeleteClick?.invoke(tx) }
+
+        holder.binding.root.contentDescription = buildString {
+            append(dateFormat.format(tx.date))
+            append(", ")
+            if (amount >= 0) append("plus ") else append("minus ")
+            append("${String.format("%.2f", Math.abs(amount))}")
+            if (onEditClick != null) {
+                append(", double tap to edit or delete")
+            }
+        }
     }
 
     override fun getItemCount() = transactions.size

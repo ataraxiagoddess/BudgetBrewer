@@ -59,9 +59,11 @@ class LockActivity : AppCompatActivity() {
             if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
                 et.inputType = InputType.TYPE_CLASS_NUMBER
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
                 et.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
             // Re‑apply custom font
             et.typeface = ResourcesCompat.getFont(this, R.font.exo_regular)
@@ -139,6 +141,7 @@ class LockActivity : AppCompatActivity() {
         snackbarView.background = ContextCompat.getDrawable(this, R.drawable.snackbar_background)
 
         val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        defaultText.text = message
         defaultText.visibility = View.GONE
 
         val customText = layoutInflater.inflate(R.layout.snackbar_custom, snackbarView as ViewGroup, false) as TextView

@@ -33,7 +33,6 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -161,6 +160,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
             transparentCircleRadius = 45f
             setDrawEntryLabels(false)
             setUsePercentValues(true)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
         }
 
         binding.chartSpendingTrends.apply {
@@ -203,6 +203,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
             binding.chartSpendingTrends.setNoDataText("")
             binding.chartSpendingTrends.setNoDataTextTypeface(exoRegular)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
         }
 
         // Spending by Tag Chart setup
@@ -215,6 +216,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
             transparentCircleRadius = 45f
             setDrawEntryLabels(false)
             setUsePercentValues(true)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
         }
     }
 
@@ -327,6 +329,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
             val colorView = View(requireContext()).apply {
                 layoutParams = LinearLayout.LayoutParams(16, 16).apply { setMargins(0, 0, 8, 0) }
                 setBackgroundColor(colors[index % colors.size])
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
 
             val textView = TextView(requireContext()).apply {
@@ -524,6 +527,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
             val colorView = View(requireContext()).apply {
                 layoutParams = LinearLayout.LayoutParams(16, 16).apply { setMargins(0, 0, 8, 0) }
                 setBackgroundColor(colors[index % colors.size])
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
 
             val textView = TextView(requireContext()).apply {

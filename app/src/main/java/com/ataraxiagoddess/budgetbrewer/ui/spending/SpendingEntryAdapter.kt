@@ -49,6 +49,21 @@ class SpendingEntryAdapter(
             binding.btnEdit.setOnClickListener { onEditClick(entry) }
             binding.btnDelete.setOnClickListener { onDeleteClick(entry) }
             binding.root.setOnClickListener { onItemClick(entry) }
+
+            itemView.contentDescription = buildString {
+                append(dateFormat.format(entry.date))
+                append(", ")
+                append(entry.source)
+                append(", ")
+                append(entry.amount.toCurrencyDisplay(itemView.resources))
+                if (tagsEnabled && !entry.tag.isNullOrEmpty()) {
+                    append(", has tag")
+                }
+                if (tagsEnabled && !entry.note.isNullOrEmpty()) {
+                    append(", has note")
+                }
+                append(", double tap for details")
+            }
         }
     }
 }

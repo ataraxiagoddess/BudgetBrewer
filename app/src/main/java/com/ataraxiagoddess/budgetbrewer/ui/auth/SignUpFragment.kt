@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SupabaseClient
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentSignUpBinding
-import com.google.android.material.snackbar.Snackbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
@@ -58,9 +57,11 @@ class SignUpFragment : Fragment() {
             if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
                 binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
                 binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
             binding.etPassword.text?.let { binding.etPassword.setSelection(it.length) }
         }
@@ -70,9 +71,11 @@ class SignUpFragment : Fragment() {
             if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
                 binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_off)
+                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.show_password)
             } else {
                 binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_on)
+                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.hide_password)
             }
             binding.etConfirmPassword.text?.let { binding.etConfirmPassword.setSelection(it.length) }
         }

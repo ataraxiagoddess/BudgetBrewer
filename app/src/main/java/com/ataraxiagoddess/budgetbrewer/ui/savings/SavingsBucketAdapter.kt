@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +80,19 @@ class SavingsBucketAdapter(
             binding.btnWithdraw.setOnClickListener { onWithdrawClick(bucket) }
             binding.btnDeleteBucket.setOnClickListener { onDeleteClick(bucket) }
             binding.cardRoot.setOnClickListener { onCardClick(bucket) }
+
+            binding.root.contentDescription = buildString {
+                append(bucket.name)
+                append(", ")
+                append(if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth")
+                append(", ")
+                append("${String.format("%.2f", bucket.current_amount)}")
+                if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
+                    append(" of ")
+                    append("${String.format("%.2f", bucket.target_amount)}")
+                }
+                append(", double tap to view history")
+            }
         }
 
         private fun parseColor(hex: String): Int {

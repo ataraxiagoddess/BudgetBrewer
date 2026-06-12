@@ -23,7 +23,6 @@ import com.ataraxiagoddess.budgetbrewer.ui.base.showBudgetBrewerDialog
 import com.ataraxiagoddess.budgetbrewer.ui.calendar.MonthlyCalendarActivity
 import com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity
 import com.ataraxiagoddess.budgetbrewer.ui.finances.IncomeExpensesActivity
-import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
@@ -96,6 +95,7 @@ class SavingsActivity : BaseActivity() {
         binding.fabAddBucket.setOnClickListener {
             showCreateBucketDialog()
         }
+        binding.fabAddBucket.contentDescription = getString(R.string.add_bucket)
 
         // Click listener for Add Bucket button (in empty state)
         binding.emptyStateContainer.buttonAddBucket.setOnClickListener {

@@ -58,6 +58,19 @@ class ArchivedBucketsAdapter(
             binding.btnRestore.setOnClickListener { onRestoreClick(bucket) }
             binding.btnDelete.setOnClickListener { onDeleteClick(bucket) }
             binding.cardRoot.setOnClickListener { onCardClick(bucket) }
+
+            binding.root.contentDescription = buildString {
+                append(bucket.name)
+                append(", ")
+                append(if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth")
+                append(", ")
+                append("${String.format("%.2f", bucket.current_amount)}")
+                if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
+                    append(" of ")
+                    append("${String.format("%.2f", bucket.target_amount)}")
+                }
+                append(", double tap to view history")
+            }
         }
 
         private fun parseColor(hex: String) = try { hex.toColorInt() } catch (e: Exception) { "#78b4e7".toColorInt() }

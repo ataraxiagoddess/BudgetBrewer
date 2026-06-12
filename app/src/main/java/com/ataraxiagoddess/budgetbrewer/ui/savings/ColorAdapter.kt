@@ -37,6 +37,9 @@ class ColorAdapter(
         holder.swatch.background = circle
         holder.border.visibility = if (position == selectedPosition) View.VISIBLE else View.GONE
         holder.itemView.setOnClickListener { onItemClicked(position) }
+
+        val colorName = context.resources.getResourceEntryName(colors[position]).replaceFirstChar { it.uppercase() }
+        holder.itemView.contentDescription = colorName
     }
 
     override fun getItemCount(): Int = colors.size

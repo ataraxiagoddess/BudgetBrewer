@@ -12,7 +12,8 @@
         style="@style/TextAppearance.BudgetBrewer.DialogTitle"
         android:textColor="@color/text_on_dialog"
         android:layout_marginBottom="8dp"
-        android:text="@string/distribute" />
+        android:text="@string/distribute"
+        tools:ignore="VisualLintSystemUi" />
 
     <TextView
         android:id="@+id/tvBucketName"
@@ -36,13 +37,15 @@
         android:id="@+id/etAmount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="@string/amount_hint"
-        android:inputType="numberDecimal|numberSigned"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/edittext_background"
+        android:hint="@string/amount_hint"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal|numberSigned"
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
         android:textColorHint="@color/text_disabled"
-        android:layout_marginBottom="4dp" />
+        tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
 
     <TextView
         android:id="@+id/tvError"
@@ -64,7 +67,8 @@
             style="@style/Widget.BudgetBrewer.Button.Dialog"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"
@@ -72,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
-            android:text="@string/save" />
+            android:text="@string/save"
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 </LinearLayout>

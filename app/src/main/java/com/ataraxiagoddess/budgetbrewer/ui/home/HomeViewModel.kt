@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
-import com.ataraxiagoddess.budgetbrewer.data.TagSpendingTotal
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.home.HomeUiState.Success
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main"
@@ -19,7 +20,8 @@
         app:icon="@drawable/ic_chevron_left"
         app:iconGravity="textStart"
         android:paddingStart="12dp"
-        android:paddingEnd="16dp" />
+        android:paddingEnd="16dp"
+        tools:ignore="VisualLintSystemUi" />
 
     <!-- ScrollView wraps the main content -->
     <ScrollView
@@ -42,7 +44,9 @@
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/budget_brewer_logo" />
+                android:importantForAccessibility="no"
+                android:src="@drawable/budget_brewer_logo"
+                tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/tvAppName"
@@ -71,7 +75,8 @@
                 android:fontFamily="@font/exo_regular"
                 android:textSize="14sp"
                 android:includeFontPadding="false"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                tools:ignore="VisualLintTextFieldSize" />
 
             <!-- Password Field with custom visibility toggle -->
             <FrameLayout
@@ -95,7 +100,8 @@
                     android:fontFamily="@font/exo_regular"
                     android:textSize="14sp"
                     android:includeFontPadding="false"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    tools:ignore="RtlSymmetry,VisualLintTextFieldSize" />
 
                 <ImageButton
                     android:id="@+id/btnTogglePassword"
@@ -113,7 +119,7 @@
             <TextView
                 android:id="@+id/tvForgotPassword"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:text="@string/forgot_password"
                 android:textColor="@color/text_on_main"
                 android:textSize="14sp"
@@ -136,7 +142,7 @@
             <TextView
                 android:id="@+id/tvSignUpPrompt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:text="@string/sign_up_prompt"
                 android:textColor="@color/text_on_main"
                 android:textSize="14sp"

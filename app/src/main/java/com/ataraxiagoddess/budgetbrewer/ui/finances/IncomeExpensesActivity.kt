@@ -68,7 +68,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
-import java.util.Locale
 import kotlin.math.abs
 
 class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
@@ -475,6 +474,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
                 holder.btnEdit.setOnClickListener { showEditIncomeDialog(existing) }
                 holder.btnDelete.setOnClickListener { viewModel.deleteIncome(existing) }
+
+                rowView.contentDescription = buildString {
+                    append(row.timeFrame)
+                    append(", ")
+                    append(existing.sourceName)
+                    append(", ")
+                    append(existing.amount.toCurrencyDisplay(rowView.resources))
+                    append(", double tap to edit or delete")
+                }
             } else {
                 holder.tvSource.visibility = View.GONE
                 holder.tvAmount.visibility = View.GONE
@@ -483,6 +491,11 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 holder.btnDelete.visibility = View.GONE
 
                 holder.btnAdd.setOnClickListener { showAddIncomeDialog(row.weekNumber) }
+
+                rowView.contentDescription = buildString {
+                    append(row.timeFrame)
+                    append(", no income added, double tap to add")
+                }
             }
 
             rowView.tag = holder
@@ -569,6 +582,14 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                     negativeButton = getString(R.string.cancel),
                     onPositive = { viewModel.deleteTip(tip) }
                 ).show()
+            }
+
+            entryView.contentDescription = buildString {
+                append("Tip, ")
+                append(tip.sourceName)
+                append(", ")
+                append(tip.amount.toCurrencyDisplay(entryView.resources))
+                append(", double tap to edit or delete")
             }
 
             tipEntryHolders.add(holder)
@@ -1284,6 +1305,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 showDeleteAllocationDialog(type)
             }
 
+            itemView.contentDescription = buildString {
+                append(type.displayName)
+                append(" allocation, ")
+                append(amount.toCurrencyDisplay(itemView.resources))
+                append(", ")
+                append(percent.toPercentDisplay(itemView.resources))
+                append(", double tap to edit or delete")
+            }
+
             placeholder.addView(itemView)
         } else {
             // Only show add button if there are funds available (leftover > 0)
@@ -1292,6 +1322,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 addButton.setOnClickListener {
                     showAllocationDialog(type)
                 }
+                addButton.contentDescription = getString(R.string.add_allocation_content_desc, type.displayName)
                 placeholder.addView(addButton)
             }
             // If leftover <= 0, no button is shown
@@ -1324,6 +1355,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             else -> getString(R.string.allocation_status_available)
         }
         binding.tvAllocationStatus.text = status
+        binding.tvAllocationStatus.announceForAccessibility(status)
     }
 
     // ==================== CATEGORIES UI ====================

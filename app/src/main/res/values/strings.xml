@@ -44,6 +44,7 @@
 
     <!-- Leftover Section -->
     <string name="leftover_description">Amount after Expenses to allocate to Savings or Spending:</string>
+    <string name="add_allocation">Add allocation</string>
     <string name="savings_title">Savings</string>
     <string name="spending_title">Spending</string>
     <string name="default_amount_zero">0.00</string>
@@ -82,6 +83,7 @@
     <!-- Expense Dialogs -->
     <string name="add_expense_title">Add Expense to %s</string>
     <string name="edit_expense_title">Edit Expense</string>
+    <string name="mark_day_complete">Mark day as complete</string>
 
     <!-- Frequency Change Dialog -->
     <string name="change_frequency_title">Change Frequency</string>
@@ -469,5 +471,21 @@
     <string name="share_pdf">Share PDF</string>
     <string name="export_saved">Export saved to Downloads</string>
     <string name="share">Share</string>
+
+    <!-- Accessibility -->
+    <string name="week_end_horizontal_scroll">Week end amounts, scroll to see more</string>
+    <string name="preview_pane">If contents do not fit screen, scroll down or up to see more</string>
+    <string name="expense_scroll">If content exceeds window height, scroll up or down to view more.</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="add_allocation_content_desc">Add %1$s allocation</string>
+    <string name="account_section">Account section</string>
+    <string name="appearance_section">Appearance section</string>
+    <string name="currency_section">Currency section</string>
+    <string name="archive_section">Archive section</string>
+    <string name="legal_section">Legal section</string>
+    <string name="expanded">Expanded</string>
+    <string name="collapsed">Collapsed</string>
+    <string name="select_currency">Select currency</string>
 
 </resources>

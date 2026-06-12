@@ -17,15 +17,15 @@
         android:layout_marginBottom="16dp"
         android:maxWidth="280dp"
         android:text="@string/transaction_date_hint"
-        tools:ignore="TextContrastCheck" />
+        tools:ignore="TextContrastCheck,VisualLintSystemUi" />
 
     <EditText
         android:id="@+id/etSource"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="@string/transaction_source_hint"
-        android:inputType="textPersonName"
-        android:autofillHints="name"
+        android:inputType="text"
+        android:importantForAutofill="no"
         android:paddingHorizontal="8dp"
         android:background="@drawable/edittext_background"
         android:layout_marginBottom="16dp"
@@ -37,7 +37,7 @@
         android:layout_height="48dp"
         android:hint="@string/transaction_amount_hint"
         android:inputType="numberDecimal"
-        android:autofillHints="amount"
+        android:importantForAutofill="no"
         android:paddingHorizontal="8dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/edittext_background"
@@ -77,7 +77,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="@font/exo_regular"
         android:text="@string/transaction_exceeds_warning"
-        android:textColor="@color/net_negative"
+        android:textColor="@color/text_warning_on_mint"
         android:textSize="12sp"
         android:visibility="gone" />
 

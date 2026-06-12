@@ -174,26 +174,36 @@ class SettingsActivity : BaseActivity() {
         binding.btnArchive.setIconResource((if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right))
         binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
 
+        binding.btnAccount.contentDescription = getString(R.string.account_section)
+        binding.btnAppearance.contentDescription = getString(R.string.appearance_section)
+        binding.btnCurrency.contentDescription = getString(R.string.currency_section)
+        binding.btnArchive.contentDescription = getString(R.string.archive_section)
+        binding.btnLegal.contentDescription = getString(R.string.legal_section)
+
         // Set click listeners
         binding.btnAccount.setOnClickListener {
             isAccountExpanded = !isAccountExpanded
             binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
             binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnAccount.announceForAccessibility(if (isAccountExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
         }
         binding.btnAppearance.setOnClickListener {
             isAppearanceExpanded = !isAppearanceExpanded
             binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
             binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnAppearance.announceForAccessibility(if (isAppearanceExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
         }
         binding.btnCurrency.setOnClickListener {
             isCurrencyExpanded = !isCurrencyExpanded
             binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
             binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnCurrency.announceForAccessibility(if (isCurrencyExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
         }
         binding.btnArchive.setOnClickListener {
             isArchiveExpanded = !isArchiveExpanded
             binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
             binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnArchive.announceForAccessibility(if (isArchiveExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
         }
         binding.btnPastMonths.setOnClickListener {
             val intent = Intent(this, PastMonthsActivity::class.java)
@@ -207,6 +217,7 @@ class SettingsActivity : BaseActivity() {
             isLegalExpanded = !isLegalExpanded
             binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
             binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)
+            binding.btnLegal.announceForAccessibility(if (isLegalExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
         }
         binding.btnPrivacyPolicy.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
@@ -278,6 +289,7 @@ class SettingsActivity : BaseActivity() {
             }
         }
         binding.spinnerCurrency.adapter = adapter
+        binding.spinnerCurrency.contentDescription = getString(R.string.select_currency)
 
         val defaultCurrency = currencies[0]  // first item, e.g., "$ (USD)"
         val savedCurrency = settingsPrefs.getString("currency", defaultCurrency) ?: defaultCurrency
@@ -513,9 +525,11 @@ class SettingsActivity : BaseActivity() {
             if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
                 etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 btnToggle.setImageResource(R.drawable.ic_visibility_off)
+                btnToggle.contentDescription = getString(R.string.show_password)
             } else {
                 etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 btnToggle.setImageResource(R.drawable.ic_visibility_on)
+                btnToggle.contentDescription = getString(R.string.hide_password)
             }
             // Reapply custom font
             etPassword.typeface = ResourcesCompat.getFont(this, R.font.exo_regular)
@@ -668,9 +682,11 @@ class SettingsActivity : BaseActivity() {
             if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
                 etPin.inputType = InputType.TYPE_CLASS_NUMBER
                 btnTogglePin.setImageResource(R.drawable.ic_visibility_on)
+                btnTogglePin.contentDescription = getString(R.string.show_password)
             } else {
                 etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 btnTogglePin.setImageResource(R.drawable.ic_visibility_off)
+                btnTogglePin.contentDescription = getString(R.string.hide_password)
             }
             etPin.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
             etPin.text?.let { etPin.setSelection(it.length) }
@@ -682,9 +698,11 @@ class SettingsActivity : BaseActivity() {
             if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
                 etConfirmPin.inputType = InputType.TYPE_CLASS_NUMBER
                 btnToggleConfirmPin.setImageResource(R.drawable.ic_visibility_on)
+                btnToggleConfirmPin.contentDescription = getString(R.string.show_password)
             } else {
                 etConfirmPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 btnToggleConfirmPin.setImageResource(R.drawable.ic_visibility_off)
+                btnToggleConfirmPin.contentDescription = getString(R.string.hide_password)
             }
             etConfirmPin.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
             etConfirmPin.text?.let { etConfirmPin.setSelection(it.length) }
@@ -700,6 +718,7 @@ class SettingsActivity : BaseActivity() {
         )
 
         dialog.setOnShowListener {
+            etPin.requestFocus()
             val saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
 
@@ -727,6 +746,7 @@ class SettingsActivity : BaseActivity() {
                 } else {
                     tvError.text = getString(R.string.pins_do_not_match)
                     tvError.visibility = View.VISIBLE
+                    tvError.announceForAccessibility(getString(R.string.pins_do_not_match))
                 }
             }
         }

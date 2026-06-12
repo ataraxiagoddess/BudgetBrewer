@@ -51,6 +51,7 @@ class DistributeDialogFragment(
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvBucketName.text = bucket.name
+        binding.etAmount.requestFocus()
 
         val maxAllowed = if (isDeduction) bucket.current_amount else availablePool
 
@@ -74,6 +75,9 @@ class DistributeDialogFragment(
                 }
                 binding.tvError.visibility = if (errorMessage != null) View.VISIBLE else View.GONE
                 binding.tvError.text = errorMessage ?: ""
+                if (errorMessage != null) {
+                    binding.tvError.announceForAccessibility(errorMessage)
+                }
                 saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed
 
                 // Apply digit filter to prevent negative numbers and limit decimals
