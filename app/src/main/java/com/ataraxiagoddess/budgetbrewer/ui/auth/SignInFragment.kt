@@ -96,7 +96,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun showForgotPasswordDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_single_edittext, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_single_edittext, binding.root, false)
         val editText = dialogView.findViewById<EditText>(R.id.etInput)
         editText.hint = getString(R.string.email)
 
