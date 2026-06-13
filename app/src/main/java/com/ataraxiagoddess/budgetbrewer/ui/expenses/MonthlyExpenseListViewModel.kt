@@ -70,7 +70,7 @@ class MonthlyExpenseListViewModel(
             try {
                 val budget = repository.getBudgetById(budgetId) ?: return@launch
                 val userId = AuthManager.getUserId(appContext)
-                if (budget != null && userId != null) {
+                if (userId != null) {
                     SyncManager(appContext).uploadBudget(budget, userId)
                 }
                 val expenses = repository.getExpensesForBudget(budgetId).first()
