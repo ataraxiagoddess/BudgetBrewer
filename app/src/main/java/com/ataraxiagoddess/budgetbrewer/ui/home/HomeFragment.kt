@@ -207,7 +207,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
         }
 
         // Spending by Tag Chart setup
-        binding.chartSpendingByTag?.apply {
+        binding.chartSpendingByTag.apply {
             description.isEnabled = false
             legend.isEnabled = false
             isDrawHoleEnabled = true
@@ -482,11 +482,11 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private fun updateSpendingByTagChart(data: HomeUiState.Success) {
         if (data.spendingByTag.isEmpty() || !SpendingPrefs.isTagsEnabled(requireContext())) {
-            binding.layoutSpendingByTagContainer?.visibility = View.GONE
+            binding.layoutSpendingByTagContainer.visibility = View.GONE
             return
         }
 
-        binding.layoutSpendingByTagContainer?.visibility = View.VISIBLE
+        binding.layoutSpendingByTagContainer.visibility = View.VISIBLE
 
         val entries = data.spendingByTag.mapIndexed { index, tagExpense ->
             PieEntry(tagExpense.amount.toFloat(), index)
@@ -509,10 +509,10 @@ class HomeFragment : Fragment(), MonthChangeListener {
             setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
         }
 
-        binding.chartSpendingByTag?.data = pieData
-        binding.chartSpendingByTag?.invalidate()
+        binding.chartSpendingByTag.data = pieData
+        binding.chartSpendingByTag.invalidate()
 
-        binding.tagsLegendContainer?.removeAllViews()
+        binding.tagsLegendContainer.removeAllViews()
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
 
         data.spendingByTag.forEachIndexed { index, tagExpense ->
@@ -548,7 +548,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
             legendRow.addView(colorView)
             legendRow.addView(textView)
-            binding.tagsLegendContainer?.addView(legendRow)
+            binding.tagsLegendContainer.addView(legendRow)
         }
     }
 
