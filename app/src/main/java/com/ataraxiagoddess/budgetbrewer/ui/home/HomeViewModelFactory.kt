@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
+import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
@@ -23,8 +24,8 @@ class HomeViewModelFactory(
         val budgetId = runBlocking {
             repository.getOrCreateBudgetChain(month, year)
         }
-
+        val isTagsEnabled = SpendingPrefs.isTagsEnabled(context)
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
-        return HomeViewModel(repository, savedStateHandle, context) as T
+        return HomeViewModel(repository, savedStateHandle, isTagsEnabled) as T
     }
 }

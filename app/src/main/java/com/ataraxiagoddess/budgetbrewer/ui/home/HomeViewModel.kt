@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.home
 
-import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.ataraxiagoddess.budgetbrewer.R
@@ -19,7 +18,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val context: Context
+    private val isTagsEnabled: Boolean
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -85,7 +84,7 @@ class HomeViewModel(
             // Compute spending history for the selected timeframe
             val spendingHistory = buildSpendingHistory()
 
-            val spendingByTag = if (SpendingPrefs.isTagsEnabled(context)) {
+            val spendingByTag = if (isTagsEnabled) {
                 val tagTotals = repository.getSpendingTotalsByTag(budgetId).first()
                 val totalTaggedAmount = tagTotals.sumOf { it.total }
                 tagTotals.map { tagTotal ->
