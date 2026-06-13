@@ -27,7 +27,7 @@ class NavigationManager(
 
     private fun setupClickListeners() {
         buttonMap.forEach { (button, destination) ->
-            button?.setOnClickListener {
+            button.setOnClickListener {
                 Timber.d("Button clicked: ${button.text} (destination=$destination, current=$currentDestination)")
                 if (currentDestination != destination) {
                     Timber.d("Navigating to $destination")
@@ -42,9 +42,9 @@ class NavigationManager(
     fun updateForDestination(destination: NavDestination) {
         Timber.d("updateForDestination: $destination (was $currentDestination)")
         currentDestination = destination
-        buttonMap.forEach { (button, dest) ->
-            button?.visibility = View.VISIBLE
-            Timber.d("Button ${button?.text} visibility: VISIBLE")
+        buttonMap.forEach { (button, _) ->
+            button.visibility = View.VISIBLE
+            Timber.d("Button ${button.text} visibility: VISIBLE")
         }
     }
 }
