@@ -1355,7 +1355,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             else -> getString(R.string.allocation_status_available)
         }
         binding.tvAllocationStatus.text = status
-        binding.tvAllocationStatus.announceForAccessibility(status)
+        binding.tvAllocationStatus.contentDescription = status
     }
 
     // ==================== CATEGORIES UI ====================
@@ -1402,7 +1402,6 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         if (isTablet) {
             if (isLandscape) {
                 // Tablet landscape: use fixed width from dimension
-                val availableWidth = screenWidth - horizontalPadding - gap
                 contentWidth = resources.getDimensionPixelSize(R.dimen.category_card_width_land)
                 halfMargin = gap / 2
             } else {
