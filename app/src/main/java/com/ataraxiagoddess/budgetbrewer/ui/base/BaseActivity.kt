@@ -225,7 +225,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                 NavDestination.SETTINGS -> navigateToSettings()
                             }
                             // Update rail state after navigation
-                            updateRailSelection(destination)
+                            updateRailSelection()
                         }
                     }
                 }
@@ -298,7 +298,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 spinner?.let { setupMonthSpinner(it) }
 
                 // Initialize rail visibility
-                updateRailSelection(currentNavDestination)
+                updateRailSelection()
             } else {
                 // 2. Month selector – aligned to top (with blur)
                 val monthSelectorBlurView = BlurView(this@BaseActivity).apply {
@@ -528,7 +528,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
         // Update rail selection
         if (useRail) {
-            updateRailSelection(currentNavDestination)
+            updateRailSelection()
         }
         restoreNavScroll()
     }
@@ -562,7 +562,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateRailSelection(destination: NavDestination) {
+    private fun updateRailSelection() {
         // Only used in rail mode
         if (!useRail) return
         railButtons.forEach { (_, button) ->
@@ -607,19 +607,6 @@ abstract class BaseActivity : AppCompatActivity() {
             }
             if (::monthSelectorBinding.isInitialized) {
                 monthSelectorBinding.root.visibility = View.GONE
-            }
-        }
-    }
-
-    protected fun showNavigation() {
-        if (useRail) {
-            railNavScrollView?.visibility = View.VISIBLE
-        } else {
-            if (::navBinding.isInitialized) {
-                navBinding.root.visibility = View.VISIBLE
-            }
-            if (::monthSelectorBinding.isInitialized) {
-                monthSelectorBinding.root.visibility = View.VISIBLE
             }
         }
     }
