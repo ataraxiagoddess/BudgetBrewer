@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,10 +31,6 @@ class CreateBucketDialogFragment(
 
     private lateinit var colorAdapter: ColorAdapter
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,9 +55,13 @@ class CreateBucketDialogFragment(
         // Setup color RecyclerView with GridLayoutManager (4 columns)
         binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)
         colorAdapter = ColorAdapter(requireContext(), SavingsBucketColors.colors.toList()) { position ->
+            val oldPosition = colorAdapter.selectedPosition
             selectedColorRes = SavingsBucketColors.colors[position]
             colorAdapter.selectedPosition = position
-            colorAdapter.notifyDataSetChanged()
+            if (oldPosition != position) {
+                colorAdapter.notifyItemChanged(oldPosition)
+                colorAdapter.notifyItemChanged(position)
+            }
         }
         binding.recyclerViewColors.adapter = colorAdapter
 
@@ -111,7 +110,7 @@ class CreateBucketDialogFragment(
         return try {
             val colorInt = ContextCompat.getColor(requireContext(), colorRes)
             String.format("#%06X", 0xFFFFFF and colorInt)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             "#FF6B6B"
         }
     }
