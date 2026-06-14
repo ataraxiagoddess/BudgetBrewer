@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,8 +15,7 @@ class DistributeDialogFragment(
     private val bucket: SavingsBucket,
     private val availablePool: Double,
     private val isDeduction: Boolean = false,
-    private val onDistribute: (Double) -> Unit,
-    private val onShowSnackbar: (String) -> Unit
+    private val onDistribute: (Double) -> Unit
 ) : DialogFragment() {
 
     init {
@@ -26,10 +24,6 @@ class DistributeDialogFragment(
 
     private var _binding: DialogDistributeBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,7 +70,7 @@ class DistributeDialogFragment(
                 binding.tvError.visibility = if (errorMessage != null) View.VISIBLE else View.GONE
                 binding.tvError.text = errorMessage ?: ""
                 if (errorMessage != null) {
-                    binding.tvError.announceForAccessibility(errorMessage)
+                    binding.tvError.contentDescription = errorMessage
                 }
                 saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed
 
