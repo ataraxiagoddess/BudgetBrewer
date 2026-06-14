@@ -34,11 +34,11 @@ class ArchivedBucketsAdapter(
             binding.icBucketType.setImageResource(
                 if (bucket.type == SavingsBucketType.GOAL) R.drawable.ic_goal else R.drawable.ic_growth
             )
-            binding.tvActualAmount.text = "$${String.format("%.2f", bucket.current_amount)}"
+            binding.tvActualAmount.text = String.format(java.util.Locale.getDefault(), "$%.2f", bucket.current_amount)
 
             if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                 binding.tvTargetAmount.visibility = View.VISIBLE
-                binding.tvTargetAmount.text = "$${String.format("%.2f", bucket.target_amount)}"
+                binding.tvTargetAmount.text = String.format(java.util.Locale.getDefault(), "$%.2f", bucket.target_amount)
                 binding.tvTargetLabel.visibility = View.VISIBLE
             } else {
                 binding.tvTargetAmount.visibility = View.GONE
@@ -64,16 +64,16 @@ class ArchivedBucketsAdapter(
                 append(", ")
                 append(if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth")
                 append(", ")
-                append("${String.format("%.2f", bucket.current_amount)}")
+                append(String.format(java.util.Locale.getDefault(), "$%.2f", bucket.current_amount))
                 if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                     append(" of ")
-                    append("${String.format("%.2f", bucket.target_amount)}")
+                    append(String.format(java.util.Locale.getDefault(), "$%.2f", bucket.target_amount))
                 }
                 append(", double tap to view history")
             }
         }
 
-        private fun parseColor(hex: String) = try { hex.toColorInt() } catch (e: Exception) { "#78b4e7".toColorInt() }
+        private fun parseColor(hex: String) = try { hex.toColorInt() } catch (_: Exception) { "#78b4e7".toColorInt() }
     }
 
     object DiffCallback : DiffUtil.ItemCallback<SavingsBucket>() {
