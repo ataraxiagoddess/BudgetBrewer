@@ -186,25 +186,25 @@ class SettingsActivity : BaseActivity() {
             isAccountExpanded = !isAccountExpanded
             binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
             binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            binding.btnAccount.announceForAccessibility(if (isAccountExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(binding.btnAccount, getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed))
         }
         binding.btnAppearance.setOnClickListener {
             isAppearanceExpanded = !isAppearanceExpanded
             binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
             binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            binding.btnAppearance.announceForAccessibility(if (isAppearanceExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(binding.btnAppearance, getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed))
         }
         binding.btnCurrency.setOnClickListener {
             isCurrencyExpanded = !isCurrencyExpanded
             binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
             binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            binding.btnCurrency.announceForAccessibility(if (isCurrencyExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(binding.btnCurrency, getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed))
         }
         binding.btnArchive.setOnClickListener {
             isArchiveExpanded = !isArchiveExpanded
             binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
             binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            binding.btnArchive.announceForAccessibility(if (isArchiveExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(binding.btnArchive, getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed))
         }
         binding.btnPastMonths.setOnClickListener {
             val intent = Intent(this, PastMonthsActivity::class.java)
@@ -218,7 +218,7 @@ class SettingsActivity : BaseActivity() {
             isLegalExpanded = !isLegalExpanded
             binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
             binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)
-            binding.btnLegal.announceForAccessibility(if (isLegalExpanded) getString(R.string.expanded) else getString(R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(binding.btnLegal, getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed))
         }
         binding.btnPrivacyPolicy.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
@@ -677,6 +677,9 @@ class SettingsActivity : BaseActivity() {
         val btnToggleConfirmPin = dialogView.findViewById<ImageButton>(R.id.btnToggleConfirmPin)
         val tvError = dialogView.findViewById<TextView>(R.id.tvError)
 
+        // Mark tvError as an assertive live region so TalkBack automatically announces text changes
+        tvError.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
+
         // Toggle for PIN field
         btnTogglePin.setOnClickListener {
             val current = etPin.inputType
@@ -747,7 +750,6 @@ class SettingsActivity : BaseActivity() {
                 } else {
                     tvError.text = getString(R.string.pins_do_not_match)
                     tvError.visibility = View.VISIBLE
-                    tvError.announceForAccessibility(getString(R.string.pins_do_not_match))
                 }
             }
         }
