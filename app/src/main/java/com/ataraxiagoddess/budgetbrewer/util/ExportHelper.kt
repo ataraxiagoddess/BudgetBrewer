@@ -12,7 +12,6 @@ import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.scale
 import androidx.core.graphics.toColorInt
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.RecurrenceType
@@ -243,10 +242,6 @@ object ExportHelper {
 
         // Header background (same on every page)
         val headerBgPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
-        val genBgPaint = Paint().apply { color = lavender; style = Paint.Style.FILL }
-        val genPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            typeface = regularTypeface; textSize = 12f; color = darkText
-        }
 
         // ---- Page‑header drawing lambda (used for first page and page breaks) ----
         fun drawPageHeader(canvas: Canvas, startingY: Float): Float {
@@ -262,8 +257,8 @@ object ExportHelper {
             val logoX = pageInfo.pageWidth - margin - 20f -logoWidth
             val logoY = yPos + (80f - logoHeight) / 2f
 
-            val srcRect = android.graphics.Rect(0, 0, originalLogo.width, originalLogo.height)
-            val dstRect = android.graphics.RectF(logoX, logoY, logoX + logoWidth, logoY + logoHeight)
+            val srcRect = Rect(0, 0, originalLogo.width, originalLogo.height)
+            val dstRect = RectF(logoX, logoY, logoX + logoWidth, logoY + logoHeight)
 
             canvas.drawBitmap(originalLogo, srcRect, dstRect, logoPaint)
 

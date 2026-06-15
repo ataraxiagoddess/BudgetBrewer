@@ -352,7 +352,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                     val difference = newAmount?.minus(originalAmount)
                     difference!! <= remaining
                 }
-                if (newDate != null && newSource.isNotEmpty() && newAmount != null && newAmount > 0 && amountWithinLimit) {
+                if (newDate != null && newSource.isNotEmpty() && newAmount > 0 && amountWithinLimit) {
                     val updatedEntry = entry.copy(
                         source = newSource,
                         amount = newAmount,

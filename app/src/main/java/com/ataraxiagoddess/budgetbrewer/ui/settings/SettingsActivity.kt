@@ -72,6 +72,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import java.util.Calendar
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 private data class DeleteAccountResponse(
@@ -124,7 +125,7 @@ class SettingsActivity : BaseActivity() {
             monthSelectorBinding.root.visibility = View.GONE
             navBinding.navButtonHome.visibility = View.VISIBLE
             navBinding.navButtonFinances.visibility = View.VISIBLE
-            navBinding.navButtonSavings?.visibility = View.VISIBLE
+            navBinding.navButtonSavings.visibility = View.VISIBLE
             navBinding.navButtonExpenses.visibility = View.VISIBLE
             navBinding.navButtonSpending.visibility = View.VISIBLE
             navBinding.navButtonCalendar.visibility = View.VISIBLE
@@ -147,7 +148,7 @@ class SettingsActivity : BaseActivity() {
 
         lifecycleScope.launch {
             SupabaseClient.client.auth.sessionStatus
-                .debounce(200)
+                .debounce(200.milliseconds)
                 .collect { _ ->
                     updateAccountSection()
                 }
@@ -624,7 +625,7 @@ class SettingsActivity : BaseActivity() {
                     val json = Json { ignoreUnknownKeys = true }
                     val result = try {
                         json.decodeFromString<DeleteAccountResponse>(responseBody)
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         throw Exception("Invalid response: $responseBody")
                     }
 

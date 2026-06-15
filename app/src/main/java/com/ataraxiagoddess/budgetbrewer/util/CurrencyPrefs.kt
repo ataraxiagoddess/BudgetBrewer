@@ -27,9 +27,6 @@ object CurrencyPrefs {
     val currentCurrency: Currency
         get() = Currency.getInstance(currentCode)
 
-    val currentSymbol: String
-        get() = currentCurrency.getSymbol(Locale.getDefault())
-
     val currentFractionDigits: Int
         get() = max(0, currentCurrency.defaultFractionDigits)
 
