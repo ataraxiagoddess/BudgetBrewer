@@ -294,6 +294,11 @@
     <string name="currency_display">%s%.2f</string>
     <string name="currency_edit">%.2f</string>
     <string name="currency_with_symbol">%s%s</string>
+    <string name="amount_formatted">$%1$.2f</string>
+    <string name="goal_suffix"> of %1$s</string>
+    <string name="amount_signed">%1$s %2$s</string>
+    <string name="bucket_description">%1$s, %2$s, %3$s%4$s, double tap to view history</string>
+    <string name="transaction_description">%1$s, %2$s %3$s%4$s</string>
 
     <!-- Percent Formats -->
     <string name="percent_display">(%.5f%%)</string>
@@ -487,5 +492,6 @@
     <string name="expanded">Expanded</string>
     <string name="collapsed">Collapsed</string>
     <string name="select_currency">Select currency</string>
+    <string name="funds_deducted_success">Funds removed from bucket and added back to pool</string>
 
 </resources>

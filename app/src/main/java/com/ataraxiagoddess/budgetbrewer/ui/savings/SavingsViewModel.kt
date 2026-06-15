@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -61,16 +62,23 @@ class SavingsViewModel(
         viewModelScope.launch {
             _uiState.value = SavingsUiState.Loading
             try {
-                repository.getActiveSavingsBuckets()
+                combine(
+                    repository.getActiveSavingsBuckets(),
+                    repository.getAllSavingsTransactionsFlow()
+                ) { buckets, transactions ->
+                    val transactionCounts = transactions.groupingBy { it.bucket_id }.eachCount()
+                    Pair(buckets, transactionCounts)
+                }
                     .catch { e ->
                         _uiState.value = SavingsUiState.Error(e.message ?: "Unknown error")
                         emitError(R.string.error_load_data, e)
                     }
-                    .collect { buckets ->
+                    .collect { (buckets, transactionCounts) ->
                         _uiState.value = SavingsUiState.Success(
                             buckets = buckets,
                             isEmpty = buckets.isEmpty(),
-                            maxBucketsReached = buckets.size >= Constants.MAX_SAVINGS_BUCKETS
+                            maxBucketsReached = buckets.size >= Constants.MAX_SAVINGS_BUCKETS,
+                            transactionCounts = transactionCounts
                         )
                     }
             } catch (e: Exception) {
@@ -130,7 +138,12 @@ class SavingsViewModel(
                     SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
                 }
             }
-            _events.emit(SavingsUiEvent.FundsDistributed)
+
+            if (amount < 0) {
+                _events.emit(SavingsUiEvent.ShowMessage("Funds removed from bucket and added back to pool"))
+            } else {
+                _events.emit(SavingsUiEvent.FundsDistributed)
+            }
         }
     }
 
@@ -154,21 +167,6 @@ class SavingsViewModel(
                 }
             }
             _events.emit(SavingsUiEvent.BucketArchived)
-        }
-    }
-
-    fun restoreBucket(bucket: SavingsBucket) {
-        safeLaunch(R.string.error_restore) {
-            repository.restoreBucket(bucket)
-
-            val userId = AuthManager.getUserId(appContext)
-            if (userId != null) {
-                val updatedBucket = repository.getSavingsBucketById(bucket.id)
-                if (updatedBucket != null) {
-                    SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
-                }
-            }
-            _events.emit(SavingsUiEvent.BucketRestored)
         }
     }
 

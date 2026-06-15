@@ -34,11 +34,12 @@ class ArchivedBucketsAdapter(
             binding.icBucketType.setImageResource(
                 if (bucket.type == SavingsBucketType.GOAL) R.drawable.ic_goal else R.drawable.ic_growth
             )
-            binding.tvActualAmount.text = String.format(java.util.Locale.getDefault(), "$%.2f", bucket.current_amount)
+            binding.tvActualAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
 
             if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                 binding.tvTargetAmount.visibility = View.VISIBLE
-                binding.tvTargetAmount.text = String.format(java.util.Locale.getDefault(), "$%.2f", bucket.target_amount)
+                binding.tvTargetAmount.text =
+                    binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
                 binding.tvTargetLabel.visibility = View.VISIBLE
             } else {
                 binding.tvTargetAmount.visibility = View.GONE
@@ -59,18 +60,22 @@ class ArchivedBucketsAdapter(
             binding.btnDelete.setOnClickListener { onDeleteClick(bucket) }
             binding.cardRoot.setOnClickListener { onCardClick(bucket) }
 
-            binding.root.contentDescription = buildString {
-                append(bucket.name)
-                append(", ")
-                append(if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth")
-                append(", ")
-                append(String.format(java.util.Locale.getDefault(), "$%.2f", bucket.current_amount))
-                if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
-                    append(" of ")
-                    append(String.format(java.util.Locale.getDefault(), "$%.2f", bucket.target_amount))
-                }
-                append(", double tap to view history")
+            val currentAmt = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
+            val typeStr = if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth"
+            val goalSuffix = if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
+                val targetAmt = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
+                binding.root.context.getString(R.string.goal_suffix, targetAmt)
+            } else {
+                ""
             }
+
+            binding.root.contentDescription = binding.root.context.getString(
+                R.string.bucket_description,
+                bucket.name,
+                typeStr,
+                currentAmt,
+                goalSuffix
+            )
         }
 
         private fun parseColor(hex: String) = try { hex.toColorInt() } catch (_: Exception) { "#78b4e7".toColorInt() }

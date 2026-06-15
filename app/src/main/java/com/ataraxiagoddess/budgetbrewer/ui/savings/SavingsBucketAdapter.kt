@@ -21,6 +21,8 @@ class SavingsBucketAdapter(
     private val onCardClick: (SavingsBucket) -> Unit
 ) : ListAdapter<SavingsBucket, SavingsBucketAdapter.ViewHolder>(DiffCallback) {
 
+    var transactionCounts: Map<String, Int> = emptyMap()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSavingsBucketBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
@@ -39,12 +41,12 @@ class SavingsBucketAdapter(
             )
 
             // Actual amount
-            binding.tvActualAmount.text = "$${String.format("%.2f", bucket.current_amount)}"
+            binding.tvActualAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
 
             // Target amount
             if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                 binding.tvTargetAmount.visibility = View.VISIBLE
-                binding.tvTargetAmount.text = "$${String.format("%.2f", bucket.target_amount)}"
+                binding.tvTargetAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
                 binding.tvTargetLabel.visibility = View.VISIBLE
             } else {
                 binding.tvTargetAmount.visibility = View.GONE
@@ -56,12 +58,10 @@ class SavingsBucketAdapter(
             val isGoal = bucket.type == SavingsBucketType.GOAL
             val target = bucket.target_amount ?: 0.0
             val current = bucket.current_amount
-
-            val fillFraction: Float
-            if (isGoal) {
-                fillFraction = if (target > 0) (current / target).toFloat().coerceIn(0f, 1f) else 0f
+            val fillFraction: Float = if (isGoal) {
+                if (target > 0) (current / target).toFloat().coerceIn(0f, 1f) else 0f
             } else {
-                fillFraction = if (current > 0) 0.5f else 0f
+                if (current > 0) 0.5f else 0f
             }
 
             val liquidDrawable = binding.imageLiquid.drawable
@@ -79,26 +79,46 @@ class SavingsBucketAdapter(
             binding.btnEditBucket.setOnClickListener { onEditClick(bucket) }
             binding.btnWithdraw.setOnClickListener { onWithdrawClick(bucket) }
             binding.btnDeleteBucket.setOnClickListener { onDeleteClick(bucket) }
-            binding.cardRoot.setOnClickListener { onCardClick(bucket) }
+            
+            val count = transactionCounts[bucket.id] ?: 0
+            if (count > 0) {
+                binding.cardRoot.isEnabled = true
+                binding.cardRoot.isClickable = true
+                binding.cardRoot.setOnClickListener { onCardClick(bucket) }
+            } else {
+                binding.cardRoot.isEnabled = false
+                binding.cardRoot.isClickable = false
+                binding.cardRoot.setOnClickListener(null)
+            }
 
-            binding.root.contentDescription = buildString {
-                append(bucket.name)
-                append(", ")
-                append(if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth")
-                append(", ")
-                append("${String.format("%.2f", bucket.current_amount)}")
-                if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
-                    append(" of ")
-                    append("${String.format("%.2f", bucket.target_amount)}")
-                }
-                append(", double tap to view history")
+            val typeStr = if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth"
+            val currentAmt = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
+            val goalSuffix = if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
+                val targetAmt = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
+                binding.root.context.getString(R.string.goal_suffix, targetAmt)
+            } else {
+                ""
+            }
+
+            val baseDescription = binding.root.context.getString(
+                R.string.bucket_description,
+                bucket.name,
+                typeStr,
+                currentAmt,
+                goalSuffix
+            )
+            
+            binding.root.contentDescription = if (count > 0) {
+                baseDescription
+            } else {
+                "$baseDescription. No transactions to view."
             }
         }
 
         private fun parseColor(hex: String): Int {
             return try {
                 hex.toColorInt()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 "#78b4e7".toColorInt()
             }
         }

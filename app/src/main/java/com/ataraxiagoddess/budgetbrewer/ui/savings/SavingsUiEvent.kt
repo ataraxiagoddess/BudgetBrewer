@@ -11,4 +11,5 @@ sealed class SavingsUiEvent {
     object TransactionEdited : SavingsUiEvent()
     object TransactionDeleted : SavingsUiEvent()
     data class ShowError(val message: String) : SavingsUiEvent()
+    data class ShowMessage(val message: String) : SavingsUiEvent()
 }

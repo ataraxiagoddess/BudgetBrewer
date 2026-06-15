@@ -15,7 +15,7 @@ class DistributeDialogFragment(
     private val bucket: SavingsBucket,
     private val availablePool: Double,
     private val isDeduction: Boolean = false,
-    private val onDistribute: (Double) -> Unit
+    private val onDistribute: (Double) -> Unit,
 ) : DialogFragment() {
 
     init {

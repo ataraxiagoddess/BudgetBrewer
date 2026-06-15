@@ -95,7 +95,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="16dp" />
+            android:paddingStart="14dp"
+            android:layout_marginBottom="16dp"
+            tools:ignore="RtlSymmetry" />
 
         <!-- Buttons -->
         <LinearLayout

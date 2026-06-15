@@ -28,7 +28,6 @@ import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.GridSpacingItemDecoration
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class SavingsActivity : BaseActivity() {
@@ -118,6 +117,13 @@ class SavingsActivity : BaseActivity() {
                     }
                     is SavingsUiState.Success -> {
                         hideLoading()
+                        adapter.transactionCounts = state.transactionCounts
+                        // Use notifyItemRangeChanged instead of notifyDataSetChanged
+                        // This is a more specific change event that triggers a rebind
+                        // of the visible items to pick up the new transactionCounts
+                        if (adapter.itemCount > 0) {
+                            adapter.notifyItemRangeChanged(0, adapter.itemCount)
+                        }
                         if (state.isEmpty) {
                             showEmptyState()
                         } else {
@@ -147,14 +153,16 @@ class SavingsActivity : BaseActivity() {
                     is SavingsUiEvent.BucketDeleted -> showSnackbar(getString(R.string.bucket_deleted))
                     is SavingsUiEvent.FundsDistributed -> showSnackbar(getString(R.string.funds_distributed))
                     is SavingsUiEvent.ShowError -> {
-                        Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
+                        showSnackbar(event.message)
+                    }
+                    is SavingsUiEvent.ShowMessage -> {
+                        showSnackbar(event.message)
                     }
                     is SavingsUiEvent.BucketWithdrawn -> showSnackbar(getString(R.string.funds_withdrawn))
                     is SavingsUiEvent.BucketArchived -> showSnackbar(getString(R.string.bucket_archived))
                     is SavingsUiEvent.BucketRestored -> showSnackbar(getString(R.string.bucket_restored))
                     is SavingsUiEvent.TransactionEdited -> showSnackbar(getString(R.string.transaction_edited))
                     is SavingsUiEvent.TransactionDeleted -> showSnackbar(getString(R.string.transaction_deleted))
-                    else -> {}
                 }
             }
         }
@@ -183,17 +191,15 @@ class SavingsActivity : BaseActivity() {
             bucket = bucket,
             availablePool = 0.0, // not used
             isDeduction = true,
-            onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool.value) },
-            onShowSnackbar = { message -> showSnackbar(message) }
+            onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool.value) }
         )
         dialog.show(supportFragmentManager, "DeductDialog")
     }
 
     private fun showEditTransactionDialog(transaction: SavingsTransaction) {
         val dialog = EditTransactionDialogFragment(
-            currentAmount = transaction.amount,
-            onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) },
-            onShowSnackbar = { message -> showSnackbar(message) }
+            transaction = transaction,
+            onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) }
         )
         dialog.show(supportFragmentManager, "EditTransactionDialog")
     }
@@ -227,8 +233,7 @@ class SavingsActivity : BaseActivity() {
             bucket = bucket,
             availablePool = availablePool,
             isDeduction = false,
-            onDistribute = { amount -> viewModel.distributeFunds(bucket, amount, availablePool) },
-            onShowSnackbar = { message -> showSnackbar(message) }
+            onDistribute = { amount -> viewModel.distributeFunds(bucket, amount, availablePool) }
         )
         dialog.show(supportFragmentManager, "DistributeDialog")
     }

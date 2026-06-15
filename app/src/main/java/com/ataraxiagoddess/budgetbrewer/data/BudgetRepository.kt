@@ -183,6 +183,10 @@ class BudgetRepository(private val db: AppDatabase) {
         return db.savingsTransactionDao().getAllTransactions().first()
     }
 
+    fun getAllSavingsTransactionsFlow(): Flow<List<SavingsTransaction>> {
+        return db.savingsTransactionDao().getAllTransactions()
+    }
+
     // --- Month Settings ---
     suspend fun getMonthEndAmount(budgetId: String): Double {
         // Fetch all necessary data

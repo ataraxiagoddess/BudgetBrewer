@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,10 +30,6 @@ class EditBucketDialogFragment(
     private var bucketType: SavingsBucketType = existingBucket.type
 
     private lateinit var colorAdapter: ColorAdapter
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,16 +62,20 @@ class EditBucketDialogFragment(
             binding.editTextTargetAmount.visibility = View.GONE
         }
 
-        // Setup colour grid
+        // Setup color grid
         binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)
 
         colorAdapter = ColorAdapter(
             requireContext(),
             SavingsBucketColors.colors.toList(),
             onItemClicked = { position ->
+                val oldPosition = colorAdapter.selectedPosition
                 selectedColorRes = SavingsBucketColors.colors[position]
                 colorAdapter.selectedPosition = position
-                colorAdapter.notifyDataSetChanged()
+                if (oldPosition != position) {
+                    colorAdapter.notifyItemChanged(oldPosition)
+                    colorAdapter.notifyItemChanged(position)
+                }
             }
         )
         binding.recyclerViewColors.adapter = colorAdapter
@@ -86,8 +85,11 @@ class EditBucketDialogFragment(
         selectedColorRes = SavingsBucketColors.colors.firstOrNull {
             colorResToHex(it) == colorHex
         } ?: SavingsBucketColors.colors.first()
-        colorAdapter.selectedPosition = SavingsBucketColors.colors.indexOf(selectedColorRes)
-        colorAdapter.notifyDataSetChanged()
+        val position = SavingsBucketColors.colors.indexOf(selectedColorRes)
+        colorAdapter.selectedPosition = position
+        if (position != -1) {
+            colorAdapter.notifyItemChanged(position)
+        }
 
         binding.radioGroupType.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.radioGoal) {
@@ -129,7 +131,7 @@ class EditBucketDialogFragment(
         return try {
             val colorInt = ContextCompat.getColor(requireContext(), colorRes)
             String.format("#%06X", 0xFFFFFF and colorInt)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             "#FF6B6B"
         }
     }

@@ -11,7 +11,8 @@ sealed class SavingsUiState {
     data class Success(
         val buckets: List<SavingsBucket>,
         val isEmpty: Boolean,
-        val maxBucketsReached: Boolean = false
+        val maxBucketsReached: Boolean = false,
+        val transactionCounts: Map<String, Int> = emptyMap()
     ) : SavingsUiState()
     data class Error(val message: String) : SavingsUiState()
 }

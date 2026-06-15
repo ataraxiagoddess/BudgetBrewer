@@ -1,17 +1,22 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.ataraxiagoddess.budgetbrewer.R
+import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogDistributeBinding
+import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
+import java.util.Locale
+import kotlin.math.abs
 
 class EditTransactionDialogFragment(
-    private val currentAmount: Double,
-    private val onSave: (Double) -> Unit,
-    private val onShowSnackbar: (String) -> Unit
+    private val transaction: SavingsTransaction,
+    private val onSave: (Double) -> Unit
 ) : DialogFragment() {
 
     init { setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer) }
@@ -41,14 +46,32 @@ class EditTransactionDialogFragment(
 
         binding.tvBucketName.text = getString(R.string.edit_transaction_title)
         binding.tvAvailablePool.text = ""
-        binding.etAmount.setText(currentAmount.toString())
-        binding.etAmount.filters = arrayOf(com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter())
+        
+        val originalAmount = abs(transaction.amount)
+        binding.etAmount.setText(String.format(Locale.US, "%.2f", originalAmount))
+        binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+
+        val saveButton = binding.buttonSave
+        saveButton.isEnabled = false
+
+        binding.etAmount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val newAmount = s.toString().toDoubleOrNull()
+                // Must be a valid number, greater than zero, and different from the original amount
+                val isValid = newAmount != null && newAmount > 0.0 && newAmount != originalAmount
+                saveButton.isEnabled = isValid
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         binding.buttonCancel.setOnClickListener { dismiss() }
         binding.buttonSave.setOnClickListener {
             val newAmount = binding.etAmount.text.toString().toDoubleOrNull()
             if (newAmount != null) {
-                onSave(newAmount)
+                // Preserve the original sign of the transaction
+                val signedAmount = if (transaction.amount < 0) -newAmount else newAmount
+                onSave(signedAmount)
                 dismiss()
             }
         }

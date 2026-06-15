@@ -11,7 +11,6 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogBucketHistoryBinding
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class BucketHistoryDialogFragment(
@@ -50,21 +49,30 @@ class BucketHistoryDialogFragment(
         androidx.core.view.ViewCompat.setAccessibilityHeading(binding.tvBucketName, true)
         binding.recyclerViewTransactions.layoutManager = LinearLayoutManager(requireContext())
 
-        lifecycleScope.launch {
-            val allTransactions = repository.getSavingsTransactionsByBucket(bucketId).first()
-            val visibleTransactions = if (isArchived) {
-                allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }
-            } else {
-                allTransactions
-            }
+        val adapter = TransactionHistoryAdapter(
+            onEditClick = if (isArchived) null else onEditTransaction,
+            onDeleteClick = if (isArchived) null else onDeleteTransaction
+        )
+        binding.recyclerViewTransactions.adapter = adapter
 
-            // For archived buckets, no edit/delete callbacks → buttons hidden
-            val adapter = TransactionHistoryAdapter(
-                transactions = visibleTransactions,
-                onEditClick = if (isArchived) null else onEditTransaction,
-                onDeleteClick = if (isArchived) null else onDeleteTransaction
-            )
-            binding.recyclerViewTransactions.adapter = adapter
+        lifecycleScope.launch {
+            repository.getSavingsTransactionsByBucket(bucketId).collect { allTransactions ->
+                val visibleTransactions = if (isArchived) {
+                    allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }
+                } else {
+                    allTransactions
+                }
+
+                // If all transactions are deleted, close the dialog
+                if (visibleTransactions.isEmpty()) {
+                    dismiss()
+                    return@collect
+                }
+
+                // Update the adapter with the new list using submitList
+                // This automatically calculates diffs and fires specific notify events!
+                adapter.submitList(visibleTransactions)
+            }
         }
     }
 
