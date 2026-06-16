@@ -1,3 +1,4 @@
+@file:Suppress("ClassName")
 package com.ataraxiagoddess.budgetbrewer.database
 
 import androidx.room.migration.Migration
