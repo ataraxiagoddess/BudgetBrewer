@@ -128,7 +128,7 @@ class SavingsViewModel(
                 _events.emit(SavingsUiEvent.ShowError("Not enough funds available"))
                 return@safeLaunch
             }
-            repository.distributeFunds(bucket, amount, budgetId)
+            repository.distributeFunds(bucket, amount)
 
             // Sync the updated bucket (the flow will recalculate the pool automatically)
             val userId = AuthManager.getUserId(appContext)

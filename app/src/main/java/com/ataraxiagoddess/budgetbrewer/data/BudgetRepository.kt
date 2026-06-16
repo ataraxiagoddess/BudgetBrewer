@@ -93,7 +93,7 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)
 
-    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double, budgetId: String) {
+    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double) {
         val transaction = SavingsTransaction(
             bucket_id = bucket.id,
             amount = amount,
