@@ -301,7 +301,7 @@ object ExportHelper {
 
         fun checkNewPage() {
             if (y > pageInfo.pageHeight - margin - 60f) {
-                drawFooter(canvas, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
+                drawFooter(canvas, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
                 document.finishPage(page)
                 page = document.startPage(pageInfo)
                 canvas = page.canvas
@@ -419,7 +419,7 @@ object ExportHelper {
             }
         drawSection("DAILY INCOME ASSIGNMENTS", listOf("Income Source" to 2f, "Day" to 1f), diaRows)
 
-        drawFooter(canvas, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
+        drawFooter(canvas, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
 
         document.finishPage(page)
         val stream = ByteArrayOutputStream()
@@ -431,13 +431,13 @@ object ExportHelper {
     // ========================================================================
     // Helper functions
     // ========================================================================
-    private fun drawFooter(canvas: Canvas, left: Float, right: Float, bottom: Float, teal: Int, font: Typeface) {
+    private fun drawFooter(canvas: Canvas, right: Float, bottom: Float, teal: Int, font: Typeface) {
         val footerPaint = Paint().apply { color = teal; style = Paint.Style.FILL }
         val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = font; textSize = 10f; color = Color.WHITE
         }
-        canvas.drawRect(left, bottom - 30f, right, bottom, footerPaint)
-        canvas.drawText("Budget Brewer – Your zero‑dollar budget companion", left + 20f, bottom - 10f, textPaint)
+        canvas.drawRect(30f, bottom - 30f, right, bottom, footerPaint)
+        canvas.drawText("Budget Brewer – Your zero‑dollar budget companion", 50f, bottom - 10f, textPaint)
         val generatedText = "Generated: ${dateFormat.format(Date())}"
         val textWidth = textPaint.measureText(generatedText)
         canvas.drawText(generatedText, right - textWidth - 20f, bottom - 10f, textPaint)
