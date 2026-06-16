@@ -76,11 +76,11 @@ object CurrencyPrefs {
     private fun symbolToCode(symbol: String): String {
         return when (symbol) {
             "$" -> "USD"
-            "â‚¬", "€" -> "EUR"
-            "Â£", "£" -> "GBP"
-            "Â¥", "¥" -> "JPY"
-            "â‚¹", "₹", "?" -> "INR"
-            "â‚±", "₱", "?" -> "PHP"
+            "€" -> "EUR"
+            "£" -> "GBP"
+            "¥" -> "JPY"
+            "₹" -> "INR"
+            "₱" -> "PHP"
             "R$" -> "BRL"
             else -> "USD"
         }
