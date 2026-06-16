@@ -19,3 +19,12 @@ local.properties
 .goosehints.md
 AGENTS.md
 SpendingFeature.md
+
+# App signing keys and credentials (CRITICAL for security)
+*.jks
+*.keystore
+*.key
+keystore.properties
+
+# Environment variables
+.env
