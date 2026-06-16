@@ -1,3 +1,4 @@
+@file:Suppress("PropertyName")
 package com.ataraxiagoddess.budgetbrewer.data
 
 import kotlinx.serialization.Serializable
