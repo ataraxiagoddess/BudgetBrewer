@@ -1,27 +1,48 @@
--keepattributes SourceFile,LineNumberTable
--renamesourcefileattribute SourceFile
+# Add project specific ProGuard rules here.
+# You can control the set of applied configuration files using the
+# proguardFiles setting in build.gradle.
 
-# Keep all model and data classes (they are serialized with kotlinx.serialization)
--keep class com.ataraxiagoddess.budgetbrewer.data.** { *; }
-
-# Keep Supabase classes
--keep class io.github.jan.supabase.** { *; }
-
-# Keep Room database classes
--keep class com.ataraxiagoddess.budgetbrewer.database.** { *; }
--keep class * extends androidx.room.RoomDatabase
+# ---------------------------------------------
+# Room Database
+# ---------------------------------------------
+-keep class * extends androidx.room.RoomDatabase { *; }
 -keep @androidx.room.Entity class *
+-keep @androidx.room.Dao class * { *; }
+-keepclassmembers class * {
+    @androidx.room.Insert <methods>;
+    @androidx.room.Update <methods>;
+    @androidx.room.Delete <methods>;
+    @androidx.room.Query <methods>;
+}
 
-# Keep Kotlin metadata (used by some reflection-based libraries)
--keep class kotlin.Metadata { *; }
+# ---------------------------------------------
+# Kotlinx Serialization (Supabase Payloads)
+# ---------------------------------------------
+-keep @kotlinx.serialization.Serializable class * { *; }
+-keepclassmembers class * {
+    @kotlinx.serialization.Serializable <fields>;
+}
 
-# Keep coroutines internals (prevents obscure crashes)
--keep class kotlinx.coroutines.internal.MainDispatcherFactory { *; }
--keep class kotlinx.coroutines.CoroutineExceptionHandler { *; }
+# ---------------------------------------------
+# Coroutines
+# ---------------------------------------------
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
 
-# Keep MPAndroidChart classes
+# ---------------------------------------------
+# MPAndroidChart
+# (Official recommendation requires broad keep due to internal reflection)
 -keep class com.github.mikephil.charting.** { *; }
+-keepclassmembers class com.github.mikephil.charting.** { *; }
 
--dontwarn javax.annotation.Nullable
--dontwarn javax.annotation.concurrent.GuardedBy
--dontwarn org.slf4j.impl.StaticLoggerBinder
+# ---------------------------------------------
+# Timber
+# ---------------------------------------------
+-assumenosideeffects class timber.log.Timber {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
