@@ -3,7 +3,7 @@ package com.ataraxiagoddess.budgetbrewer.util
 import android.content.Context
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import java.security.MessageDigest
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
@@ -29,11 +29,14 @@ object AppLockManager {
     private lateinit var prefs: android.content.SharedPreferences
 
     fun init(context: Context) {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+            
         prefs = EncryptedSharedPreferences.create(
-            PREFS_NAME,
-            masterKeyAlias,
             context,
+            PREFS_NAME,
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
