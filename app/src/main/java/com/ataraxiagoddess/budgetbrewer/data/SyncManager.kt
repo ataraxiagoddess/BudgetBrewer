@@ -17,12 +17,10 @@ private data class IdResponse(val id: String)
  * Manages synchronization between local Room database and Supabase.
  * Uses UUID primary keys for all entities (stored as String in local, as UUID in Supabase).
  */
-class SyncManager(private val context: Context) {
+class SyncManager(context: Context) {
 
     private val db = AppDatabase.getDatabase(context)
     private val supabase = SupabaseClient.client
-
-    // Inside SyncManager.kt, add:
 
     private suspend fun queueOperation(operation: String, table: String, recordId: String, userId: String) {
         val pending = PendingSync(
@@ -527,7 +525,7 @@ class SyncManager(private val context: Context) {
                 downloadMonthSettings(userId)
                 downloadDailyIncomeAssignments(userId)
                 downloadSavingsBuckets(userId)
-                downloadSavingsTransactions(userId)
+                downloadSavingsTransactions()
                 Timber.d("All data downloaded for user $userId")
             } catch (e: Exception) {
                 Timber.e(e, "Download all data failed")
@@ -591,7 +589,7 @@ class SyncManager(private val context: Context) {
         response.forEach { db.savingsBucketDao().insert(it) }
     }
 
-    private suspend fun downloadSavingsTransactions(userId: String) {
+    private suspend fun downloadSavingsTransactions() {
         // Get local bucket IDs to filter transactions
         val bucketIds = db.savingsBucketDao().getAllBuckets().first().map { it.id }
         if (bucketIds.isEmpty()) return
