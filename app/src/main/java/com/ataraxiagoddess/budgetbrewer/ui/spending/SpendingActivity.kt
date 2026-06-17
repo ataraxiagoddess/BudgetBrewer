@@ -38,6 +38,7 @@ import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
 import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -265,7 +266,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val sourceValid = !binding.etSource.text.isNullOrBlank()
         val amountText = binding.etAmount.text.toString()
         val amount = amountText.toAmountOrNull(resources)
-        val amountValid = amount != null && amount > 0
+        val amountValid = amount != null && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT
         val dateValid = date != null
         val withinLimit = amount != null && amount <= remaining
 
@@ -388,7 +389,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val tag = binding.etTag.text.toString().trim().takeIf { it.isNotEmpty() }
 
         val sourceValid = source.isNotEmpty()
-        val amountValid = amount != null && amount > 0
+        val amountValid = amount != null && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT
         val dateValid = date != null
         val withinLimit = if (amount == originalAmount) {
             true

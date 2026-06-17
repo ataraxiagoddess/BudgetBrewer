@@ -38,6 +38,7 @@ import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
 import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
@@ -489,7 +490,7 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
 
             saveButton.setOnClickListener {
                 val newAmount = etAmount.text.toString().toAmountOrNull(resources)
-                if (newAmount != null && newAmount >= 0) {
+                if (newAmount != null && newAmount >= 0 && newAmount <= ValidationUtils.MAX_AMOUNT) {
                     showConfirmationDialog(newAmount, onSave, dialog, confirmationMessageResId)
                 }
             }

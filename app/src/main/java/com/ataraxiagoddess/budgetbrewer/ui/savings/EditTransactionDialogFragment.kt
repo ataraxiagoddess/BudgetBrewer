@@ -11,6 +11,7 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogDistributeBinding
 import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import java.util.Locale
 import kotlin.math.abs
 
@@ -59,7 +60,7 @@ class EditTransactionDialogFragment(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val newAmount = s.toString().toDoubleOrNull()
                 // Must be a valid number, greater than zero, and different from the original amount
-                val isValid = newAmount != null && newAmount > 0.0 && newAmount != originalAmount
+                val isValid = newAmount != null && newAmount > 0.0 && newAmount <= ValidationUtils.MAX_AMOUNT && newAmount != originalAmount
                 saveButton.isEnabled = isValid
             }
             override fun afterTextChanged(s: Editable?) {}

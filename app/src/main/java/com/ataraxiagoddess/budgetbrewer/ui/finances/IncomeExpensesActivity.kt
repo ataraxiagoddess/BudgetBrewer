@@ -63,6 +63,7 @@ import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyFormat
 import com.ataraxiagoddess.budgetbrewer.util.toPercentDisplay
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -142,7 +143,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             val textWatcher = createSimpleTextWatcher {
                 val sourceValid = !etSource.text.isNullOrBlank()
-                val amountValid = etAmount.text.toString().toAmountOrNull(resources) != null
+                val amount = etAmount.text.toString().toAmountOrNull(resources)
+                val amountValid = amount != null && amount <= ValidationUtils.MAX_AMOUNT
                 addButton.isEnabled = sourceValid && amountValid
             }
             etSource.addTextChangedListener(textWatcher)
@@ -670,7 +672,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = etSource.text.toString().trim()
                 val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
-                if (source.isNotEmpty() && amount > 0) {
+                if (source.isNotEmpty() && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT) {
                     val updated = income.copy(sourceName = source, amount = amount)
                     viewModel.updateIncome(updated)
                     dialog.dismiss()
@@ -749,7 +751,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = etSource.text.toString().trim()
                 val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
-                if (source.isNotEmpty() && amount > 0) {
+                if (source.isNotEmpty() && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT) {
                     val updated = tip.copy(sourceName = source, amount = amount)
                     viewModel.updateTip(updated)
                     dialog.dismiss()
@@ -921,7 +923,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         fun validateAndEnable() {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE) ?: return
             val descriptionValid = !etDescription.text.isNullOrBlank()
-            val amountValid = etAmount.text.toString().toAmountOrNull(resources) != null
+            val amount = etAmount.text.toString().toAmountOrNull(resources)
+            val amountValid = amount != null && amount <= ValidationUtils.MAX_AMOUNT
             val dateValid = selectedDate != null
 
             var recurrenceValid = true
@@ -1096,7 +1099,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             val amount = amountText.toAmountOrNull(resources) ?: 0.0
             val dateValid = selectedDate != null
             val descriptionValid = description.isNotEmpty()
-            val amountValid = amount > 0
+            val amountValid = amount > 0 && amount <= ValidationUtils.MAX_AMOUNT
 
             var recurrenceValid = true
             if (cbRecurring.isChecked) {
@@ -1239,7 +1242,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 val input = s.toString().trim()
                 val amount = input.toAmountOrNull(resources)
 
-                val isValid = amount != null && amount > 0.0
+                val isValid = amount != null && amount > 0.0 && amount <= ValidationUtils.MAX_AMOUNT
                 val withinLimit = amount != null && (amount + otherAllocated) <= leftover + Constants.EPSILON
 
                 saveButton.isEnabled = isValid && withinLimit

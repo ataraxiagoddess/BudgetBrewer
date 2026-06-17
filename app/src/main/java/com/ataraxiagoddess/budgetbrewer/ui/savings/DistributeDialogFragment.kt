@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogDistributeBinding
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 
 class DistributeDialogFragment(
     private val bucket: SavingsBucket,
@@ -64,6 +65,7 @@ class DistributeDialogFragment(
                 val amount = s.toString().toDoubleOrNull() ?: 0.0
                 val errorMessage = when {
                     amount <= 0.0 -> "Amount must be greater than zero"
+                    amount > ValidationUtils.MAX_AMOUNT -> "Amount is too large"
                     amount > maxAllowed -> "Exceeds maximum allowed"
                     else -> null
                 }
@@ -72,7 +74,7 @@ class DistributeDialogFragment(
                 if (errorMessage != null) {
                     binding.tvError.contentDescription = errorMessage
                 }
-                saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed
+                saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed && amount <= ValidationUtils.MAX_AMOUNT
 
                 // Apply digit filter to prevent negative numbers and limit decimals
                 binding.etAmount.filters = arrayOf(com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter())
@@ -83,7 +85,7 @@ class DistributeDialogFragment(
         binding.buttonCancel.setOnClickListener { dismiss() }
         binding.buttonSave.setOnClickListener {
             val amount = binding.etAmount.text.toString().toDoubleOrNull()
-            if (amount != null && amount > 0.0 && amount <= maxAllowed) {
+            if (amount != null && amount > 0.0 && amount <= maxAllowed && amount <= ValidationUtils.MAX_AMOUNT) {
                 onDistribute(amount)
                 dismiss()
             }

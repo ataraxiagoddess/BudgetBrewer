@@ -12,6 +12,7 @@ import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogCreateBucketBinding
 import com.ataraxiagoddess.budgetbrewer.util.SavingsBucketColors
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import java.util.*
 
 class CreateBucketDialogFragment(
@@ -90,6 +91,11 @@ class CreateBucketDialogFragment(
             val targetAmount: Double? = if (bucketType == SavingsBucketType.GOAL) {
                 binding.editTextTargetAmount.text.toString().toDoubleOrNull()
             } else null
+
+            if (targetAmount != null && targetAmount > ValidationUtils.MAX_AMOUNT) {
+                onShowSnackbar("Target amount is too large")
+                return@setOnClickListener
+            }
 
             val bucket = SavingsBucket(
                 id = UUID.randomUUID().toString(),
