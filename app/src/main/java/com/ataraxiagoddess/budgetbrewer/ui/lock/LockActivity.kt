@@ -17,6 +17,7 @@ import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivityLockBinding
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 
 class LockActivity : AppCompatActivity() {
@@ -28,6 +29,12 @@ class LockActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLockBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Apply PIN validation filters
+        binding.etPin.filters = arrayOf(
+            ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
+            ValidationUtils.getDigitsOnlyFilter()
+        )
 
         setupBiometricPrompt()
         updateUi()

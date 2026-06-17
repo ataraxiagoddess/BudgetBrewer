@@ -53,6 +53,7 @@ import com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
 import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.ExportHelper
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -520,6 +521,9 @@ class SettingsActivity : BaseActivity() {
         val etPassword = dialogView.findViewById<EditText>(R.id.etPassword)
         val btnToggle = dialogView.findViewById<ImageButton>(R.id.btnTogglePassword)
 
+        // Apply password length filter
+        etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+
         // Toggle password visibility
         btnToggle.setOnClickListener {
             val currentInputType = etPassword.inputType
@@ -676,6 +680,14 @@ class SettingsActivity : BaseActivity() {
         val btnTogglePin = dialogView.findViewById<ImageButton>(R.id.btnTogglePin)
         val btnToggleConfirmPin = dialogView.findViewById<ImageButton>(R.id.btnToggleConfirmPin)
         val tvError = dialogView.findViewById<TextView>(R.id.tvError)
+
+        // Apply PIN validation filters
+        val pinFilters = arrayOf(
+            ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
+            ValidationUtils.getDigitsOnlyFilter()
+        )
+        etPin.filters = pinFilters
+        etConfirmPin.filters = pinFilters
 
         // Mark tvError as an assertive live region so TalkBack automatically announces text changes
         tvError.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
