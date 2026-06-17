@@ -52,6 +52,7 @@ class CreateBucketDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextBucketName.requestFocus()
+        binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
 
         // Setup color RecyclerView with GridLayoutManager (4 columns)
         binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)

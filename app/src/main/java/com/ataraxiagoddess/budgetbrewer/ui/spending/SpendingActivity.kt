@@ -198,6 +198,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun showAddTransactionDialog(remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
+        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
+        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
+        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE))
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
         var selectedDate: Long? = null
@@ -279,6 +282,9 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
+        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
+        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
+        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE))
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
         // Pre-fill

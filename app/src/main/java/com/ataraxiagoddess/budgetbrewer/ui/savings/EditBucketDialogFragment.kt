@@ -51,6 +51,7 @@ class EditBucketDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextBucketName.requestFocus()
+        binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
 
         // Pre-fill data
         binding.editTextBucketName.setText(existingBucket.name)

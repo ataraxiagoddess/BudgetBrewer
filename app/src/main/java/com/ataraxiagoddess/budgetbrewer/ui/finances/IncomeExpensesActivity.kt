@@ -610,6 +610,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null,false)
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
+        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
 
@@ -634,6 +635,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
+        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
         etSource.setText(income.sourceName)
@@ -689,6 +691,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_tip, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etTipSource)
+        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
 
@@ -713,6 +716,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_tip, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etTipSource)
+        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
         etSource.setText(tip.sourceName)
@@ -781,6 +785,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_category, null, false)
         val etName = dialogView.findViewById<EditText>(R.id.etCategoryName)
+        etName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
@@ -815,6 +820,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_category, null, false)
         val etName = dialogView.findViewById<EditText>(R.id.etCategoryName)
+        etName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         etName.setText(category.name)
 
         val originalName = category.name
@@ -882,6 +888,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_expense, null, false)
         val etDescription = dialogView.findViewById<EditText>(R.id.etExpenseDescription)
+        etDescription.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
@@ -933,7 +940,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 if (radioEveryX.isChecked) {
                     val daysText = etEveryXDays.text.toString()
                     val days = daysText.toIntOrNull()
-                    recurrenceValid = days != null && days > 0
+                    recurrenceValid = days != null && days > 0 && days <= ValidationUtils.MAX_RECURRENCE_DAYS
                 }
             }
 
@@ -1017,6 +1024,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_expense, null, false)
         val etDescription = dialogView.findViewById<EditText>(R.id.etExpenseDescription)
+        etDescription.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
@@ -1106,7 +1114,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 recurrenceValid = radioMonthly.isChecked || radioEveryX.isChecked
                 if (radioEveryX.isChecked) {
                     val days = etEveryXDays.text.toString().toIntOrNull()
-                    recurrenceValid = days != null && days > 0
+                    recurrenceValid = days != null && days > 0 && days <= ValidationUtils.MAX_RECURRENCE_DAYS
                 }
             }
 
