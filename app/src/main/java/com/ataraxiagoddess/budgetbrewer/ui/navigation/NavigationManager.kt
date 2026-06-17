@@ -5,7 +5,7 @@ import com.ataraxiagoddess.budgetbrewer.databinding.LayoutBottomNavBinding
 import timber.log.Timber
 
 class NavigationManager(
-    @Suppress("unused") private val binding: LayoutBottomNavBinding,
+    binding: LayoutBottomNavBinding,
     private val onNavigate: (NavDestination) -> Unit
 ) {
     private var currentDestination: NavDestination = NavDestination.HOME

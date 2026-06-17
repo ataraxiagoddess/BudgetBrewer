@@ -1,6 +1,5 @@
 package com.ataraxiagoddess.budgetbrewer.ui.finances
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +77,6 @@ class CategoryAdapter(
         private val btnAddExpense: MaterialButton = itemView.findViewById(R.id.btnAddExpense)
         private val expensesContainer: LinearLayout = itemView.findViewById(R.id.expensesContainer)
 
-        @SuppressLint("ClickableViewAccessibility")
         fun bind(category: ExpenseCategory) {
             tvName.text = category.name
             btnEdit.setOnClickListener { onEditCategory(category) }
