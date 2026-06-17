@@ -12,6 +12,7 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SupabaseClient
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentResetPasswordBinding
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import io.github.jan.supabase.gotrue.OtpType
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.launch
@@ -55,6 +56,16 @@ class ResetPasswordFragment : Fragment() {
 
         // Request the reset code as soon as the fragment loads
         requestResetCode()
+
+        // Apply input filters
+        binding.etCode.filters = arrayOf(
+            ValidationUtils.getLengthFilter(6),
+            ValidationUtils.getDigitsOnlyFilter()
+        )
+        
+        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        binding.etNewPassword.filters = passwordFilter
+        binding.etConfirmPassword.filters = passwordFilter
 
         binding.btnVerify.setOnClickListener {
             val code = binding.etCode.text.toString().trim()

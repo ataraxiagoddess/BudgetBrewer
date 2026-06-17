@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SupabaseClient
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentSignUpBinding
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
@@ -82,6 +83,15 @@ class SignUpFragment : Fragment() {
     }
 
     private fun setupValidation() {
+        // Apply length filters
+        val emailFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
+        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        
+        binding.etEmail.filters = emailFilter
+        binding.etConfirmEmail.filters = emailFilter
+        binding.etPassword.filters = passwordFilter
+        binding.etConfirmPassword.filters = passwordFilter
+
         binding.etPassword.addTextChangedListener {
             val strength = getPasswordStrength(it.toString())
             binding.tvPasswordStrength.text = strength

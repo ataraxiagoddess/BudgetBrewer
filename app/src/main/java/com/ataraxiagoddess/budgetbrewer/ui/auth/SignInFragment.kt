@@ -16,6 +16,7 @@ import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentSignInBinding
 import com.ataraxiagoddess.budgetbrewer.ui.base.showBudgetBrewerDialog
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -72,6 +73,10 @@ class SignInFragment : Fragment() {
 
         setupPasswordToggle()
 
+        // Apply length filters
+        binding.etEmail.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
+        binding.etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+
         binding.btnSignIn.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString()
@@ -99,6 +104,9 @@ class SignInFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_single_edittext, binding.root, false)
         val editText = dialogView.findViewById<EditText>(R.id.etInput)
         editText.hint = getString(R.string.email)
+        
+        // Apply email length filter
+        editText.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
