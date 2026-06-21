@@ -11,6 +11,7 @@ import com.ataraxiagoddess.budgetbrewer.data.Expense
 import com.ataraxiagoddess.budgetbrewer.data.ExpenseCategory
 import com.ataraxiagoddess.budgetbrewer.data.Frequency
 import com.ataraxiagoddess.budgetbrewer.data.Income
+import com.ataraxiagoddess.budgetbrewer.data.MonthSettings
 import com.ataraxiagoddess.budgetbrewer.data.RecurrenceType
 import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
@@ -40,6 +41,9 @@ class IncomeExpensesViewModel(
 
     private val _allocation = MutableStateFlow<Allocation?>(null)
     val allocation: StateFlow<Allocation?> = _allocation.asStateFlow()
+
+    private val _monthSettings = MutableStateFlow<MonthSettings?>(null)
+    val monthSettings: StateFlow<MonthSettings?> = _monthSettings.asStateFlow()
 
     init {
         loadData()
@@ -83,9 +87,11 @@ class IncomeExpensesViewModel(
                 val categories = repository.getCategoriesForBudget(budgetId).first()
                 val expenses = repository.getExpensesForBudget(budgetId).first()
                 val allocation = repository.getAllocationForBudget(budgetId).first()
-                _uiState.value = IncomeExpensesUiState.Success(incomes, categories, expenses)
+                val settings = repository.getMonthSettings(budgetId).first()
                 _tipsList.value = incomes.filter { it.isTips }.sortedBy { it.tipsOrder ?: 0 }
                 _allocation.value = allocation
+                _monthSettings.value = settings
+                _uiState.value = IncomeExpensesUiState.Success(incomes, categories, expenses)
             } catch (e: Exception) {
                 _uiState.value = IncomeExpensesUiState.Error("Failed to load data: ${e.message}")
                 emitError(R.string.error_load_data, e)
@@ -233,7 +239,7 @@ class IncomeExpensesViewModel(
         viewModelScope.launch {
             val currentState = _uiState.value
             if (currentState is IncomeExpensesUiState.Success) {
-                val incomesToDelete = currentState.incomes.filter { it.frequency != frequency }
+                val incomesToDelete = currentState.incomes.filter { !it.isTips && it.frequency != frequency }
                 incomesToDelete.forEach { income ->
                     repository.deleteIncome(income)
                     val userId = AuthManager.getUserId(appContext)
@@ -505,5 +511,33 @@ class IncomeExpensesViewModel(
 
     fun refreshData() {
         loadData()
+    }
+
+    fun updateTipsEnabled(enabled: Boolean) {
+        safeLaunch(R.string.error_update_settings) {
+            val current = _monthSettings.value ?: return@safeLaunch
+            val updated = current.copy(tipsEnabled = enabled)
+            repository.insertOrUpdateMonthSettings(updated)
+            _monthSettings.value = updated
+            
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadMonthSetting(updated, userId)
+            }
+        }
+    }
+
+    fun updatePayFrequency(frequency: Frequency) {
+        safeLaunch(R.string.error_update_settings) {
+            val current = _monthSettings.value ?: return@safeLaunch
+            val updated = current.copy(payFrequency = frequency.name)
+            repository.insertOrUpdateMonthSettings(updated)
+            _monthSettings.value = updated
+            
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadMonthSetting(updated, userId)
+            }
+        }
     }
 }

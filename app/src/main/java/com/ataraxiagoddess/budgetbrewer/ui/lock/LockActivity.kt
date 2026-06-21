@@ -41,7 +41,7 @@ class LockActivity : AppCompatActivity() {
 
         binding.btnUnlock.setOnClickListener {
             val pin = binding.etPin.text.toString()
-            if (pin.length == 4 && pin.all { it.isDigit() }) {
+            if (ValidationUtils.isValidPin(pin)) {
                 if (AppLockManager.verifyPin(pin)) {
                     unlockAndProceed()
                 } else {

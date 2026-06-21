@@ -345,6 +345,7 @@
     <string name="error_refresh_allocation">Failed to refresh allocation</string>
     <string name="error_save_allocation">Failed to save allocation: %s</string>
     <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_update_settings">Failed to update settings: %s</string>
 
     <!-- ==================== CURRENCY ARRAY ==================== -->
     <string-array name="currencies">
@@ -493,5 +494,12 @@
     <string name="collapsed">Collapsed</string>
     <string name="select_currency">Select currency</string>
     <string name="funds_deducted_success">Funds removed from bucket and added back to pool</string>
+    <string name="amount_exceeds_maximum">Amount exceeds maximum limit</string>
+    <string name="amount_must_be_greater_than_zero">Amount must be greater than zero</string>
+    <string name="amount_exceeds_maximum_allowed">Exceeds maximum allowed</string>
+    <string name="amount_exceeds_balance">Amount exceeds remaining balance</string>
+    <string name="recurrence_exceeds_maximum">Cannot exceed 365 days</string>
+    <string name="character_counter">%1$d/%2$d</string>
+    <string name="note_counter">%1$d/%2$d</string>
 
 </resources>

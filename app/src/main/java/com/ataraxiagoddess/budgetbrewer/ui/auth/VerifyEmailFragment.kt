@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SupabaseClient
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentVerifyEmailBinding
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import io.github.jan.supabase.gotrue.OtpType
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.launch
@@ -56,6 +57,12 @@ class VerifyEmailFragment : Fragment() {
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
         binding.tvHint.typeface = exoRegular
         binding.tvSignInInstead.typeface = exoRegular
+
+        // Apply PIN validation filters (6-digit code)
+        binding.etCode.filters = arrayOf(
+            ValidationUtils.getLengthFilter(6),
+            ValidationUtils.getDigitsOnlyFilter()
+        )
 
         binding.btnVerify.setOnClickListener {
             val code = binding.etCode.text.toString().trim()

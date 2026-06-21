@@ -488,9 +488,37 @@ class MonthlyCalendarActivity : BaseActivity(), MonthChangeListener {
                 tvWarning.visibility = View.VISIBLE
             }
 
+            etAmount.addTextChangedListener(object : android.text.TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: android.text.Editable?) {
+                    val text = s.toString().trim()
+                    val newAmount = text.toAmountOrNull(resources)
+                    val isEmpty = text.isEmpty()
+                    val isValid = !isEmpty && newAmount != null && newAmount >= 0 && ValidationUtils.isValidAmount(newAmount)
+                    
+                    if (isEmpty) {
+                        tvWarning.visibility = View.INVISIBLE
+                        saveButton.isEnabled = false
+                    } else if (!isValid) {
+                        tvWarning.text = getString(R.string.amount_exceeds_maximum)
+                        tvWarning.visibility = View.VISIBLE
+                        saveButton.isEnabled = false
+                    } else {
+                        if (isOverridden) {
+                            tvWarning.text = getString(R.string.overridden_warning)
+                            tvWarning.visibility = View.VISIBLE
+                        } else {
+                            tvWarning.visibility = View.INVISIBLE
+                        }
+                        saveButton.isEnabled = true
+                    }
+                }
+            })
+
             saveButton.setOnClickListener {
                 val newAmount = etAmount.text.toString().toAmountOrNull(resources)
-                if (newAmount != null && newAmount >= 0 && newAmount <= ValidationUtils.MAX_AMOUNT) {
+                if (newAmount != null && newAmount >= 0 && ValidationUtils.isValidAmount(newAmount)) {
                     showConfirmationDialog(newAmount, onSave, dialog, confirmationMessageResId)
                 }
             }

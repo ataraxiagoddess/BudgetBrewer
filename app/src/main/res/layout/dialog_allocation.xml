@@ -37,6 +37,7 @@
         style="@style/TextAppearance.BudgetBrewer.Error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:textColor="@color/text_error"
+        android:visibility="invisible"
         android:layout_marginBottom="8dp" />
 </LinearLayout>

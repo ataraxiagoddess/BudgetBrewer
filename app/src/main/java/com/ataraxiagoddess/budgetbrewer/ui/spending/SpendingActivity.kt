@@ -198,10 +198,14 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun showAddTransactionDialog(remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
-        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
-        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
-        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE))
+        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
+
+        dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvTagCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvNoteCounter.text = getString(R.string.note_counter, 0, ValidationUtils.MAX_LENGTH_NOTE)
 
         var selectedDate: Long? = null
 
@@ -241,6 +245,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         dialogBinding.etSource.addTextChangedListener(textWatcher)
         dialogBinding.etAmount.addTextChangedListener(textWatcher)
+        dialogBinding.etTag.addTextChangedListener(textWatcher)
+        dialogBinding.etNote.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
             dialogBinding.etAmount.requestFocus()
@@ -248,6 +254,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
             dialogBinding.etTag.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
+            dialogBinding.tvTagCounter.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = dialogBinding.etSource.text.toString().trim()
@@ -255,7 +262,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                 val date = selectedDate
                 val tag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
                 val note = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
-                if (date != null && source.isNotEmpty() && amount != null && amount > 0 && amount <= remaining) {
+                if (date != null && ValidationUtils.isValidName(source) && amount != null && amount > 0 && amount <= remaining) {
                     viewModel.addEntry(date, source, amount, tag, note)
                     dialog.dismiss()
                 }
@@ -266,15 +273,26 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     }
 
     private fun validateAddDialog(dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, remaining: Double) {
-        val sourceValid = !binding.etSource.text.isNullOrBlank()
+        val source = binding.etSource.text.toString().trim()
         val amountText = binding.etAmount.text.toString()
         val amount = amountText.toAmountOrNull(resources)
-        val amountValid = amount != null && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT
+        val sourceValid = source.isNotEmpty()
+        val amountValid = amount != null && amount > 0
         val dateValid = date != null
         val withinLimit = amount != null && amount <= remaining
 
-        val showWarning = amount != null && amount > 0 && !withinLimit
-        binding.tvWarning.visibility = if (showWarning) View.VISIBLE else View.GONE
+        // Character counters
+        binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvTagCounter.text = getString(R.string.character_counter, binding.etTag.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvNoteCounter.text = getString(R.string.note_counter, binding.etNote.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+
+        // Inline amount error
+        val showAmountError = amount != null && amount > 0 && !withinLimit
+        binding.tvAmountError.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
+        binding.tvAmountError.text = getString(R.string.amount_exceeds_balance)
+
+        // Warning (instructional)
+        binding.tvWarning.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit
     }
@@ -282,16 +300,20 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
-        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
-        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
-        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE))
+        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
+        dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, entry.source.length, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvTagCounter.text = getString(R.string.character_counter, entry.tag?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvNoteCounter.text = getString(R.string.note_counter, entry.note?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+
         // Pre-fill
-        dialogBinding.etSource.setText(entry.source)
+        dialogBinding.etSource.setText(ValidationUtils.sanitizeString(entry.source))
         dialogBinding.etAmount.setText(entry.amount.toCurrencyEdit(resources))
-        dialogBinding.etTag.setText(entry.tag)
-        dialogBinding.etNote.setText(entry.note)
+        dialogBinding.etTag.setText(ValidationUtils.sanitizeString(entry.tag))
+        dialogBinding.etNote.setText(ValidationUtils.sanitizeString(entry.note))
         val calendar = Calendar.getInstance().apply { timeInMillis = entry.date }
         dialogBinding.btnSelectDate.text = FULL.format(calendar.time)
 
@@ -347,6 +369,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
             dialogBinding.etTag.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
+            dialogBinding.tvTagCounter.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val newSource = dialogBinding.etSource.text.toString().trim()
@@ -360,7 +383,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                     val difference = newAmount?.minus(originalAmount)
                     difference!! <= remaining
                 }
-                if (newDate != null && newSource.isNotEmpty() && newAmount > 0 && amountWithinLimit) {
+                if (newDate != null && ValidationUtils.isValidName(newSource) && newAmount > 0 && amountWithinLimit) {
                     val updatedEntry = entry.copy(
                         source = newSource,
                         amount = newAmount,
@@ -395,7 +418,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val tag = binding.etTag.text.toString().trim().takeIf { it.isNotEmpty() }
 
         val sourceValid = source.isNotEmpty()
-        val amountValid = amount != null && amount > 0 && amount <= ValidationUtils.MAX_AMOUNT
+        val amountValid = amount != null && amount > 0
         val dateValid = date != null
         val withinLimit = if (amount == originalAmount) {
             true
@@ -408,8 +431,18 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val amountValue = amount ?: 0.0
         val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
 
-        val showWarning = amount != null && amount > 0 && !withinLimit
-        binding.tvWarning.visibility = if (showWarning) View.VISIBLE else View.GONE
+        // Character counters
+        binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvTagCounter.text = getString(R.string.character_counter, binding.etTag.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvNoteCounter.text = getString(R.string.note_counter, binding.etNote.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+
+        // Inline amount error
+        val showAmountError = amount != null && amount > 0 && !withinLimit
+        binding.tvAmountError.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
+        binding.tvAmountError.text = getString(R.string.amount_exceeds_balance)
+
+        // Warning (instructional)
+        binding.tvWarning.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit && changed
     }

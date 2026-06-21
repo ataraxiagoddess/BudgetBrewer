@@ -90,6 +90,16 @@ class ArchivedBucketsActivity : BaseActivity() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is ArchivedBucketsEvent.BucketRestored -> {
+                        showSnackbar(getString(R.string.bucket_restored))
+                    }
+                }
+            }
+        }
     }
 
     private fun showHistoryDialog(bucket: SavingsBucket) {

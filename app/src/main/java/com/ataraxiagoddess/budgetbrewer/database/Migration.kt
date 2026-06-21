@@ -90,3 +90,11 @@ object Migration_3_4 : Migration(3, 4) {
         db.execSQL("ALTER TABLE spending_entries ADD COLUMN note TEXT")
     }
 }
+
+object Migration_4_5 : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Add tipsEnabled and payFrequency columns to month_settings table
+        db.execSQL("ALTER TABLE month_settings ADD COLUMN tipsEnabled INTEGER NOT NULL DEFAULT 0")
+        db.execSQL("ALTER TABLE month_settings ADD COLUMN payFrequency TEXT NOT NULL DEFAULT 'MONTHLY'")
+    }
+}

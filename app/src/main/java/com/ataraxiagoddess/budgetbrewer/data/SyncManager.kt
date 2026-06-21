@@ -308,6 +308,8 @@ class SyncManager(context: Context) {
                     budget_id = setting.budgetId,
                     month_start_amount = setting.monthStartAmount,
                     month_start_overridden = setting.monthStartOverridden,
+                    tips_enabled = setting.tipsEnabled,
+                    pay_frequency = setting.payFrequency,
                     created_at = setting.createdAt,
                     updated_at = setting.updatedAt,
                     user_id = userId

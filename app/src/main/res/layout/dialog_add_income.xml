@@ -13,7 +13,6 @@
         android:id="@+id/etIncomeSource"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
         android:background="@drawable/edittext_background"
         android:hint="@string/income_source_hint"
         android:importantForAutofill="no"
@@ -22,6 +21,24 @@
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
         tools:ignore="TextContrastCheck,VisualLintSystemUi" />
+
+    <TextView
+        android:id="@+id/tvSourceCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="end"
+        android:text="@string/character_counter"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
+
+    <TextView
+        android:id="@+id/tvSourceError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/etIncomeAmount"
@@ -34,4 +51,13 @@
         android:paddingHorizontal="8dp"
         android:background="@drawable/edittext_background"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <TextView
+        android:id="@+id/tvAmountError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 </LinearLayout>

@@ -13,7 +13,6 @@
         android:id="@+id/etExpenseDescription"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/edittext_background"
         android:hint="@string/expense_description_hint"
         android:importantForAutofill="no"
@@ -21,6 +20,24 @@
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
         tools:ignore="TextContrastCheck,VisualLintSystemUi" />
+
+    <TextView
+        android:id="@+id/tvDescriptionCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"
+        android:text="@string/character_counter"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
+
+    <TextView
+        android:id="@+id/tvDescriptionError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/etExpenseAmount"
@@ -33,6 +50,15 @@
         android:background="@drawable/edittext_background"
         android:layout_marginBottom="16dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <TextView
+        android:id="@+id/tvAmountError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 
     <!-- Button now wraps content -->
     <com.google.android.material.button.MaterialButton
@@ -102,5 +128,14 @@
             android:background="@drawable/edittext_background_everyx"
             android:layout_marginTop="8dp"
             android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+        <TextView
+            android:id="@+id/tvRecurrenceError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+            android:textColor="@color/text_error"
+            android:visibility="invisible" />
     </LinearLayout>
 </LinearLayout>

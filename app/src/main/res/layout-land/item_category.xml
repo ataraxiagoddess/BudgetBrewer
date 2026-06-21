@@ -34,7 +34,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/edit"
             android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/ic_button_tint" />
+            app:tint="@color/edit_icon_color" />
 
         <ImageButton
             android:id="@+id/btnDeleteCategory"
@@ -43,7 +43,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
             android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/ic_button_tint" />
+            app:tint="@color/delete_icon_color" />
     </LinearLayout>
 
     <!-- Scrollable expenses container with fixed height -->

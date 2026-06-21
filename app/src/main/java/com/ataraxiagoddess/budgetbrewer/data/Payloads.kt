@@ -99,6 +99,8 @@ data class MonthSettingsPayload(
     val budget_id: String,
     val month_start_amount: Double,
     val month_start_overridden: Boolean,
+    val tips_enabled: Boolean,
+    val pay_frequency: String,
     val created_at: Long,
     val updated_at: Long,
     val user_id: String

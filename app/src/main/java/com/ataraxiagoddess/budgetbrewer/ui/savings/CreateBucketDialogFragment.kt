@@ -1,6 +1,8 @@
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,7 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucketType
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogCreateBucketBinding
+import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
 import com.ataraxiagoddess.budgetbrewer.util.SavingsBucketColors
 import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import java.util.*
@@ -52,7 +55,10 @@ class CreateBucketDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextBucketName.requestFocus()
-        binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME))
+        binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        binding.editTextBucketName.setText("")
+        binding.tvBucketNameCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        binding.editTextTargetAmount.filters = arrayOf(DecimalDigitsInputFilter())
 
         // Setup color RecyclerView with GridLayoutManager (4 columns)
         binding.recyclerViewColors.layoutManager = GridLayoutManager(requireContext(), 4)
@@ -76,7 +82,21 @@ class CreateBucketDialogFragment(
                 bucketType = SavingsBucketType.GROWTH
                 binding.editTextTargetAmount.visibility = View.GONE
             }
+            validateInputs()
         }
+
+        // Text watchers for real-time validation
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val name = binding.editTextBucketName.text.toString()
+                binding.tvBucketNameCounter.text = getString(R.string.character_counter, name.length, ValidationUtils.MAX_LENGTH_NAME)
+                validateInputs()
+            }
+        }
+        binding.editTextBucketName.addTextChangedListener(textWatcher)
+        binding.editTextTargetAmount.addTextChangedListener(textWatcher)
 
         // Cancel button
         binding.buttonCancel.setOnClickListener { dismiss() }
@@ -84,7 +104,7 @@ class CreateBucketDialogFragment(
         // Create button
         binding.buttonCreate.setOnClickListener {
             val name = binding.editTextBucketName.text.toString().trim()
-            if (name.isEmpty()) {
+            if (!ValidationUtils.isValidName(name)) {
                 onShowSnackbar(getString(R.string.bucket_name_required))
                 return@setOnClickListener
             }
@@ -93,8 +113,8 @@ class CreateBucketDialogFragment(
                 binding.editTextTargetAmount.text.toString().toDoubleOrNull()
             } else null
 
-            if (targetAmount != null && targetAmount > ValidationUtils.MAX_AMOUNT) {
-                onShowSnackbar("Target amount is too large")
+            if (targetAmount != null && !ValidationUtils.isValidAmount(targetAmount)) {
+                onShowSnackbar(getString(R.string.amount_exceeds_maximum))
                 return@setOnClickListener
             }
 
@@ -111,6 +131,34 @@ class CreateBucketDialogFragment(
             onBucketCreated(bucket)
             dismiss()
         }
+    }
+
+    private fun validateInputs() {
+        val name = binding.editTextBucketName.text.toString().trim()
+        val isNameValid = ValidationUtils.isValidName(name)
+        
+        val isAmountValid = if (bucketType == SavingsBucketType.GOAL) {
+            val amountStr = binding.editTextTargetAmount.text.toString()
+            if (amountStr.isNotEmpty()) {
+                val amount = amountStr.toDoubleOrNull()
+                if (amount != null && !ValidationUtils.isValidAmount(amount)) {
+                    binding.tvTargetAmountError.text = getString(R.string.amount_exceeds_maximum)
+                    binding.tvTargetAmountError.visibility = View.VISIBLE
+                    false
+                } else {
+                    binding.tvTargetAmountError.visibility = View.INVISIBLE
+                    true
+                }
+            } else {
+                binding.tvTargetAmountError.visibility = View.INVISIBLE
+                true
+            }
+        } else {
+            binding.tvTargetAmountError.visibility = View.INVISIBLE
+            true
+        }
+
+        binding.buttonCreate.isEnabled = isNameValid && isAmountValid
     }
 
     private fun colorResToHex(colorRes: Int): String {

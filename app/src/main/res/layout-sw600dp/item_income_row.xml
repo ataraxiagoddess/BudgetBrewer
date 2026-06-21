@@ -71,7 +71,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@android:drawable/ic_menu_edit"
-        app:tint="@color/ic_button_tint"
+        app:tint="@color/edit_icon_color"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/edit"
         android:visibility="gone" />
@@ -81,7 +81,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@android:drawable/ic_menu_delete"
-        app:tint="@color/ic_button_tint"
+        app:tint="@color/delete_icon_color"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
         android:visibility="gone" />

@@ -33,6 +33,7 @@
     <dimen name="text_size_dialog_message">14sp</dimen>
     <dimen name="text_size_subtext">12sp</dimen>
     <dimen name="text_size_error">12sp</dimen>
+    <dimen name="text_size_caption">12sp</dimen>
     <dimen name="text_size_calendar">10sp</dimen>
     <dimen name="month_row_text_size">@dimen/text_size_body</dimen>
     <dimen name="week_pill_text_size_tablet_land">18sp</dimen>

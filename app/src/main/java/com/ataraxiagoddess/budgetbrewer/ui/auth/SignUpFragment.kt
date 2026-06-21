@@ -16,7 +16,6 @@ import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 class SignUpFragment : Fragment() {
 
@@ -84,8 +83,8 @@ class SignUpFragment : Fragment() {
 
     private fun setupValidation() {
         // Apply length filters
-        val emailFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
-        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        val emailFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
         
         binding.etEmail.filters = emailFilter
         binding.etConfirmEmail.filters = emailFilter
@@ -157,8 +156,7 @@ class SignUpFragment : Fragment() {
     }
 
     private fun isValidEmail(email: String): Boolean {
-        val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-        return Pattern.compile(emailPattern).matcher(email).matches()
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun getPasswordStrength(password: String): String {

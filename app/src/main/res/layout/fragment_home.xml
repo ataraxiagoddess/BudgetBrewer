@@ -46,12 +46,12 @@
                     <!-- Income Circle (Solid) -->
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/incomeCircle"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
                         android:layout_gravity="center"
                         android:indeterminate="false"
-                        app:indicatorSize="140dp"
-                        app:trackThickness="70dp"
+                        app:indicatorSize="160dp"
+                        app:trackThickness="80dp"
                         app:trackColor="@color/chart_income"
                         app:indicatorColor="@color/chart_income"
                         app:showAnimationBehavior="none"
@@ -60,11 +60,11 @@
                     <!-- Expenses Ring (Overlay) -->
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/expensesRing"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
                         android:layout_gravity="center"
                         android:indeterminate="false"
-                        app:indicatorSize="140dp"
+                        app:indicatorSize="160dp"
                         app:trackThickness="12dp"
                         app:trackColor="@android:color/transparent"
                         app:indicatorColor="@color/chart_expenses"
@@ -73,7 +73,7 @@
 
                     <!-- Center Text -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:orientation="vertical"
@@ -81,8 +81,14 @@
 
                         <TextView
                             android:id="@+id/tvIncomeCenter"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:autoSizeTextType="uniform"
+                            android:autoSizeMinTextSize="10sp"
+                            android:autoSizeMaxTextSize="20sp"
+                            android:autoSizeStepGranularity="1sp"
+                            android:maxLines="1"
                             android:fontFamily="@font/exo_regular"
                             android:textColor="@color/text_on_main"
                             android:textSize="20sp"

@@ -94,7 +94,12 @@
         <item name="android:textColor">@color/text_on_dialog</item>
     </style>
 
-    <!-- App Name (auth screens) -->
+    <!-- Inline Caption Text -->
+    <style name="TextAppearance.BudgetBrewer.Caption">
+        <item name="android:fontFamily">@font/exo_regular</item>
+        <item name="android:textSize">@dimen/text_size_caption</item>
+        <item name="android:textColor">@color/text_disabled</item>
+    </style>
 
     <!-- Error Text -->
     <style name="TextAppearance.BudgetBrewer.Error">

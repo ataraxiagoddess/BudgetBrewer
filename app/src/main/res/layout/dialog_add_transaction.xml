@@ -31,6 +31,15 @@
         android:layout_marginBottom="16dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
 
+    <TextView
+        android:id="@+id/tvSourceCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="end"
+        android:text="@string/character_counter"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
+
     <EditText
         android:id="@+id/etAmount"
         android:layout_width="match_parent"
@@ -42,6 +51,15 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/edittext_background"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
+
+    <TextView
+        android:id="@+id/tvAmountError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 
     <EditText
         android:id="@+id/etTag"
@@ -56,6 +74,15 @@
         android:visibility="gone"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
 
+    <TextView
+        android:id="@+id/tvTagCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="end"
+        android:text="@string/character_counter"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
+
     <EditText
         android:id="@+id/etNote"
         android:layout_width="match_parent"
@@ -69,16 +96,24 @@
         android:paddingHorizontal="8dp"
         android:textAppearance="@style/TextAppearance.BudgetBrewer.Body" />
 
+    <TextView
+        android:id="@+id/tvNoteCounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="end"
+        android:text="@string/note_counter"
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
+
     <!-- Warning message -->
     <TextView
         android:id="@+id/tvWarning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:fontFamily="@font/exo_regular"
         android:text="@string/transaction_exceeds_warning"
-        android:textColor="@color/text_warning_on_mint"
-        android:textSize="12sp"
-        android:visibility="gone" />
+        android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+        android:textColor="@color/text_error"
+        android:visibility="invisible" />
 
 </LinearLayout>

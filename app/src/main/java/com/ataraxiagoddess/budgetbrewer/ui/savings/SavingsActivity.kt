@@ -196,9 +196,18 @@ class SavingsActivity : BaseActivity() {
         dialog.show(supportFragmentManager, "DeductDialog")
     }
 
-    private fun showEditTransactionDialog(transaction: SavingsTransaction) {
+    private fun showEditTransactionDialog(transaction: SavingsTransaction, bucket: SavingsBucket) {
+        val originalAmount = kotlin.math.abs(transaction.amount)
+        val maxAllowed = if (transaction.amount > 0) {
+            // Allocation: max = available pool + original amount
+            viewModel.availablePool.value + originalAmount
+        } else {
+            // Deduction: max = bucket current amount + original amount
+            bucket.current_amount + originalAmount
+        }
         val dialog = EditTransactionDialogFragment(
             transaction = transaction,
+            maxAllowed = maxAllowed,
             onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) }
         )
         dialog.show(supportFragmentManager, "EditTransactionDialog")
@@ -246,7 +255,7 @@ class SavingsActivity : BaseActivity() {
             bucketId = bucket.id,
             repository = repository,
             isArchived = false,
-            onEditTransaction = { tx -> showEditTransactionDialog(tx) },
+            onEditTransaction = { tx -> showEditTransactionDialog(tx, bucket) },
             onDeleteTransaction = { tx -> viewModel.deleteTransaction(tx) }
         )
         dialog.show(supportFragmentManager, "BucketHistory")

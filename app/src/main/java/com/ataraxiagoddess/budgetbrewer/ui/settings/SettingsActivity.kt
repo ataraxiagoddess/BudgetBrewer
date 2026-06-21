@@ -522,7 +522,7 @@ class SettingsActivity : BaseActivity() {
         val btnToggle = dialogView.findViewById<ImageButton>(R.id.btnTogglePassword)
 
         // Apply password length filter
-        etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
 
         // Toggle password visibility
         btnToggle.setOnClickListener {
@@ -743,8 +743,8 @@ class SettingsActivity : BaseActivity() {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val pin = etPin.text.toString()
                     val confirm = etConfirmPin.text.toString()
-                    saveButton.isEnabled = pin.length == 4 && pin.all { it.isDigit() } &&
-                            confirm.length == 4 && confirm.all { it.isDigit() } &&
+                    saveButton.isEnabled = ValidationUtils.isValidPin(pin) &&
+                            ValidationUtils.isValidPin(confirm) &&
                             pin == confirm
                     tvError.visibility = View.GONE
                 }
@@ -756,7 +756,7 @@ class SettingsActivity : BaseActivity() {
             saveButton.setOnClickListener {
                 val pin = etPin.text.toString()
                 val confirm = etConfirmPin.text.toString()
-                if (pin == confirm && pin.length == 4 && pin.all { it.isDigit() }) {
+                if (pin == confirm && ValidationUtils.isValidPin(pin)) {
                     onPinSet(pin)
                     dialog.dismiss()
                 } else {

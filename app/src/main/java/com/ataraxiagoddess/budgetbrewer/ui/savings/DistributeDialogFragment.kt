@@ -10,7 +10,8 @@ import androidx.fragment.app.DialogFragment
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsBucket
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogDistributeBinding
-import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
+import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
+import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
 
 class DistributeDialogFragment(
     private val bucket: SavingsBucket,
@@ -56,6 +57,11 @@ class DistributeDialogFragment(
             binding.tvAvailablePool.text = getString(R.string.available_pool_amount, availablePool)
         }
 
+        // Set digit filter once, not in the TextWatcher
+        val locales = resources.configuration.locales
+        val locale = if (locales.isEmpty) java.util.Locale.getDefault() else locales[0]
+        binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))
+
         val saveButton = binding.buttonSave
         saveButton.isEnabled = false
 
@@ -64,20 +70,16 @@ class DistributeDialogFragment(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val amount = s.toString().toDoubleOrNull() ?: 0.0
                 val errorMessage = when {
-                    amount <= 0.0 -> "Amount must be greater than zero"
-                    amount > ValidationUtils.MAX_AMOUNT -> "Amount is too large"
-                    amount > maxAllowed -> "Exceeds maximum allowed"
+                    amount <= 0.0 -> getString(R.string.amount_must_be_greater_than_zero)
+                    amount > maxAllowed -> getString(R.string.amount_exceeds_maximum_allowed)
                     else -> null
                 }
-                binding.tvError.visibility = if (errorMessage != null) View.VISIBLE else View.GONE
+                binding.tvError.visibility = if (errorMessage != null) View.VISIBLE else View.INVISIBLE
                 binding.tvError.text = errorMessage ?: ""
                 if (errorMessage != null) {
                     binding.tvError.contentDescription = errorMessage
                 }
-                saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed && amount <= ValidationUtils.MAX_AMOUNT
-
-                // Apply digit filter to prevent negative numbers and limit decimals
-                binding.etAmount.filters = arrayOf(com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter())
+                saveButton.isEnabled = amount > 0.0 && amount <= maxAllowed
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -85,7 +87,7 @@ class DistributeDialogFragment(
         binding.buttonCancel.setOnClickListener { dismiss() }
         binding.buttonSave.setOnClickListener {
             val amount = binding.etAmount.text.toString().toDoubleOrNull()
-            if (amount != null && amount > 0.0 && amount <= maxAllowed && amount <= ValidationUtils.MAX_AMOUNT) {
+            if (amount != null && amount > 0.0 && amount <= maxAllowed) {
                 onDistribute(amount)
                 dismiss()
             }

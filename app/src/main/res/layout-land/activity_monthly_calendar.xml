@@ -129,6 +129,32 @@
                         style="@style/TextAppearance.BudgetBrewer.Body"
                         android:textColor="@color/text_on_container" />
                 </LinearLayout>
+
+                <!-- Savings dot + label -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="4dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/circle_savings"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/legend_savings"
+                        android:textSize="11sp"
+                        style="@style/TextAppearance.BudgetBrewer.Body"
+                        android:textColor="@color/text_on_container" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Month Start Amount -->

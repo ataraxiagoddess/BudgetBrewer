@@ -31,8 +31,17 @@
             android:paddingHorizontal="8dp"
             android:textColorHint="@color/text_disabled"
             android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="4dp"
             tools:ignore="VisualLintTextFieldSize" />
+
+        <TextView
+            android:id="@+id/tvBucketNameCounter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:gravity="end"
+            android:text="@string/character_counter"
+            android:textAppearance="@style/TextAppearance.BudgetBrewer.Caption" />
 
         <!-- Goal vs Growth Radio Group -->
         <RadioGroup
@@ -78,8 +87,18 @@
             android:paddingHorizontal="8dp"
             android:textColorHint="@color/text_disabled"
             android:textAppearance="@style/TextAppearance.BudgetBrewer.Body"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
             tools:ignore="VisualLintTextFieldSize" />
+
+        <TextView
+            android:id="@+id/tvTargetAmountError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.BudgetBrewer.Error"
+            android:textColor="@color/text_error"
+            android:visibility="invisible"
+            android:layout_marginBottom="12dp"
+            tools:text="Amount exceeds maximum limit" />
 
         <!-- Color Picker Grid -->
         <TextView

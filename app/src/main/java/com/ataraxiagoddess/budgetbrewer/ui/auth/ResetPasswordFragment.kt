@@ -63,7 +63,7 @@ class ResetPasswordFragment : Fragment() {
             ValidationUtils.getDigitsOnlyFilter()
         )
         
-        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
         binding.etNewPassword.filters = passwordFilter
         binding.etConfirmPassword.filters = passwordFilter
 

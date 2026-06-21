@@ -74,8 +74,8 @@ class SignInFragment : Fragment() {
         setupPasswordToggle()
 
         // Apply length filters
-        binding.etEmail.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
-        binding.etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD))
+        binding.etEmail.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+        binding.etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
 
         binding.btnSignIn.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
@@ -106,7 +106,7 @@ class SignInFragment : Fragment() {
         editText.hint = getString(R.string.email)
         
         // Apply email length filter
-        editText.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL))
+        editText.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
 
         val dialog = showBudgetBrewerDialog(
             inflater = layoutInflater,
@@ -118,8 +118,11 @@ class SignInFragment : Fragment() {
             onPositive = {
                 val email = editText.text.toString().trim()
                 if (email.isNotEmpty()) {
-                    // Navigate to reset password fragment with this email
-                    (activity as? AuthActivity)?.navigateToResetPassword(email)
+                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        (activity as? AuthActivity)?.navigateToResetPassword(email)
+                    } else {
+                        showError(getString(R.string.enter_valid_email))
+                    }
                 } else {
                     showError(getString(R.string.enter_email))
                 }

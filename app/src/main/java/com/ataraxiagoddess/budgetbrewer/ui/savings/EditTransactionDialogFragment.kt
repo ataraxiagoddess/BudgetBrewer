@@ -10,13 +10,14 @@ import androidx.fragment.app.DialogFragment
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogDistributeBinding
+import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
-import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import java.util.Locale
 import kotlin.math.abs
 
 class EditTransactionDialogFragment(
     private val transaction: SavingsTransaction,
+    private val maxAllowed: Double,
     private val onSave: (Double) -> Unit
 ) : DialogFragment() {
 
@@ -46,11 +47,13 @@ class EditTransactionDialogFragment(
         binding.etAmount.requestFocus()
 
         binding.tvBucketName.text = getString(R.string.edit_transaction_title)
-        binding.tvAvailablePool.text = ""
+        binding.tvAvailablePool.text = getString(R.string.max_deduction_label, maxAllowed)
         
         val originalAmount = abs(transaction.amount)
+        val locales = resources.configuration.locales
+        val locale = if (locales.isEmpty) Locale.getDefault() else locales[0]
         binding.etAmount.setText(String.format(Locale.US, "%.2f", originalAmount))
-        binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter())
+        binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))
 
         val saveButton = binding.buttonSave
         saveButton.isEnabled = false
@@ -59,8 +62,11 @@ class EditTransactionDialogFragment(
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val newAmount = s.toString().toDoubleOrNull()
-                // Must be a valid number, greater than zero, and different from the original amount
-                val isValid = newAmount != null && newAmount > 0.0 && newAmount <= ValidationUtils.MAX_AMOUNT && newAmount != originalAmount
+                val isValid = newAmount != null && newAmount > 0.0 && newAmount != originalAmount && newAmount <= maxAllowed
+                val showError = newAmount != null && newAmount > 0.0 && newAmount > maxAllowed
+                
+                binding.tvError.visibility = if (showError) View.VISIBLE else View.INVISIBLE
+                binding.tvError.text = if (showError) getString(R.string.amount_exceeds_maximum_allowed) else ""
                 saveButton.isEnabled = isValid
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -69,7 +75,7 @@ class EditTransactionDialogFragment(
         binding.buttonCancel.setOnClickListener { dismiss() }
         binding.buttonSave.setOnClickListener {
             val newAmount = binding.etAmount.text.toString().toDoubleOrNull()
-            if (newAmount != null) {
+            if (newAmount != null && newAmount > 0.0 && newAmount <= maxAllowed) {
                 // Preserve the original sign of the transaction
                 val signedAmount = if (transaction.amount < 0) -newAmount else newAmount
                 onSave(signedAmount)

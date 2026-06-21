@@ -1,5 +1,6 @@
 package com.ataraxiagoddess.budgetbrewer.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -22,6 +23,12 @@ data class MonthSettings(
     val monthStartAmount: Double,
     @SerialName("month_start_overridden")
     val monthStartOverridden: Boolean = false,
+    @SerialName("tips_enabled")
+    @ColumnInfo(defaultValue = "0")
+    val tipsEnabled: Boolean = false,
+    @SerialName("pay_frequency")
+    @ColumnInfo(defaultValue = "'MONTHLY'")
+    val payFrequency: String = "MONTHLY",
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")

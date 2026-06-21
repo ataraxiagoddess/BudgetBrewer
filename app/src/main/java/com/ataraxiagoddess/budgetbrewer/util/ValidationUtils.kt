@@ -30,10 +30,6 @@ object ValidationUtils {
         return pin.length == MAX_LENGTH_PIN && pin.all { it.isDigit() }
     }
 
-    fun isValidAmount(amountStr: String): Boolean {
-        return amountStr.toDoubleOrNull()?.let { it in 0.0..MAX_AMOUNT } == true
-    }
-
     fun isValidAmount(amount: Double): Boolean {
         return amount in 0.0..MAX_AMOUNT
     }
@@ -41,11 +37,6 @@ object ValidationUtils {
     fun isValidName(name: String, maxLength: Int = MAX_LENGTH_NAME): Boolean {
         val cleanName = sanitizeString(name)
         return cleanName.isNotEmpty() && cleanName.length <= maxLength
-    }
-
-    fun isValidNote(note: String): Boolean {
-        val cleanNote = sanitizeString(note)
-        return cleanNote.length <= MAX_LENGTH_NOTE
     }
 
     fun isValidRecurrenceDays(days: Int): Boolean {
