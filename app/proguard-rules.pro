@@ -46,3 +46,8 @@
     public static *** v(...);
     public static *** i(...);
 }
+
+-dontwarn javax.annotation.**
+-dontwarn org.slf4j.**
+-keep class javax.annotation.** { *; }
+-keep class org.slf4j.** { *; }
