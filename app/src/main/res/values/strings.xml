@@ -404,10 +404,12 @@
     <string name="data_backed_up">Your local data has been backed up to the cloud</string>
     <string name="toggle_password_visibility">Toggle password visibility</string>
     <string name="enter_valid_email">Please enter a valid email address</string>
+    <string name="emails_match">Emails match</string>
     <string name="emails_do_not_match">Email addresses do not match</string>
     <string name="password_too_short">Password must be at least 8 characters</string>
     <string name="password_need_number">Password must contain at least one number</string>
     <string name="password_need_special">Password must contain at least one special character</string>
+    <string name="passwords_match">Passwords match</string>
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="password_strength_weak">Weak</string>
     <string name="password_strength_medium">Medium</string>

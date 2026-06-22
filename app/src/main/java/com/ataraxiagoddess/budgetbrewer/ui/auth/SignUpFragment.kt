@@ -2,10 +2,13 @@ package com.ataraxiagoddess.budgetbrewer.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +52,7 @@ class SignUpFragment : Fragment() {
         setupPasswordToggles()
         setupValidation()
         setupListeners()
+        setupMatchValidation()
     }
 
     private fun setupPasswordToggles() {
@@ -111,6 +115,68 @@ class SignUpFragment : Fragment() {
 
         binding.btnBack.setOnClickListener {
             requireActivity().finish()
+        }
+    }
+
+    private fun setupMatchValidation() {
+        // Email match watcher
+        val emailWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updateEmailMatch()
+            }
+            override fun afterTextChanged(s: Editable?) {}  // ← nullable Editable
+        }
+        binding.etEmail.addTextChangedListener(emailWatcher)
+        binding.etConfirmEmail.addTextChangedListener(emailWatcher)
+
+        // Password match watcher
+        val passwordWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updatePasswordMatch()
+            }
+            override fun afterTextChanged(s: Editable?) {}  // ← nullable Editable
+        }
+        binding.etPassword.addTextChangedListener(passwordWatcher)
+        binding.etConfirmPassword.addTextChangedListener(passwordWatcher)
+    }
+
+    private fun updateEmailMatch() {
+        val email = binding.etEmail.text.toString()
+        val confirm = binding.etConfirmEmail.text.toString()
+        val tv = binding.tvEmailMatch
+
+        if (email.isEmpty() && confirm.isEmpty()) {
+            tv.visibility = View.INVISIBLE
+            return
+        }
+        tv.visibility = View.VISIBLE
+        if (email == confirm) {
+            tv.text = getString(R.string.emails_match)
+            tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.success_green))
+        } else {
+            tv.text = getString(R.string.emails_do_not_match)
+            tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
+        }
+    }
+
+    private fun updatePasswordMatch() {
+        val password = binding.etPassword.text.toString()
+        val confirm = binding.etConfirmPassword.text.toString()
+        val tv = binding.tvPasswordMatch
+
+        if (password.isEmpty() && confirm.isEmpty()) {
+            tv.visibility = View.INVISIBLE
+            return
+        }
+        tv.visibility = View.VISIBLE
+        if (password == confirm) {
+            tv.text = getString(R.string.passwords_match)
+            tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.success_green))
+        } else {
+            tv.text = getString(R.string.passwords_do_not_match)
+            tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_red))
         }
     }
 

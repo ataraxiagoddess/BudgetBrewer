@@ -19,6 +19,8 @@
     <color name="net_zero">#1565C0</color>                <!-- Zero net total -->
     <color name="text_warning_on_mint">#5C0000</color>    <!-- Warning text -->
     <color name="text_error">#B00020</color>              <!-- Error text (Material Design red) -->
+    <color name="success_green">#6DFF74</color>
+    <color name="error_red">#FFA9A3</color>
 
     <!-- ===== BUTTON COLORS ===== -->
     <color name="btn_on_main">#7C007A</color>             <!-- Buttons on main background -->

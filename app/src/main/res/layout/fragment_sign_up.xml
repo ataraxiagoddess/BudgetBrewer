@@ -84,7 +84,7 @@
                 android:id="@+id/etConfirmEmail"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="2dp"
                 android:hint="@string/confirm_email"
                 android:inputType="textEmailAddress"
                 android:autofillHints="emailAddress"
@@ -99,11 +99,23 @@
                 android:gravity="center_vertical"
                 tools:ignore="VisualLintTextFieldSize" />
 
+            <TextView
+                android:id="@+id/tvEmailMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="11sp"
+                android:fontFamily="@font/exo_regular"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                tools:text="Emails match" />
+
             <!-- Password Field with toggle -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="16dp">
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -174,6 +186,19 @@
                     app:tint="@color/ic_button_tint" />
             </FrameLayout>
 
+            <!-- Password match message -->
+            <TextView
+                android:id="@+id/tvPasswordMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="2dp"
+                android:paddingBottom="8dp"
+                android:textSize="11sp"
+                android:fontFamily="@font/exo_regular"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                tools:text="Passwords match" />
+
             <!-- Password strength hint -->
             <TextView
                 android:id="@+id/tvPasswordStrength"
@@ -181,10 +206,11 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_on_main"
                 android:textSize="12sp"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:fontFamily="@font/exo_regular"
                 android:paddingTop="4dp"
                 android:paddingBottom="2dp"
+                tools:visibility="visible"
                 android:accessibilityLiveRegion="polite" />
 
             <!-- Password requirements -->
