@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.work.impl.Migration_15_16
 import com.ataraxiagoddess.budgetbrewer.data.*
 
 @Database(
