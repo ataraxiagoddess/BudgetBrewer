@@ -24,7 +24,7 @@ class MonthRolloverWorker(
             val currentYear = calendar.get(Calendar.YEAR)
 
             // Create/update budget chain for the new month
-            repo.getOrCreateBudgetChain(currentMonth, currentYear)
+            val (_, _) = repo.getOrCreateBudgetChain(currentMonth, currentYear)
 
             // Update shared preferences to point to new month
             val prefs = applicationContext.getSharedPreferences("budget_prefs", Context.MODE_PRIVATE)

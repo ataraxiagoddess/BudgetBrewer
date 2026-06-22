@@ -22,7 +22,7 @@ class HomeViewModelFactory(
         val year = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
 
         val budgetId = runBlocking {
-            repository.getOrCreateBudgetChain(month, year)
+            repository.getOrCreateBudgetChain(month, year).first
         }
         val isTagsEnabled = SpendingPrefs.isTagsEnabled(context)
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))

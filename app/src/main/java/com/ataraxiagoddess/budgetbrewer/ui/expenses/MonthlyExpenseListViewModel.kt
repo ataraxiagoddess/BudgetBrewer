@@ -57,7 +57,8 @@ class MonthlyExpenseListViewModel(
 
     fun updateMonth(month: Month) {
         viewModelScope.launch {
-            val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
+            // <-- CHANGED: ignore the creation flag with '_'
+            val (newBudgetId, _) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
             loadData()

@@ -157,6 +157,15 @@ class SyncManager(context: Context) {
     suspend fun uploadExpense(expense: Expense, userId: String) {
         withContext(Dispatchers.IO) {
             try {
+                val category = db.expenseCategoryDao().getCategoryById(expense.categoryId)
+                if (category != null) {
+                    val existing = supabase.postgrest["expense_categories"].select(Columns.raw("id")) {
+                        filter { eq("id", category.id) }
+                    }.decodeList<IdResponse>().firstOrNull()
+                    if (existing == null) {
+                        uploadCategory(category, userId)
+                    }
+                }
                 val payload = ExpensePayload(
                     id = expense.id,
                     category_id = expense.categoryId,

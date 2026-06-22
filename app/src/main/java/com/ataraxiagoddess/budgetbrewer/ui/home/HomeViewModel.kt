@@ -31,6 +31,10 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
+            val currentMonth = Month.current()
+            val (newBudgetId, _) = repository.getOrCreateBudgetChain(currentMonth.month, currentMonth.year)
+            budgetId = newBudgetId
+            savedStateHandle["budgetId"] = budgetId  // update saved state as well
             loadData()
         }
     }
@@ -45,7 +49,7 @@ class HomeViewModel(
     fun updateMonth(month: Month) {
         selectedMonth = month
         viewModelScope.launch {
-            val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
+            val (newBudgetId, _) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
             loadData()
@@ -127,12 +131,7 @@ class HomeViewModel(
                 year -= 1
             }
             // Get budget ID if it exists, otherwise 0
-            val budgetId = repository.getBudgetIdIfExists(month, year)
-            val amount = if (budgetId != null) {
-                repository.getSpendingTotalForBudget(budgetId)
-            } else {
-                0.0
-            }
+            val amount = repository.getSpendingTotalForMonth(month, year)
             result.add(0, MonthlySpending(month, year, amount))
         }
         return result

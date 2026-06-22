@@ -58,6 +58,7 @@ import com.google.android.material.snackbar.Snackbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import io.ktor.client.request.headers
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -82,6 +83,9 @@ private data class DeleteAccountResponse(
     val code: Int? = null,
     val message: String? = null
 )
+
+@Serializable
+private data class SavingsBucketIdResponse(val id: String)
 
 class SettingsActivity : BaseActivity() {
 
@@ -454,7 +458,7 @@ class SettingsActivity : BaseActivity() {
                 val calendar = Calendar.getInstance()
                 val month = calendar.get(Calendar.MONTH) + 1
                 val year = calendar.get(Calendar.YEAR)
-                val budgetId = repository.getOrCreateBudgetChain(month, year)
+                val (budgetId, _) = repository.getOrCreateBudgetChain(month, year)
                 val label = "${month}_${year}"
                 val uri = ExportHelper.exportBudgetToCSV(
                     this@SettingsActivity, budgetId, label
@@ -472,7 +476,7 @@ class SettingsActivity : BaseActivity() {
                 val calendar = Calendar.getInstance()
                 val month = calendar.get(Calendar.MONTH) + 1
                 val year = calendar.get(Calendar.YEAR)
-                val budgetId = repository.getOrCreateBudgetChain(month, year)
+                val (budgetId, _) = repository.getOrCreateBudgetChain(month, year)
                 val label = "${month}_${year}"
                 val uri = ExportHelper.exportBudgetToPDF(
                     this@SettingsActivity, budgetId, label
@@ -497,8 +501,13 @@ class SettingsActivity : BaseActivity() {
                 val db = AppDatabase.getDatabase(this@SettingsActivity)
                 db.pendingSyncDao().deleteAll()
 
-                // Sign out from Supabase
-                SupabaseClient.client.auth.signOut()
+                // Clear the local session even if the remote sign-out request cannot complete.
+                try {
+                    SupabaseClient.client.auth.signOut()
+                } catch (e: Exception) {
+                    Timber.w(e, "Remote sign-out failed; clearing local session")
+                    SupabaseClient.client.auth.clearSession()
+                }
 
                 // Clear local data
                 SyncManager(this@SettingsActivity).clearLocalData()
@@ -593,6 +602,12 @@ class SettingsActivity : BaseActivity() {
                 // 2. Delete all user data from Supabase tables (RLS will restrict)
                 val db = AppDatabase.getDatabase(this@SettingsActivity)
                 db.pendingSyncDao().deleteForUser(userId)
+                val savingsBucketIds = SupabaseClient.client.postgrest["savings_buckets"]
+                    .select(Columns.raw("id")) {
+                        filter { eq("user_id", userId) }
+                    }
+                    .decodeList<SavingsBucketIdResponse>()
+                    .map { it.id }
 
                 SupabaseClient.client.postgrest["daily_income_assignments"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["spending_entries"].delete { filter { eq("user_id", userId) } }
@@ -602,7 +617,11 @@ class SettingsActivity : BaseActivity() {
                 SupabaseClient.client.postgrest["incomes"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["allocations"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["month_settings"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["savings_transactions"].delete { filter { eq("user_id", userId) } }
+                if (savingsBucketIds.isNotEmpty()) {
+                    SupabaseClient.client.postgrest["savings_transactions"].delete {
+                        filter { "bucket_id.in.(${savingsBucketIds.joinToString(",")})" }
+                    }
+                }
                 SupabaseClient.client.postgrest["savings_buckets"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["budgets"].delete { filter { eq("user_id", userId) } }
 
@@ -624,7 +643,7 @@ class SettingsActivity : BaseActivity() {
                     }
 
                     val responseBody = response.bodyAsText()
-                    Timber.d("Edge function response: ${response.status} - $responseBody")
+                    Timber.d("Edge function response: ${response.status}")
 
                     val json = Json { ignoreUnknownKeys = true }
                     val result = try {

@@ -70,7 +70,7 @@ class MonthlyCalendarViewModel(
     fun updateMonth(month: Month) {
         viewModelScope.launch {
             currentMonth = month
-            val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
+            val (newBudgetId, _) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
             val budget = repository.getBudgetById(newBudgetId)

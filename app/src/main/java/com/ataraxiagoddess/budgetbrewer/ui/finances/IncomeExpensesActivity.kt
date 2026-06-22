@@ -187,6 +187,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val db = AppDatabase.getDatabase(this)
         repository = BudgetRepository(db)
 
+        viewModel.updateMonth(selectedMonth)
+
         addMonthChangeListener(this)
 
         setupFrequencySpinner()

@@ -80,6 +80,22 @@ class ResetPasswordFragment : Fragment() {
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_too_short))
                 return@setOnClickListener
             }
+            if (!newPassword.matches(Regex(".*[A-Z].*"))) {
+                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_uppercase))
+                return@setOnClickListener
+            }
+            if (!newPassword.matches(Regex(".*[a-z].*"))) {
+                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_lowercase))
+                return@setOnClickListener
+            }
+            if (!newPassword.matches(Regex(".*[0-9].*"))) {
+                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_number))
+                return@setOnClickListener
+            }
+            if (!newPassword.matches(Regex(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*"))) {
+                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_special))
+                return@setOnClickListener
+            }
             if (newPassword != confirmPassword) {
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.passwords_do_not_match))
                 return@setOnClickListener

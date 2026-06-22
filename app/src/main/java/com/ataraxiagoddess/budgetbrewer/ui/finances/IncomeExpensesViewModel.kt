@@ -7,6 +7,7 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.Allocation
 import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
+import com.ataraxiagoddess.budgetbrewer.data.DailyChecklist
 import com.ataraxiagoddess.budgetbrewer.data.Expense
 import com.ataraxiagoddess.budgetbrewer.data.ExpenseCategory
 import com.ataraxiagoddess.budgetbrewer.data.Frequency
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
 
 class IncomeExpensesViewModel(
     private val repository: BudgetRepository,
@@ -51,7 +53,7 @@ class IncomeExpensesViewModel(
 
     fun updateMonth(month: Month) {
         viewModelScope.launch {
-            val newBudgetId = repository.getOrCreateBudgetChain(month.month, month.year)
+            val (newBudgetId, wasCreated) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
 
@@ -61,12 +63,23 @@ class IncomeExpensesViewModel(
                 SyncManager(appContext).uploadBudget(budget, userId)
             }
 
-            val targetExpenses = repository.getExpensesForBudget(budgetId).first()
-            val hasRecurring = targetExpenses.any { it.recurrenceType != RecurrenceType.NONE }
-            if (!hasRecurring) {
+            // Only propagate if the budget already existed (not newly created)
+            if (!wasCreated) {
                 val previousBudget = repository.findPreviousBudget(month.month, month.year)
                 if (previousBudget != null) {
                     repository.propagateRecurringExpenses(previousBudget.id, budgetId)
+
+                    // Sync all newly propagated expenses and checklist items
+                    if (userId != null) {
+                        val expenses = repository.getExpensesForBudget(budgetId).first()
+                        expenses.forEach { expense ->
+                            SyncManager(appContext).uploadExpense(expense, userId)
+                        }
+                        val checklistItems = repository.getDailyChecklist(budgetId).first()
+                        checklistItems.forEach { item ->
+                            SyncManager(appContext).uploadDailyChecklistItem(item, userId)
+                        }
+                    }
                 }
             }
 
@@ -411,6 +424,23 @@ class IncomeExpensesViewModel(
         }
     }
 
+    private suspend fun ensureChecklistItemForExpense(expense: Expense) {
+        val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
+        val existing = repository.getChecklistItem(budgetId, day)
+        if (existing == null) {
+            val newItem = DailyChecklist(
+                budgetId = budgetId,
+                dayOfMonth = day,
+                isChecked = false
+            )
+            repository.insertChecklistItem(newItem)
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadDailyChecklistItem(newItem, userId)
+            }
+        }
+    }
+
     // Expense Actions
     fun addExpense(
         categoryId: String,
@@ -430,6 +460,7 @@ class IncomeExpensesViewModel(
                 recurrenceInterval = recurrenceInterval
             )
             repository.insertExpense(expense)
+            ensureChecklistItemForExpense(expense)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 val budget = repository.getBudgetById(budgetId)
@@ -458,10 +489,13 @@ class IncomeExpensesViewModel(
 
     fun deleteExpense(expense: Expense) {
         safeLaunch(R.string.error_delete_expense) {
-            repository.deleteExpense(expense)
+            val deletedChecklistId = repository.deleteExpense(expense) // returns ID if a checklist item was deleted
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).deleteExpense(expense.id, userId)
+                if (deletedChecklistId != null) {
+                    SyncManager(appContext).deleteDailyChecklistItem(deletedChecklistId, userId)
+                }
             }
             emitSuccess(UiEvent.ExpenseDeleted)
             refreshExpenses()
@@ -516,7 +550,10 @@ class IncomeExpensesViewModel(
     fun updateTipsEnabled(enabled: Boolean) {
         safeLaunch(R.string.error_update_settings) {
             val current = _monthSettings.value ?: return@safeLaunch
-            val updated = current.copy(tipsEnabled = enabled)
+            val updated = current.copy(
+                tipsEnabled = enabled,
+                updatedAt = System.currentTimeMillis()
+            )
             repository.insertOrUpdateMonthSettings(updated)
             _monthSettings.value = updated
             
@@ -530,7 +567,10 @@ class IncomeExpensesViewModel(
     fun updatePayFrequency(frequency: Frequency) {
         safeLaunch(R.string.error_update_settings) {
             val current = _monthSettings.value ?: return@safeLaunch
-            val updated = current.copy(payFrequency = frequency.name)
+            val updated = current.copy(
+                payFrequency = frequency.name,
+                updatedAt = System.currentTimeMillis()
+            )
             repository.insertOrUpdateMonthSettings(updated)
             _monthSettings.value = updated
             

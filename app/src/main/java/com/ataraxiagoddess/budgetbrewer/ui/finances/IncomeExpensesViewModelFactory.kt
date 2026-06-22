@@ -21,7 +21,7 @@ class IncomeExpensesViewModelFactory(
         val year = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
 
         val budgetId = runBlocking {
-            repository.getOrCreateBudgetChain(month, year)
+            repository.getOrCreateBudgetChain(month, year).first
         }
 
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
