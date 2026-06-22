@@ -296,7 +296,8 @@ class SyncManager(context: Context) {
                     amount = transaction.amount,
                     date = transaction.date,
                     type = transaction.type.name,
-                    created_at = transaction.created_at
+                    created_at = transaction.created_at,
+                    updated_at = transaction.updated_at
                 )
                 supabase.postgrest["savings_transactions"].upsert(payload, onConflict = "id")
             } catch (e: Exception) {
@@ -451,6 +452,9 @@ class SyncManager(context: Context) {
         }
     }
 
+    /**
+     * Delete a savings bucket from Supabase.
+     */
     suspend fun deleteSavingsBucket(bucketId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
@@ -462,6 +466,25 @@ class SyncManager(context: Context) {
                 }
             } catch (e: Exception) {
                 Timber.e(e, "deleteSavingsBucket failed, queueing")
+            }
+        }
+    }
+
+    /**
+     * Delete a savings bucket transaction from Supabase.
+     */
+    suspend fun deleteSavingsTransaction(transactionId: String, userId: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                supabase.postgrest["savings_transactions"].delete {
+                    filter {
+                        eq("id", transactionId)
+                        // No user_id filter – RLS will check the bucket's user_id via the bucket relation.
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "deleteSavingsTransaction failed, queueing")
+                queueOperation("DELETE", "savings_transactions", transactionId, userId)
             }
         }
     }
@@ -601,14 +624,17 @@ class SyncManager(context: Context) {
     }
 
     private suspend fun downloadSavingsTransactions() {
-        // Get local bucket IDs to filter transactions
         val bucketIds = db.savingsBucketDao().getAllBuckets().first().map { it.id }
         if (bucketIds.isEmpty()) return
 
-        val response = supabase.postgrest["savings_transactions"].select(Columns.raw("*")) {
-            filter { "bucket_id.in.(${bucketIds.joinToString(",")})" }
-        }.decodeList<SavingsTransaction>()
-        response.forEach { db.savingsTransactionDao().insert(it) }
+        val allTransactions = mutableListOf<SavingsTransaction>()
+        bucketIds.forEach { bucketId ->
+            val response = supabase.postgrest["savings_transactions"].select(Columns.raw("*")) {
+                filter { eq("bucket_id", bucketId) }
+            }.decodeList<SavingsTransaction>()
+            allTransactions.addAll(response)
+        }
+        allTransactions.forEach { db.savingsTransactionDao().insert(it) }
     }
 
     private suspend fun downloadMonthSettings(userId: String) {

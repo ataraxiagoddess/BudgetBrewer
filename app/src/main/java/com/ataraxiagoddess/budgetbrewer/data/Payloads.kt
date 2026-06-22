@@ -138,5 +138,6 @@ data class SavingsTransactionPayload(
     val amount: Double,
     val date: Long,
     val type: String,
-    val created_at: Long
+    val created_at: Long,
+    val updated_at: Long
 )

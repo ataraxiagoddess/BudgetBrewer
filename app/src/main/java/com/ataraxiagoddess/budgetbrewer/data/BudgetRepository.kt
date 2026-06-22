@@ -132,7 +132,7 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertSavingsBucket(bucket: SavingsBucket) =
         db.savingsBucketDao().insert(bucket)
 
-    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double) {
+    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double): SavingsTransaction {
         val transaction = SavingsTransaction(
             bucket_id = bucket.id,
             amount = amount,
@@ -145,6 +145,7 @@ class BudgetRepository(private val db: AppDatabase) {
         val total = db.savingsTransactionDao().getTotalForBucket(bucket.id)
         val updatedBucket = bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
         db.savingsBucketDao().update(updatedBucket)
+        return transaction
     }
 
     suspend fun updateSavingsBucket(bucket: SavingsBucket) =
@@ -184,7 +185,10 @@ class BudgetRepository(private val db: AppDatabase) {
     }
 
     suspend fun editTransactionAmount(transaction: SavingsTransaction, newAmount: Double) {
-        val updated = transaction.copy(amount = newAmount)
+        val updated = transaction.copy(
+            amount = newAmount,
+            updated_at = System.currentTimeMillis()
+            )
         db.savingsTransactionDao().updateTransaction(updated)
 
         // Recalculate current_amount for the bucket

@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.work.impl.Migration_15_16
 import com.ataraxiagoddess.budgetbrewer.data.*
 
 @Database(
@@ -22,7 +23,7 @@ import com.ataraxiagoddess.budgetbrewer.data.*
         SavingsBucket::class,
         SavingsTransaction::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -52,7 +53,13 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "budget_brewer.db"
                 )
-                    .addMigrations(Migration_1_2, Migration_2_3, Migration_3_4, Migration_4_5)
+                    .addMigrations(
+                        Migration_1_2,
+                        Migration_2_3,
+                        Migration_3_4,
+                        Migration_4_5,
+                        Migration_5_6
+                    )
                     .build()
                 INSTANCE = instance
                 instance

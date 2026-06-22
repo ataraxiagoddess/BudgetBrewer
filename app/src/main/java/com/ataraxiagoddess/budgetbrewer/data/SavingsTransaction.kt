@@ -35,7 +35,10 @@ data class SavingsTransaction(
     val type: SavingsTransactionType,
 
     @SerialName("created_at")
-    val created_at: Long = System.currentTimeMillis()
+    val created_at: Long = System.currentTimeMillis(),
+
+    @SerialName("updated_at")
+    val updated_at: Long = System.currentTimeMillis()
 )
 
 @Serializable

@@ -617,9 +617,9 @@ class SettingsActivity : BaseActivity() {
                 SupabaseClient.client.postgrest["incomes"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["allocations"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["month_settings"].delete { filter { eq("user_id", userId) } }
-                if (savingsBucketIds.isNotEmpty()) {
+                savingsBucketIds.forEach { bucketId ->
                     SupabaseClient.client.postgrest["savings_transactions"].delete {
-                        filter { "bucket_id.in.(${savingsBucketIds.joinToString(",")})" }
+                        filter { eq("bucket_id", bucketId) }
                     }
                 }
                 SupabaseClient.client.postgrest["savings_buckets"].delete { filter { eq("user_id", userId) } }

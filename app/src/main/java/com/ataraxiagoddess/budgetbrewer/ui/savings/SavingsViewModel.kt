@@ -128,7 +128,7 @@ class SavingsViewModel(
                 _events.emit(SavingsUiEvent.ShowError("Not enough funds available"))
                 return@safeLaunch
             }
-            repository.distributeFunds(bucket, amount)
+            val transaction = repository.distributeFunds(bucket, amount)
 
             // Sync the updated bucket (the flow will recalculate the pool automatically)
             val userId = AuthManager.getUserId(appContext)
@@ -137,6 +137,7 @@ class SavingsViewModel(
                 if (updatedBucket != null) {
                     SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
                 }
+                SyncManager(appContext).uploadSavingsTransaction(transaction, userId)
             }
 
             if (amount < 0) {
@@ -173,6 +174,11 @@ class SavingsViewModel(
     fun editTransaction(transaction: SavingsTransaction, newAmount: Double) {
         safeLaunch(R.string.error_distribute) {
             repository.editTransactionAmount(transaction, newAmount)
+            val updatedTransaction = transaction.copy(amount = newAmount)
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadSavingsTransaction(updatedTransaction, userId)
+            }
             _events.emit(SavingsUiEvent.TransactionEdited)
         }
     }
@@ -180,6 +186,10 @@ class SavingsViewModel(
     fun deleteTransaction(transaction: SavingsTransaction) {
         safeLaunch(R.string.error_distribute) {
             repository.deleteTransaction(transaction)
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).deleteSavingsTransaction(transaction.id, userId)
+            }
             _events.emit(SavingsUiEvent.TransactionDeleted)
         }
     }
