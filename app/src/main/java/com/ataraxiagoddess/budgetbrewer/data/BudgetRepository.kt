@@ -110,10 +110,6 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun deleteSpendingEntry(entry: SpendingEntry) =
         db.spendingEntryDao().delete(entry)
 
-    suspend fun getBudgetIdIfExists(month: Int, year: Int): String? {
-        return db.budgetDao().getBudget(month, year).first()?.id
-    }
-
     suspend fun getSpendingTotalForBudget(budgetId: String): Double {
         return db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf { it.amount }
     }
@@ -372,21 +368,6 @@ class BudgetRepository(private val db: AppDatabase) {
 
     suspend fun removeIncomeAssignment(budgetId: String, incomeId: String) {
         db.dailyIncomeAssignmentDao().deleteByIncomeId(budgetId, incomeId)
-    }
-
-    // --- Recurring expense propagation ---
-    private fun calculateNextMonthlyDate(currentDate: Long): Long {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentDate
-        calendar.add(Calendar.MONTH, 1)
-        return calendar.timeInMillis
-    }
-
-    private fun calculateNextXDaysDate(currentDate: Long, interval: Int): Long {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentDate
-        calendar.add(Calendar.DAY_OF_YEAR, interval)
-        return calendar.timeInMillis
     }
 
     suspend fun findPreviousBudget(month: Int, year: Int): Budget? =
