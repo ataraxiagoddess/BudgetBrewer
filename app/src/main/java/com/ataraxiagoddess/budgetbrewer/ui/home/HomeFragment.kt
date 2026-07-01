@@ -358,16 +358,29 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val targetAmount = data.savingsTarget
         val actualAmount = data.savingsAmount
 
-        val percentageOfGoal = if (targetAmount > 0) {
-            (actualAmount / targetAmount * 100).coerceIn(0.0, 100.0)
+        val rawPercentage = if (targetAmount > 0) {
+            actualAmount / targetAmount * 100
         } else {
             0.0
         }
 
+        val percentageOfGoal = rawPercentage.coerceIn(0.0, 100.0)
+
         Timber.d("Savings - Target: $targetAmount, Actual: $actualAmount, Percentage: $percentageOfGoal%")
 
         binding.savingsProgressIndicator.setProgressCompat(percentageOfGoal.toInt(), true)
-        binding.tvSavingsPercentage.text = String.format(Locale.US, "%.1f%%", percentageOfGoal)
+
+        if (rawPercentage > 100.0) {
+            binding.tvSavingsPercentage.text = String.format(Locale.US, "%.1f%%", rawPercentage)
+            binding.tvSavingsOverachievement.visibility = View.VISIBLE
+            binding.tvSavingsOverachievement.text = getString(
+                R.string.overachievement_format,
+                rawPercentage - 100.0
+            )
+        } else {
+            binding.tvSavingsPercentage.text = String.format(Locale.US, "%.1f%%", percentageOfGoal)
+            binding.tvSavingsOverachievement.visibility = View.GONE
+        }
 
         binding.tvSavingsData.text = getString(
             R.string.savings_comparison_format,

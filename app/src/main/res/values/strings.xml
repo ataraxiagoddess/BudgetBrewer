@@ -147,6 +147,7 @@
     <string name="archive_months_placeholder">Archived months coming soon</string>
     <string name="bucket_archived">Bucket archived</string>
     <string name="bucket_restored">Bucket restored</string>
+    <string name="overachievement_format">+%.1f%% over target</string>
     <string name="transaction_edited">Transaction updated</string>
 
     <!-- ==================== EXPENSES PAGE ==================== -->

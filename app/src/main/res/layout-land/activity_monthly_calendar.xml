@@ -114,6 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginEnd="16dp"
                     tools:ignore="UseCompoundDrawables">
                     <ImageView
                         android:layout_width="12dp"
@@ -134,7 +135,6 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
                     android:orientation="horizontal"
                     tools:ignore="UseCompoundDrawables">
 
@@ -151,7 +151,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/legend_savings"
-                        android:textSize="11sp"
                         style="@style/TextAppearance.BudgetBrewer.Body"
                         android:textColor="@color/text_on_container" />
                 </LinearLayout>

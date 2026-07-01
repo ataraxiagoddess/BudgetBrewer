@@ -411,49 +411,57 @@ class BudgetRepository(private val db: AppDatabase) {
             }
         }
 
-        // 4. Build a composite key for source recurring expenses:
-        //    (categoryId, description, recurrenceType, recurrenceInterval) – all source IDs
-        fun sourceKey(expense: Expense): String {
-            return "${expense.categoryId}|${expense.description}|${expense.recurrenceType}|${expense.recurrenceInterval}"
-        }
+        // 4. Build source map by id (source expenses have sourceExpenseId = null or their own id)
+        val sourceMap = sourceRecurring.associateBy { it.id }
 
-        // 5. Map source recurring expenses by that key
-        val sourceMap = sourceRecurring.associateBy { sourceKey(it) }
+        // 5. Build target map by sourceExpenseId (link back to source)
+        val targetMap = targetRecurring
+            .filter { it.sourceExpenseId != null }
+            .associateBy { it.sourceExpenseId!! }
 
-        // ---------- FIX STARTS HERE ----------
-        // 6. Build reverse mapping: targetCategoryId -> sourceCategoryId
-        val reverseCategoryMap = categoryMap.entries.associate { (sourceId, targetId) -> targetId to sourceId }
+        // 6. Determine which expenses to insert, update, delete
+        val keysToInsert = sourceMap.keys - targetMap.keys
+        val keysToUpdate = sourceMap.keys.intersect(targetMap.keys)
+        val keysToDelete = targetMap.keys - sourceMap.keys
 
-        // 7. Build targetMap using the same key format, but using the source category ID
-        val targetMap = targetRecurring.mapNotNull { expense ->
-            val sourceCategoryId = reverseCategoryMap[expense.categoryId] ?: return@mapNotNull null
-            val key = "$sourceCategoryId|${expense.description}|${expense.recurrenceType}|${expense.recurrenceInterval}"
-            key to expense
-        }.toMap()
-        // ---------- FIX ENDS HERE ----------
-
-        // 8. Suspend function to shift due date based on budget month difference
-        suspend fun shiftDueDate(sourceDueDate: Long, sourceBudgetId: String, targetBudgetId: String): Long {
+        // 8. Suspend function to shift due date based on budget month difference and recurrence type
+        suspend fun shiftDueDate(
+            sourceDueDate: Long,
+            sourceBudgetId: String,
+            targetBudgetId: String,
+            recurrenceType: RecurrenceType,
+            recurrenceInterval: Int?
+        ): Long {
             val sourceBudget = db.budgetDao().getBudgetById(sourceBudgetId) ?: return sourceDueDate
             val targetBudget = db.budgetDao().getBudgetById(targetBudgetId) ?: return sourceDueDate
 
             val cal = Calendar.getInstance()
             cal.timeInMillis = sourceDueDate
-            val monthDiff = (targetBudget.year - sourceBudget.year) * 12 + (targetBudget.month - sourceBudget.month)
-            cal.add(Calendar.MONTH, monthDiff)
+
+            when (recurrenceType) {
+                RecurrenceType.MONTHLY_SAME_DAY -> {
+                    val monthDiff = (targetBudget.year - sourceBudget.year) * 12 +
+                                   (targetBudget.month - sourceBudget.month)
+                    cal.add(Calendar.MONTH, monthDiff)
+                }
+                RecurrenceType.EVERY_X_DAYS -> {
+                    val monthDiff = (targetBudget.year - sourceBudget.year) * 12 +
+                                   (targetBudget.month - sourceBudget.month)
+                    val daysToAdd = (recurrenceInterval ?: 30) * monthDiff
+                    cal.add(Calendar.DAY_OF_MONTH, daysToAdd)
+                }
+                RecurrenceType.NONE -> {
+                    // No shift needed
+                }
+            }
             return cal.timeInMillis
         }
-
-        // 9. Determine which expenses to insert, update, delete
-        val keysToInsert = sourceMap.keys - targetMap.keys
-        val keysToUpdate = sourceMap.keys.intersect(targetMap.keys)
-        val keysToDelete = targetMap.keys - sourceMap.keys
 
         // 10. Insert new expenses
         for (key in keysToInsert) {
             val sourceExpense = sourceMap[key]!!
             val targetCategoryId = categoryMap[sourceExpense.categoryId] ?: continue
-            val newDueDate = shiftDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
+            val newDueDate = shiftDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId, sourceExpense.recurrenceType, sourceExpense.recurrenceInterval)
             val newExpense = Expense(
                 categoryId = targetCategoryId,
                 description = sourceExpense.description,
@@ -461,6 +469,7 @@ class BudgetRepository(private val db: AppDatabase) {
                 dueDate = newDueDate,
                 recurrenceType = sourceExpense.recurrenceType,
                 recurrenceInterval = sourceExpense.recurrenceInterval,
+                sourceExpenseId = sourceExpense.id,
                 createdAt = System.currentTimeMillis(),
                 isActive = sourceExpense.isActive
             )
@@ -474,15 +483,24 @@ class BudgetRepository(private val db: AppDatabase) {
         for (key in keysToUpdate) {
             val sourceExpense = sourceMap[key]!!
             val targetExpense = targetMap[key]!!
-            val newDueDate = shiftDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
+
+            // Skip if user has overridden this expense in the target month
+            if (targetExpense.isOverridden) {
+                Timber.d("Skipping update for overridden expense: ${targetExpense.description}")
+                continue
+            }
+
+            val newDueDate = shiftDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId, sourceExpense.recurrenceType, sourceExpense.recurrenceInterval)
             if (targetExpense.amount != sourceExpense.amount ||
                 targetExpense.description != sourceExpense.description ||
                 targetExpense.dueDate != newDueDate ||
+                targetExpense.recurrenceType != sourceExpense.recurrenceType ||
                 targetExpense.recurrenceInterval != sourceExpense.recurrenceInterval) {
                 val updatedExpense = targetExpense.copy(
                     amount = sourceExpense.amount,
                     description = sourceExpense.description,
                     dueDate = newDueDate,
+                    recurrenceType = sourceExpense.recurrenceType,
                     recurrenceInterval = sourceExpense.recurrenceInterval,
                     updatedAt = System.currentTimeMillis()
                 )

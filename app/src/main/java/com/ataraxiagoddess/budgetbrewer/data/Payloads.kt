@@ -50,6 +50,8 @@ data class ExpensePayload(
     val due_date: Long,
     val recurrence_type: String,
     val recurrence_interval: Int?,
+    val source_expense_id: String? = null,
+    val is_overridden: Boolean = false,
     val created_at: Long,
     val is_active: Boolean,
     val updated_at: Long,

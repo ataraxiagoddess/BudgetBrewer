@@ -84,10 +84,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:autoSizeTextType="uniform"
-                            android:autoSizeMinTextSize="10sp"
-                            android:autoSizeMaxTextSize="20sp"
-                            android:autoSizeStepGranularity="1sp"
+                            app:autoSizeTextType="uniform"
+                            app:autoSizeMinTextSize="10sp"
+                            app:autoSizeMaxTextSize="20sp"
+                            app:autoSizeStepGranularity="1sp"
                             android:maxLines="1"
                             android:fontFamily="@font/exo_regular"
                             android:textColor="@color/text_on_main"
@@ -213,6 +213,16 @@
                         android:textColor="@color/text_on_container"
                         android:fontFamily="@font/exo_regular"
                         tools:text="0%" />
+
+                    <TextView
+                        android:id="@+id/tvSavingsOverachievement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/holo_green_dark"
+                        android:fontFamily="@font/exo_regular"
+                        android:visibility="gone"
+                        tools:text="+25% over target" />
                 </LinearLayout>
 
                 <!-- Savings Comparison Legend (vertical stack) -->

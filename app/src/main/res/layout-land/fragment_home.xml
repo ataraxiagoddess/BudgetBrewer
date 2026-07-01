@@ -188,6 +188,16 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 tools:text="0%" />
+
+                            <TextView
+                                android:id="@+id/tvSavingsOverachievement"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/exo_regular"
+                                android:textColor="@android:color/holo_green_dark"
+                                android:textSize="14sp"
+                                android:visibility="gone"
+                                tools:text="+25% over target" />
                         </LinearLayout>
 
                         <!-- Savings Comparison Legend (vertical stack) -->

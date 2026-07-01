@@ -249,7 +249,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialogBinding.etNote.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
-            dialogBinding.etAmount.requestFocus()
+            dialogBinding.etSource.requestFocus()
             validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
@@ -364,7 +364,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialogBinding.etTag.addTextChangedListener(textWatcher)
 
         dialog.setOnShowListener {
-            dialogBinding.etAmount.requestFocus()
+            dialogBinding.etSource.requestFocus()
             validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value

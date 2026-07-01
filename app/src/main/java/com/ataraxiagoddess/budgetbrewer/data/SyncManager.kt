@@ -174,6 +174,8 @@ class SyncManager(context: Context) {
                     due_date = expense.dueDate,
                     recurrence_type = expense.recurrenceType.name,
                     recurrence_interval = expense.recurrenceInterval,
+                    source_expense_id = expense.sourceExpenseId,
+                    is_overridden = expense.isOverridden,
                     created_at = expense.createdAt,
                     is_active = expense.isActive,
                     updated_at = expense.updatedAt,

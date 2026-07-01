@@ -36,6 +36,10 @@ data class Expense(
     val recurrenceType: RecurrenceType = RecurrenceType.NONE,
     @SerialName("recurrence_interval")
     val recurrenceInterval: Int? = null,
+    @SerialName("source_expense_id")
+    val sourceExpenseId: String? = null,
+    @SerialName("is_overridden")
+    val isOverridden: Boolean = false,
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")

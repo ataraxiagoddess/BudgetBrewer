@@ -196,6 +196,21 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         setupTipsCheckbox()
         observeTips()
 
+        // Observe ViewModel's selected pay frequency to restore spinner on recreation
+        lifecycleScope.launch {
+            viewModel.selectedPayFrequency.collect { frequency ->
+                if (frequency != null) {
+                    val frequencies = Frequency.entries.map { it.name }.toTypedArray()
+                    val position = frequencies.indexOf(frequency.name).takeIf { it >= 0 } ?: 0
+                    if (binding.spinnerFrequency.selectedItemPosition != position) {
+                        isProgrammaticChange = true
+                        isUserFrequencySelection = false
+                        binding.spinnerFrequency.setSelection(position)
+                    }
+                }
+            }
+        }
+
         // Observe month settings (per-month tips and frequency)
         lifecycleScope.launch {
             viewModel.monthSettings.collect { settings ->
@@ -406,6 +421,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                     currentMonthFrequency = newFrequency
                     previousFrequency = newFrequency
                     viewModel.updatePayFrequency(newFrequency)
+                    viewModel.setSelectedPayFrequency(newFrequency)
                     val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
                     rebuildIncomeRows(newFrequency, currentIncomes)
                     return
@@ -423,6 +439,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                     currentMonthFrequency = newFrequency
                     previousFrequency = newFrequency
                     viewModel.updatePayFrequency(newFrequency)
+                    viewModel.setSelectedPayFrequency(newFrequency)
                     rebuildIncomeRows(newFrequency, emptyList())
                     return
                 }
@@ -442,6 +459,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                         currentMonthFrequency = newFrequency
                         previousFrequency = newFrequency
                         viewModel.updatePayFrequency(newFrequency)
+                        viewModel.setSelectedPayFrequency(newFrequency)
                         rebuildIncomeRows(newFrequency, emptyList())
                         dialog.dismiss()
                     }
@@ -1268,9 +1286,9 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             val amount = amountText.toAmountOrNull(resources) ?: 0.0
             val dateValid = selectedDate != null
             val descriptionValid = descriptionTrimmed.isNotEmpty()
-            val amountValid = amount > 0 && ValidationUtils.isValidAmount(amount)
+            val amountValid = amount >= 0 && ValidationUtils.isValidAmount(amount)
 
-            if (amount > 0 && !ValidationUtils.isValidAmount(amount)) {
+            if (amount >= 0 && !ValidationUtils.isValidAmount(amount)) {
                 tvAmountError.text = getString(R.string.amount_exceeds_maximum)
                 tvAmountError.visibility = View.VISIBLE
             } else {
@@ -1374,7 +1392,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
                 val date = selectedDate
                 if (!ValidationUtils.isValidName(description)) return@setOnClickListener
-                if (date != null && description.isNotEmpty() && amount > 0) {
+                if (date != null && description.isNotEmpty() && amount >= 0) {
                     val recurrenceType = getCurrentRecurrenceType()
                     val interval = getCurrentInterval()
                     val updatedExpense = expense.copy(

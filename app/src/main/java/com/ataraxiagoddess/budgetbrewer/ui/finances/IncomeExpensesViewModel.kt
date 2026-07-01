@@ -47,12 +47,17 @@ class IncomeExpensesViewModel(
     private val _monthSettings = MutableStateFlow<MonthSettings?>(null)
     val monthSettings: StateFlow<MonthSettings?> = _monthSettings.asStateFlow()
 
+    private val _selectedPayFrequency = MutableStateFlow<Frequency?>(null)
+    val selectedPayFrequency: StateFlow<Frequency?> = _selectedPayFrequency.asStateFlow()
+
     init {
         loadData()
     }
 
     fun updateMonth(month: Month) {
         viewModelScope.launch {
+            // Clear selected pay frequency so new month's settings take precedence
+            _selectedPayFrequency.value = null
             val (newBudgetId, wasCreated) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
@@ -476,7 +481,10 @@ class IncomeExpensesViewModel(
 
     fun updateExpense(expense: Expense) {
         safeLaunch(R.string.error_update_expense) {
-            val updated = expense.copy(updatedAt = System.currentTimeMillis())
+            val updated = expense.copy(
+                updatedAt = System.currentTimeMillis(),
+                isOverridden = expense.sourceExpenseId != null
+            )
             repository.updateExpense(updated) // FIXED
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
@@ -562,6 +570,10 @@ class IncomeExpensesViewModel(
                 SyncManager(appContext).uploadMonthSetting(updated, userId)
             }
         }
+    }
+
+    fun setSelectedPayFrequency(frequency: Frequency) {
+        _selectedPayFrequency.value = frequency
     }
 
     fun updatePayFrequency(frequency: Frequency) {

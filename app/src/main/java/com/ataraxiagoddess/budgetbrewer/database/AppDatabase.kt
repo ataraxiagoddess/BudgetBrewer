@@ -22,7 +22,7 @@ import com.ataraxiagoddess.budgetbrewer.data.*
         SavingsBucket::class,
         SavingsTransaction::class
     ],
-    version = 6,
+    version = 8,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -57,7 +57,9 @@ abstract class AppDatabase : RoomDatabase() {
                         Migration_2_3,
                         Migration_3_4,
                         Migration_4_5,
-                        Migration_5_6
+                        Migration_5_6,
+                        Migration_6_7,
+                        Migration_7_8
                     )
                     .build()
                 INSTANCE = instance

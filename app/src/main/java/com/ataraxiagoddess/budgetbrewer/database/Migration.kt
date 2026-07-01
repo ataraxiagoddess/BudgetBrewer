@@ -106,3 +106,54 @@ object Migration_5_6 : Migration(5, 6) {
         db.execSQL("UPDATE savings_transactions SET updated_at = created_at")
     }
 }
+
+object Migration_6_7 : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Add sourceExpenseId and isOverridden columns to expenses table (correct camelCase names)
+        db.execSQL("ALTER TABLE expenses ADD COLUMN sourceExpenseId TEXT")
+        db.execSQL("ALTER TABLE expenses ADD COLUMN isOverridden INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object Migration_7_8 : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Recreate expenses table to rename columns from snake_case to camelCase.
+        // This handles devices that already ran the buggy Migration_6_7 which used
+        // source_expense_id / is_overridden instead of sourceExpenseId / isOverridden.
+        db.execSQL(
+            """
+            CREATE TABLE expenses_new (
+                id TEXT NOT NULL PRIMARY KEY,
+                categoryId TEXT NOT NULL,
+                description TEXT NOT NULL,
+                amount REAL NOT NULL,
+                dueDate INTEGER NOT NULL,
+                recurrenceType TEXT NOT NULL,
+                recurrenceInterval INTEGER,
+                createdAt INTEGER NOT NULL,
+                updatedAt INTEGER NOT NULL,
+                isActive INTEGER NOT NULL,
+                sourceExpenseId TEXT,
+                isOverridden INTEGER NOT NULL DEFAULT 0
+            )
+            """.trimIndent()
+        )
+
+        db.execSQL(
+            """
+            INSERT INTO expenses_new (
+                id, categoryId, description, amount, dueDate, recurrenceType, recurrenceInterval,
+                createdAt, updatedAt, isActive, sourceExpenseId, isOverridden
+            )
+            SELECT
+                id, categoryId, description, amount, dueDate, recurrenceType, recurrenceInterval,
+                createdAt, updatedAt, isActive, sourceExpenseId, isOverridden
+            FROM expenses
+            """.trimIndent()
+        )
+
+        db.execSQL("DROP TABLE expenses")
+        db.execSQL("ALTER TABLE expenses_new RENAME TO expenses")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_expenses_categoryId ON expenses(categoryId)")
+    }
+}
