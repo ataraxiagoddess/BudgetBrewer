@@ -12,8 +12,8 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.SupabaseClient
 import com.ataraxiagoddess.budgetbrewer.databinding.FragmentVerifyEmailBinding
 import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
-import io.github.jan.supabase.gotrue.OtpType
-import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.auth.OtpType
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
 class VerifyEmailFragment : Fragment() {

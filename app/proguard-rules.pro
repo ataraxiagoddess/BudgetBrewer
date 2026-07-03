@@ -51,3 +51,34 @@
 -dontwarn org.slf4j.**
 -keep class javax.annotation.** { *; }
 -keep class org.slf4j.** { *; }
+
+# Keep all Supabase classes
+-keep class io.github.jan.supabase.** { *; }
+-keep interface io.github.jan.supabase.** { *; }
+
+# Keep Kotlinx AtomicFU
+-keep class kotlinx.atomicfu.** { *; }
+
+# Keep Kotlinx DateTime and its serializers
+-keep class kotlinx.datetime.** { *; }
+-keep class kotlinx.datetime.serializers.** { *; }
+
+# Keep Kermit logging (if used by Supabase)
+-keep class io.github.jan.supabase.logging.** { *; }
+
+# Keep all serializable companion objects and synthetic serializers
+-keepclassmembers class * {
+    @kotlinx.serialization.Serializable <fields>;
+    static final kotlinx.serialization.KSerializer $serializer;
+}
+
+# Keep default constructors for serializable classes
+-keepclassmembers class * {
+    public <init>();
+}
+
+-dontwarn io.github.jan.supabase.logging.KermitSupabaseLogger
+-dontwarn kotlinx.datetime.Clock$System
+-dontwarn kotlinx.datetime.Instant$Companion
+-dontwarn kotlinx.datetime.Instant
+-dontwarn kotlinx.datetime.serializers.InstantIso8601Serializer

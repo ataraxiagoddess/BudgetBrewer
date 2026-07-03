@@ -1,9 +1,16 @@
 package com.ataraxiagoddess.budgetbrewer.util
 
 import android.content.Context
-import androidx.core.content.edit
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStoreFile
+import com.google.crypto.tink.Aead
+import com.google.crypto.tink.KeyTemplates
+import com.google.crypto.tink.RegistryConfiguration
+import com.google.crypto.tink.aead.AeadConfig
+import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
@@ -26,49 +33,80 @@ object AppLockManager {
     var isUnlocked = false
         private set
 
-    private lateinit var prefs: android.content.SharedPreferences
+    private lateinit var aead: Aead
+    private lateinit var dataStore: androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>
 
     fun init(context: Context) {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        AeadConfig.register()
+        val keysetManager = AndroidKeysetManager.Builder()
+            .withSharedPref(context, "tink_keyset", PREFS_NAME)
+            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
+            .withMasterKeyUri("android-keystore://tink_master_key_$PREFS_NAME")
             .build()
-            
-        prefs = EncryptedSharedPreferences.create(
-            context,
-            PREFS_NAME,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        aead = keysetManager.keysetHandle.getPrimitive(
+            RegistryConfiguration.get(),
+            Aead::class.java
+        )
+
+        dataStore = androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("encrypted_$PREFS_NAME") }
         )
     }
 
-    fun isPinEnabled(): Boolean = prefs.getBoolean(KEY_PIN_ENABLED, false)
-    fun setPinEnabled(enabled: Boolean) = prefs.edit { putBoolean(KEY_PIN_ENABLED, enabled) }
-
-    fun isBiometricsEnabled(): Boolean = prefs.getBoolean(KEY_BIOMETRICS_ENABLED, false)
-    fun setBiometricsEnabled(enabled: Boolean) = prefs.edit {
-        putBoolean(
-            KEY_BIOMETRICS_ENABLED,
-            enabled
-        )
+    // Helper to read/write encrypted values
+    private suspend fun putEncryptedString(key: String, value: String?) {
+        dataStore.edit { prefs ->
+            if (value == null) {
+                prefs.remove(stringPreferencesKey(key))
+            } else {
+                val encrypted = aead.encrypt(value.toByteArray(), null)
+                prefs[stringPreferencesKey(key)] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
+            }
+        }
     }
 
-    fun hasPin(): Boolean = prefs.contains(KEY_PIN_HASH)
+    private suspend fun getEncryptedString(key: String): String? {
+        val encryptedBase64 = dataStore.data.first()[stringPreferencesKey(key)]
+        return if (encryptedBase64 == null) null
+        else {
+            val decrypted = aead.decrypt(android.util.Base64.decode(encryptedBase64, android.util.Base64.DEFAULT), null)
+            String(decrypted)
+        }
+    }
+
+    fun isPinEnabled(): Boolean {
+        return runBlocking { getEncryptedString(KEY_PIN_ENABLED) == "true" }
+    }
+    fun setPinEnabled(enabled: Boolean) {
+        runBlocking { putEncryptedString(KEY_PIN_ENABLED, enabled.toString()) }
+    }
+
+    fun isBiometricsEnabled(): Boolean {
+        return runBlocking { getEncryptedString(KEY_BIOMETRICS_ENABLED) == "true" }
+    }
+
+    fun setBiometricsEnabled(enabled: Boolean) {
+        runBlocking { putEncryptedString(KEY_BIOMETRICS_ENABLED, enabled.toString()) }
+    }
+
+    fun hasPin(): Boolean {
+        return runBlocking { getEncryptedString(KEY_PIN_HASH) != null }
+    }
 
     fun setPin(pin: String) {
         val salt = generateSaltHex()
         val hash = hashPinPbkdf2(pin, salt)
-        prefs.edit {
-            putString(KEY_PIN_HASH, hash)
-                .putString(KEY_PIN_SALT, salt)
-                .putInt(KEY_PIN_KDF_VERSION, PIN_KDF_VERSION_PBKDF2)
+        runBlocking {
+            putEncryptedString(KEY_PIN_HASH, hash)
+            putEncryptedString(KEY_PIN_SALT, salt)
+            putEncryptedString(KEY_PIN_KDF_VERSION, PIN_KDF_VERSION_PBKDF2.toString())
         }
     }
 
     fun verifyPin(pin: String): Boolean {
-        val hash = prefs.getString(KEY_PIN_HASH, null) ?: return false
-        val salt = prefs.getString(KEY_PIN_SALT, null) ?: return false
-        val version = prefs.getInt(KEY_PIN_KDF_VERSION, 1)
+        val hash = runBlocking { getEncryptedString(KEY_PIN_HASH) } ?: return false
+        val salt = runBlocking { getEncryptedString(KEY_PIN_SALT) } ?: return false
+        val version = runBlocking { getEncryptedString(KEY_PIN_KDF_VERSION) }?.toIntOrNull() ?: 1
 
         return if (version >= PIN_KDF_VERSION_PBKDF2) {
             hashPinPbkdf2(pin, salt) == hash
@@ -83,29 +121,34 @@ object AppLockManager {
     }
 
     fun clearPin() {
-        prefs.edit {
-            remove(KEY_PIN_HASH)
-                .remove(KEY_PIN_SALT)
-                .remove(KEY_PIN_KDF_VERSION)
+        runBlocking {
+            putEncryptedString(KEY_PIN_HASH, null)
+            putEncryptedString(KEY_PIN_SALT, null)
+            putEncryptedString(KEY_PIN_KDF_VERSION, null)
         }
     }
 
     fun unlock() {
         isUnlocked = true
-        prefs.edit { putLong(KEY_LAST_BACKGROUND_AT, 0L) }
+        runBlocking { putEncryptedString(KEY_LAST_BACKGROUND_AT, "0") }
     }
 
-    fun lock() { isUnlocked = false }
+    fun lock() {
+        isUnlocked = false
+    }
 
     fun markBackgrounded() {
-        prefs.edit { putLong(KEY_LAST_BACKGROUND_AT, System.currentTimeMillis()) }
+        runBlocking {
+            putEncryptedString(KEY_LAST_BACKGROUND_AT, System.currentTimeMillis().toString())
+        }
     }
 
     fun shouldRequireUnlock(graceMs: Long): Boolean {
         if (!isPinEnabled()) return false
         if (!isUnlocked) return true
 
-        val lastBg = prefs.getLong(KEY_LAST_BACKGROUND_AT, 0L)
+        val lastBgStr = runBlocking { getEncryptedString(KEY_LAST_BACKGROUND_AT) }
+        val lastBg = lastBgStr?.toLongOrNull() ?: 0L
         if (lastBg <= 0L) return false
 
         val elapsed = System.currentTimeMillis() - lastBg

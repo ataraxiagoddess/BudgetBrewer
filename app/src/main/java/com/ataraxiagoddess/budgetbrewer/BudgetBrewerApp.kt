@@ -21,7 +21,8 @@ import com.ataraxiagoddess.budgetbrewer.ui.month.MonthRolloverWorker
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
 import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.SyncHelper
-import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.annotations.SupabaseInternal
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
+    @OptIn(SupabaseInternal::class)
     override fun onCreate() {
         super<Application>.onCreate()
 

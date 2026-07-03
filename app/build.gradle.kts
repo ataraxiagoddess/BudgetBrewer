@@ -1,11 +1,12 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "com.ataraxiagoddess.budgetbrewer"
     compileSdk = 37
 
@@ -16,6 +17,8 @@ android {
         versionCode = 8
         versionName = "1.0.8"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("boolean", "OFFLINE_MODE", "true")
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -35,18 +38,10 @@ android {
         }
     }
 
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -54,11 +49,17 @@ android {
         buildConfig = true
     }
 
-    defaultConfig {
-        buildConfigField("boolean", "OFFLINE_MODE", "true")
-    }
-
     packaging { resources.excludes.add("org/threeten/bp/format/ChronologyText.properties") }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -80,6 +81,8 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.multiplatform.settings)
+    implementation(libs.kotlinx.atomicfu)
+    implementation(libs.kotlinx.datetime)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -116,6 +119,7 @@ dependencies {
     implementation(libs.dimezis.blurview)
 
     implementation(libs.androidx.biometric.ktx)
-    implementation(libs.androidx.security.crypto)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.google.tink.android)
     implementation(libs.androidx.lifecycle.process)
 }

@@ -91,7 +91,7 @@ class SyncManager(context: Context) {
                     updated_at = budget.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["budgets"].upsert(payload, onConflict = "id")
+                supabase.postgrest["budgets"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadBudget failed, queueing")
                 queueOperation("INSERT", "budgets", budget.id, userId)
@@ -119,7 +119,7 @@ class SyncManager(context: Context) {
                     updated_at = income.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["incomes"].upsert(payload, onConflict = "id")
+                supabase.postgrest["incomes"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadIncome failed, queueing")
                 queueOperation("INSERT", "incomes", income.id, userId)
@@ -143,7 +143,7 @@ class SyncManager(context: Context) {
                     updated_at = category.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["expense_categories"].upsert(payload, onConflict = "id")
+                supabase.postgrest["expense_categories"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadCategory failed, queueing")
                 queueOperation("INSERT", "expense_categories", category.id, userId)
@@ -181,7 +181,7 @@ class SyncManager(context: Context) {
                     updated_at = expense.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["expenses"].upsert(payload, onConflict = "id")
+                supabase.postgrest["expenses"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadExpense failed, queueing")
                 queueOperation("INSERT", "expenses", expense.id, userId)
@@ -206,7 +206,7 @@ class SyncManager(context: Context) {
                     updated_at = allocation.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["allocations"].upsert(payload, onConflict = "id")
+                supabase.postgrest["allocations"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadAllocation failed, queueing")
                 queueOperation("INSERT", "allocations", allocation.id, userId)
@@ -228,7 +228,7 @@ class SyncManager(context: Context) {
                     updated_at = item.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["daily_checklist"].upsert(payload, onConflict = "id")
+                supabase.postgrest["daily_checklist"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadDailyChecklist failed, queueing")
                 queueOperation("INSERT", "daily_checklist", item.id, userId)
@@ -254,7 +254,7 @@ class SyncManager(context: Context) {
                     updated_at = entry.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["spending_entries"].upsert(payload, onConflict = "id")
+                supabase.postgrest["spending_entries"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSpendingEntry failed, queueing")
                 queueOperation("INSERT", "spending_entries", entry.id, userId)
@@ -280,7 +280,7 @@ class SyncManager(context: Context) {
                     created_at = bucket.created_at,
                     updated_at = bucket.updated_at
                 )
-                supabase.postgrest["savings_buckets"].upsert(payload, onConflict = "id")
+                supabase.postgrest["savings_buckets"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsBucket failed, queueing")
                 queueOperation("INSERT", "savings_buckets", bucket.id, userId)
@@ -301,7 +301,7 @@ class SyncManager(context: Context) {
                     created_at = transaction.created_at,
                     updated_at = transaction.updated_at
                 )
-                supabase.postgrest["savings_transactions"].upsert(payload, onConflict = "id")
+                supabase.postgrest["savings_transactions"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsTransaction failed, queueing")
                 queueOperation("INSERT", "savings_transactions", transaction.id, userId)
@@ -326,7 +326,7 @@ class SyncManager(context: Context) {
                     updated_at = setting.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["month_settings"].upsert(payload, onConflict = "id")
+                supabase.postgrest["month_settings"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadMonthSettings failed, queueing")
                 queueOperation("INSERT", "month_settings", setting.id, userId)
@@ -349,7 +349,7 @@ class SyncManager(context: Context) {
                     updated_at = assignment.updatedAt,
                     user_id = userId
                 )
-                supabase.postgrest["daily_income_assignments"].upsert(payload, onConflict = "id")
+                supabase.postgrest["daily_income_assignments"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadDailyIncomeAssignment failed, queueing")
                 queueOperation("INSERT", "daily_income_assignments", assignment.id, userId)

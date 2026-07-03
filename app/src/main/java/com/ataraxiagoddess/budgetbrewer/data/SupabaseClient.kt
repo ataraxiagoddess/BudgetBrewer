@@ -1,12 +1,9 @@
 package com.ataraxiagoddess.budgetbrewer.data
 
 import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
-import com.russhwolf.settings.SharedPreferencesSettings
 import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.gotrue.Auth
-import io.github.jan.supabase.gotrue.SettingsSessionManager
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.postgrest.Postgrest
 
 object SupabaseClient {
@@ -17,19 +14,7 @@ object SupabaseClient {
         private set
 
     fun initialize(context: Context) {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val encryptedPrefs = EncryptedSharedPreferences.create(
-            context,
-            "supabase_auth",
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        val settings = SharedPreferencesSettings(delegate = encryptedPrefs)
+        val encryptedSettings = EncryptedDataStoreSettings.getInstance(context, "supabase_auth")
 
         client = createSupabaseClient(
             supabaseUrl = SUPABASE_URL,
@@ -37,7 +22,7 @@ object SupabaseClient {
         ) {
             install(Postgrest)
             install(Auth) {
-                sessionManager = SettingsSessionManager(settings)
+                sessionManager = SettingsSessionManager(encryptedSettings)
             }
         }
     }
