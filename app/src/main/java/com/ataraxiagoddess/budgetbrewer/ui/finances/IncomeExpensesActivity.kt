@@ -1570,7 +1570,9 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     // ==================== CATEGORIES UI ====================
 
     private fun updateCategoriesUI(categories: List<ExpenseCategory>, expenses: List<Expense> = emptyList()) {
+        // Guard: if nothing changed and adapter exists, skip entirely
         if (categoriesList == categories && expensesList == expenses && binding.categoriesRecyclerView.adapter != null) return
+        val categoriesChanged = categoriesList != categories
         categoriesList = categories
         expensesList = expenses
 
@@ -1595,10 +1597,21 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             binding.tvSwipeHint.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
 
-        binding.categoriesRecyclerView.visibility = View.INVISIBLE
+        // Fast path: only expenses changed, reuse the adapter
+        if (!categoriesChanged && binding.categoriesRecyclerView.adapter is CategoryAdapter) {
+            val adapter = binding.categoriesRecyclerView.adapter as CategoryAdapter
+            val state = viewModel.uiState.value as? IncomeExpensesUiState.Success
+            if (state != null) {
+                adapter.updateData(categories, state.expenses)
+            }
+            return
+        }
+
+        // Full rebuild path: categories changed (or first load)
+        binding.categoriesRecyclerView.visibility = View.VISIBLE
 
         val state = viewModel.uiState.value as? IncomeExpensesUiState.Success ?: return
-        val expenses = state.expenses
+        val stateExpenses = state.expenses
 
         val isTablet = resources.getBoolean(R.bool.is_tablet)
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -1612,30 +1625,24 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
         if (isTablet) {
             if (isLandscape) {
-                // Tablet landscape: use fixed width from dimension
                 contentWidth = resources.getDimensionPixelSize(R.dimen.category_card_width_land)
                 halfMargin = gap / 2
             } else {
-                // Tablet portrait: use percentage of screen width
                 val desiredCardWidthFactor = 0.8f
                 val availableWidth = screenWidth - horizontalPadding - gap
                 contentWidth = (availableWidth * desiredCardWidthFactor).toInt()
                 halfMargin = gap / 2
             }
-            // Always use horizontal LinearLayoutManager for tablets (no grid)
             binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
             binding.categoriesRecyclerView.isNestedScrollingEnabled = false
         } else {
-            // Phone
             if (isLandscape) {
-                // Phone landscape: use fixed width from dimension
                 val availableWidth = screenWidth - horizontalPadding - gap
                 contentWidth = (availableWidth * 0.40f).toInt().coerceAtMost(
                     resources.getDimensionPixelSize(R.dimen.category_card_width_land)
                 )
                 halfMargin = gap / 2
             } else {
-                // Phone portrait: original calculation
                 val extraReduction = resources.getDimensionPixelSize(R.dimen.card_width_reduction)
                 contentWidth = screenWidth - horizontalPadding - extraReduction - gap
                 halfMargin = gap / 2
@@ -1657,16 +1664,16 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         // Create adapter (always infinite scrolling, so isGrid = false)
         val adapter = CategoryAdapter(
             categories = categories,
-            allExpenses = expenses,
+            allExpenses = stateExpenses,
             contentWidth = contentWidth,
             halfMargin = halfMargin,
             isGrid = false,
             onEditCategory = { category -> showEditCategoryDialog(category) },
             onDeleteCategory = { category -> showDeleteCategoryDialog(category) },
             onAddExpense = { category ->
-                val state = viewModel.uiState.value
-                if (state is IncomeExpensesUiState.Success) {
-                    val expensesForCategory = state.expenses.filter { it.categoryId == category.id }
+                val innerState = viewModel.uiState.value
+                if (innerState is IncomeExpensesUiState.Success) {
+                    val expensesForCategory = innerState.expenses.filter { it.categoryId == category.id }
                     if (expensesForCategory.size >= Constants.MAX_EXPENSES_PER_CATEGORY) {
                         showSnackbar(getString(R.string.max_expenses_per_category_reached, Constants.MAX_EXPENSES_PER_CATEGORY))
                     } else {
@@ -1695,11 +1702,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 val itemTotalWidth = contentWidth + (halfMargin * 2)
                 val targetOffset = (contentAreaWidth - itemTotalWidth) / 2
                 layoutManager.scrollToPositionWithOffset(startPosition, targetOffset)
-
-                binding.categoriesRecyclerView.visibility = View.VISIBLE
             }
-        } else {
-            binding.categoriesRecyclerView.visibility = View.VISIBLE
         }
     }
 }

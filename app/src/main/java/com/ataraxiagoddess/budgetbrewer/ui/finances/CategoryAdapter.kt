@@ -21,8 +21,8 @@ import java.text.DateFormat
 import java.util.Date
 
 class CategoryAdapter(
-    private val categories: List<ExpenseCategory>,
-    private val allExpenses: List<Expense>,
+    var categories: List<ExpenseCategory>,
+    var allExpenses: List<Expense>,
     private val contentWidth: Int,
     private val halfMargin: Int,
     private val isGrid: Boolean = false,
@@ -32,6 +32,22 @@ class CategoryAdapter(
     private val onEditExpense: (Expense) -> Unit,
     private val onDeleteExpense: (Expense) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+
+    fun updateData(categories: List<ExpenseCategory>, expenses: List<Expense>) {
+        this.categories = categories
+        this.allExpenses = expenses
+        if (isGrid) {
+            notifyItemRangeChanged(0, categories.size)
+        } else {
+            // Infinite scroll: notify a range that covers the visible window
+            // (typically centered at Int.MAX_VALUE/2, with PagerSnapHelper showing 1-3 items)
+            val center = Int.MAX_VALUE / 2
+            val range = categories.size * 10
+            val start = (center - range).coerceAtLeast(0)
+            val end = (center + range).coerceAtMost(Int.MAX_VALUE - 1)
+            notifyItemRangeChanged(start, end - start + 1)
+        }
+    }
 
     override fun getItemCount(): Int = if (isGrid) categories.size else Int.MAX_VALUE
 
