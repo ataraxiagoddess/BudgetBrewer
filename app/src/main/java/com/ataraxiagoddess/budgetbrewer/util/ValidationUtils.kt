@@ -13,7 +13,7 @@ object ValidationUtils {
 
     // --- Financial Limits ---
     const val MAX_AMOUNT = 1_000_000_000.0 // 1 Billion
-    const val MAX_RECURRENCE_DAYS = 365
+    const val MAX_RECURRENCE_DAYS = 366
 
     // --- Sanitization ---
     /**
@@ -40,7 +40,7 @@ object ValidationUtils {
     }
 
     fun isValidRecurrenceDays(days: Int): Boolean {
-        return days in 1..MAX_RECURRENCE_DAYS
+        return days in 5..MAX_RECURRENCE_DAYS
     }
 
     // --- InputFilters for EditTexts ---

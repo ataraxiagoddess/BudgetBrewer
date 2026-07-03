@@ -501,7 +501,7 @@
     <string name="amount_must_be_greater_than_zero">Amount must be greater than zero</string>
     <string name="amount_exceeds_maximum_allowed">Exceeds maximum allowed</string>
     <string name="amount_exceeds_balance">Amount exceeds remaining balance</string>
-    <string name="recurrence_exceeds_maximum">Cannot exceed 365 days</string>
+    <string name="recurrence_exceeds_maximum">Must be between 5 and 366 days</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
 

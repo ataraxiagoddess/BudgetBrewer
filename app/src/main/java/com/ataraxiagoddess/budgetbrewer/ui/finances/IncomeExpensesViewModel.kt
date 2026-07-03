@@ -54,6 +54,17 @@ class IncomeExpensesViewModel(
         loadData()
     }
 
+    /** Normalize a timestamp to midnight (00:00:00.000) for date-only comparisons. */
+    private fun normalizeToMidnight(timestamp: Long): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = timestamp
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
     fun updateMonth(month: Month) {
         viewModelScope.launch {
             // Clear selected pay frequency so new month's settings take precedence
@@ -456,23 +467,61 @@ class IncomeExpensesViewModel(
         recurrenceInterval: Int? = null
     ) {
         safeLaunch(R.string.error_add_expense) {
-            val expense = Expense(
+            val now = System.currentTimeMillis()
+            val master = Expense(
                 categoryId = categoryId,
                 description = description,
                 amount = amount,
                 dueDate = dueDate,
                 recurrenceType = recurrenceType,
-                recurrenceInterval = recurrenceInterval
+                recurrenceInterval = recurrenceInterval,
+                createdAt = now,
+                updatedAt = now
             )
-            repository.insertExpense(expense)
-            ensureChecklistItemForExpense(expense)
+            repository.insertExpense(master)
+            ensureChecklistItemForExpense(master)
+
             val userId = AuthManager.getUserId(appContext)
+
+            // Generate children for EVERY_X_DAYS within the current month
+            if (recurrenceType == RecurrenceType.EVERY_X_DAYS && recurrenceInterval != null) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    val dates = repository.generateOccurrenceDatesInMonth(
+                        baseDate = dueDate,
+                        intervalDays = recurrenceInterval,
+                        targetMonth = budget.month,
+                        targetYear = budget.year
+                    )
+                    val masterDueDate = normalizeToMidnight(dueDate)
+                    for (date in dates) {
+                        if (date == masterDueDate) continue // master already inserted
+                        val child = Expense(
+                            categoryId = categoryId,
+                            description = description,
+                            amount = amount,
+                            dueDate = date,
+                            recurrenceType = recurrenceType,
+                            recurrenceInterval = recurrenceInterval,
+                            sourceExpenseId = master.id,
+                            createdAt = now,
+                            updatedAt = now
+                        )
+                        repository.insertExpense(child)
+                        ensureChecklistItemForExpense(child)
+                        if (userId != null) {
+                            SyncManager(appContext).uploadExpense(child, userId)
+                        }
+                    }
+                }
+            }
+
             if (userId != null) {
                 val budget = repository.getBudgetById(budgetId)
                 if (budget != null) {
                     SyncManager(appContext).uploadBudget(budget, userId)
                 }
-                SyncManager(appContext).uploadExpense(expense, userId)
+                SyncManager(appContext).uploadExpense(master, userId)
             }
             emitSuccess(UiEvent.ExpenseAdded)
             refreshExpenses()
@@ -481,15 +530,79 @@ class IncomeExpensesViewModel(
 
     fun updateExpense(expense: Expense) {
         safeLaunch(R.string.error_update_expense) {
+            val now = System.currentTimeMillis()
             val updated = expense.copy(
-                updatedAt = System.currentTimeMillis(),
-                isOverridden = expense.sourceExpenseId != null
+                updatedAt = now,
+                isOverridden = expense.sourceExpenseId != null || expense.isOverridden
             )
-            repository.updateExpense(updated) // FIXED
+            repository.updateExpense(updated)
+
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadExpense(updated, userId)
             }
+
+            // EVERY_X_DAYS same-month cascade: update future children in the same month
+            if (expense.recurrenceType == RecurrenceType.EVERY_X_DAYS) {
+                val budget = repository.getBudgetById(budgetId)
+                if (budget != null) {
+                    val masterId = expense.sourceExpenseId ?: expense.id
+                    val allExpenses = repository.getExpensesForBudget(budgetId).first()
+                    val sameMonthChildren = allExpenses.filter {
+                        it.sourceExpenseId == masterId &&
+                                it.id != expense.id &&
+                                it.recurrenceType == RecurrenceType.EVERY_X_DAYS
+                    }
+
+                    // Delete children that come after the edited expense in the same month
+                    for (child in sameMonthChildren) {
+                        if (child.dueDate > expense.dueDate) {
+                            val deletedChecklistId = repository.deleteExpense(child)
+                            if (userId != null) {
+                                SyncManager(appContext).deleteExpense(child.id, userId)
+                                if (deletedChecklistId != null) {
+                                    SyncManager(appContext).deleteDailyChecklistItem(deletedChecklistId, userId)
+                                }
+                            }
+                        }
+                    }
+
+                    // Generate new forward dates from the edited expense's due date
+                    val cal = Calendar.getInstance().apply { timeInMillis = expense.dueDate }
+                    val month = cal.get(Calendar.MONTH) + 1
+                    val year = cal.get(Calendar.YEAR)
+
+                    val newDates = repository.generateOccurrenceDatesInMonth(
+                        baseDate = expense.dueDate,
+                        intervalDays = expense.recurrenceInterval ?: 30,
+                        targetMonth = month,
+                        targetYear = year
+                    )
+
+                    // Create new children (skip the edited expense's own date)
+                    val editedDueDate = normalizeToMidnight(expense.dueDate)
+                    for (date in newDates) {
+                        if (date == editedDueDate) continue
+                        val child = Expense(
+                            categoryId = expense.categoryId,
+                            description = expense.description,
+                            amount = expense.amount,
+                            dueDate = date,
+                            recurrenceType = expense.recurrenceType,
+                            recurrenceInterval = expense.recurrenceInterval,
+                            sourceExpenseId = masterId,
+                            createdAt = now,
+                            updatedAt = now
+                        )
+                        repository.insertExpense(child)
+                        ensureChecklistItemForExpense(child)
+                        if (userId != null) {
+                            SyncManager(appContext).uploadExpense(child, userId)
+                        }
+                    }
+                }
+            }
+
             emitSuccess(UiEvent.ExpenseUpdated)
             refreshExpenses()
         }
