@@ -88,8 +88,8 @@ data class SpendingEntryPayload(
     val date: Long,
     val source: String,
     val amount: Double,
-    val tag: String? = null,
-    val note: String? = null,
+    val tag: String?,
+    val note: String?,
     val created_at: Long,
     val updated_at: Long,
     val user_id: String

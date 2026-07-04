@@ -133,7 +133,7 @@ class SavingsActivity : BaseActivity() {
                         binding.fabAddBucket.backgroundTintList = if (state.maxBucketsReached) {
                             ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.text_disabled))
                         } else {
-                            ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.focus_highlight))
+                            ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.btn_on_main))
                         }
                     }
                     is SavingsUiState.Error -> {

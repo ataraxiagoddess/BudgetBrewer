@@ -389,7 +389,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                         amount = newAmount,
                         date = newDate,
                         tag = newTag,
-                        note = newNote
+                        note = newNote,
+                        updatedAt = System.currentTimeMillis()
                     )
                     viewModel.updateEntry(updatedEntry)
                     dialog.dismiss()

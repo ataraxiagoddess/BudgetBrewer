@@ -54,7 +54,6 @@ class IncomeExpensesViewModel(
         loadData()
     }
 
-    /** Normalize a timestamp to midnight (00:00:00.000) for date-only comparisons. */
     private fun normalizeToMidnight(timestamp: Long): Long {
         return Calendar.getInstance().apply {
             timeInMillis = timestamp
@@ -65,9 +64,10 @@ class IncomeExpensesViewModel(
         }.timeInMillis
     }
 
+    // ---------- Public API ----------
+
     fun updateMonth(month: Month) {
         viewModelScope.launch {
-            // Clear selected pay frequency so new month's settings take precedence
             _selectedPayFrequency.value = null
             val (newBudgetId, wasCreated) = repository.getOrCreateBudgetChain(month.month, month.year)
             budgetId = newBudgetId
@@ -79,13 +79,10 @@ class IncomeExpensesViewModel(
                 SyncManager(appContext).uploadBudget(budget, userId)
             }
 
-            // Only propagate if the budget already existed (not newly created)
             if (!wasCreated) {
                 val previousBudget = repository.findPreviousBudget(month.month, month.year)
                 if (previousBudget != null) {
                     repository.propagateRecurringExpenses(previousBudget.id, budgetId)
-
-                    // Sync all newly propagated expenses and checklist items
                     if (userId != null) {
                         val expenses = repository.getExpensesForBudget(budgetId).first()
                         expenses.forEach { expense ->
@@ -98,48 +95,24 @@ class IncomeExpensesViewModel(
                     }
                 }
             }
-
             loadData()
         }
     }
 
-    private fun loadData() {
-        viewModelScope.launch {
-            _uiState.value = IncomeExpensesUiState.Loading
-            try {
-                val budget = repository.getBudgetById(budgetId)
-                val userId = AuthManager.getUserId(appContext)
-                if (budget != null && userId != null) {
-                    SyncManager(appContext).uploadBudget(budget, userId)
-                }
-                val incomes = repository.getIncomesForBudget(budgetId).first()
-                val categories = repository.getCategoriesForBudget(budgetId).first()
-                val expenses = repository.getExpensesForBudget(budgetId).first()
-                val allocation = repository.getAllocationForBudget(budgetId).first()
-                val settings = repository.getMonthSettings(budgetId).first()
-                _tipsList.value = incomes.filter { it.isTips }.sortedBy { it.tipsOrder ?: 0 }
-                _allocation.value = allocation
-                _monthSettings.value = settings
-                _uiState.value = IncomeExpensesUiState.Success(incomes, categories, expenses)
-            } catch (e: Exception) {
-                _uiState.value = IncomeExpensesUiState.Error("Failed to load data: ${e.message}")
-                emitError(R.string.error_load_data, e)
-            }
-        }
+    fun refreshData() {
+        loadData()
     }
 
-    // Allocation Actions
+    // ---------- Allocation ----------
+
     fun setSavingsAllocation(amount: Double) {
         safeLaunch(R.string.error_save_allocation) {
-            // Check conflict: cannot reduce below already distributed total
             val distributedTotal = repository.getTotalDistributedToBuckets()
             if (amount < distributedTotal) {
                 emitError(
                     R.string.savings_allocation_conflict,
                     Exception("Requested $amount but distributed $distributedTotal")
                 )
-                // Also emit a detailed event so the Activity can show a dialog
-                // Using a specific event
                 _event.emit(UiEvent.SavingsAllocationConflict(amount, distributedTotal))
                 return@safeLaunch
             }
@@ -212,7 +185,6 @@ class IncomeExpensesViewModel(
             if (current != null) {
                 val updated = current.copy(savingsAmount = 0.0)
                 val userId = AuthManager.getUserId(appContext)
-
                 if (updated.savingsAmount == 0.0 && updated.spendingAmount == 0.0) {
                     repository.deleteAllocation(updated)
                     if (userId != null) {
@@ -235,7 +207,6 @@ class IncomeExpensesViewModel(
             if (current != null) {
                 val updated = current.copy(spendingAmount = 0.0)
                 val userId = AuthManager.getUserId(appContext)
-
                 if (updated.savingsAmount == 0.0 && updated.spendingAmount == 0.0) {
                     repository.deleteAllocation(updated)
                     if (userId != null) {
@@ -263,7 +234,8 @@ class IncomeExpensesViewModel(
         }
     }
 
-    // Income Actions
+    // ---------- Income ----------
+
     fun deleteIncomesNotOfFrequency(frequency: Frequency) {
         viewModelScope.launch {
             val currentState = _uiState.value
@@ -298,9 +270,7 @@ class IncomeExpensesViewModel(
                 weekNumber = weekNumber
             )
             repository.insertIncome(income)
-            // Sync after insert
             val userId = AuthManager.getUserId(appContext)
-            Timber.d("addIncome: userId = $userId")
             if (userId != null) {
                 val budget = repository.getBudgetById(budgetId)
                 if (budget != null) {
@@ -316,7 +286,7 @@ class IncomeExpensesViewModel(
     fun updateIncome(income: Income) {
         safeLaunch(R.string.error_update_income) {
             val updated = income.copy(updatedAt = System.currentTimeMillis())
-            repository.updateIncome(updated) // FIXED
+            repository.updateIncome(updated)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadIncome(updated, userId)
@@ -338,7 +308,8 @@ class IncomeExpensesViewModel(
         }
     }
 
-    // Tip Actions
+    // ---------- Tips ----------
+
     fun addTip(sourceName: String, amount: Double, tipsOrder: Int, currency: String? = null) {
         safeLaunch(R.string.error_add_tip) {
             val tip = Income(
@@ -367,7 +338,7 @@ class IncomeExpensesViewModel(
     fun updateTip(tip: Income) {
         safeLaunch(R.string.error_update_tip) {
             val updated = tip.copy(updatedAt = System.currentTimeMillis())
-            repository.updateIncome(updated) // FIXED
+            repository.updateIncome(updated)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadIncome(updated, userId)
@@ -389,7 +360,8 @@ class IncomeExpensesViewModel(
         }
     }
 
-    // Category Actions
+    // ---------- Categories ----------
+
     fun addCategory(name: String) {
         safeLaunch(R.string.error_add_category) {
             val currentCategories = (uiState.value as? IncomeExpensesUiState.Success)?.categories ?: emptyList()
@@ -418,7 +390,7 @@ class IncomeExpensesViewModel(
     fun updateCategory(category: ExpenseCategory) {
         safeLaunch(R.string.error_update_category) {
             val updated = category.copy(updatedAt = System.currentTimeMillis())
-            repository.updateCategory(updated) // FIXED
+            repository.updateCategory(updated)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadCategory(updated, userId)
@@ -440,6 +412,8 @@ class IncomeExpensesViewModel(
         }
     }
 
+    // ---------- Expenses ----------
+
     private suspend fun ensureChecklistItemForExpense(expense: Expense) {
         val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
         val existing = repository.getChecklistItem(budgetId, day)
@@ -457,7 +431,6 @@ class IncomeExpensesViewModel(
         }
     }
 
-    // Expense Actions
     fun addExpense(
         categoryId: String,
         description: String,
@@ -483,7 +456,6 @@ class IncomeExpensesViewModel(
 
             val userId = AuthManager.getUserId(appContext)
 
-            // Generate children for EVERY_X_DAYS within the current month
             if (recurrenceType == RecurrenceType.EVERY_X_DAYS && recurrenceInterval != null) {
                 val budget = repository.getBudgetById(budgetId)
                 if (budget != null) {
@@ -495,7 +467,7 @@ class IncomeExpensesViewModel(
                     )
                     val masterDueDate = normalizeToMidnight(dueDate)
                     for (date in dates) {
-                        if (date == masterDueDate) continue // master already inserted
+                        if (date == masterDueDate) continue
                         val child = Expense(
                             categoryId = categoryId,
                             description = description,
@@ -531,18 +503,44 @@ class IncomeExpensesViewModel(
     fun updateExpense(expense: Expense) {
         safeLaunch(R.string.error_update_expense) {
             val now = System.currentTimeMillis()
+            val userId = AuthManager.getUserId(appContext)
+
+            val originalExpense = repository.getExpensesForBudget(budgetId).first()
+                .find { it.id == expense.id }
+            val originalDueDate = originalExpense?.dueDate
+
             val updated = expense.copy(
                 updatedAt = now,
                 isOverridden = expense.sourceExpenseId != null || expense.isOverridden
             )
             repository.updateExpense(updated)
 
-            val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).uploadExpense(updated, userId)
             }
 
-            // EVERY_X_DAYS same-month cascade: update future children in the same month
+            // Handle checklist changes when due date shifts
+            if (originalDueDate != null && originalDueDate != expense.dueDate) {
+                val oldDay = Calendar.getInstance().apply { timeInMillis = originalDueDate }.get(Calendar.DAY_OF_MONTH)
+
+                val remainingOnOldDay = repository.getExpensesForBudget(budgetId).first()
+                    .any {
+                        Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH) == oldDay
+                                && it.id != expense.id
+                    }
+                if (!remainingOnOldDay) {
+                    val oldChecklistItem = repository.getChecklistItem(budgetId, oldDay)
+                    if (oldChecklistItem != null) {
+                        repository.deleteChecklistItem(oldChecklistItem)
+                        if (userId != null) {
+                            SyncManager(appContext).deleteDailyChecklistItem(oldChecklistItem.id, userId)
+                        }
+                    }
+                }
+                ensureChecklistItemForExpense(expense)
+            }
+
+            // Handle EVERY_X_DAYS cascade
             if (expense.recurrenceType == RecurrenceType.EVERY_X_DAYS) {
                 val budget = repository.getBudgetById(budgetId)
                 if (budget != null) {
@@ -579,7 +577,6 @@ class IncomeExpensesViewModel(
                         targetYear = year
                     )
 
-                    // Create new children (skip the edited expense's own date)
                     val editedDueDate = normalizeToMidnight(expense.dueDate)
                     for (date in newDates) {
                         if (date == editedDueDate) continue
@@ -610,7 +607,7 @@ class IncomeExpensesViewModel(
 
     fun deleteExpense(expense: Expense) {
         safeLaunch(R.string.error_delete_expense) {
-            val deletedChecklistId = repository.deleteExpense(expense) // returns ID if a checklist item was deleted
+            val deletedChecklistId = repository.deleteExpense(expense)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
                 SyncManager(appContext).deleteExpense(expense.id, userId)
@@ -623,7 +620,48 @@ class IncomeExpensesViewModel(
         }
     }
 
-    // Refresh helpers
+    // ---------- Settings ----------
+
+    fun updateTipsEnabled(enabled: Boolean) {
+        safeLaunch(R.string.error_update_settings) {
+            val current = _monthSettings.value ?: return@safeLaunch
+            val updated = current.copy(
+                tipsEnabled = enabled,
+                updatedAt = System.currentTimeMillis()
+            )
+            repository.insertOrUpdateMonthSettings(updated)
+            _monthSettings.value = updated
+
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadMonthSetting(updated, userId)
+            }
+        }
+    }
+
+    fun setSelectedPayFrequency(frequency: Frequency) {
+        _selectedPayFrequency.value = frequency
+    }
+
+    fun updatePayFrequency(frequency: Frequency) {
+        safeLaunch(R.string.error_update_settings) {
+            val current = _monthSettings.value ?: return@safeLaunch
+            val updated = current.copy(
+                payFrequency = frequency.name,
+                updatedAt = System.currentTimeMillis()
+            )
+            repository.insertOrUpdateMonthSettings(updated)
+            _monthSettings.value = updated
+
+            val userId = AuthManager.getUserId(appContext)
+            if (userId != null) {
+                SyncManager(appContext).uploadMonthSetting(updated, userId)
+            }
+        }
+    }
+
+    // ---------- Private Refresh Helpers ----------
+
     private suspend fun refreshIncomes() {
         try {
             val incomes = repository.getIncomesForBudget(budgetId).first()
@@ -664,44 +702,27 @@ class IncomeExpensesViewModel(
         }
     }
 
-    fun refreshData() {
-        loadData()
-    }
-
-    fun updateTipsEnabled(enabled: Boolean) {
-        safeLaunch(R.string.error_update_settings) {
-            val current = _monthSettings.value ?: return@safeLaunch
-            val updated = current.copy(
-                tipsEnabled = enabled,
-                updatedAt = System.currentTimeMillis()
-            )
-            repository.insertOrUpdateMonthSettings(updated)
-            _monthSettings.value = updated
-            
-            val userId = AuthManager.getUserId(appContext)
-            if (userId != null) {
-                SyncManager(appContext).uploadMonthSetting(updated, userId)
-            }
-        }
-    }
-
-    fun setSelectedPayFrequency(frequency: Frequency) {
-        _selectedPayFrequency.value = frequency
-    }
-
-    fun updatePayFrequency(frequency: Frequency) {
-        safeLaunch(R.string.error_update_settings) {
-            val current = _monthSettings.value ?: return@safeLaunch
-            val updated = current.copy(
-                payFrequency = frequency.name,
-                updatedAt = System.currentTimeMillis()
-            )
-            repository.insertOrUpdateMonthSettings(updated)
-            _monthSettings.value = updated
-            
-            val userId = AuthManager.getUserId(appContext)
-            if (userId != null) {
-                SyncManager(appContext).uploadMonthSetting(updated, userId)
+    private fun loadData() {
+        viewModelScope.launch {
+            _uiState.value = IncomeExpensesUiState.Loading
+            try {
+                val budget = repository.getBudgetById(budgetId)
+                val userId = AuthManager.getUserId(appContext)
+                if (budget != null && userId != null) {
+                    SyncManager(appContext).uploadBudget(budget, userId)
+                }
+                val incomes = repository.getIncomesForBudget(budgetId).first()
+                val categories = repository.getCategoriesForBudget(budgetId).first()
+                val expenses = repository.getExpensesForBudget(budgetId).first()
+                val allocation = repository.getAllocationForBudget(budgetId).first()
+                val settings = repository.getMonthSettings(budgetId).first()
+                _tipsList.value = incomes.filter { it.isTips }.sortedBy { it.tipsOrder ?: 0 }
+                _allocation.value = allocation
+                _monthSettings.value = settings
+                _uiState.value = IncomeExpensesUiState.Success(incomes, categories, expenses)
+            } catch (e: Exception) {
+                _uiState.value = IncomeExpensesUiState.Error("Failed to load data: ${e.message}")
+                emitError(R.string.error_load_data, e)
             }
         }
     }

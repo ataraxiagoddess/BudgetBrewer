@@ -13,6 +13,7 @@ import java.util.UUID
 class BudgetRepository(private val db: AppDatabase) {
 
     private val budgetChainMutex = Mutex()
+    private val propagateMutex = Mutex()
 
     // --- Budget ---
     suspend fun insertBudget(budget: Budget) = db.budgetDao().insert(budget)
@@ -37,18 +38,11 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertExpense(expense: Expense) = db.expenseDao().insert(expense)
     suspend fun updateExpense(expense: Expense) = db.expenseDao().update(expense)
     suspend fun deleteExpense(expense: Expense): String? {
-        // 1. Delete the expense
         db.expenseDao().delete(expense)
-
-        // 2. Get the category to find budgetId
         val category = db.expenseCategoryDao().getCategoryById(expense.categoryId) ?: return null
         val day = getDayOfMonth(expense.dueDate)
-
-        // 3. Check if any other expenses exist for this budget on this day
         val remainingExpenses = db.expenseDao().getExpensesForBudget(category.budgetId).first()
             .any { getDayOfMonth(it.dueDate) == day && it.id != expense.id }
-
-        // 4. If no other expenses on this day, delete the checklist item
         if (!remainingExpenses) {
             val checklistItem = db.dailyChecklistDao().getChecklistItem(category.budgetId, day)
             if (checklistItem != null) {
@@ -80,6 +74,10 @@ class BudgetRepository(private val db: AppDatabase) {
 
     suspend fun insertChecklistItem(item: DailyChecklist) {
         db.dailyChecklistDao().insert(item)
+    }
+
+    suspend fun deleteChecklistItem(item: DailyChecklist) {
+        db.dailyChecklistDao().delete(item)
     }
 
     private suspend fun ensureChecklistItem(budgetId: String, dayOfMonth: Int) {
@@ -140,8 +138,6 @@ class BudgetRepository(private val db: AppDatabase) {
             type = if (amount >= 0) SavingsTransactionType.ALLOCATION else SavingsTransactionType.DEDUCTION
         )
         db.savingsTransactionDao().insert(transaction)
-
-        // Update current_amount on the bucket
         val total = db.savingsTransactionDao().getTotalForBucket(bucket.id)
         val updatedBucket = bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
         db.savingsBucketDao().update(updatedBucket)
@@ -152,15 +148,10 @@ class BudgetRepository(private val db: AppDatabase) {
         db.savingsBucketDao().update(bucket)
 
     suspend fun deleteSavingsBucket(bucket: SavingsBucket) {
-        // Manual cascade delete of transactions first
         db.savingsTransactionDao().deleteByBucketId(bucket.id)
         db.savingsBucketDao().delete(bucket)
     }
 
-    /**
-     * Total amount distributed to all savings buckets.
-     * (This is the sum of all savings transactions – allocations are positive, deductions negative.)
-     */
     suspend fun getTotalDistributedToBuckets(): Double {
         return db.savingsTransactionDao().getAllTransactionsSync().sumOf { it.amount }
     }
@@ -188,10 +179,8 @@ class BudgetRepository(private val db: AppDatabase) {
         val updated = transaction.copy(
             amount = newAmount,
             updated_at = System.currentTimeMillis()
-            )
+        )
         db.savingsTransactionDao().updateTransaction(updated)
-
-        // Recalculate current_amount for the bucket
         val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
         val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
         db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
@@ -199,7 +188,6 @@ class BudgetRepository(private val db: AppDatabase) {
 
     suspend fun deleteTransaction(transaction: SavingsTransaction) {
         db.savingsTransactionDao().deleteTransactionById(transaction.id)
-
         val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
         val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
         db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
@@ -208,7 +196,7 @@ class BudgetRepository(private val db: AppDatabase) {
     fun getAvailableSavingsPool(): Flow<Double> {
         return combine(
             db.allocationDao().getAllAllocations(),
-            db.savingsTransactionDao().getAllTransactions()   // we need a Flow version
+            db.savingsTransactionDao().getAllTransactions()
         ) { allocations, transactions ->
             val totalAllocated = allocations.sumOf { it.savingsAmount }
             val totalDistributed = transactions
@@ -232,7 +220,6 @@ class BudgetRepository(private val db: AppDatabase) {
 
     // --- Month Settings ---
     suspend fun getMonthEndAmount(budgetId: String): Double {
-        // Fetch all necessary data
         val incomes = db.incomeDao().getIncomesForBudget(budgetId).first()
         val expenses = db.expenseDao().getExpensesForBudget(budgetId).first()
         val spendingEntries = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first()
@@ -300,23 +287,20 @@ class BudgetRepository(private val db: AppDatabase) {
     fun getMonthSettings(budgetId: String): Flow<MonthSettings?> =
         db.monthSettingsDao().getSettingsForBudget(budgetId)
 
-    // Inside ensureMonthSettings(budgetId: String)
     suspend fun ensureMonthSettings(budgetId: String) {
         Timber.d("ensureMonthSettings called for budget $budgetId")
         val budget = db.budgetDao().getBudgetById(budgetId) ?: return
         val existing = db.monthSettingsDao().getSettingsForBudget(budgetId).first()
-        if (existing != null) return // already have settings
+        if (existing != null) return
 
-        // Compute month start amount = previous month's end amount
         val previousBudget = findPreviousBudget(budget.month, budget.year)
         val previousEnd = if (previousBudget != null) {
-            ensureMonthSettings(previousBudget.id) // recursively ensure previous has settings
-            getMonthEndAmount(previousBudget.id)   // <-- use new function
+            ensureMonthSettings(previousBudget.id)
+            getMonthEndAmount(previousBudget.id)
         } else {
-            0.0 // no previous budget (first month ever)
+            0.0
         }
 
-        // Insert the computed settings
         db.monthSettingsDao().insert(
             MonthSettings(
                 budgetId = budgetId,
@@ -330,17 +314,11 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun insertOrUpdateMonthSettings(settings: MonthSettings) =
         db.monthSettingsDao().insert(settings)
 
-    // Helper to get day of month
     private fun getDayOfMonth(timestamp: Long): Int {
         val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
         return cal.get(Calendar.DAY_OF_MONTH)
     }
 
-    /**
-     * Generate all occurrence dates in the target month based on the given base date and interval.
-     * The dates form an arithmetic progression: baseDate, baseDate + interval, baseDate + 2*interval, ...
-     * Returns all dates that fall within the target month.
-     */
     fun generateOccurrenceDatesInMonth(
         baseDate: Long,
         intervalDays: Int,
@@ -348,19 +326,16 @@ class BudgetRepository(private val db: AppDatabase) {
         targetYear: Int
     ): List<Long> {
         val dates = mutableListOf<Long>()
-
         val targetStart = Calendar.getInstance().apply {
             set(targetYear, targetMonth - 1, 1, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
-
         val targetEnd = Calendar.getInstance().apply {
             set(targetYear, targetMonth - 1, 1, 0, 0, 0)
             set(Calendar.MILLISECOND, 0)
             add(Calendar.MONTH, 1)
         }.timeInMillis
 
-        // Normalize baseDate to midnight
         val cal = Calendar.getInstance().apply {
             timeInMillis = baseDate
             set(Calendar.HOUR_OF_DAY, 0)
@@ -369,27 +344,18 @@ class BudgetRepository(private val db: AppDatabase) {
             set(Calendar.MILLISECOND, 0)
         }
 
-        // If baseDate is after the target month end, no occurrences
-        if (cal.timeInMillis >= targetEnd) {
-            return emptyList()
-        }
+        if (cal.timeInMillis >= targetEnd) return emptyList()
 
-        // Advance by interval until we reach or pass the target month start
         while (cal.timeInMillis < targetStart) {
             cal.add(Calendar.DAY_OF_MONTH, intervalDays)
         }
 
-        // If the first occurrence is after the target month end, no occurrences
-        if (cal.timeInMillis >= targetEnd) {
-            return emptyList()
-        }
+        if (cal.timeInMillis >= targetEnd) return emptyList()
 
-        // Collect all occurrences within the target month
         while (cal.timeInMillis < targetEnd) {
             dates.add(cal.timeInMillis)
             cal.add(Calendar.DAY_OF_MONTH, intervalDays)
         }
-
         return dates
     }
 
@@ -434,7 +400,7 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun findPreviousBudget(month: Int, year: Int): Budget? =
         db.budgetDao().findPreviousBudget(month, year)
 
-    private val propagateMutex = Mutex()
+    // ---------- CORRECTED propagateRecurringExpenses ----------
     suspend fun propagateRecurringExpenses(fromBudgetId: String, toBudgetId: String) = propagateMutex.withLock {
         // 1. Get source and target data
         val sourceCategories = db.expenseCategoryDao().getCategoriesForBudget(fromBudgetId).first()
@@ -485,6 +451,7 @@ class BudgetRepository(private val db: AppDatabase) {
             return cal.timeInMillis
         }
 
+        // Insert new monthly expenses
         for (key in monthlyKeysToInsert) {
             val sourceExpense = sourceMonthlyMap[key]!!
             val targetCategoryId = categoryMap[sourceExpense.categoryId] ?: continue
@@ -505,6 +472,7 @@ class BudgetRepository(private val db: AppDatabase) {
             Timber.d("Inserted monthly recurring expense: ${sourceExpense.description} to budget $toBudgetId")
         }
 
+        // Update existing monthly expenses
         for (key in monthlyKeysToUpdate) {
             val sourceExpense = sourceMonthlyMap[key]!!
             val targetExpense = targetMonthlyMap[key]!!
@@ -512,6 +480,7 @@ class BudgetRepository(private val db: AppDatabase) {
                 Timber.d("Skipping update for overridden expense: ${targetExpense.description}")
                 continue
             }
+            val oldDueDate = targetExpense.dueDate
             val newDueDate = shiftMonthlyDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
             if (targetExpense.amount != sourceExpense.amount ||
                 targetExpense.description != sourceExpense.description ||
@@ -527,11 +496,24 @@ class BudgetRepository(private val db: AppDatabase) {
                     updatedAt = System.currentTimeMillis()
                 )
                 db.expenseDao().update(updated)
+
+                // Clean up old checklist item if due date changed
+                if (oldDueDate != newDueDate) {
+                    val oldDay = getDayOfMonth(oldDueDate)
+                    val remainingOnOldDay = db.expenseDao().getExpensesForBudget(toBudgetId).first()
+                        .any { getDayOfMonth(it.dueDate) == oldDay && it.id != targetExpense.id }
+                    if (!remainingOnOldDay) {
+                        db.dailyChecklistDao().getChecklistItem(toBudgetId, oldDay)?.let {
+                            db.dailyChecklistDao().delete(it)
+                        }
+                    }
+                }
                 ensureChecklistItem(toBudgetId, getDayOfMonth(newDueDate))
                 Timber.d("Updated monthly recurring expense: ${sourceExpense.description} in budget $toBudgetId")
             }
         }
 
+        // Delete monthly expenses that no longer exist in source
         for (key in monthlyKeysToDelete) {
             val targetExpense = targetMonthlyMap[key]!!
             db.expenseDao().delete(targetExpense)
@@ -546,26 +528,22 @@ class BudgetRepository(private val db: AppDatabase) {
             Timber.d("Deleted monthly recurring expense: ${targetExpense.description} from budget $toBudgetId")
         }
 
-        // 4. Handle EVERY_X_DAYS (master-children model, most recent edit wins)
+        // 4. Handle EVERY_X_DAYS (master-children model)
         val sourceEveryX = sourceExpenses.filter { it.recurrenceType == RecurrenceType.EVERY_X_DAYS }
         val masterIds = sourceEveryX.map { it.sourceExpenseId ?: it.id }.toSet()
         val targetBudget = db.budgetDao().getBudgetById(toBudgetId) ?: return@withLock
 
         for (masterId in masterIds) {
-            // Find all expenses in the source budget belonging to this lineage
             val lineageExpenses = sourceEveryX.filter {
                 (it.sourceExpenseId ?: it.id) == masterId
             }
             if (lineageExpenses.isEmpty()) continue
 
-            // Find the most recent pattern source (max updatedAt)
             val patternSource = lineageExpenses.maxByOrNull { it.updatedAt } ?: continue
             val intervalDays = patternSource.recurrenceInterval ?: continue
 
-            // Find target category
             val targetCategoryId = categoryMap[patternSource.categoryId] ?: continue
 
-            // Generate all dates in the target month based on the pattern source
             val targetDates = generateOccurrenceDatesInMonth(
                 baseDate = patternSource.dueDate,
                 intervalDays = intervalDays,
@@ -573,7 +551,6 @@ class BudgetRepository(private val db: AppDatabase) {
                 targetYear = targetBudget.year
             )
 
-            // Existing children in the target budget for this lineage
             val existingChildren = targetExpenses.filter {
                 it.sourceExpenseId == masterId && it.recurrenceType == RecurrenceType.EVERY_X_DAYS
             }
@@ -584,7 +561,6 @@ class BudgetRepository(private val db: AppDatabase) {
             for (date in targetDates) {
                 val existing = existingByDate[date]
                 if (existing != null) {
-                    // Update if properties changed (copy updatedAt from pattern source)
                     if (existing.amount != patternSource.amount ||
                         existing.description != patternSource.description ||
                         existing.recurrenceInterval != patternSource.recurrenceInterval) {
@@ -636,34 +612,30 @@ class BudgetRepository(private val db: AppDatabase) {
     suspend fun getOrCreateBudgetChain(targetMonth: Int, targetYear: Int): Pair<String, Boolean> {
         return budgetChainMutex.withLock {
             Timber.d("getOrCreateBudgetChain: target $targetMonth/$targetYear")
-            var created = false  // <-- NEW: track whether we create the target budget
+            var created = false
 
-            // 1. Check if the target budget already exists
             val current = getBudget(targetMonth, targetYear).first()
             if (current != null) {
                 Timber.d("Target budget already exists: id=${current.id}")
                 ensureMonthSettings(current.id)
-                return@withLock Pair(current.id, false)  // <-- CHANGED: return false because it existed
+                return@withLock Pair(current.id, false)
             }
 
-            // 2. Find the previous budget
             val previous = db.budgetDao().findPreviousBudget(targetMonth, targetYear)
             if (previous == null) {
-                // No previous budget → create the target directly
                 Timber.d("No previous budget found, creating target directly")
                 val newBudget = Budget(month = targetMonth, year = targetYear)
                 insertBudget(newBudget)
                 ensureMonthSettings(newBudget.id)
-                return@withLock Pair(newBudget.id, true)  // <-- CHANGED: return true because we created it
+                return@withLock Pair(newBudget.id, true)
             }
 
             Timber.d("Previous budget found: ${previous.year}-${previous.month} id=${previous.id}")
 
-            // 3. Build the chain from previous month up to target
             var fromBudgetId = previous.id
             val cal = Calendar.getInstance().apply {
                 set(previous.year, previous.month - 1, 1)
-                add(Calendar.MONTH, 1) // start from the month after previous
+                add(Calendar.MONTH, 1)
             }
 
             while (cal.get(Calendar.YEAR) < targetYear ||
@@ -676,7 +648,6 @@ class BudgetRepository(private val db: AppDatabase) {
                 val newBudget = Budget(month = month, year = year)
                 insertBudget(newBudget)
 
-                // <-- NEW: check if this newly created budget is the one we were asked for
                 if (month == targetMonth && year == targetYear) {
                     created = true
                 }
@@ -690,7 +661,7 @@ class BudgetRepository(private val db: AppDatabase) {
             }
 
             Timber.d("Returning final budgetId: $fromBudgetId (created=$created)")
-            return@withLock Pair(fromBudgetId, created)  // <-- CHANGED: return the flag
+            return@withLock Pair(fromBudgetId, created)
         }
     }
 

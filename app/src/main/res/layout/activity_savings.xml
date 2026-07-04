@@ -91,10 +91,11 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="100dp"
         android:contentDescription="@string/add_bucket"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_add"
         app:fabSize="normal"
         app:tint="@android:color/white"
         tools:ignore="ImageContrastCheck,ClassNameCheck" />
+
     <!-- ProgressBar overlay (matches existing pattern) -->
     <ProgressBar
         android:id="@+id/progressBar"
