@@ -42,7 +42,7 @@
     <!-- Component sizes -->
     <dimen name="button_height">48dp</dimen>
     <dimen name="category_card_width_land">300dp</dimen>
-    <dimen name="spinner_dropdown_width">140dp</dimen>
+    <dimen name="spinner_dropdown_width">150dp</dimen>
     <dimen name="week_end_row_spacing">8dp</dimen>
     <dimen name="pill_horizontal_spacing">8dp</dimen>
     <dimen name="navigation_rail_width">72dp</dimen>

@@ -18,7 +18,7 @@
     <dimen name="dot_spacing">10dp</dimen>
 
     <dimen name="button_height">64dp</dimen>
-    <dimen name="spinner_dropdown_width">180dp</dimen>
+    <dimen name="spinner_dropdown_width">190dp</dimen>
     <dimen name="week_end_row_spacing">24dp</dimen>
     <dimen name="pill_horizontal_spacing">24dp</dimen>
 

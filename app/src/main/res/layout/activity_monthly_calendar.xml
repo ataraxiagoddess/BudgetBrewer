@@ -60,6 +60,7 @@
             android:id="@+id/legendContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:gravity="center"
             android:padding="8dp"
@@ -68,48 +69,48 @@
 
             <!-- Expense dot + label -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight=".25"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="2dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/circle_expense"
                     tools:ignore="ImageContrastCheck" />
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    style="@style/TextAppearance.BudgetBrewer.Body"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/legend_expenses"
-                    android:textSize="11sp"
-                    style="@style/TextAppearance.BudgetBrewer.Body"
-                    android:textColor="@color/text_on_container" />
+                    android:textColor="@color/text_on_container"
+                    android:textSize="11sp" />
             </LinearLayout>
 
             <!-- Spending dot + label -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
+                android:layout_weight=".25"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="2dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/circle_spending"
                     tools:ignore="ImageContrastCheck" />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/legend_spending"
                     android:textSize="11sp"
@@ -119,23 +120,22 @@
 
             <!-- Income dot + label -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
+                android:layout_weight=".25"
                 android:orientation="horizontal"
-                android:layout_marginEnd="16dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="2dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/circle_income"
                     tools:ignore="ImageContrastCheck" />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/legend_income"
                     android:textSize="11sp"
@@ -145,9 +145,9 @@
 
             <!-- Savings dot + label -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:importantForAccessibility="no"
+                android:layout_weight=".25"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
@@ -155,13 +155,13 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="2dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/circle_savings"
                     tools:ignore="ImageContrastCheck" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/legend_savings"
                     android:textSize="11sp"

@@ -17,7 +17,7 @@
     <string-array name="frequency_options">
         <item>Monthly</item>
         <item>Weekly</item>
-        <item>Biweekly</item>
+        <item>Bi-Weekly</item>
     </string-array>
 
     <!-- Income Rows -->

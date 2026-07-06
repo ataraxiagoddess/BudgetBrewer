@@ -12,7 +12,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -27,24 +26,27 @@
             android:textColor="@color/text_on_container"
             tools:ignore="VisualLintSystemUi" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditCategory"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/edit"
-            android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/edit_icon_color"
-            tools:ignore="ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_edit"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteCategory"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/delete_icon_color" />
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconSize="24dp"
+            app:iconTint="@color/delete_icon_color" />
     </LinearLayout>
 
     <!-- Scrollable expenses container with fixed height -->
@@ -52,7 +54,6 @@
         android:id="@+id/expensesScrollView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/expenses_scrollview_max_height"
-        android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:contentDescription="@string/expense_scroll"
         android:fadeScrollbars="false"

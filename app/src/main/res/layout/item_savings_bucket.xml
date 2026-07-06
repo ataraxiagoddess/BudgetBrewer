@@ -30,7 +30,7 @@
             <TextView
                 android:id="@+id/tvBucketName"
                 style="@style/TextAppearance.BudgetBrewer.Body"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="16dp"
                 android:textColor="@color/text_on_container"
@@ -38,7 +38,7 @@
                 tools:ignore="RtlSymmetry,VisualLintSystemUi" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center_vertical"
@@ -56,23 +56,24 @@
 
                 <ImageView
                     android:id="@+id/icBucketType"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginStart="2dp"
                     android:contentDescription="@null" />
             </LinearLayout>
         </LinearLayout>
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditBucket"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/edit"
-            android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/edit_icon_color"
-            tools:ignore="ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_edit"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
     </LinearLayout>
 
     <!-- Row 2: Jar + Target/Actual (inline) -->
@@ -173,9 +174,10 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnWithdraw"
-            android:layout_width="48dp"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="40dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -183,42 +185,48 @@
             android:rotation="180"
             android:scaleX="1.5"
             android:scaleY="1.5"
-            android:src="@drawable/ic_withdraw"
-            app:tint="@color/edit_icon_color" />
+            app:icon="@drawable/ic_withdraw"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDistribute"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/distribute"
-            android:src="@android:drawable/ic_input_add"
-            app:tint="@color/edit_icon_color" />
+            app:icon="@android:drawable/ic_input_add"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeduct"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/deduct"
-            android:src="@drawable/ic_minus"
-            app:tint="@color/edit_icon_color" />
+            app:icon="@drawable/ic_minus"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteBucket"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/delete_icon_color"
-            tools:ignore="ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconSize="24dp"
+            app:iconTint="@color/delete_icon_color" />
     </LinearLayout>
 </LinearLayout>
