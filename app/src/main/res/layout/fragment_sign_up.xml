@@ -1,34 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main"
-    android:orientation="vertical"
     android:fitsSystemWindows="true">
-
-    <!-- Back button (stays outside ScrollView) -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBack"
-        style="@style/Widget.BudgetBrewer.Button.Container"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="16dp"
-        android:text="@string/back"
-        app:icon="@drawable/ic_chevron_left"
-        app:iconGravity="textStart"
-        tools:ignore="VisualLintSystemUi" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:fillViewport="true"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,13 +21,13 @@
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:paddingHorizontal="32dp"
-            android:paddingTop="16dp"
+            android:paddingTop="72dp"
             android:paddingBottom="32dp">
 
             <ImageView
                 android:id="@+id/ivAppIcon"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:layout_marginBottom="16dp"
                 android:importantForAccessibility="no"
                 android:src="@drawable/budget_brewer_logo"
@@ -103,6 +88,7 @@
                 android:id="@+id/tvEmailMatch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="6dp"
                 android:paddingBottom="4dp"
                 android:layout_marginBottom="12dp"
                 android:textSize="11sp"
@@ -248,12 +234,32 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Back button (stays outside ScrollView) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBack"
+        style="@style/Widget.BudgetBrewer.Button.Container"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp"
+        android:text="@string/back"
+        app:icon="@drawable/ic_chevron_left"
+        app:iconGravity="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintSystemUi" />
+
     <!-- ProgressBar overlay -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

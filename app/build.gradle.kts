@@ -14,8 +14,8 @@ extensions.configure<ApplicationExtension> {
         applicationId = "com.ataraxiagoddess.budgetbrewer"
         minSdk = 24
         targetSdk = 37
-        versionCode = 8
-        versionName = "1.0.8"
+        versionCode = 1
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("boolean", "OFFLINE_MODE", "true")
