@@ -35,7 +35,11 @@ class SavingsBucketAdapter(
     inner class ViewHolder(private val binding: ItemSavingsBucketBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bucket: SavingsBucket) {
             binding.tvBucketName.text = bucket.name
-            binding.tvBucketType.text = if (bucket.type == SavingsBucketType.GOAL) "Goal" else "Growth"
+            binding.tvBucketType.text = if (bucket.type == SavingsBucketType.GOAL) {
+                binding.root.context.getString(R.string.goal)
+            } else {
+                binding.root.context.getString(R.string.growth)
+            }
             binding.icBucketType.setImageResource(
                 if (bucket.type == SavingsBucketType.GOAL) R.drawable.ic_goal else R.drawable.ic_growth
             )
@@ -91,7 +95,11 @@ class SavingsBucketAdapter(
                 binding.cardRoot.setOnClickListener(null)
             }
 
-            val typeStr = if (bucket.type == SavingsBucketType.GOAL) "goal" else "growth"
+            val typeStr = if (bucket.type == SavingsBucketType.GOAL) {
+                binding.root.context.getString(R.string.goal)
+            } else {
+                binding.root.context.getString(R.string.growth)
+            }
             val currentAmt = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
             val goalSuffix = if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                 val targetAmt = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
