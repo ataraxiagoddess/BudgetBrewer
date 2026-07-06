@@ -16,6 +16,7 @@ import com.ataraxiagoddess.budgetbrewer.data.Expense
 import com.ataraxiagoddess.budgetbrewer.data.Income
 import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
+import com.google.android.material.button.MaterialButton
 
 class DayDetailModalDialogFragment : DialogFragment() {
 
@@ -144,7 +145,7 @@ class DayDetailModalDialogFragment : DialogFragment() {
             dayData.assignedIncomes.forEach { income ->
                 val itemView = layoutInflater.inflate(R.layout.item_assigned_income, incomeContainer, false)
                 val tvIncomeText = itemView.findViewById<TextView>(R.id.tvIncomeText)
-                val btnDelete = itemView.findViewById<ImageButton>(R.id.btnDelete)
+                val btnDelete = itemView.findViewById<MaterialButton>(R.id.btnDelete)
                 tvIncomeText.text = getString(R.string.income_item_format, income.sourceName, income.amount.toCurrencyDisplay(resources))
                 tvIncomeText.typeface = exoRegular
                 tvIncomeText.setTextColor(ContextCompat.getColor(requireContext(), R.color.dialog_content_text))

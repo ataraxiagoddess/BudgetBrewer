@@ -3,7 +3,6 @@ package com.ataraxiagoddess.budgetbrewer.ui.finances
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -88,8 +87,8 @@ class CategoryAdapter(
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvName: TextView = itemView.findViewById(R.id.tvCategoryName)
-        private val btnEdit: ImageButton = itemView.findViewById(R.id.btnEditCategory)
-        private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDeleteCategory)
+        private val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditCategory)
+        private val btnDelete: MaterialButton = itemView.findViewById(R.id.btnDeleteCategory)
         private val btnAddExpense: MaterialButton = itemView.findViewById(R.id.btnAddExpense)
         private val expensesContainer: LinearLayout = itemView.findViewById(R.id.expensesContainer)
 
@@ -118,8 +117,8 @@ class CategoryAdapter(
             val tvDescription = expenseView.findViewById<TextView>(R.id.tvExpenseDescription)
             val tvAmount = expenseView.findViewById<TextView>(R.id.tvExpenseAmount)
             val tvDueDay = expenseView.findViewById<TextView>(R.id.tvExpenseDueDay)
-            val btnEdit = expenseView.findViewById<ImageButton>(R.id.btnEditExpense)
-            val btnDelete = expenseView.findViewById<ImageButton>(R.id.btnDeleteExpense)
+            val btnEdit = expenseView.findViewById<MaterialButton>(R.id.btnEditExpense)
+            val btnDelete = expenseView.findViewById<MaterialButton>(R.id.btnDeleteExpense)
 
             tvDescription.text = expense.description
             tvDescription.setTextColor(ContextCompat.getColor(context, R.color.text_on_container))

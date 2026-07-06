@@ -16,14 +16,15 @@
         style="@style/TextAppearance.BudgetBrewer.Body.Container"
         tools:ignore="VisualLintSystemUi" />
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDelete"
-        android:layout_width="48dp"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="40dp"
         android:layout_height="48dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
-        android:src="@android:drawable/ic_menu_delete"
-        app:tint="@color/delete_icon_color"
-        tools:ignore="ImageContrastCheck" />
+        app:icon="@android:drawable/ic_menu_delete"
+        app:iconSize="24dp"
+        app:iconTint="@color/delete_icon_color" />
 
 </LinearLayout>

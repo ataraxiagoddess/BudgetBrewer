@@ -20,7 +20,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -101,8 +100,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val tvSource: TextView = rowView.findViewById(R.id.tvSource)
         val tvAmount: TextView = rowView.findViewById(R.id.tvAmount)
         val btnAdd: MaterialButton = rowView.findViewById(R.id.btnAddIncome)
-        val btnEdit: ImageButton = rowView.findViewById(R.id.btnEditIncome)
-        val btnDelete: ImageButton = rowView.findViewById(R.id.btnDeleteIncome)
+        val btnEdit: MaterialButton = rowView.findViewById(R.id.btnEditIncome)
+        val btnDelete: MaterialButton = rowView.findViewById(R.id.btnDeleteIncome)
         var weekNumber: Int = 0
         var frequency: Frequency = Frequency.MONTHLY
     }
@@ -110,8 +109,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     class TipEntryHolder(itemView: View) {
         val tvSource: TextView = itemView.findViewById(R.id.tvTipSource)
         val tvAmount: TextView = itemView.findViewById(R.id.tvTipAmount)
-        val btnEdit: ImageButton = itemView.findViewById(R.id.btnEditTip)
-        val btnDelete: ImageButton = itemView.findViewById(R.id.btnDeleteTip)
+        val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditTip)
+        val btnDelete: MaterialButton = itemView.findViewById(R.id.btnDeleteTip)
 
         var income: Income? = null
     }
@@ -375,13 +374,17 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupFrequencySpinner() {
-        val frequencies = Frequency.entries.map { it.name }.toTypedArray()
+        // 1. Get localized frequency display names from resources
+        val frequencyDisplayNames = resources.getStringArray(R.array.frequency_options)
+        // Ensure the array order matches Frequency.entries: MONTHLY, WEEKLY, BIWEEKLY
+        // so that frequencyDisplayNames[0] = "Monthly" (translated), etc.
 
+        // 2. Adapter with localized strings
         val adapter = object : ArrayAdapter<String>(
             this,
             R.layout.spinner_closed,
             android.R.id.text1,
-            frequencies
+            frequencyDisplayNames
         ) {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = layoutInflater.inflate(R.layout.spinner_dropdown_item, parent, false)
@@ -404,7 +407,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         binding.spinnerFrequency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 if (isProgrammaticChange) {
-                    isProgrammaticChange = false // Clear the flag here, when the listener actually fires
+                    isProgrammaticChange = false
                     isUserFrequencySelection = false
                     return
                 }
@@ -414,7 +417,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 }
                 isUserFrequencySelection = false
 
-                val newFrequency = Frequency.valueOf(parent?.getItemAtPosition(pos).toString())
+                // 3. Map the selected position directly to Frequency enum (order matches)
+                val newFrequency = Frequency.entries[pos]
                 val previous = currentMonthFrequency
 
                 if (previousFrequency == null) {
@@ -467,8 +471,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
                         isProgrammaticChange = true
                         isUserFrequencySelection = false
-                        binding.spinnerFrequency.setSelection(frequencies.indexOf(previous.name))
-                        // The listener will clear the flag
+                        // 4. Restore previous selection using its display name
+                        val previousDisplayName = getFrequencyDisplayName(previous)
+                        val previousPosition = frequencyDisplayNames.indexOf(previousDisplayName)
+                        binding.spinnerFrequency.setSelection(previousPosition)
                         dialog.dismiss()
                     }
                 }
@@ -478,6 +484,12 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+    }
+
+    // 5. Helper to get the localized display name for a Frequency enum
+    private fun getFrequencyDisplayName(frequency: Frequency): String {
+        val displayNames = resources.getStringArray(R.array.frequency_options)
+        return displayNames[frequency.ordinal]
     }
 
     // ==================== INCOME ROWS ====================
@@ -1507,10 +1519,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             val percent = if (totalIncome > 0) amount / totalIncome * 100 else 0.0
             itemView.findViewById<TextView>(R.id.tvAllocationPercent).text = percent.toPercentDisplay(resources)
 
-            itemView.findViewById<ImageButton>(R.id.btnEditAllocation).setOnClickListener {
+            itemView.findViewById<MaterialButton>(R.id.btnEditAllocation).setOnClickListener {
                 showAllocationDialog(type, amount)
             }
-            itemView.findViewById<ImageButton>(R.id.btnDeleteAllocation).setOnClickListener {
+            itemView.findViewById<MaterialButton>(R.id.btnDeleteAllocation).setOnClickListener {
                 showDeleteAllocationDialog(type)
             }
 

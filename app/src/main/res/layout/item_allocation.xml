@@ -35,24 +35,26 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditAllocation"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/edit"
-            android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/edit_icon_color"
-            tools:ignore="Contrast,ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_edit"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteAllocation"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/delete_icon_color"
-            tools:ignore="Contrast,ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconSize="24dp"
+            app:iconTint="@color/delete_icon_color" />
     </LinearLayout>
 </LinearLayout>

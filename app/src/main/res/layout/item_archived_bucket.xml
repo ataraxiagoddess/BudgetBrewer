@@ -150,24 +150,27 @@
         android:gravity="end"
         android:orientation="horizontal">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRestore"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/restore"
-            android:src="@drawable/ic_restore"
-            app:tint="@color/edit_icon_color" />
+            app:icon="@drawable/ic_restore"
+            app:iconSize="24dp"
+            app:iconTint="@color/edit_icon_color" />
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDelete"
+            style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/delete_icon_color"
-            tools:ignore="ImageContrastCheck" />
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconSize="24dp"
+            app:iconTint="@color/delete_icon_color" />
     </LinearLayout>
 </LinearLayout>
