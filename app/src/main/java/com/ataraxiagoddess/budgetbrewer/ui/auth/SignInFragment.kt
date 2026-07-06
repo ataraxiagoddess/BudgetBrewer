@@ -180,7 +180,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun showError(message: String) {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+        (activity as? AuthActivity)?.showSnackbar(message, Snackbar.LENGTH_LONG)
     }
 
     override fun onDestroyView() {

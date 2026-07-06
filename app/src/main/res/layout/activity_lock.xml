@@ -9,6 +9,15 @@
     android:padding="24dp"
     android:background="@color/bg_main">
 
+    <ImageView
+        android:id="@+id/ivAppIcon"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/budget_brewer_logo"
+        tools:ignore="ImageContrastCheck" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,23 +33,24 @@
         android:layout_height="wrap_content"
         android:text="@string/enter_pin"
         android:textColor="@color/text_on_main"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:fontFamily="@font/exo_regular"
         android:layout_marginBottom="16dp" />
 
     <!-- PIN field with visibility toggle (like sign‑in) -->
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp">
 
         <EditText
             android:id="@+id/etPin"
-            android:layout_width="match_parent"
+            android:layout_width="125dp"
             android:layout_height="56dp"
             android:background="@drawable/edittext_background"
             android:fontFamily="@font/exo_regular"
-            android:gravity="center_vertical"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
             android:hint="@string/pin"
             android:importantForAutofill="no"
             android:includeFontPadding="false"
@@ -51,7 +61,7 @@
             android:paddingEnd="48dp"
             android:textColor="@color/text_on_container"
             android:textColorHint="@color/text_disabled"
-            android:textSize="14sp"
+            android:textSize="20sp"
             tools:ignore="RtlSymmetry,TextContrastCheck,VisualLintTextFieldSize" />
 
         <ImageButton

@@ -23,7 +23,8 @@
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="32dp"
-            android:paddingTop="72dp">
+            android:paddingTop="72dp"
+            android:paddingBottom="60dp">
 
             <ImageView
                 android:id="@+id/ivAppIcon"
@@ -135,13 +136,6 @@
                 android:text="@string/sign_up_prompt"
                 android:textColor="@color/text_on_main"
                 android:textSize="14sp" />
-
-            <!-- Extra bottom padding for scrolling -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:visibility="invisible" />
-
         </LinearLayout>
     </ScrollView>
 

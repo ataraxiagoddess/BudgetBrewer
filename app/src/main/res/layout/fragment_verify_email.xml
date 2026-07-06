@@ -23,7 +23,8 @@
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="32dp"
-            android:paddingTop="72dp">
+            android:paddingTop="72dp"
+            android:paddingBottom="60dp">
 
             <ImageView
                 android:id="@+id/ivAppIcon"
@@ -57,7 +58,7 @@
             <!-- Code input – now with maxWidth to avoid edge‑to‑edge -->
             <EditText
                 android:id="@+id/etCode"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="16dp"
