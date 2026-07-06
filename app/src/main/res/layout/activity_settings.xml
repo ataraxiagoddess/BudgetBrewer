@@ -309,18 +309,22 @@
             android:layout_height="48dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/delete_account"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <!-- Ko‑Fi Button -->
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btnKoFi"
-            style="@style/Widget.BudgetBrewer.Button.Main"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:text="@string/buy_me_a_coffee" />
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/support_me_on_kofi_badge_dark"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/buy_me_a_coffee"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true" />
 
         <!-- App Version -->
         <TextView
