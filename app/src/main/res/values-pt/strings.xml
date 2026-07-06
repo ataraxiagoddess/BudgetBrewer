@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== APP NAME ==================== -->
+    <string name="app_name">Budget Brewer</string>
+
+    <!-- ==================== MAIN ACTIVITY ==================== -->
+    <string name="month_year_format">%s %d</string>
+
+    <!-- ==================== INCOME & EXPENSES SCREEN ==================== -->
+    <!-- Section Titles -->
+    <string name="income_section_title">Receitas</string>
+    <string name="expenses_section_title">Despesas</string>
+    <string name="leftover_funds_title">Fundos restantes</string>
+    <string name="pay_frequency_label">Frequência de pagamento</string>
+    <string name="tips_misc">Gorjetas / Diversos</string>
+
+    <!-- Frequency Spinner -->
+    <string-array name="frequency_options">
+        <item>Mensal</item>
+        <item>Semanal</item>
+        <item>Quinzenal</item>
+    </string-array>
+
+    <!-- Income Rows -->
+    <string name="monthly_income">Renda mensal</string>
+    <string name="other_income">Outro</string>
+    <string name="weeks_1_2">Semana 1 &amp; 2</string>
+    <string name="weeks_3_4">Semana 3 &amp; 4</string>
+    <string name="week_5_other">Semana 5 &amp; Outro</string>
+    <string name="week_1">Semana 1</string>
+    <string name="week_2">Semana 2</string>
+    <string name="week_3">Semana 3</string>
+    <string name="week_4">Semana 4</string>
+    <string name="week_5">Semana 5</string>
+
+    <!-- Buttons -->
+    <string name="add_category_button">+ Categoria</string>
+    <string name="add_expense_button">+ Despesa</string>
+    <string name="add_tip">+ Gorjeta</string>
+    <string name="add_symbol">+</string>
+    <string name="add_income_button">+ Receita</string>
+
+    <!-- Common Actions -->
+    <string name="add">Adicionar</string>
+    <string name="save">Salvar</string>
+    <string name="delete">Excluir</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="edit">Editar</string>
+
+    <!-- Leftover Section -->
+    <string name="leftover_description">Valor após as despesas para alocar para poupança ou gastos:</string>
+    <string name="add_allocation">Adicionar alocação</string>
+    <string name="savings_title">Poupança</string>
+    <string name="spending_title">Gastos correntes</string>
+    <string name="default_amount_zero">0,00</string>
+    <string name="default_percent_zero">(0,00000%)</string>
+
+    <!-- Allocation Status Messages -->
+    <string name="allocation_status_overallocated">Foram alocados mais fundos do que o disponível, reduza suas alocações</string>
+    <string name="allocation_status_fully_allocated">Todos os fundos foram alocados</string>
+    <string name="allocation_status_available">Ainda há fundos disponíveis para alocar</string>
+    <string name="allocation_exceeds_funds">Excede os fundos disponíveis em %s</string>
+    <string name="allocation_status_expenses_exceed">As despesas excedem as receitas, nenhum fundo disponível para alocar</string>
+    <string name="allocation_status_no_funds">Nenhum fundo disponível para alocar</string>
+    <string name="savings_allocation_conflict">N\ão é possível reduzir a alocação para poupança abaixo do valor já distribuído.</string>
+    <string name="savings_allocation_conflict_title">Não é possível reduzir</string>
+    <string name="savings_allocation_conflict_message">Você já distribuiu %1$s para contas de poupança. Você deve reduzir o total distribuído antes de diminuir sua alocação para poupança.</string>
+
+    <!-- ==================== DIALOG TITLES ==================== -->
+    <!-- Income Dialogs -->
+    <string name="add_income_dialog_title">Adicionar receita</string>
+    <string name="edit_income_dialog_title">Editar receita</string>
+
+    <!-- Tip Dialogs -->
+    <string name="add_tip_dialog_title">Adicionar gorjeta</string>
+    <string name="edit_tip_dialog_title">Editar gorjeta</string>
+    <string name="delete_tip_title">Excluir gorjeta</string>
+
+    <!-- Category Dialogs -->
+    <string name="no_categories">Nenhuma categoria ainda.\nToque no botão + para adicionar uma!</string>
+    <string name="add_category_title">Adicionar categoria</string>
+    <string name="edit_category_title">Editar categoria</string>
+    <string name="delete_category_title">Excluir categoria</string>
+    <string name="swipe_hint">Deslize para a esquerda ou direita para ver mais categorias</string>
+    <string name="max_categories_reached">Número máximo de categorias atingido (%d)</string>
+    <string name="max_expenses_per_category_reached">Número máximo de despesas por categoria atingido (%d)</string>
+
+    <!-- Expense Dialogs -->
+    <string name="add_expense_title">Adicionar despesa a %s</string>
+    <string name="edit_expense_title">Editar despesa</string>
+    <string name="mark_day_complete">Marcar dia como concluído</string>
+
+    <!-- Frequency Change Dialog -->
+    <string name="change_frequency_title">Alterar frequência</string>
+
+    <!-- Allocation Dialogs -->
+    <string name="allocation_dialog_description">Valor que você deseja alocar:</string>
+    <string name="allocation_amount_hint">Insira o valor</string>
+    <string name="allocation_delete_message">Excluir alocação?</string>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <string name="nav_home">Início</string>
+    <string name="nav_finances">Finanças</string>
+    <string name="nav_savings">Poupança</string>
+    <string name="nav_expenses">Despesas</string>
+    <string name="nav_spending">Gastos</string>
+    <string name="nav_calendar">Calendário</string>
+    <string name="settings">Configurações</string>
+
+    <!-- ==================== SAVINGS PAGE ==================== -->
+    <string name="savings_bucket_title">Contas de poupança</string>
+    <string name="empty_savings_title">Nenhuma conta de poupança ainda</string>
+    <string name="empty_savings_message">Comece a poupar para seus objetivos! Toque no botão abaixo para criar sua primeira conta.</string>
+    <string name="add_bucket">Adicionar conta</string>
+    <string name="create_bucket">Criar conta</string>
+    <string name="bucket_name">Nome da conta</string>
+    <string name="bucket_name_required">Insira um nome para a conta</string>
+    <string name="goal">Objetivo</string>
+    <string name="growth">Progresso</string>
+    <string name="target_amount">Valor alvo</string>
+    <string name="select_color">Selecionar cor</string>
+    <string name="bucket_added">Conta adicionada</string>
+    <string name="goal_exceeded">OBJETIVO EXCEDIDO</string>
+    <string name="error_update_bucket">Não foi possível atualizar a conta</string>
+    <string name="error_delete_bucket">Erro ao excluir a conta</string>
+    <string name="error_distribute">Erro ao adicionar a distribuição</string>
+    <string name="distribute">Distribuir</string>
+    <string name="available_pool_label">Disponível para distribuir:</string>
+    <string name="available_pool_amount">Disponível para distribuir: %1$.2f R$</string>
+    <string name="bucket_updated">Conta atualizada</string>
+    <string name="bucket_deleted">Conta excluída</string>
+    <string name="funds_distributed">Fundos distribuídos</string>
+    <string name="delete_bucket_title">Excluir conta</string>
+    <string name="delete_bucket_message">Excluir permanentemente "%1$s" e suas transações?</string>
+    <string name="target_label">Alvo:</string>
+    <string name="actual_label">Atual:</string>
+    <string name="deduct">Deduzir</string>
+    <string name="max_deduction_label">Dedução máxima: %1$.2f R$</string>
+    <string name="withdraw">Sacar</string>
+    <string name="withdraw_title">Sacar fundos</string>
+    <string name="withdraw_confirmation">Sacar todos os %2$s de "%1$s"? A conta será arquivada.</string>
+    <string name="withdraw_choice">O que você deseja fazer com a conta?</string>
+    <string name="reuse_bucket">Reutilizar conta</string>
+    <string name="delete_bucket">Excluir conta</string>
+    <string name="funds_withdrawn">Fundos sacados</string>
+    <string name="error_restore">Falha ao restaurar a conta</string>
+    <string name="no_archived_buckets">Nenhuma conta arquivada</string>
+    <string name="restore">Restaurar</string>
+    <string name="settings_archive">Arquivo</string>
+    <string name="archive_months">Meses</string>
+    <string name="archive_buckets">Contas</string>
+    <string name="archive_months_placeholder">Arquivamento de meses em breve</string>
+    <string name="bucket_archived">Conta arquivada</string>
+    <string name="bucket_restored">Conta restaurada</string>
+    <string name="overachievement_format">+%.1f%% acima do objetivo</string>
+    <string name="transaction_edited">Transação atualizada</string>
+
+    <!-- ==================== EXPENSES PAGE ==================== -->
+    <string name="total_expenses_label">Despesas totais</string>
+    <string name="remaining_expenses_label">Restante</string>
+    <string name="total_expenses_format">%s</string>
+    <string name="remaining_expenses_format">%s</string>
+
+    <!-- ==================== SPENDING PAGE ==================== -->
+    <string name="add_transaction">+ Transação</string>
+    <string name="no_transactions">Nenhuma transação ainda.\nToque no botão + para adicionar uma!</string>
+    <string name="add_transaction_title">Adicionar transação</string>
+    <string name="edit_transaction_title">Editar transação</string>
+    <string name="transaction_date_hint">Selecionar data</string>
+    <string name="transaction_source_hint">Insira uma fonte (ex. Compras)</string>
+    <string name="transaction_amount_hint">Valor</string>
+    <string name="delete_transaction_title">Excluir transação</string>
+    <string name="delete_transaction_message">Tem certeza de que deseja excluir esta transação?</string>
+    <string name="transaction_saved">Transação salva</string>
+    <string name="transaction_updated">Transação atualizada</string>
+    <string name="transaction_deleted">Transação excluída</string>
+    <string name="error_add_transaction">Falha ao adicionar transação: %s</string>
+    <string name="error_update_transaction">Falha ao atualizar transação: %s</string>
+    <string name="error_delete_transaction">Falha ao excluir transação: %s</string>
+    <string name="error_load_transactions">Falha ao carregar transações</string>
+    <string name="spending_bubble">Gastos: %s</string>
+    <string name="remaining_bubble">Restante: %s</string>
+    <string name="transaction_exceeds_warning">A transação excede os fundos disponíveis. Considere realocar fundos em Finanças</string>
+    <string name="tag_title">Etiqueta</string>
+    <string name="tag_hint">Insira etiqueta (ex. "Fast Food")</string>
+    <string name="pound_icon">#</string>
+    <string name="note_title">Nota</string>
+    <string name="note_hint">Adicionar uma nota (opcional)</string>
+    <string name="tags_toggle_label">Etiquetas</string>
+    <string name="pound_symbol">Símbolo de cerquilha</string>
+    <string name="info_symbol">Símbolo de informação</string>
+
+    <!-- ==================== CALENDAR PAGE ==================== -->
+    <string name="assign">Atribuir</string>
+    <string name="assign_income">Atribuir receita</string>
+    <string name="month_start_amount">Valor de início do mês: </string>
+    <string name="week_x">Semana %d</string>
+    <string name="net_total">Líquido: %s</string>
+    <string name="edit_month_start">Editar valor de início do mês</string>
+    <string name="month_end_amount">Valor de fim do mês: </string>
+    <string name="overridden_warning">Este valor foi modificado manualmente. Alterá-lo substituirá a modificação.</string>
+    <string name="no_expenses_for_day">Nenhuma despesa</string>
+    <string name="no_spending_for_day">Nenhum gasto corrente</string>
+    <string name="no_income_for_day">Nenhuma receita atribuída</string>
+    <string name="no_savings_for_day">Nenhuma poupança alocada</string>
+    <string name="savings_allocation">Alocação de poupança</string>
+    <string name="select_income">Selecionar receita</string>
+    <string name="day_x">Dia %d</string>
+    <string name="expense_item_format">%s: %s</string>
+    <string name="spending_item_format">%s: %s</string>
+    <string name="income_item_format">%s: %s</string>
+    <string name="legend_expenses">Despesas</string>
+    <string name="legend_spending">Gastos</string>
+    <string name="legend_income">Receitas</string>
+    <string name="legend_savings">Poupança</string>
+    <string name="close">Fechar</string>
+    <string name="overwrite_confirmation">Esta ação substituirá o valor existente de início do mês, o valor anterior será perdido. Os totais de fim de semana e fim de mês também serão atualizados. Deseja continuar?</string>
+    <string name="overwrite_month_start">Substituir valor de início do mês</string>
+    <string name="confirm">Confirmar</string>
+    <string name="month_end_not_editable">Este valor não pode ser alterado</string>
+    <string name="week_end_not_editable">Os totais de fim de semana não são editáveis</string>
+    <string name="week_end_totals">Totais de fim de semana</string>
+
+    <!-- ==================== HOME SCREEN ==================== -->
+    <!-- Chart Labels -->
+    <string name="chart_income_vs_expenses">Receitas vs Despesas</string>
+    <string name="chart_expenses_breakdown">Despesas por categoria</string>
+    <string name="chart_savings_comparison">Comparação de poupança ideal</string>
+    <string name="chart_spending_trends">Tendências de gastos</string>
+    <string name="spending_by_tag_header">Gastos por etiqueta</string>
+    <string name="income">Receitas</string>
+    <string name="expenses">Despesas</string>
+    <string name="savings_target">Meta de poupança (20% da receita)</string>
+    <string name="actual_savings">Poupança real</string>
+    <string name="january">Janeiro</string>
+    <string name="february">Fevereiro</string>
+    <string name="march">Março</string>
+    <string name="april">Abril</string>
+    <string name="may">Maio</string>
+    <string name="june">Junho</string>
+    <string name="july">Julho</string>
+    <string name="august">Agosto</string>
+    <string name="september">Setembro</string>
+    <string name="october">Outubro</string>
+    <string name="november">Novembro</string>
+    <string name="december">Dezembro</string>
+    <string name="unknown">Desconhecido</string>
+
+    <!-- Month abbreviations (first letter) -->
+    <string name="month_jan_abbr">J</string>
+    <string name="month_feb_abbr">F</string>
+    <string name="month_mar_abbr">M</string>
+    <string name="month_apr_abbr">A</string>
+    <string name="month_may_abbr">M</string>
+    <string name="month_jun_abbr">J</string>
+    <string name="month_jul_abbr">J</string>
+    <string name="month_aug_abbr">A</string>
+    <string name="month_sep_abbr">S</string>
+    <string name="month_oct_abbr">O</string>
+    <string name="month_nov_abbr">N</string>
+    <string name="month_dec_abbr">D</string>
+
+    <!-- Timeframe options -->
+    <string name="timeframe_1m">Último mês</string>
+    <string name="timeframe_3m">3 meses</string>
+    <string name="timeframe_6m">6 meses</string>
+    <string name="timeframe_1y">1 ano</string>
+
+    <!-- Chart Data Formats -->
+    <string name="savings_comparison_format">%s: %s  |  %s: %s</string>
+    <string name="expense_category_format">%s: %s (%.5f%%)</string>
+
+    <!-- Loading and Error States -->
+    <string name="error_loading_charts">Não foi possível carregar os dados dos gráficos. Tente novamente.</string>
+    <string name="no_expense_data">Nenhum dado de despesa para exibir</string>
+
+    <!-- Chart Labels -->
+    <string name="chart_target">Meta</string>
+    <string name="chart_actual">Real</string>
+    <string name="chart_spending">Gastos</string>
+
+    <!-- ==================== DIALOG MESSAGES ==================== -->
+    <string name="change_frequency_message">Alterar a frequência excluirá todos os dados de receita para outras frequências. Continuar?</string>
+    <string name="tips_delete_warning">Desmarcar esta caixa excluirá todas as entradas de gorjetas. Continuar?</string>
+    <string name="delete_tip_confirm">Tem certeza de que deseja excluir esta entrada de gorjeta?</string>
+    <string name="delete_category_message">Tem certeza de que deseja excluir "%s"? Todas as despesas nesta categoria também serão excluídas.</string>
+
+    <!-- ==================== HINTS & PLACEHOLDERS ==================== -->
+    <string name="income_source_hint">Fonte (ex. Salário)</string>
+    <string name="income_source_short_hint">Fonte</string>
+    <string name="amount_hint">Valor</string>
+    <string name="category_name_hint">Nome da categoria (ex. Contas)</string>
+    <string name="expense_description_hint">Descrição (ex. Conta de luz)</string>
+    <string name="expense_amount_hint">Valor</string>
+    <string name="every_x_days_hint">Insira o número de dias</string>
+    <string name="select_due_date">Selecionar data de vencimento</string>
+
+    <!-- ==================== FORMATS ==================== -->
+    <!-- Currency Formats -->
+    <string name="currency_display">%s%.2f</string>
+    <string name="currency_edit">%.2f</string>
+    <string name="currency_with_symbol">%s%s</string>
+    <string name="amount_formatted">%1$.2f R$</string>
+    <string name="goal_suffix"> de %1$s</string>
+    <string name="amount_signed">%1$s %2$s</string>
+    <string name="bucket_description">%1$s, %2$s, %3$s%4$s, toque duas vezes para ver histórico</string>
+    <string name="transaction_description">%1$s, %2$s %3$s%4$s</string>
+
+    <!-- Percent Formats -->
+    <string name="percent_display">(%.5f%%)</string>
+
+    <!-- ==================== RECURRENCE OPTIONS ==================== -->
+    <string name="expense_recurring">Recorrente</string>
+    <string name="recurring_monthly_same_day">Mesmo dia a cada mês</string>
+    <string name="recurring_every_x_days">A cada X dias</string>
+
+    <!-- ==================== SUCCESS MESSAGES ==================== -->
+    <string name="income_added">Receita adicionada</string>
+    <string name="income_updated">Receita atualizada</string>
+    <string name="income_deleted">Receita excluída</string>
+    <string name="tip_added">Gorjeta adicionada</string>
+    <string name="tip_updated">Gorjeta atualizada</string>
+    <string name="tip_deleted">Gorjeta excluída</string>
+    <string name="category_added">Categoria adicionada</string>
+    <string name="category_updated">Categoria atualizada</string>
+    <string name="category_deleted">Categoria excluída</string>
+    <string name="expense_added">Despesa adicionada</string>
+    <string name="expense_updated">Despesa atualizada</string>
+    <string name="expense_deleted">Despesa excluída</string>
+    <string name="spending_added">Gasto adicionado</string>
+    <string name="spending_updated">Gasto atualizado</string>
+    <string name="spending_deleted">Gasto excluído</string>
+
+    <!-- ==================== ERROR MESSAGES ==================== -->
+    <string name="error_load_data">Falha ao carregar os dados: %s</string>
+    <string name="error_add_income">Falha ao adicionar receita: %s</string>
+    <string name="error_update_income">Falha ao atualizar receita: %s</string>
+    <string name="error_delete_income">Falha ao excluir receita: %s</string>
+    <string name="error_add_tip">Falha ao adicionar gorjeta: %s</string>
+    <string name="error_update_tip">Falha ao atualizar gorjeta: %s</string>
+    <string name="error_delete_tip">Falha ao excluir gorjeta: %s</string>
+    <string name="error_add_category">Falha ao adicionar categoria: %s</string>
+    <string name="error_update_category">Falha ao atualizar categoria: %s</string>
+    <string name="error_delete_category">Falha ao excluir categoria: %s</string>
+    <string name="error_add_expense">Falha ao adicionar despesa: %s</string>
+    <string name="error_update_expense">Falha ao atualizar despesa: %s</string>
+    <string name="error_delete_expense">Falha ao excluir despesa: %s</string>
+    <string name="error_refresh_incomes">Falha ao atualizar receitas</string>
+    <string name="error_refresh_categories">Falha ao atualizar categorias</string>
+    <string name="error_refresh_expenses">Falha ao atualizar despesas</string>
+    <string name="error_refresh_allocation">Falha ao atualizar alocação</string>
+    <string name="error_save_allocation">Falha ao salvar alocação: %s</string>
+    <string name="error_unknown">Ocorreu um erro desconhecido</string>
+    <string name="error_update_settings">Falha ao atualizar configurações: %s</string>
+
+    <!-- ==================== CURRENCY ARRAY ==================== -->
+    <string-array name="currencies">
+        <item>$ (USD)</item>
+        <item>€ (EUR)</item>
+        <item>£ (GBP)</item>
+        <item>¥ (JPY)</item>
+        <item>₹ (INR)</item>
+        <item>₱ (PHP)</item>
+        <item>R$ (BRL)</item>
+    </string-array>
+
+    <!-- ==================== ALLOCATION ITEM STRINGS ==================== -->
+    <string name="allocation_amount_default">0,00</string>
+    <string name="allocation_percent_default">(0,00000%)</string>
+
+    <!-- ==================== SETTINGS & AUTH ==================== -->
+    <string name="settings_account">Conta</string>
+    <string name="settings_appearance">Aparência</string>
+    <string name="settings_currency">Moeda</string>
+    <string name="sign_in">Entrar</string>
+    <string name="sign_up">Cadastrar</string>
+    <string name="sign_out">Sair</string>
+    <string name="export_csv">Exportar mês atual como CSV</string>
+    <string name="export_pdf">Exportar mês atual como PDF</string>
+    <string name="past_months">Meses anteriores</string>
+    <string name="export_month_csv">Exportar como CSV</string>
+    <string name="export_month_pdf">Exportar como PDF</string>
+    <string name="select_month">Selecionar um mês</string>
+    <string name="no_past_months">Nenhum mês anterior disponível</string>
+    <string name="enable_pin_lock">Bloquear aplicativo com PIN</string>
+    <string name="enable_biometrics">Usar biometria</string>
+    <string name="not_signed_in">Você não está conectado</string>
+    <string name="light">Claro</string>
+    <string name="dark">Escuro</string>
+    <string name="system">Sistema</string>
+    <string name="buy_me_a_coffee">Compre-me um café</string>
+    <string name="version_placeholder">Versão %s</string>
+    <string name="version_format">Versão %s</string>
+    <string name="email">E-mail</string>
+    <string name="password">Senha</string>
+    <string name="confirm_password">Confirmar senha</string>
+    <string name="sign_up_prompt">Não tem uma conta? Cadastre-se!</string>
+    <string name="sign_in_prompt">Já tem uma conta? Entre!</string>
+    <string name="back">Voltar</string>
+    <string name="no_email">Sem e-mail</string>
+    <string name="confirm_email">Confirmar e-mail</string>
+    <string name="forgot_password">Esqueceu a senha?</string>
+    <string name="send">Enviar</string>
+    <string name="fill_all_fields">Por favor, preencha todos os campos</string>
+    <string name="enter_email">Por favor, insira seu e-mail</string>
+    <string name="reset_failed">Falha ao enviar e-mail de redefinição: %s</string>
+    <string name="signed_in_success">Login realizado com sucesso</string>
+    <string name="sign_in_failed">Falha no login: %s</string>
+    <string name="data_restored">Seus dados foram restaurados da nuvem</string>
+    <string name="data_backed_up">Seus dados locais foram salvos na nuvem</string>
+    <string name="toggle_password_visibility">Mostrar/ocultar senha</string>
+    <string name="enter_valid_email">Por favor, insira um endereço de e-mail válido</string>
+    <string name="emails_match">Os e-mails coincidem</string>
+    <string name="emails_do_not_match">Os e-mails não coincidem</string>
+    <string name="password_too_short">A senha deve ter pelo menos 8 caracteres</string>
+    <string name="password_need_number">A senha deve conter pelo menos um número</string>
+    <string name="password_need_special">A senha deve conter pelo menos um caractere especial</string>
+    <string name="passwords_match">As senhas coincidem</string>
+    <string name="passwords_do_not_match">As senhas não coincidem</string>
+    <string name="password_strength_weak">Fraca</string>
+    <string name="password_strength_medium">Média</string>
+    <string name="password_strength_strong">Forte</string>
+    <string name="sign_up_failed">Falha no cadastro: %s</string>
+    <string name="verification_code_sent">Um código de verificação foi enviado para %s.\nInsira-o abaixo.</string>
+    <string name="verification_code">Código de 6 dígitos</string>
+    <string name="enter_valid_code">Por favor, insira um código válido de 6 dígitos</string>
+    <string name="verify">Verificar</string>
+    <string name="resend_code">Reenviar código</string>
+    <string name="code_resent">Código de verificação reenviado</string>
+    <string name="email_verified">E-mail verificado com sucesso! Agora você pode entrar.</string>
+    <string name="verification_failed">Falha na verificação: %s</string>
+    <string name="resend_failed">Falha ao reenviar o código: %s</string>
+    <string name="new_password">Nova senha</string>
+    <string name="reset_password">Redefinir senha</string>
+    <string name="reset_code_sent">Um código de redefinição foi enviado para %s.\nInsira-o abaixo e escolha uma nova senha.</string>
+    <string name="reset_code_sent_snackbar">Código de redefinição enviado! Verifique seu e-mail.</string>
+    <string name="reset_request_failed">Falha ao enviar código de redefinição: %s</string>
+    <string name="password_reset_success">Senha redefinida com sucesso! Agora você pode entrar.</string>
+    <string name="password_same_as_old">A nova senha deve ser diferente da antiga</string>
+    <string name="password_too_weak">A senha não atende aos requisitos de segurança</string>
+    <string name="error_invalid_credentials">E-mail ou senha inválidos. Tente novamente.</string>
+    <string name="error_email_not_confirmed">Por favor, verifique seu e-mail antes de entrar.</string>
+    <string name="error_user_exists">Já existe uma conta com este e-mail. Por favor, faça login.</string>
+    <string name="error_email_not_found">Nenhuma conta encontrada com este e-mail.</string>
+    <string name="error_invalid_code">Código de verificação inválido. Verifique e tente novamente.</string>
+    <string name="sign_in_instead">Já tem uma conta? Entrar</string>
+    <string name="verification_hint">Se você já verificou seu e-mail e está vendo esta página, tente entrar diretamente. Verifique seu e-mail para um novo código, se necessário.</string>
+    <string name="password_requirements">A senha deve ter pelo menos 8 caracteres, incluir letra maiúscula, minúscula, um número e um caractere especial.</string>
+    <string name="password_need_uppercase">A senha deve conter pelo menos uma letra maiúscula</string>
+    <string name="password_need_lowercase">A senha deve conter pelo menos uma letra minúscula</string>
+    <string name="settings_legal">Legal</string>
+    <string name="privacy_policy">Política de privacidade</string>
+    <string name="terms_of_service">Termos de serviço</string>
+
+    <string name="set_pin">Definir PIN</string>
+    <string name="change_pin">Alterar PIN</string>
+    <string name="enter_pin">Insira o PIN</string>
+    <string name="confirm_pin">Confirmar PIN</string>
+    <string name="pin">PIN</string>
+    <string name="unlock">Desbloquear</string>
+    <string name="use_biometrics">Usar biometria</string>
+    <string name="pins_do_not_match">Os PINs não coincidem</string>
+    <string name="pin_set">PIN definido com sucesso</string>
+    <string name="incorrect_pin">PIN incorreto</string>
+    <string name="enter_valid_pin">Por favor, insira um PIN válido de 4 dígitos</string>
+    <string name="biometric_title">Desbloquear com biometria</string>
+    <string name="biometric_subtitle">Use sua impressão digital ou rosto</string>
+    <string name="biometric_failed">Falha na autenticação biométrica</string>
+    <string name="biometric_not_available">A biometria não está disponível neste dispositivo</string>
+    <string name="delete_pin">Excluir PIN</string>
+    <string name="delete_pin_title">Excluir PIN</string>
+    <string name="delete_pin_message">Tem certeza de que deseja excluir seu PIN? Você não poderá mais bloquear o aplicativo com um PIN.</string>
+    <string name="pin_deleted">PIN excluído</string>
+    <string name="delete_account">Excluir conta</string>
+    <string name="delete_account_password_prompt">Por favor, insira sua senha para confirmar.</string>
+    <string name="delete_account_success">Sua conta foi excluída.</string>
+    <string name="delete_account_failed">Falha ao excluir a conta: %s</string>
+    <string name="delete_account_wrong_password">Senha incorreta. Tente novamente.</string>
+
+    <!-- Export messages -->
+    <string name="preparing_csv_export">Preparando exportação CSV…</string>
+    <string name="preparing_pdf_export">Preparando exportação PDF…</string>
+    <string name="export_failed">Falha ao criar o arquivo de exportação</string>
+    <string name="share_csv">Compartilhar CSV</string>
+    <string name="share_pdf">Compartilhar PDF</string>
+    <string name="export_saved">Exportação salva em Downloads</string>
+    <string name="share">Compartilhar</string>
+
+    <!-- Accessibility -->
+    <string name="week_end_horizontal_scroll">Totais de fim de semana, role para ver mais</string>
+    <string name="preview_pane">Se o conteúdo não couber na tela, role para baixo ou para cima</string>
+    <string name="expense_scroll">Se o conteúdo exceder a altura da janela, role para cima ou para baixo.</string>
+    <string name="show_password">Mostrar senha</string>
+    <string name="hide_password">Ocultar senha</string>
+    <string name="add_allocation_content_desc">Adicionar alocação %1$s</string>
+    <string name="account_section">Seção Conta</string>
+    <string name="appearance_section">Seção Aparência</string>
+    <string name="currency_section">Seção Moeda</string>
+    <string name="archive_section">Seção Arquivo</string>
+    <string name="legal_section">Seção Legal</string>
+    <string name="expanded">Expandido</string>
+    <string name="collapsed">Recolhido</string>
+    <string name="select_currency">Selecionar moeda</string>
+    <string name="funds_deducted_success">Fundos removidos da conta e adicionados de volta ao pool</string>
+    <string name="amount_exceeds_maximum">O valor excede o máximo</string>
+    <string name="amount_must_be_greater_than_zero">O valor deve ser maior que zero</string>
+    <string name="amount_exceeds_maximum_allowed">Excede o máximo permitido</string>
+    <string name="amount_exceeds_balance">O valor excede o saldo restante</string>
+    <string name="recurrence_exceeds_maximum">Deve estar entre 5 e 366 dias</string>
+    <string name="character_counter">%1$d/%2$d</string>
+    <string name="note_counter">%1$d/%2$d</string>
+
+</resources>

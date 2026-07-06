@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== APP NAME ==================== -->
+    <string name="app_name">Budget Brewer</string>
+
+    <!-- ==================== MAIN ACTIVITY ==================== -->
+    <string name="month_year_format">%s %d</string>
+
+    <!-- ==================== INCOME & EXPENSES SCREEN ==================== -->
+    <!-- Section Titles -->
+    <string name="income_section_title">Kita</string>
+    <string name="expenses_section_title">Gastos</string>
+    <string name="leftover_funds_title">Natitirang Pondo</string>
+    <string name="pay_frequency_label">Dalas ng Pagbabayad</string>
+    <string name="tips_misc">Tip / Iba Pa</string>
+
+    <!-- Income Rows -->
+    <string name="monthly_income">Buwanang Kita</string>
+    <string name="other_income">Iba</string>
+    <string name="weeks_1_2">Linggo 1 at 2</string>
+    <string name="weeks_3_4">Linggo 3 at 4</string>
+    <string name="week_5_other">Linggo 5 at Iba Pa</string>
+    <string name="week_1">Linggo 1</string>
+    <string name="week_2">Linggo 2</string>
+    <string name="week_3">Linggo 3</string>
+    <string name="week_4">Linggo 4</string>
+    <string name="week_5">Linggo 5</string>
+
+    <!-- Buttons -->
+    <string name="add_category_button">+ Kategorya</string>
+    <string name="add_expense_button">+ Gastos</string>
+    <string name="add_tip">+ Tip</string>
+    <string name="add_symbol">+</string>
+    <string name="add_income_button">+ Kita</string>
+
+    <!-- Common Actions -->
+    <string name="add">Idagdag</string>
+    <string name="save">I-save</string>
+    <string name="delete">Burahin</string>
+    <string name="cancel">Kanselahin</string>
+    <string name="ok">OK</string>
+    <string name="yes">Oo</string>
+    <string name="no">Hindi</string>
+    <string name="edit">I-edit</string>
+
+    <!-- Leftover Section -->
+    <string name="leftover_description">Halaga pagkatapos ng mga gastos na ilalaan sa pag-iimpok o kasalukuyang gastusin:</string>
+    <string name="add_allocation">Magdagdag ng Alokasyon</string>
+    <string name="savings_title">Pag-iimpok</string>
+    <string name="spending_title">Kasalukuyang Gastos</string>
+    <string name="default_amount_zero">0,00</string>
+    <string name="default_percent_zero">(0,00000%)</string>
+
+    <!-- Allocation Status Messages -->
+    <string name="allocation_status_overallocated">Mas maraming pondo ang nailaan kaysa sa available, pakibawasan ang iyong mga alokasyon</string>
+    <string name="allocation_status_fully_allocated">Lahat ng pondo ay nailaan na</string>
+    <string name="allocation_status_available">Mayroon pang pondong maaaring ilaan</string>
+    <string name="allocation_exceeds_funds">Lumalampas sa available na pondo ng %s</string>
+    <string name="allocation_status_expenses_exceed">Ang mga gastos ay lumalampas sa kita, walang pondong maaaring ilaan</string>
+    <string name="allocation_status_no_funds">Walang pondong maaaring ilaan</string>
+    <string name="savings_allocation_conflict">Hindi maaaring bawasan ang alokasyon sa pag-iimpok nang mas mababa sa halagang naipamahagi na.</string>
+    <string name="savings_allocation_conflict_title">Hindi Mabawasan</string>
+    <string name="savings_allocation_conflict_message">Naipamahagi mo na ang %1$s sa mga savings account. Kailangan mong bawasan ang kabuuang naipamahagi bago babaan ang iyong alokasyon sa pag-iimpok.</string>
+
+    <!-- ==================== DIALOG TITLES ==================== -->
+    <!-- Income Dialogs -->
+    <string name="add_income_dialog_title">Magdagdag ng Kita</string>
+    <string name="edit_income_dialog_title">I-edit ang Kita</string>
+
+    <!-- Tip Dialogs -->
+    <string name="add_tip_dialog_title">Magdagdag ng Tip</string>
+    <string name="edit_tip_dialog_title">I-edit ang Tip</string>
+    <string name="delete_tip_title">Burahin ang Tip</string>
+
+    <!-- Category Dialogs -->
+    <string name="no_categories">Wala pang kategorya.\nI-tap ang + button para magdagdag!</string>
+    <string name="add_category_title">Magdagdag ng Kategorya</string>
+    <string name="edit_category_title">I-edit ang Kategorya</string>
+    <string name="delete_category_title">Burahin ang Kategorya</string>
+    <string name="swipe_hint">Mag-swipe pakaliwa o pakanan para makita ang iba pang kategorya</string>
+    <string name="max_categories_reached">Naabot na ang maximum na bilang ng kategorya (%d)</string>
+    <string name="max_expenses_per_category_reached">Naabot na ang maximum na bilang ng gastos bawat kategorya (%d)</string>
+
+    <!-- Expense Dialogs -->
+    <string name="add_expense_title">Magdagdag ng Gastos sa %s</string>
+    <string name="edit_expense_title">I-edit ang Gastos</string>
+    <string name="mark_day_complete">Markahan ang araw bilang kumpleto</string>
+
+    <!-- Frequency Change Dialog -->
+    <string name="change_frequency_title">Baguhin ang Dalas</string>
+
+    <!-- Allocation Dialogs -->
+    <string name="allocation_dialog_description">Halaga na nais mong ilaan:</string>
+    <string name="allocation_amount_hint">Ilagay ang halaga</string>
+    <string name="allocation_delete_message">Burahin ang alokasyon?</string>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <string name="nav_home">Home</string>
+    <string name="nav_finances">Pananalapi</string>
+    <string name="nav_savings">Pag-iimpok</string>
+    <string name="nav_expenses">Gastos</string>
+    <string name="nav_spending">Kasalukuyang Gastos</string>
+    <string name="nav_calendar">Kalendaryo</string>
+    <string name="settings">Mga Setting</string>
+
+    <!-- ==================== SAVINGS PAGE ==================== -->
+    <string name="savings_bucket_title">Mga Savings Account</string>
+    <string name="empty_savings_title">Wala pang Savings Account</string>
+    <string name="empty_savings_message">Magsimulang mag-impok para sa iyong mga layunin! I-tap ang button sa ibaba para gumawa ng iyong unang account.</string>
+    <string name="add_bucket">Magdagdag ng Account</string>
+    <string name="create_bucket">Gumawa ng Account</string>
+    <string name="bucket_name">Pangalan ng Account</string>
+    <string name="bucket_name_required">Pakilagay ang pangalan ng account</string>
+    <string name="goal">Layunin</string>
+    <string name="growth">Pag-unlad</string>
+    <string name="target_amount">Target na Halaga</string>
+    <string name="select_color">Pumili ng Kulay</string>
+    <string name="bucket_added">Naidagdag ang Account</string>
+    <string name="goal_exceeded">NALAGPASAN ANG LAYUNIN</string>
+    <string name="error_update_bucket">Hindi ma-update ang account</string>
+    <string name="error_delete_bucket">Nagkaroon ng error sa pagbura ng account</string>
+    <string name="error_distribute">Nagkaroon ng error sa pagdagdag ng pamamahagi</string>
+    <string name="distribute">Ipamahagi</string>
+    <string name="available_pool_label">Available para ipamahagi:</string>
+    <string name="available_pool_amount">Available para ipamahagi: %1$.2f ₱</string>
+    <string name="bucket_updated">Na-update ang account</string>
+    <string name="bucket_deleted">Nabura ang account</string>
+    <string name="funds_distributed">Naipamahagi ang pondo</string>
+    <string name="delete_bucket_title">Burahin ang Account</string>
+    <string name="delete_bucket_message">Burahin nang permanente ang "%1$s" at ang mga transaksyon nito?</string>
+    <string name="target_label">Target:</string>
+    <string name="actual_label">Kasalukuyan:</string>
+    <string name="deduct">Ibawas</string>
+    <string name="max_deduction_label">Pinakamataas na bawas: %1$.2f ₱</string>
+    <string name="withdraw">Mag-withdraw</string>
+    <string name="withdraw_title">Mag-withdraw ng Pondo</string>
+    <string name="withdraw_confirmation">I-withdraw lahat ng %2$s mula sa "%1$s"? Ang account ay ia-archive.</string>
+    <string name="withdraw_choice">Ano ang gusto mong gawin sa account?</string>
+    <string name="reuse_bucket">Gamitin muli ang Account</string>
+    <string name="delete_bucket">Burahin ang Account</string>
+    <string name="funds_withdrawn">Na-withdraw ang pondo</string>
+    <string name="error_restore">Hindi ma-restore ang account</string>
+    <string name="no_archived_buckets">Walang naka-archive na account</string>
+    <string name="restore">I-restore</string>
+    <string name="settings_archive">Archive</string>
+    <string name="archive_months">Mga Buwan</string>
+    <string name="archive_buckets">Mga Account</string>
+    <string name="archive_months_placeholder">Darating pa ang pag-archive ng mga buwan</string>
+    <string name="bucket_archived">Na-archive ang account</string>
+    <string name="bucket_restored">Na-restore ang account</string>
+    <string name="overachievement_format">+%.1f%% lampas sa target</string>
+    <string name="transaction_edited">Na-update ang transaksyon</string>
+
+    <!-- ==================== EXPENSES PAGE ==================== -->
+    <string name="total_expenses_label">Kabuuang Gastos</string>
+    <string name="remaining_expenses_label">Natitira</string>
+    <string name="total_expenses_format">%s</string>
+    <string name="remaining_expenses_format">%s</string>
+
+    <!-- ==================== SPENDING PAGE ==================== -->
+    <string name="add_transaction">+ Transaksyon</string>
+    <string name="no_transactions">Wala pang transaksyon.\nI-tap ang + button para magdagdag!</string>
+    <string name="add_transaction_title">Magdagdag ng Transaksyon</string>
+    <string name="edit_transaction_title">I-edit ang Transaksyon</string>
+    <string name="transaction_date_hint">Pumili ng Petsa</string>
+    <string name="transaction_source_hint">Ilagay ang pinagmulan (hal. Groceries)</string>
+    <string name="transaction_amount_hint">Halaga</string>
+    <string name="delete_transaction_title">Burahin ang Transaksyon</string>
+    <string name="delete_transaction_message">Sigurado ka bang gusto mong burahin ang transaksyong ito?</string>
+    <string name="transaction_saved">Na-save ang transaksyon</string>
+    <string name="transaction_updated">Na-update ang transaksyon</string>
+    <string name="transaction_deleted">Nabura ang transaksyon</string>
+    <string name="error_add_transaction">Hindi maidagdag ang transaksyon: %s</string>
+    <string name="error_update_transaction">Hindi ma-update ang transaksyon: %s</string>
+    <string name="error_delete_transaction">Hindi mabura ang transaksyon: %s</string>
+    <string name="error_load_transactions">Hindi ma-load ang mga transaksyon</string>
+    <string name="spending_bubble">Gastos: %s</string>
+    <string name="remaining_bubble">Natitira: %s</string>
+    <string name="transaction_exceeds_warning">Lumalampas ang transaksyon sa available na pondo. Pakisaalang-alang ang muling paglalaan ng pondo sa Pananalapi</string>
+    <string name="tag_title">Tag</string>
+    <string name="tag_hint">Maglagay ng tag (hal. "Fast Food")</string>
+    <string name="pound_icon">#</string>
+    <string name="note_title">Tala</string>
+    <string name="note_hint">Magdagdag ng tala (opsyonal)</string>
+    <string name="tags_toggle_label">Mga Tag</string>
+    <string name="pound_symbol">Simbolo ng Numero</string>
+    <string name="info_symbol">Simbolo ng Impormasyon</string>
+
+    <!-- ==================== CALENDAR PAGE ==================== -->
+    <string name="assign">Ilaan</string>
+    <string name="assign_income">Ilaan ang Kita</string>
+    <string name="month_start_amount">Halaga sa Simula ng Buwan:</string>
+    <string name="week_x">Linggo %d</string>
+    <string name="net_total">Net: %s</string>
+    <string name="edit_month_start">I-edit ang Halaga sa Simula ng Buwan</string>
+    <string name="month_end_amount">Halaga sa Katapusan ng Buwan:</string>
+    <string name="overridden_warning">Ang halagang ito ay manu-manong binago. Ang pagbabago nito ay papalitan ang pagbabago.</string>
+    <string name="no_expenses_for_day">Walang gastos</string>
+    <string name="no_spending_for_day">Walang kasalukuyang gastos</string>
+    <string name="no_income_for_day">Walang nakalaang kita</string>
+    <string name="no_savings_for_day">Walang nakalaang ipon</string>
+    <string name="savings_allocation">Alokasyon sa Pag-iimpok</string>
+    <string name="select_income">Pumili ng Kita</string>
+    <string name="day_x">Araw %d</string>
+    <string name="expense_item_format">%s: %s</string>
+    <string name="spending_item_format">%s: %s</string>
+    <string name="income_item_format">%s: %s</string>
+    <string name="legend_expenses">Gastos</string>
+    <string name="legend_spending">Kasalukuyang Gastos</string>
+    <string name="legend_income">Kita</string>
+    <string name="legend_savings">Pag-iimpok</string>
+    <string name="close">Isara</string>
+    <string name="overwrite_confirmation">Ang pagkilos na ito ay mag-o-overwrite sa umiiral na halaga ng simula ng buwan, mawawala ang dating halaga. Ang mga kabuuang halaga ng katapusan ng linggo at katapusan ng buwan ay ma-update din. Nais mo bang magpatuloy?</string>
+    <string name="overwrite_month_start">I-overwrite ang Halaga ng Simula ng Buwan</string>
+    <string name="confirm">Kumpirmahin</string>
+    <string name="month_end_not_editable">Ang halagang ito ay hindi mababago</string>
+    <string name="week_end_not_editable">Ang mga kabuuang halaga ng katapusan ng linggo ay hindi ma-edit</string>
+    <string name="week_end_totals">Mga Kabuuang Halaga ng Katapusan ng Linggo</string>
+
+    <!-- ==================== HOME SCREEN ==================== -->
+    <!-- Chart Labels -->
+    <string name="chart_income_vs_expenses">Kita vs Gastos</string>
+    <string name="chart_expenses_breakdown">Mga Gastos ayon sa Kategorya</string>
+    <string name="chart_savings_comparison">Paghahambing ng Ideal na Pag-iimpok</string>
+    <string name="chart_spending_trends">Mga Trend ng Gastos</string>
+    <string name="spending_by_tag_header">Mga Gastos ayon sa Tag</string>
+    <string name="income">Kita</string>
+    <string name="expenses">Gastos</string>
+    <string name="savings_target">Target sa Pag-iimpok (20% ng kita)</string>
+    <string name="actual_savings">Aktwal na Pag-iimpok</string>
+    <string name="january">Enero</string>
+    <string name="february">Pebrero</string>
+    <string name="march">Marso</string>
+    <string name="april">Abril</string>
+    <string name="may">Mayo</string>
+    <string name="june">Hunyo</string>
+    <string name="july">Hulyo</string>
+    <string name="august">Agosto</string>
+    <string name="september">Setyembre</string>
+    <string name="october">Oktubre</string>
+    <string name="november">Nobyembre</string>
+    <string name="december">Disyembre</string>
+    <string name="unknown">Hindi Alam</string>
+
+    <!-- Month abbreviations (first letter) -->
+    <string name="month_jan_abbr">E</string>
+    <string name="month_feb_abbr">P</string>
+    <string name="month_mar_abbr">M</string>
+    <string name="month_apr_abbr">A</string>
+    <string name="month_may_abbr">M</string>
+    <string name="month_jun_abbr">H</string>
+    <string name="month_jul_abbr">H</string>
+    <string name="month_aug_abbr">A</string>
+    <string name="month_sep_abbr">S</string>
+    <string name="month_oct_abbr">O</string>
+    <string name="month_nov_abbr">N</string>
+    <string name="month_dec_abbr">D</string>
+
+    <!-- Timeframe options -->
+    <string name="timeframe_1m">Nakaraang Buwan</string>
+    <string name="timeframe_3m">3 Buwan</string>
+    <string name="timeframe_6m">6 na Buwan</string>
+    <string name="timeframe_1y">1 Taon</string>
+
+    <!-- Chart Data Formats -->
+    <string name="savings_comparison_format">%s: %s  |  %s: %s</string>
+    <string name="expense_category_format">%s: %s (%.5f%%)</string>
+
+    <!-- Loading and Error States -->
+    <string name="error_loading_charts">Hindi ma-load ang data ng tsart. Pakisubukan muli.</string>
+    <string name="no_expense_data">Walang data ng gastos na ipapakita</string>
+
+    <!-- Chart Labels -->
+    <string name="chart_target">Target</string>
+    <string name="chart_actual">Aktwal</string>
+    <string name="chart_spending">Gastos</string>
+
+    <!-- ==================== DIALOG MESSAGES ==================== -->
+    <string name="change_frequency_message">Ang pagbabago ng dalas ay magbubura ng lahat ng data ng kita para sa iba pang mga dalas. Magpatuloy?</string>
+    <string name="tips_delete_warning">Ang pag-uncheck sa kahon na ito ay magbubura ng lahat ng entry ng tip. Magpatuloy?</string>
+    <string name="delete_tip_confirm">Sigurado ka bang gusto mong burahin ang entry ng tip na ito?</string>
+    <string name="delete_category_message">Sigurado ka bang gusto mong burahin ang "%s"? Lahat ng gastos sa kategoryang ito ay mabubura rin.</string>
+
+    <!-- ==================== HINTS & PLACEHOLDERS ==================== -->
+    <string name="income_source_hint">Pinagmulan (hal. Sahod)</string>
+    <string name="income_source_short_hint">Pinagmulan</string>
+    <string name="amount_hint">Halaga</string>
+    <string name="category_name_hint">Pangalan ng Kategorya (hal. Utilities)</string>
+    <string name="expense_description_hint">Paglalarawan (hal. Bill ng Kuryente)</string>
+    <string name="expense_amount_hint">Halaga</string>
+    <string name="every_x_days_hint">Ilagay ang bilang ng mga araw</string>
+    <string name="select_due_date">Pumili ng Takdang Petsa</string>
+
+    <!-- ==================== FORMATS ==================== -->
+    <!-- Currency Formats -->
+    <string name="currency_display">%s%.2f</string>
+    <string name="currency_edit">%.2f</string>
+    <string name="currency_with_symbol">%s%s</string>
+    <string name="amount_formatted">%1$.2f ₱</string>
+    <string name="goal_suffix"> ng %1$s</string>
+    <string name="amount_signed">%1$s %2$s</string>
+    <string name="bucket_description">%1$s, %2$s, %3$s%4$s, i-double tap para makita ang kasaysayan</string>
+    <string name="transaction_description">%1$s, %2$s %3$s%4$s</string>
+
+    <!-- Percent Formats -->
+    <string name="percent_display">(%.5f%%)</string>
+
+    <!-- ==================== RECURRENCE OPTIONS ==================== -->
+    <string name="expense_recurring">Paulit-ulit</string>
+    <string name="recurring_monthly_same_day">Parehong araw bawat buwan</string>
+    <string name="recurring_every_x_days">Bawat X araw</string>
+
+    <!-- ==================== SUCCESS MESSAGES ==================== -->
+    <string name="income_added">Naidagdag ang Kita</string>
+    <string name="income_updated">Na-update ang Kita</string>
+    <string name="income_deleted">Nabura ang Kita</string>
+    <string name="tip_added">Naidagdag ang Tip</string>
+    <string name="tip_updated">Na-update ang Tip</string>
+    <string name="tip_deleted">Nabura ang Tip</string>
+    <string name="category_added">Naidagdag ang Kategorya</string>
+    <string name="category_updated">Na-update ang Kategorya</string>
+    <string name="category_deleted">Nabura ang Kategorya</string>
+    <string name="expense_added">Naidagdag ang Gastos</string>
+    <string name="expense_updated">Na-update ang Gastos</string>
+    <string name="expense_deleted">Nabura ang Gastos</string>
+    <string name="spending_added">Naidagdag ang Kasalukuyang Gastos</string>
+    <string name="spending_updated">Na-update ang Kasalukuyang Gastos</string>
+    <string name="spending_deleted">Nabura ang Kasalukuyang Gastos</string>
+
+    <!-- ==================== ERROR MESSAGES ==================== -->
+    <string name="error_load_data">Hindi ma-load ang data: %s</string>
+    <string name="error_add_income">Hindi maidagdag ang kita: %s</string>
+    <string name="error_update_income">Hindi ma-update ang kita: %s</string>
+    <string name="error_delete_income">Hindi mabura ang kita: %s</string>
+    <string name="error_add_tip">Hindi maidagdag ang tip: %s</string>
+    <string name="error_update_tip">Hindi ma-update ang tip: %s</string>
+    <string name="error_delete_tip">Hindi mabura ang tip: %s</string>
+    <string name="error_add_category">Hindi maidagdag ang kategorya: %s</string>
+    <string name="error_update_category">Hindi ma-update ang kategorya: %s</string>
+    <string name="error_delete_category">Hindi mabura ang kategorya: %s</string>
+    <string name="error_add_expense">Hindi maidagdag ang gastos: %s</string>
+    <string name="error_update_expense">Hindi ma-update ang gastos: %s</string>
+    <string name="error_delete_expense">Hindi mabura ang gastos: %s</string>
+    <string name="error_refresh_incomes">Hindi ma-refresh ang mga kita</string>
+    <string name="error_refresh_categories">Hindi ma-refresh ang mga kategorya</string>
+    <string name="error_refresh_expenses">Hindi ma-refresh ang mga gastos</string>
+    <string name="error_refresh_allocation">Hindi ma-refresh ang alokasyon</string>
+    <string name="error_save_allocation">Hindi ma-save ang alokasyon: %s</string>
+    <string name="error_unknown">May hindi kilalang error na naganap</string>
+    <string name="error_update_settings">Hindi ma-update ang mga setting: %s</string>
+
+    <!-- ==================== CURRENCY ARRAY ==================== -->
+    <string-array name="currencies">
+        <item>$ (USD)</item>
+        <item>€ (EUR)</item>
+        <item>£ (GBP)</item>
+        <item>¥ (JPY)</item>
+        <item>₹ (INR)</item>
+        <item>₱ (PHP)</item>
+        <item>R$ (BRL)</item>
+    </string-array>
+
+    <!-- ==================== ALLOCATION ITEM STRINGS ==================== -->
+    <string name="allocation_amount_default">0,00</string>
+    <string name="allocation_percent_default">(0,00000%)</string>
+
+    <!-- ==================== SETTINGS & AUTH ==================== -->
+    <string name="settings_account">Account</string>
+    <string name="settings_appearance">Hitsura</string>
+    <string name="settings_currency">Kalakal</string>
+    <string name="sign_in">Mag-sign In</string>
+    <string name="sign_up">Mag-sign Up</string>
+    <string name="sign_out">Mag-sign Out</string>
+    <string name="export_csv">I-export ang Kasalukuyang Buwan bilang CSV</string>
+    <string name="export_pdf">I-export ang Kasalukuyang Buwan bilang PDF</string>
+    <string name="past_months">Mga Nakaraang Buwan</string>
+    <string name="export_month_csv">I-export bilang CSV</string>
+    <string name="export_month_pdf">I-export bilang PDF</string>
+    <string name="select_month">Pumili ng buwan</string>
+    <string name="no_past_months">Walang nakaraang buwan na available</string>
+    <string name="enable_pin_lock">I-lock ang app gamit ang PIN</string>
+    <string name="enable_biometrics">Gumamit ng biometrics</string>
+    <string name="not_signed_in">Hindi naka-sign in</string>
+    <string name="light">Maliwanag</string>
+    <string name="dark">Madilim</string>
+    <string name="system">System</string>
+    <string name="buy_me_a_coffee">Bilhan mo ako ng kape</string>
+    <string name="version_placeholder">Bersyon %s</string>
+    <string name="version_format">Bersyon %s</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Kumpirmahin ang Password</string>
+    <string name="sign_up_prompt">Wala kang account? Mag-sign up!</string>
+    <string name="sign_in_prompt">May account ka na? Mag-sign in!</string>
+    <string name="back">Bumalik</string>
+    <string name="no_email">Walang email</string>
+    <string name="confirm_email">Kumpirmahin ang Email</string>
+    <string name="forgot_password">Nakalimutan ang password?</string>
+    <string name="send">Ipadala</string>
+    <string name="fill_all_fields">Pakilagay ang lahat ng field</string>
+    <string name="enter_email">Pakilagay ang iyong email</string>
+    <string name="reset_failed">Hindi maipadala ang reset email: %s</string>
+    <string name="signed_in_success">Matagumpay na naka-sign in</string>
+    <string name="sign_in_failed">Nabigo ang pag-sign in: %s</string>
+    <string name="data_restored">Na-restore ang iyong data mula sa cloud</string>
+    <string name="data_backed_up">Na-back up ang iyong lokal na data sa cloud</string>
+    <string name="toggle_password_visibility">Ipakita/itago ang password</string>
+    <string name="enter_valid_email">Pakilagay ang wastong email address</string>
+    <string name="emails_match">Tugma ang mga email</string>
+    <string name="emails_do_not_match">Hindi tugma ang mga email</string>
+    <string name="password_too_short">Ang password ay dapat may hindi bababa sa 8 character</string>
+    <string name="password_need_number">Ang password ay dapat may hindi bababa sa isang numero</string>
+    <string name="password_need_special">Ang password ay dapat may hindi bababa sa isang espesyal na character</string>
+    <string name="passwords_match">Tugma ang mga password</string>
+    <string name="passwords_do_not_match">Hindi tugma ang mga password</string>
+    <string name="password_strength_weak">Mahina</string>
+    <string name="password_strength_medium">Katamtaman</string>
+    <string name="password_strength_strong">Malakas</string>
+    <string name="sign_up_failed">Nabigo ang pag-sign up: %s</string>
+    <string name="verification_code_sent">Isang verification code ang ipinadala sa %s.\nPakilagay ito sa ibaba.</string>
+    <string name="verification_code">6-digit code</string>
+    <string name="enter_valid_code">Pakilagay ang wastong 6-digit code</string>
+    <string name="verify">I-verify</string>
+    <string name="resend_code">Ipadala muli ang code</string>
+    <string name="code_resent">Naipadala muli ang verification code</string>
+    <string name="email_verified">Matagumpay na na-verify ang email! Maaari ka nang mag-sign in.</string>
+    <string name="verification_failed">Nabigo ang pag-verify: %s</string>
+    <string name="resend_failed">Hindi naipadala muli ang code: %s</string>
+    <string name="new_password">Bagong password</string>
+    <string name="reset_password">I-reset ang password</string>
+    <string name="reset_code_sent">Isang reset code ang ipinadala sa %s.\nPakilagay ito sa ibaba at pumili ng bagong password.</string>
+    <string name="reset_code_sent_snackbar">Naipadala ang reset code! Tingnan ang iyong email.</string>
+    <string name="reset_request_failed">Hindi maipadala ang reset code: %s</string>
+    <string name="password_reset_success">Matagumpay na na-reset ang password! Maaari ka nang mag-sign in.</string>
+    <string name="password_same_as_old">Ang bagong password ay dapat iba sa lumang password</string>
+    <string name="password_too_weak">Ang password ay hindi nakakatugon sa mga kinakailangan sa seguridad</string>
+    <string name="error_invalid_credentials">Hindi wasto ang email o password. Pakisubukan muli.</string>
+    <string name="error_email_not_confirmed">Pakiverify muna ang iyong email bago mag-sign in.</string>
+    <string name="error_user_exists">Mayroon nang account na may ganitong email. Mag-sign in na lang.</string>
+    <string name="error_email_not_found">Walang nakitang account na may ganitong email address.</string>
+    <string name="error_invalid_code">Hindi wasto ang verification code. Pakisuri at subukan muli.</string>
+    <string name="sign_in_instead">May account ka na? Mag-sign in</string>
+    <string name="verification_hint">Kung na-verify mo na ang iyong email at nakikita mo ang pahinang ito, subukang mag-sign in nang direkta. Tingnan ang iyong email para sa bagong code kung kinakailangan.</string>
+    <string name="password_requirements">Ang password ay dapat may hindi bababa sa 8 character, kasama ang malaking titik, maliit na titik, numero, at espesyal na character.</string>
+    <string name="password_need_uppercase">Ang password ay dapat may hindi bababa sa isang malaking titik</string>
+    <string name="password_need_lowercase">Ang password ay dapat may hindi bababa sa isang maliit na titik</string>
+    <string name="settings_legal">Legal</string>
+    <string name="privacy_policy">Patakaran sa Privacy</string>
+    <string name="terms_of_service">Mga Tuntunin ng Serbisyo</string>
+
+    <string name="set_pin">Magtakda ng PIN</string>
+    <string name="change_pin">Baguhin ang PIN</string>
+    <string name="enter_pin">Ilagay ang PIN</string>
+    <string name="confirm_pin">Kumpirmahin ang PIN</string>
+    <string name="pin">PIN</string>
+    <string name="unlock">I-unlock</string>
+    <string name="use_biometrics">Gumamit ng biometrics</string>
+    <string name="pins_do_not_match">Hindi tugma ang mga PIN</string>
+    <string name="pin_set">Matagumpay na naitakda ang PIN</string>
+    <string name="incorrect_pin">Maling PIN</string>
+    <string name="enter_valid_pin">Pakilagay ang wastong 4-digit PIN</string>
+    <string name="biometric_title">I-unlock gamit ang biometrics</string>
+    <string name="biometric_subtitle">Gamitin ang iyong fingerprint o mukha</string>
+    <string name="biometric_failed">Nabigo ang biometric authentication</string>
+    <string name="biometric_not_available">Hindi available ang biometrics sa device na ito</string>
+    <string name="delete_pin">Burahin ang PIN</string>
+    <string name="delete_pin_title">Burahin ang PIN</string>
+    <string name="delete_pin_message">Sigurado ka bang gusto mong burahin ang iyong PIN? Hindi mo na mai-lock ang app gamit ang PIN.</string>
+    <string name="pin_deleted">Nabura ang PIN</string>
+    <string name="delete_account">Burahin ang Account</string>
+    <string name="delete_account_password_prompt">Pakilagay ang iyong password para kumpirmahin.</string>
+    <string name="delete_account_success">Nabura na ang iyong account.</string>
+    <string name="delete_account_failed">Hindi mabura ang account: %s</string>
+    <string name="delete_account_wrong_password">Maling password. Pakisubukan muli.</string>
+
+    <!-- Export messages -->
+    <string name="preparing_csv_export">Inihahanda ang CSV export…</string>
+    <string name="preparing_pdf_export">Inihahanda ang PDF export…</string>
+    <string name="export_failed">Hindi makagawa ng export file</string>
+    <string name="share_csv">I-share ang CSV</string>
+    <string name="share_pdf">I-share ang PDF</string>
+    <string name="export_saved">Na-save ang export sa Downloads</string>
+    <string name="share">I-share</string>
+
+    <!-- Accessibility -->
+    <string name="week_end_horizontal_scroll">Mga kabuuang halaga ng katapusan ng linggo, mag-scroll para makita ang iba pa</string>
+    <string name="preview_pane">Kung hindi kasya ang nilalaman sa screen, mag-scroll pababa o pataas</string>
+    <string name="expense_scroll">Kung lumampas ang nilalaman sa taas ng window, mag-scroll pataas o pababa.</string>
+    <string name="show_password">Ipakita ang password</string>
+    <string name="hide_password">Itago ang password</string>
+    <string name="add_allocation_content_desc">Magdagdag ng %1$s na alokasyon</string>
+    <string name="account_section">Seksyon ng Account</string>
+    <string name="appearance_section">Seksyon ng Hitsura</string>
+    <string name="currency_section">Seksyon ng Kalakal</string>
+    <string name="archive_section">Seksyon ng Archive</string>
+    <string name="legal_section">Seksyon ng Legal</string>
+    <string name="expanded">Pinalawak</string>
+    <string name="collapsed">Nakasara</string>
+    <string name="select_currency">Pumili ng kalakal</string>
+    <string name="funds_deducted_success">Naalis ang pondo mula sa account at idinagdag muli sa pool</string>
+    <string name="amount_exceeds_maximum">Lumalampas ang halaga sa maximum</string>
+    <string name="amount_must_be_greater_than_zero">Ang halaga ay dapat mas malaki sa zero</string>
+    <string name="amount_exceeds_maximum_allowed">Lumalampas sa pinapayagang maximum</string>
+    <string name="amount_exceeds_balance">Lumalampas ang halaga sa natitirang balanse</string>
+    <string name="recurrence_exceeds_maximum">Dapat nasa pagitan ng 5 at 366 araw</string>
+    <string name="character_counter">%1$d/%2$d</string>
+    <string name="note_counter">%1$d/%2$d</string>
+
+    <!-- ==================== FREQUENCY OPTIONS ==================== -->
+    <string-array name="frequency_options">
+        <item>Buwanan</item>
+        <item>Lingguhan</item>
+        <item>Dalawang-lingguhan</item>
+    </string-array>
+</resources>

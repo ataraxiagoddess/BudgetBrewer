@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== APP NAME ==================== -->
+    <string name="app_name">Budget Brewer</string>
+
+    <!-- ==================== MAIN ACTIVITY ==================== -->
+    <string name="month_year_format">%s %d</string>
+
+    <!-- ==================== INCOME & EXPENSES SCREEN ==================== -->
+    <!-- Section Titles -->
+    <string name="income_section_title">収入</string>
+    <string name="expenses_section_title">支出</string>
+    <string name="leftover_funds_title">残りの資金</string>
+    <string name="pay_frequency_label">支払い頻度</string>
+    <string name="tips_misc">チップ / その他</string>
+
+    <!-- Income Rows -->
+    <string name="monthly_income">月収</string>
+    <string name="other_income">その他</string>
+    <string name="weeks_1_2">第1・2週</string>
+    <string name="weeks_3_4">第3・4週</string>
+    <string name="week_5_other">第5週・その他</string>
+    <string name="week_1">第1週</string>
+    <string name="week_2">第2週</string>
+    <string name="week_3">第3週</string>
+    <string name="week_4">第4週</string>
+    <string name="week_5">第5週</string>
+
+    <!-- Buttons -->
+    <string name="add_category_button">+ カテゴリ</string>
+    <string name="add_expense_button">+ 支出</string>
+    <string name="add_tip">+ チップ</string>
+    <string name="add_symbol">+</string>
+    <string name="add_income_button">+ 収入</string>
+
+    <!-- Common Actions -->
+    <string name="add">追加</string>
+    <string name="save">保存</string>
+    <string name="delete">削除</string>
+    <string name="cancel">キャンセル</string>
+    <string name="ok">OK</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="edit">編集</string>
+
+    <!-- Leftover Section -->
+    <string name="leftover_description">支出を差し引いた後に貯蓄または通常支出に割り当てられる金額：</string>
+    <string name="add_allocation">割り当てを追加</string>
+    <string name="savings_title">貯蓄</string>
+    <string name="spending_title">通常支出</string>
+    <string name="default_amount_zero">0,00</string>
+    <string name="default_percent_zero">(0,00000%)</string>
+
+    <!-- Allocation Status Messages -->
+    <string name="allocation_status_overallocated">利用可能な資金よりも多く割り当てられています。割り当てを減らしてください</string>
+    <string name="allocation_status_fully_allocated">すべての資金が割り当てられました</string>
+    <string name="allocation_status_available">まだ割り当て可能な資金があります</string>
+    <string name="allocation_exceeds_funds">利用可能な資金を %s 超過しています</string>
+    <string name="allocation_status_expenses_exceed">支出が収入を超えているため、割り当て可能な資金がありません</string>
+    <string name="allocation_status_no_funds">割り当て可能な資金がありません</string>
+    <string name="savings_allocation_conflict">すでに分配済みの金額を下回る貯蓄割り当てに減らすことはできません。</string>
+    <string name="savings_allocation_conflict_title">削減できません</string>
+    <string name="savings_allocation_conflict_message">貯蓄口座に %1$s をすでに分配しています。貯蓄割り当てを減らす前に、分配済みの合計を減らす必要があります。</string>
+
+    <!-- ==================== DIALOG TITLES ==================== -->
+    <!-- Income Dialogs -->
+    <string name="add_income_dialog_title">収入を追加</string>
+    <string name="edit_income_dialog_title">収入を編集</string>
+
+    <!-- Tip Dialogs -->
+    <string name="add_tip_dialog_title">チップを追加</string>
+    <string name="edit_tip_dialog_title">チップを編集</string>
+    <string name="delete_tip_title">チップを削除</string>
+
+    <!-- Category Dialogs -->
+    <string name="no_categories">まだカテゴリがありません。\n「+」ボタンをタップして追加してください！</string>
+    <string name="add_category_title">カテゴリを追加</string>
+    <string name="edit_category_title">カテゴリを編集</string>
+    <string name="delete_category_title">カテゴリを削除</string>
+    <string name="swipe_hint">左右にスワイプして他のカテゴリを表示</string>
+    <string name="max_categories_reached">カテゴリの最大数に達しました (%d)</string>
+    <string name="max_expenses_per_category_reached">カテゴリごとの支出の最大数に達しました (%d)</string>
+
+    <!-- Expense Dialogs -->
+    <string name="add_expense_title">%s に支出を追加</string>
+    <string name="edit_expense_title">支出を編集</string>
+    <string name="mark_day_complete">その日を完了済みにする</string>
+
+    <!-- Frequency Change Dialog -->
+    <string name="change_frequency_title">頻度を変更</string>
+
+    <!-- Allocation Dialogs -->
+    <string name="allocation_dialog_description">割り当てる金額：</string>
+    <string name="allocation_amount_hint">金額を入力</string>
+    <string name="allocation_delete_message">割り当てを削除しますか？</string>
+
+    <!-- ==================== NAVIGATION ==================== -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_finances">財務</string>
+    <string name="nav_savings">貯蓄</string>
+    <string name="nav_expenses">支出</string>
+    <string name="nav_spending">通常支出</string>
+    <string name="nav_calendar">カレンダー</string>
+    <string name="settings">設定</string>
+
+    <!-- ==================== SAVINGS PAGE ==================== -->
+    <string name="savings_bucket_title">貯蓄口座</string>
+    <string name="empty_savings_title">まだ貯蓄口座がありません</string>
+    <string name="empty_savings_message">目標に向けて貯蓄を始めましょう！下のボタンをタップして最初の口座を作成してください。</string>
+    <string name="add_bucket">口座を追加</string>
+    <string name="create_bucket">口座を作成</string>
+    <string name="bucket_name">口座名</string>
+    <string name="bucket_name_required">口座名を入力してください</string>
+    <string name="goal">目標</string>
+    <string name="growth">進捗</string>
+    <string name="target_amount">目標金額</string>
+    <string name="select_color">色を選択</string>
+    <string name="bucket_added">口座を追加しました</string>
+    <string name="goal_exceeded">目標を超過しました</string>
+    <string name="error_update_bucket">口座を更新できませんでした</string>
+    <string name="error_delete_bucket">口座の削除中にエラーが発生しました</string>
+    <string name="error_distribute">分配の追加中にエラーが発生しました</string>
+    <string name="distribute">分配</string>
+    <string name="available_pool_label">分配可能な資金：</string>
+    <string name="available_pool_amount">分配可能な資金：%1$.2f ¥</string>
+    <string name="bucket_updated">口座を更新しました</string>
+    <string name="bucket_deleted">口座を削除しました</string>
+    <string name="funds_distributed">資金を分配しました</string>
+    <string name="delete_bucket_title">口座を削除</string>
+    <string name="delete_bucket_message">「%1$s」とその取引を完全に削除しますか？</string>
+    <string name="target_label">目標：</string>
+    <string name="actual_label">現在：</string>
+    <string name="deduct">差し引く</string>
+    <string name="max_deduction_label">最大差引額：%1$.2f ¥</string>
+    <string name="withdraw">引き出す</string>
+    <string name="withdraw_title">資金を引き出す</string>
+    <string name="withdraw_confirmation">「%1$s」から %2$s をすべて引き出しますか？口座はアーカイブされます。</string>
+    <string name="withdraw_choice">口座をどうしますか？</string>
+    <string name="reuse_bucket">口座を再利用</string>
+    <string name="delete_bucket">口座を削除</string>
+    <string name="funds_withdrawn">資金を引き出しました</string>
+    <string name="error_restore">口座の復元に失敗しました</string>
+    <string name="no_archived_buckets">アーカイブされた口座はありません</string>
+    <string name="restore">復元</string>
+    <string name="settings_archive">アーカイブ</string>
+    <string name="archive_months">月</string>
+    <string name="archive_buckets">口座</string>
+    <string name="archive_months_placeholder">月のアーカイブは近日対応予定</string>
+    <string name="bucket_archived">口座をアーカイブしました</string>
+    <string name="bucket_restored">口座を復元しました</string>
+    <string name="overachievement_format">目標を +%.1f%% 超過</string>
+    <string name="transaction_edited">取引を更新しました</string>
+
+    <!-- ==================== EXPENSES PAGE ==================== -->
+    <string name="total_expenses_label">合計支出</string>
+    <string name="remaining_expenses_label">残り</string>
+    <string name="total_expenses_format">%s</string>
+    <string name="remaining_expenses_format">%s</string>
+
+    <!-- ==================== SPENDING PAGE ==================== -->
+    <string name="add_transaction">+ 取引</string>
+    <string name="no_transactions">まだ取引がありません。\n「+」ボタンをタップして追加してください！</string>
+    <string name="add_transaction_title">取引を追加</string>
+    <string name="edit_transaction_title">取引を編集</string>
+    <string name="transaction_date_hint">日付を選択</string>
+    <string name="transaction_source_hint">ソースを入力（例：食料品）</string>
+    <string name="transaction_amount_hint">金額</string>
+    <string name="delete_transaction_title">取引を削除</string>
+    <string name="delete_transaction_message">この取引を削除してもよろしいですか？</string>
+    <string name="transaction_saved">取引を保存しました</string>
+    <string name="transaction_updated">取引を更新しました</string>
+    <string name="transaction_deleted">取引を削除しました</string>
+    <string name="error_add_transaction">取引の追加に失敗しました：%s</string>
+    <string name="error_update_transaction">取引の更新に失敗しました：%s</string>
+    <string name="error_delete_transaction">取引の削除に失敗しました：%s</string>
+    <string name="error_load_transactions">取引の読み込みに失敗しました</string>
+    <string name="spending_bubble">支出：%s</string>
+    <string name="remaining_bubble">残り：%s</string>
+    <string name="transaction_exceeds_warning">取引が利用可能な資金を超えています。財務で資金の再割り当てを検討してください</string>
+    <string name="tag_title">タグ</string>
+    <string name="tag_hint">タグを入力（例：「ファストフード」）</string>
+    <string name="pound_icon">#</string>
+    <string name="note_title">メモ</string>
+    <string name="note_hint">メモを追加（省略可）</string>
+    <string name="tags_toggle_label">タグ</string>
+    <string name="pound_symbol">ナンバー記号</string>
+    <string name="info_symbol">情報記号</string>
+
+    <!-- ==================== CALENDAR PAGE ==================== -->
+    <string name="assign">割り当て</string>
+    <string name="assign_income">収入を割り当て</string>
+    <string name="month_start_amount">月初金額：</string>
+    <string name="week_x">第 %d 週</string>
+    <string name="net_total">正味：%s</string>
+    <string name="edit_month_start">月初金額を編集</string>
+    <string name="month_end_amount">月末金額：</string>
+    <string name="overridden_warning">この金額は手動で上書きされています。変更すると上書きが置き換えられます。</string>
+    <string name="no_expenses_for_day">支出なし</string>
+    <string name="no_spending_for_day">通常支出なし</string>
+    <string name="no_income_for_day">割り当てられた収入なし</string>
+    <string name="no_savings_for_day">割り当てられた貯蓄なし</string>
+    <string name="savings_allocation">貯蓄割り当て</string>
+    <string name="select_income">収入を選択</string>
+    <string name="day_x">%d 日</string>
+    <string name="expense_item_format">%s：%s</string>
+    <string name="spending_item_format">%s：%s</string>
+    <string name="income_item_format">%s：%s</string>
+    <string name="legend_expenses">支出</string>
+    <string name="legend_spending">通常支出</string>
+    <string name="legend_income">収入</string>
+    <string name="legend_savings">貯蓄</string>
+    <string name="close">閉じる</string>
+    <string name="overwrite_confirmation">この操作は既存の月初金額を上書きします。以前の値は失われます。週末および月末の合計も更新されます。続行しますか？</string>
+    <string name="overwrite_month_start">月初金額を上書き</string>
+    <string name="confirm">確認</string>
+    <string name="month_end_not_editable">この金額は変更できません</string>
+    <string name="week_end_not_editable">週末の合計は編集できません</string>
+    <string name="week_end_totals">週末合計</string>
+
+    <!-- ==================== HOME SCREEN ==================== -->
+    <!-- Chart Labels -->
+    <string name="chart_income_vs_expenses">収入 vs 支出</string>
+    <string name="chart_expenses_breakdown">カテゴリ別支出</string>
+    <string name="chart_savings_comparison">理想的な貯蓄の比較</string>
+    <string name="chart_spending_trends">支出の傾向</string>
+    <string name="spending_by_tag_header">タグ別支出</string>
+    <string name="income">収入</string>
+    <string name="expenses">支出</string>
+    <string name="savings_target">貯蓄目標（収入の20%）</string>
+    <string name="actual_savings">実際の貯蓄</string>
+    <string name="january">1月</string>
+    <string name="february">2月</string>
+    <string name="march">3月</string>
+    <string name="april">4月</string>
+    <string name="may">5月</string>
+    <string name="june">6月</string>
+    <string name="july">7月</string>
+    <string name="august">8月</string>
+    <string name="september">9月</string>
+    <string name="october">10月</string>
+    <string name="november">11月</string>
+    <string name="december">12月</string>
+    <string name="unknown">不明</string>
+
+    <!-- Month abbreviations (first letter) -->
+    <string name="month_jan_abbr">1</string>
+    <string name="month_feb_abbr">2</string>
+    <string name="month_mar_abbr">3</string>
+    <string name="month_apr_abbr">4</string>
+    <string name="month_may_abbr">5</string>
+    <string name="month_jun_abbr">6</string>
+    <string name="month_jul_abbr">7</string>
+    <string name="month_aug_abbr">8</string>
+    <string name="month_sep_abbr">9</string>
+    <string name="month_oct_abbr">10</string>
+    <string name="month_nov_abbr">11</string>
+    <string name="month_dec_abbr">12</string>
+
+    <!-- Timeframe options -->
+    <string name="timeframe_1m">先月</string>
+    <string name="timeframe_3m">3か月</string>
+    <string name="timeframe_6m">6か月</string>
+    <string name="timeframe_1y">1年</string>
+
+    <!-- Chart Data Formats -->
+    <string name="savings_comparison_format">%s：%s  |  %s：%s</string>
+    <string name="expense_category_format">%s：%s (%.5f%%)</string>
+
+    <!-- Loading and Error States -->
+    <string name="error_loading_charts">グラフデータを読み込めませんでした。もう一度お試しください。</string>
+    <string name="no_expense_data">表示する支出データがありません</string>
+
+    <!-- Chart Labels -->
+    <string name="chart_target">目標</string>
+    <string name="chart_actual">実際</string>
+    <string name="chart_spending">支出</string>
+
+    <!-- ==================== DIALOG MESSAGES ==================== -->
+    <string name="change_frequency_message">頻度を変更すると、他の頻度の収入データがすべて削除されます。続行しますか？</string>
+    <string name="tips_delete_warning">このチェックを外すと、すべてのチップエントリが削除されます。続行しますか？</string>
+    <string name="delete_tip_confirm">このチップエントリを削除してもよろしいですか？</string>
+    <string name="delete_category_message">「%s」を削除してもよろしいですか？このカテゴリのすべての支出も削除されます。</string>
+
+    <!-- ==================== HINTS & PLACEHOLDERS ==================== -->
+    <string name="income_source_hint">ソース（例：給与）</string>
+    <string name="income_source_short_hint">ソース</string>
+    <string name="amount_hint">金額</string>
+    <string name="category_name_hint">カテゴリ名（例：公共料金）</string>
+    <string name="expense_description_hint">説明（例：電気代）</string>
+    <string name="expense_amount_hint">金額</string>
+    <string name="every_x_days_hint">日数を入力</string>
+    <string name="select_due_date">期限日を選択</string>
+
+    <!-- ==================== FORMATS ==================== -->
+    <!-- Currency Formats -->
+    <string name="currency_display">%s%.2f</string>
+    <string name="currency_edit">%.2f</string>
+    <string name="currency_with_symbol">%s%s</string>
+    <string name="amount_formatted">%1$.2f ¥</string>
+    <string name="goal_suffix"> / %1$s</string>
+    <string name="amount_signed">%1$s %2$s</string>
+    <string name="bucket_description">%1$s、%2$s、%3$s%4$s、ダブルタップで履歴を表示</string>
+    <string name="transaction_description">%1$s、%2$s %3$s%4$s</string>
+
+    <!-- Percent Formats -->
+    <string name="percent_display">(%.5f%%)</string>
+
+    <!-- ==================== RECURRENCE OPTIONS ==================== -->
+    <string name="expense_recurring">繰り返し</string>
+    <string name="recurring_monthly_same_day">毎月同じ日</string>
+    <string name="recurring_every_x_days">X日ごと</string>
+
+    <!-- ==================== SUCCESS MESSAGES ==================== -->
+    <string name="income_added">収入を追加しました</string>
+    <string name="income_updated">収入を更新しました</string>
+    <string name="income_deleted">収入を削除しました</string>
+    <string name="tip_added">チップを追加しました</string>
+    <string name="tip_updated">チップを更新しました</string>
+    <string name="tip_deleted">チップを削除しました</string>
+    <string name="category_added">カテゴリを追加しました</string>
+    <string name="category_updated">カテゴリを更新しました</string>
+    <string name="category_deleted">カテゴリを削除しました</string>
+    <string name="expense_added">支出を追加しました</string>
+    <string name="expense_updated">支出を更新しました</string>
+    <string name="expense_deleted">支出を削除しました</string>
+    <string name="spending_added">通常支出を追加しました</string>
+    <string name="spending_updated">通常支出を更新しました</string>
+    <string name="spending_deleted">通常支出を削除しました</string>
+
+    <!-- ==================== ERROR MESSAGES ==================== -->
+    <string name="error_load_data">データの読み込みに失敗しました：%s</string>
+    <string name="error_add_income">収入の追加に失敗しました：%s</string>
+    <string name="error_update_income">収入の更新に失敗しました：%s</string>
+    <string name="error_delete_income">収入の削除に失敗しました：%s</string>
+    <string name="error_add_tip">チップの追加に失敗しました：%s</string>
+    <string name="error_update_tip">チップの更新に失敗しました：%s</string>
+    <string name="error_delete_tip">チップの削除に失敗しました：%s</string>
+    <string name="error_add_category">カテゴリの追加に失敗しました：%s</string>
+    <string name="error_update_category">カテゴリの更新に失敗しました：%s</string>
+    <string name="error_delete_category">カテゴリの削除に失敗しました：%s</string>
+    <string name="error_add_expense">支出の追加に失敗しました：%s</string>
+    <string name="error_update_expense">支出の更新に失敗しました：%s</string>
+    <string name="error_delete_expense">支出の削除に失敗しました：%s</string>
+    <string name="error_refresh_incomes">収入の更新に失敗しました</string>
+    <string name="error_refresh_categories">カテゴリの更新に失敗しました</string>
+    <string name="error_refresh_expenses">支出の更新に失敗しました</string>
+    <string name="error_refresh_allocation">割り当ての更新に失敗しました</string>
+    <string name="error_save_allocation">割り当ての保存に失敗しました：%s</string>
+    <string name="error_unknown">不明なエラーが発生しました</string>
+    <string name="error_update_settings">設定の更新に失敗しました：%s</string>
+
+    <!-- ==================== CURRENCY ARRAY ==================== -->
+    <string-array name="currencies">
+        <item>$ (USD)</item>
+        <item>€ (EUR)</item>
+        <item>£ (GBP)</item>
+        <item>¥ (JPY)</item>
+        <item>₹ (INR)</item>
+        <item>₱ (PHP)</item>
+        <item>R$ (BRL)</item>
+    </string-array>
+
+    <!-- ==================== ALLOCATION ITEM STRINGS ==================== -->
+    <string name="allocation_amount_default">0,00</string>
+    <string name="allocation_percent_default">(0,00000%)</string>
+
+    <!-- ==================== SETTINGS & AUTH ==================== -->
+    <string name="settings_account">アカウント</string>
+    <string name="settings_appearance">外観</string>
+    <string name="settings_currency">通貨</string>
+    <string name="sign_in">ログイン</string>
+    <string name="sign_up">サインアップ</string>
+    <string name="sign_out">ログアウト</string>
+    <string name="export_csv">今月をCSVにエクスポート</string>
+    <string name="export_pdf">今月をPDFにエクスポート</string>
+    <string name="past_months">過去の月</string>
+    <string name="export_month_csv">CSVにエクスポート</string>
+    <string name="export_month_pdf">PDFにエクスポート</string>
+    <string name="select_month">月を選択</string>
+    <string name="no_past_months">過去の月はありません</string>
+    <string name="enable_pin_lock">PINでアプリをロック</string>
+    <string name="enable_biometrics">生体認証を使用</string>
+    <string name="not_signed_in">ログインしていません</string>
+    <string name="light">ライト</string>
+    <string name="dark">ダーク</string>
+    <string name="system">システム</string>
+    <string name="buy_me_a_coffee">コーヒーを御馳走する</string>
+    <string name="version_placeholder">バージョン %s</string>
+    <string name="version_format">バージョン %s</string>
+    <string name="email">メール</string>
+    <string name="password">パスワード</string>
+    <string name="confirm_password">パスワードを確認</string>
+    <string name="sign_up_prompt">アカウントをお持ちでない方はこちら！</string>
+    <string name="sign_in_prompt">すでにアカウントをお持ちの方はこちら！</string>
+    <string name="back">戻る</string>
+    <string name="no_email">メールなし</string>
+    <string name="confirm_email">メールを確認</string>
+    <string name="forgot_password">パスワードをお忘れですか？</string>
+    <string name="send">送信</string>
+    <string name="fill_all_fields">すべてのフィールドに入力してください</string>
+    <string name="enter_email">メールアドレスを入力してください</string>
+    <string name="reset_failed">リセットメールの送信に失敗しました：%s</string>
+    <string name="signed_in_success">ログインに成功しました</string>
+    <string name="sign_in_failed">ログインに失敗しました：%s</string>
+    <string name="data_restored">クラウドからデータが復元されました</string>
+    <string name="data_backed_up">ローカルデータがクラウドにバックアップされました</string>
+    <string name="toggle_password_visibility">パスワードの表示/非表示</string>
+    <string name="enter_valid_email">有効なメールアドレスを入力してください</string>
+    <string name="emails_match">メールアドレスが一致します</string>
+    <string name="emails_do_not_match">メールアドレスが一致しません</string>
+    <string name="password_too_short">パスワードは8文字以上必要です</string>
+    <string name="password_need_number">パスワードには数字が少なくとも1つ含まれている必要があります</string>
+    <string name="password_need_special">パスワードには特殊文字が少なくとも1つ含まれている必要があります</string>
+    <string name="passwords_match">パスワードが一致します</string>
+    <string name="passwords_do_not_match">パスワードが一致しません</string>
+    <string name="password_strength_weak">弱い</string>
+    <string name="password_strength_medium">中程度</string>
+    <string name="password_strength_strong">強い</string>
+    <string name="sign_up_failed">サインアップに失敗しました：%s</string>
+    <string name="verification_code_sent">%s に確認コードが送信されました。\n下記に入力してください。</string>
+    <string name="verification_code">6桁のコード</string>
+    <string name="enter_valid_code">有効な6桁のコードを入力してください</string>
+    <string name="verify">確認</string>
+    <string name="resend_code">コードを再送信</string>
+    <string name="code_resent">確認コードを再送信しました</string>
+    <string name="email_verified">メールが確認されました！ログインできます。</string>
+    <string name="verification_failed">確認に失敗しました：%s</string>
+    <string name="resend_failed">コードの再送信に失敗しました：%s</string>
+    <string name="new_password">新しいパスワード</string>
+    <string name="reset_password">パスワードをリセット</string>
+    <string name="reset_code_sent">%s にリセットコードが送信されました。\n下記に入力して新しいパスワードを設定してください。</string>
+    <string name="reset_code_sent_snackbar">リセットコードを送信しました！メールを確認してください。</string>
+    <string name="reset_request_failed">リセットコードの送信に失敗しました：%s</string>
+    <string name="password_reset_success">パスワードがリセットされました！ログインできます。</string>
+    <string name="password_same_as_old">新しいパスワードは古いパスワードと異なる必要があります</string>
+    <string name="password_too_weak">パスワードがセキュリティ要件を満たしていません</string>
+    <string name="error_invalid_credentials">メールまたはパスワードが無効です。もう一度お試しください。</string>
+    <string name="error_email_not_confirmed">ログイン前にメールを確認してください。</string>
+    <string name="error_user_exists">このメールのアカウントはすでに存在します。ログインしてください。</string>
+    <string name="error_email_not_found">このメールアドレスのアカウントは見つかりません。</string>
+    <string name="error_invalid_code">無効な確認コードです。確認して再度お試しください。</string>
+    <string name="sign_in_instead">すでにアカウントをお持ちの方はログイン</string>
+    <string name="verification_hint">すでにメールを確認済みでこのページが表示される場合は、直接ログインをお試しください。必要に応じて新しいコードをメールで確認してください。</string>
+    <string name="password_requirements">パスワードは8文字以上で、大文字・小文字・数字・特殊文字を含む必要があります。</string>
+    <string name="password_need_uppercase">パスワードには大文字が少なくとも1つ含まれている必要があります</string>
+    <string name="password_need_lowercase">パスワードには小文字が少なくとも1つ含まれている必要があります</string>
+    <string name="settings_legal">法的情報</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="terms_of_service">利用規約</string>
+
+    <string name="set_pin">PINを設定</string>
+    <string name="change_pin">PINを変更</string>
+    <string name="enter_pin">PINを入力</string>
+    <string name="confirm_pin">PINを確認</string>
+    <string name="pin">PIN</string>
+    <string name="unlock">ロック解除</string>
+    <string name="use_biometrics">生体認証を使用</string>
+    <string name="pins_do_not_match">PINが一致しません</string>
+    <string name="pin_set">PINが設定されました</string>
+    <string name="incorrect_pin">PINが正しくありません</string>
+    <string name="enter_valid_pin">有効な4桁のPINを入力してください</string>
+    <string name="biometric_title">生体認証でロック解除</string>
+    <string name="biometric_subtitle">指紋または顔を使用</string>
+    <string name="biometric_failed">生体認証に失敗しました</string>
+    <string name="biometric_not_available">このデバイスでは生体認証が利用できません</string>
+    <string name="delete_pin">PINを削除</string>
+    <string name="delete_pin_title">PINを削除</string>
+    <string name="delete_pin_message">PINを削除してもよろしいですか？PINでアプリをロックできなくなります。</string>
+    <string name="pin_deleted">PINを削除しました</string>
+    <string name="delete_account">アカウントを削除</string>
+    <string name="delete_account_password_prompt">確認のためパスワードを入力してください。</string>
+    <string name="delete_account_success">アカウントが削除されました。</string>
+    <string name="delete_account_failed">アカウントの削除に失敗しました：%s</string>
+    <string name="delete_account_wrong_password">パスワードが正しくありません。もう一度お試しください。</string>
+
+    <!-- Export messages -->
+    <string name="preparing_csv_export">CSVエクスポートを準備中…</string>
+    <string name="preparing_pdf_export">PDFエクスポートを準備中…</string>
+    <string name="export_failed">エクスポートファイルの作成に失敗しました</string>
+    <string name="share_csv">CSVを共有</string>
+    <string name="share_pdf">PDFを共有</string>
+    <string name="export_saved">エクスポートをダウンロードに保存しました</string>
+    <string name="share">共有</string>
+
+    <!-- Accessibility -->
+    <string name="week_end_horizontal_scroll">週末合計、スクロールして詳細表示</string>
+    <string name="preview_pane">内容が画面に収まらない場合は上下にスクロールしてください</string>
+    <string name="expense_scroll">内容がウィンドウの高さを超える場合は上下にスクロールしてください。</string>
+    <string name="show_password">パスワードを表示</string>
+    <string name="hide_password">パスワードを非表示</string>
+    <string name="add_allocation_content_desc">%1$s の割り当てを追加</string>
+    <string name="account_section">アカウントセクション</string>
+    <string name="appearance_section">外観セクション</string>
+    <string name="currency_section">通貨セクション</string>
+    <string name="archive_section">アーカイブセクション</string>
+    <string name="legal_section">法的セクション</string>
+    <string name="expanded">展開</string>
+    <string name="collapsed">折りたたみ</string>
+    <string name="select_currency">通貨を選択</string>
+    <string name="funds_deducted_success">口座から資金を差し引き、プールに戻しました</string>
+    <string name="amount_exceeds_maximum">金額が上限を超えています</string>
+    <string name="amount_must_be_greater_than_zero">金額はゼロより大きくなければなりません</string>
+    <string name="amount_exceeds_maximum_allowed">許可された上限を超えています</string>
+    <string name="amount_exceeds_balance">金額が残高を超えています</string>
+    <string name="recurrence_exceeds_maximum">5〜366日の間でなければなりません</string>
+    <string name="character_counter">%1$d/%2$d</string>
+    <string name="note_counter">%1$d/%2$d</string>
+
+    <!-- ==================== FREQUENCY OPTIONS ==================== -->
+    <string-array name="frequency_options">
+        <item>毎月</item>
+        <item>毎週</item>
+        <item>隔週</item>
+    </string-array>
+</resources>

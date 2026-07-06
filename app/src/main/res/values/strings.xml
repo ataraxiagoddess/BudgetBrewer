@@ -13,6 +13,13 @@
     <string name="pay_frequency_label">Pay Frequency</string>
     <string name="tips_misc">Tips/Misc</string>
 
+    <!-- Frequency Spinner -->
+    <string-array name="frequency_options">
+        <item>Monthly</item>
+        <item>Weekly</item>
+        <item>Biweekly</item>
+    </string-array>
+
     <!-- Income Rows -->
     <string name="monthly_income">Monthly Income</string>
     <string name="other_income">Other</string>
