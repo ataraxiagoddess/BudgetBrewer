@@ -1,30 +1,97 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-/app/build/
-/app/release/app-release.apk
-.aider*
-.goosehints.md
-AGENTS.md
-SpendingFeature.md
+# ============================================================
+# Android Studio / IntelliJ IDEA
+# ============================================================
 
-# App signing keys and credentials (CRITICAL for security)
+/.idea/
+*.iml
+out/
+
+# ============================================================
+# Gradle and Kotlin
+# ============================================================
+
+/.gradle/
+/.kotlin/
+**/build/
+
+# ============================================================
+# Local Android SDK configuration
+# ============================================================
+
+local.properties
+
+# ============================================================
+# Android build and generated output
+# ============================================================
+
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Release builds are distributed through GitHub Releases
+/app/build/
+/app/release/
+
+# ============================================================
+# Signing keys and credentials
+# ============================================================
+
 *.jks
 *.keystore
 *.key
 keystore.properties
 
-# Environment variables
+# ============================================================
+# Environment and service configuration
+# ============================================================
+
 .env
+.env.*
+!.env.example
+
+# Uncomment these if the project ever uses the corresponding
+# local service configuration files:
+# google-services.json
+# app/google-services.json
+
+# ============================================================
+# Logs and crash reports
+# ============================================================
+
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# ============================================================
+# Operating-system files
+# ============================================================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Temporary and backup files
+# ============================================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+
+# ============================================================
+# Local AI development tools
+# ============================================================
+
+.aider*
+.goosehints.md
+AGENTS.md
+
+# ============================================================
+# Local planning or implementation notes
+# ============================================================
+
+SpendingFeature.md
