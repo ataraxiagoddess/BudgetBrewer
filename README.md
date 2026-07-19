@@ -215,14 +215,14 @@
 ## 📸 Screenshots
 
 <div align="center" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
-  <img src="screenshots/1.png" alt="Home" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/2.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/3.png" alt="Expenses" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/4.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/5.png" alt="Calendar" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/6.png" alt="Settings" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/7.png" alt="Settings Dark" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="screenshots/8.png" alt="Home Landscape Dark" style="width:50%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/1.png" alt="Home" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/2.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/3.png" alt="Expenses" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/4.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/5.png" alt="Calendar" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/6.png" alt="Settings" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/7.png" alt="Settings Dark" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
+  <img src="docs/images/8.png" alt="Home Landscape Dark" style="width:50%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
 </div>
 
 ---
