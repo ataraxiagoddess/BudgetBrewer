@@ -50,4 +50,52 @@
     <dimen name="snackbar_max_width_tablet">400dp</dimen>
 
     <dimen name="expenses_grid_spacing">8dp</dimen>
+
+    <!-- ===== DESIGN TOKENS ===== -->
+
+    <!-- Global spacing -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+
+    <!-- Screen layout -->
+    <dimen name="screen_horizontal_padding">16dp</dimen>
+    <dimen name="screen_vertical_padding">16dp</dimen>
+
+    <!-- Dashboard cards -->
+    <dimen name="dashboard_card_padding">16dp</dimen>
+    <dimen name="dashboard_card_spacing">16dp</dimen>
+    <dimen name="dashboard_card_elevation">4dp</dimen>
+    <dimen name="dashboard_header_spacing">16dp</dimen>
+    <dimen name="dashboard_chart_spacing">16dp</dimen>
+
+    <!-- Income vs expenses visualization -->
+    <dimen name="income_expenses_chart_size">160dp</dimen>
+    <dimen name="income_expenses_income_thickness">80dp</dimen>
+    <dimen name="income_expenses_ring_thickness">12dp</dimen>
+    <dimen name="income_expenses_center_width">120dp</dimen>
+
+    <!-- Savings visualization -->
+    <dimen name="savings_progress_size">120dp</dimen>
+    <dimen name="savings_progress_thickness">12dp</dimen>
+    <dimen name="savings_progress_label_spacing">8dp</dimen>
+
+    <!-- Dashboard charts -->
+    <dimen name="dashboard_pie_chart_height">250dp</dimen>
+    <dimen name="dashboard_line_chart_height">200dp</dimen>
+
+    <!-- Chart legends and data rows -->
+    <dimen name="chart_legend_marker_size">16dp</dimen>
+    <dimen name="chart_legend_marker_spacing">8dp</dimen>
+    <dimen name="chart_legend_row_vertical_margin">4dp</dimen>
+    <dimen name="dashboard_data_row_vertical_margin">4dp</dimen>
+
+    <!-- Timeframe selector -->
+    <dimen name="timeframe_selector_padding">4dp</dimen>
+    <dimen name="timeframe_button_spacing">1dp</dimen>
+
+    <!-- Chart typography -->
+    <dimen name="income_center_text_min_size">10sp</dimen>
+    <dimen name="income_center_text_max_size">20sp</dimen>
+    <dimen name="income_center_text_step">1sp</dimen>
+
 </resources>

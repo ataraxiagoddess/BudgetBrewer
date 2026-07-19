@@ -46,6 +46,29 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private lateinit var repository: BudgetRepository
 
+    private data class DashboardDimensions(
+        val legendMarkerSize: Int,
+        val legendMarkerSpacing: Int,
+        val legendRowVerticalMargin: Int,
+        val dataRowVerticalMargin: Int
+    )
+
+    private val dashboardDimensions: DashboardDimensions
+        get() = DashboardDimensions(
+            legendMarkerSize = resources.getDimensionPixelSize(
+                R.dimen.chart_legend_marker_size
+            ),
+            legendMarkerSpacing = resources.getDimensionPixelSize(
+                R.dimen.chart_legend_marker_spacing
+            ),
+            legendRowVerticalMargin = resources.getDimensionPixelSize(
+                R.dimen.chart_legend_row_vertical_margin
+            ),
+            dataRowVerticalMargin = resources.getDimensionPixelSize(
+                R.dimen.dashboard_data_row_vertical_margin
+            )
+        )
+
     private var snackbarCallback: ((String) -> Unit)? = null
     fun setSnackbarCallback(callback: (String) -> Unit) {
         snackbarCallback = callback
@@ -315,6 +338,8 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.chartExpensesBreakdown.data = pieData
         binding.chartExpensesBreakdown.invalidate()
 
+        val dimensions = dashboardDimensions
+
         binding.expensesLegendContainer.removeAllViews()
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
         data.expensesByCategory.forEachIndexed { index, catExpense ->
@@ -323,11 +348,11 @@ class HomeFragment : Fragment(), MonthChangeListener {
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, 4, 0, 4) }
+                ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
             }
 
             val colorView = View(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(16, 16).apply { setMargins(0, 0, 8, 0) }
+                layoutParams = LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply { setMargins(0, 0, dimensions.legendMarkerSpacing, 0) }
                 setBackgroundColor(colors[index % colors.size])
                 importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
@@ -451,13 +476,15 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
         val exoMedium = ResourcesCompat.getFont(requireContext(), R.font.exo_medium)
 
+        val dimensions = dashboardDimensions
+
         data.spendingHistory.forEach { spending ->
             val row = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, 4, 0, 4) }
+                ).apply { setMargins(0, dimensions.dataRowVerticalMargin, 0, dimensions.dataRowVerticalMargin) }
             }
 
             val monthText = TextView(requireContext()).apply {
@@ -528,17 +555,19 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.tagsLegendContainer.removeAllViews()
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
 
+        val dimensions = dashboardDimensions
+
         data.spendingByTag.forEachIndexed { index, tagExpense ->
             val legendRow = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, 4, 0, 4) }
+                ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
             }
 
             val colorView = View(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(16, 16).apply { setMargins(0, 0, 8, 0) }
+                layoutParams = LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply { setMargins(0, 0, dimensions.legendMarkerSpacing, 0) }
                 setBackgroundColor(colors[index % colors.size])
                 importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
