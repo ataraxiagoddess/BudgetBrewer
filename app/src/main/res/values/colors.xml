@@ -123,7 +123,4 @@
     <color name="edittext_disabled_background">#A0A0A0</color>
     <color name="edittext_disabled_stroke">#888888</color>
 
-    <!-- ===== UTILITY ===== -->
-    <color name="md_theme_light_primary">#007A7C</color>
-    <color name="lavender">#E8DDFD</color>
 </resources>

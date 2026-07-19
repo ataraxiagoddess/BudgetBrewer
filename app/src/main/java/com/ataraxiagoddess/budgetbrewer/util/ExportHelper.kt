@@ -196,8 +196,8 @@ object ExportHelper {
         val regularTypeface = ResourcesCompat.getFont(context, R.font.exo_regular) ?: Typeface.DEFAULT
         val boldTypeface = ResourcesCompat.getFont(context, R.font.exo_semi_bold) ?: Typeface.DEFAULT_BOLD
 
-        val teal = ContextCompat.getColor(context, R.color.md_theme_light_primary)
-        val lavender = ContextCompat.getColor(context, R.color.lavender)
+        val teal = ContextCompat.getColor(context, R.color.bg_main)
+        val lavender = ContextCompat.getColor(context, R.color.bg_container)
         val darkText = "#2E2E2E".toColorInt()
 
         val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
