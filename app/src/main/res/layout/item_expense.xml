@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/tvExpenseDescription"
-            style="@style/TextAppearance.BudgetBrewer.BodyCompact"
+            style="@style/TextAppearance.BudgetBrewer.Body.Container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_on_container"
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/tvExpenseAmount"
-            style="@style/TextAppearance.BudgetBrewer.BodyCompact"
+            style="@style/TextAppearance.BudgetBrewer.Body.Container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

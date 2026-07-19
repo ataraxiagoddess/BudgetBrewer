@@ -34,12 +34,6 @@
         <item name="android:textColor">@color/text_on_container</item>
     </style>
 
-    <style name="TextAppearance.BudgetBrewer.BodyCompact">
-        <item name="android:fontFamily">@font/exo_regular</item>
-        <item name="android:textSize">@dimen/text_size_body</item>
-        <item name="android:textColor">@color/text_on_container</item>
-    </style>
-
     <style name="TextAppearance.BudgetBrewer.BodySmall">
         <item name="android:fontFamily">@font/exo_regular</item>
         <item name="android:textSize">@dimen/text_size_body_small</item>
