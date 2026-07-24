@@ -98,4 +98,8 @@
     <dimen name="income_center_text_max_size">20sp</dimen>
     <dimen name="income_center_text_step">1sp</dimen>
 
+    <!-- Responsive Home dashboard -->
+    <dimen name="dashboard_content_max_width">600dp</dimen>
+    <dimen name="dashboard_column_gap">16dp</dimen>
+
 </resources>

@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -87,8 +89,72 @@ class HomeFragment : Fragment(), MonthChangeListener {
         return binding.root
     }
 
+    private fun configureDashboardColumns() {
+        val columnCount = resources.getInteger(
+            R.integer.home_dashboard_column_count
+        )
+
+        val leftColumn = binding.homeDashboardLeftColumn
+        val rightColumn = binding.homeDashboardRightColumn
+        val columnGap = binding.homeDashboardColumnGap
+
+        val incomeCard = binding.cardIncomeExpenses
+        val expensesCard = binding.cardExpensesBreakdown
+        val savingsCard = binding.cardSavingsComparison
+        val trendsCard = binding.cardSpendingTrends
+        val tagsCard = binding.layoutSpendingByTagContainer
+
+        val allCards = listOf(
+            incomeCard,
+            expensesCard,
+            savingsCard,
+            trendsCard,
+            tagsCard
+        )
+
+        /*
+         * Detach every card before rebuilding the columns.
+         * A View cannot belong to two ViewGroups at once.
+         */
+        allCards.forEach { card ->
+            (card.parent as? ViewGroup)?.removeView(card)
+        }
+
+        if (columnCount <= 1) {
+            rightColumn.isGone = true
+            columnGap.isGone = true
+
+            allCards.forEach(leftColumn::addView)
+            return
+        }
+
+        rightColumn.isVisible = true
+        columnGap.isVisible = true
+
+        /*
+         * Independent vertical columns create the masonry effect:
+         *
+         * Left                  Right
+         * Income                Expenses
+         * Savings               Trends
+         * Tags
+         */
+        listOf(
+            incomeCard,
+            savingsCard,
+            tagsCard
+        ).forEach(leftColumn::addView)
+
+        listOf(
+            expensesCard,
+            trendsCard
+        ).forEach(rightColumn::addView)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        configureDashboardColumns()
 
         val db = AppDatabase.getDatabase(requireContext())
         repository = BudgetRepository(db)

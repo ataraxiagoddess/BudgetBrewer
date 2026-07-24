@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Unfolded foldables and tablets use two columns in either orientation. -->
+    <integer name="home_dashboard_column_count">2</integer>
+
+</resources>

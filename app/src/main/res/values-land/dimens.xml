@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- values-land -->
 <resources>
     <dimen name="category_card_width_land">280dp</dimen>
     <dimen name="spacer_top">16dp</dimen>
     <dimen name="spacer_bottom">24dp</dimen>
+
+    <!-- ===== DESIGN TOKENS ===== -->
+    <!-- Home dashboard: compact phone landscape -->
+    <dimen name="screen_horizontal_padding">12dp</dimen>
+    <dimen name="screen_vertical_padding">8dp</dimen>
+
+    <dimen name="dashboard_card_padding">12dp</dimen>
+    <dimen name="dashboard_card_spacing">12dp</dimen>
+    <dimen name="dashboard_header_spacing">12dp</dimen>
+    <dimen name="dashboard_chart_spacing">12dp</dimen>
+
+    <dimen name="income_expenses_chart_size">140dp</dimen>
+    <dimen name="income_expenses_income_thickness">70dp</dimen>
+    <dimen name="income_expenses_center_width">124dp</dimen>
+
+    <dimen name="savings_progress_size">100dp</dimen>
+    <dimen name="savings_progress_label_spacing">4dp</dimen>
+
+    <dimen name="dashboard_pie_chart_height">180dp</dimen>
+    <dimen name="dashboard_line_chart_height">160dp</dimen>
+
+    <dimen name="income_center_text_min_size">7sp</dimen>
+    <dimen name="income_center_text_max_size">18sp</dimen>
+
+    <dimen name="dashboard_content_max_width">960dp</dimen>
+
 </resources>

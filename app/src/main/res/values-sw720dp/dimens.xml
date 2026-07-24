@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- values-sw720dp -->
 <resources>
     <dimen name="spacing_small">16dp</dimen>
     <dimen name="spacing_medium">32dp</dimen>
@@ -27,4 +28,38 @@
 
     <dimen name="snackbar_max_width_tablet">400dp</dimen>
     <dimen name="expenses_grid_spacing">4dp</dimen>
+
+    <!-- ===== DESIGN TOKENS ===== -->
+    <!-- Home dashboard: 720dp+ tablets -->
+    <dimen name="screen_horizontal_padding">32dp</dimen>
+    <dimen name="screen_vertical_padding">32dp</dimen>
+
+    <dimen name="dashboard_card_padding">32dp</dimen>
+    <dimen name="dashboard_card_spacing">32dp</dimen>
+    <dimen name="dashboard_header_spacing">24dp</dimen>
+    <dimen name="dashboard_chart_spacing">24dp</dimen>
+
+    <dimen name="income_expenses_chart_size">240dp</dimen>
+    <dimen name="income_expenses_income_thickness">120dp</dimen>
+    <dimen name="income_expenses_center_width">180dp</dimen>
+
+    <dimen name="savings_progress_size">190dp</dimen>
+    <dimen name="savings_progress_label_spacing">12dp</dimen>
+
+    <dimen name="dashboard_pie_chart_height">360dp</dimen>
+    <dimen name="dashboard_line_chart_height">300dp</dimen>
+
+    <dimen name="chart_legend_marker_size">22dp</dimen>
+    <dimen name="chart_legend_marker_spacing">14dp</dimen>
+    <dimen name="chart_legend_row_vertical_margin">8dp</dimen>
+    <dimen name="dashboard_data_row_vertical_margin">8dp</dimen>
+
+    <dimen name="timeframe_selector_padding">8dp</dimen>
+
+    <dimen name="income_center_text_min_size">14sp</dimen>
+    <dimen name="income_center_text_max_size">28sp</dimen>
+
+    <dimen name="dashboard_content_max_width">1000dp</dimen>
+    <dimen name="dashboard_column_gap">24dp</dimen>
+
 </resources>

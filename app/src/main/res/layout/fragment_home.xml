@@ -8,416 +8,465 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
         android:paddingHorizontal="@dimen/screen_horizontal_padding"
         android:paddingVertical="@dimen/screen_vertical_padding">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/homeTopSpacer"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/spacer_top"
-                android:visibility="invisible" />
-
-            <!-- Income vs Expenses Chart -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/category_background"
-                android:padding="@dimen/dashboard_card_padding"
-                android:layout_marginBottom="@dimen/dashboard_card_spacing"
-                android:elevation="@dimen/dashboard_card_elevation">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/chart_income_vs_expenses"
-                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                    android:layout_marginBottom="@dimen/dashboard_header_spacing" />
-
-                <!-- Income and Expense Circles Container -->
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dashboard_chart_spacing">
-
-                    <!-- Income Circle (Solid) -->
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/incomeCircle"
-                        android:layout_width="@dimen/income_expenses_chart_size"
-                        android:layout_height="@dimen/income_expenses_chart_size"
-                        app:indicatorSize="@dimen/income_expenses_chart_size"
-                        app:trackThickness="@dimen/income_expenses_income_thickness"
-                        android:layout_gravity="center"
-                        android:indeterminate="false"
-                        app:trackColor="@color/chart_income"
-                        app:indicatorColor="@color/chart_income"
-                        app:showAnimationBehavior="none"
-                        android:importantForAccessibility="no" />
-
-                    <!-- Expenses Ring (Overlay) -->
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/expensesRing"
-                        android:layout_width="@dimen/income_expenses_chart_size"
-                        android:layout_height="@dimen/income_expenses_chart_size"
-                        app:indicatorSize="@dimen/income_expenses_chart_size"
-                        app:trackThickness="@dimen/income_expenses_ring_thickness"
-                        android:layout_gravity="center"
-                        android:indeterminate="false"
-                        app:trackColor="@android:color/transparent"
-                        app:indicatorColor="@color/chart_expenses"
-                        app:showAnimationBehavior="none"
-                        android:importantForAccessibility="no" />
-
-                    <!-- Center Text -->
-                    <LinearLayout
-                        android:layout_width="@dimen/income_expenses_center_width"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal">
-
-                        <TextView
-                            android:id="@+id/tvIncomeCenter"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            app:autoSizeTextType="uniform"
-                            app:autoSizeMinTextSize="@dimen/income_center_text_min_size"
-                            app:autoSizeMaxTextSize="@dimen/income_center_text_max_size"
-                            app:autoSizeStepGranularity="@dimen/income_center_text_step"
-                            android:maxLines="1"
-                            android:fontFamily="@font/exo_regular"
-                            android:textColor="@color/text_on_main"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            tools:ignore="TextContrastCheck"
-                            tools:text="$0.00" />
-
-                        <TextView
-                            android:id="@+id/tvIncomeLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/exo_regular"
-                            android:text="@string/income"
-                            android:textColor="@color/text_on_main"
-                            android:textSize="12sp"
-                            tools:ignore="TextContrastCheck" />
-                    </LinearLayout>
-                </FrameLayout>
-
-                <!-- Expense Data -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="@dimen/space_sm">
-
-                    <View
-                        android:layout_width="@dimen/chart_legend_marker_size"
-                        android:layout_height="@dimen/chart_legend_marker_size"
-                        android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
-                        android:background="@color/chart_expenses"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:id="@+id/tvExpensesData"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/TextAppearance.BudgetBrewer.Body.Container"
-                        android:fontFamily="@font/exo_regular"
-                        tools:text="Expenses: $12.34 (5.5%)" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Expenses Breakdown (Donut Chart) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/category_background"
-                android:padding="@dimen/dashboard_card_padding"
-                android:layout_marginBottom="@dimen/dashboard_card_spacing"
-                android:elevation="@dimen/dashboard_card_elevation">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/chart_expenses_breakdown"
-                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                    android:layout_marginBottom="@dimen/dashboard_header_spacing" />
-
-                <!-- Donut Chart -->
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/chartExpensesBreakdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dashboard_pie_chart_height"
-                    android:layout_marginBottom="@dimen/dashboard_chart_spacing"
-                    android:importantForAccessibility="no" />
-
-                <!-- Legend will be populated dynamically -->
-                <LinearLayout
-                    android:id="@+id/expensesLegendContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </LinearLayout>
-
-            <!-- Savings Comparison -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/category_background"
-                android:padding="@dimen/dashboard_card_padding"
-                android:layout_marginBottom="@dimen/dashboard_card_spacing"
-                android:elevation="@dimen/dashboard_card_elevation">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/chart_savings_comparison"
-                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                    android:layout_marginBottom="@dimen/dashboard_header_spacing" />
-
-                <!-- Circular Progress Indicator -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/dashboard_chart_spacing">
-
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/savingsProgressIndicator"
-                        android:layout_width="@dimen/savings_progress_size"
-                        android:layout_height="@dimen/savings_progress_size"
-                        app:indicatorSize="@dimen/savings_progress_size"
-                        app:trackThickness="@dimen/savings_progress_thickness"
-                        android:layout_marginBottom="@dimen/savings_progress_label_spacing"
-                        android:indeterminate="false"
-                        app:trackColor="@color/chart_target"
-                        app:indicatorColor="@color/chart_actual"
-                        android:fontFamily="@font/exo_regular"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:id="@+id/tvSavingsPercentage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_on_container"
-                        android:fontFamily="@font/exo_regular"
-                        tools:text="0%" />
-
-                    <TextView
-                        android:id="@+id/tvSavingsOverachievement"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/holo_green_dark"
-                        android:fontFamily="@font/exo_regular"
-                        android:visibility="gone"
-                        tools:text="+25% over target" />
-                </LinearLayout>
-
-                <!-- Savings Comparison Legend (vertical stack) -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="@dimen/space_sm">
-
-                    <!-- Target -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="@dimen/space_xs">
-
-                        <View
-                            android:layout_width="@dimen/chart_legend_marker_size"
-                            android:layout_height="@dimen/chart_legend_marker_size"
-                            android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
-                            android:background="@color/chart_target"
-                            android:importantForAccessibility="no" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/savings_target"
-                            style="@style/TextAppearance.BudgetBrewer.Body.Container" />
-                    </LinearLayout>
-
-                    <!-- Actual -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <View
-                            android:layout_width="@dimen/chart_legend_marker_size"
-                            android:layout_height="@dimen/chart_legend_marker_size"
-                            android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
-                            android:background="@color/chart_actual"
-                            android:importantForAccessibility="no" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/actual_savings"
-                            style="@style/TextAppearance.BudgetBrewer.Body.Container" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Data labels -->
-                <TextView
-                    android:id="@+id/tvSavingsData"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    style="@style/TextAppearance.BudgetBrewer.Body.Container"
-                    android:fontFamily="@font/exo_regular"
-                    tools:text="Target: $800.00  |  Actual: $500.00" />
-            </LinearLayout>
-
-            <!-- Spending Trends -->
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/homeDashboardColumns"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/category_background"
-                android:padding="@dimen/dashboard_card_padding"
-                android:layout_marginBottom="@dimen/dashboard_card_spacing"
-                android:elevation="@dimen/dashboard_card_elevation">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/homeTopSpacer"
+                app:layout_constraintWidth_default="spread"
+                app:layout_constraintWidth_max="@dimen/dashboard_content_max_width">
 
-                <TextView
-                    style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                    android:text="@string/chart_spending_trends" />
+            <LinearLayout
+                android:id="@+id/homeDashboardLeftColumn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <!-- Timeframe selector - individual buttons with gradient backgrounds -->
+                <!-- Income vs Expenses Chart -->
                 <LinearLayout
+                    android:id="@+id/cardIncomeExpenses"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dashboard_chart_spacing"
-                    android:padding="@dimen/timeframe_selector_padding"
+                    android:layout_marginBottom="@dimen/dashboard_card_spacing"
                     android:background="@drawable/category_background"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:elevation="@dimen/dashboard_card_elevation"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dashboard_card_padding">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTimeframe1m"
-                        style="@style/Widget.BudgetBrewer.TimeframeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_timeframe_button_1m"
-                        android:checkable="true"
-                        android:text="@string/timeframe_1m" />
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_header_spacing"
+                        android:text="@string/chart_income_vs_expenses" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTimeframe3m"
-                        style="@style/Widget.BudgetBrewer.TimeframeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_timeframe_button_3m"
-                        android:checkable="true"
-                        android:text="@string/timeframe_3m" />
+                    <!-- Income and Expense Circles Container -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTimeframe6m"
-                        style="@style/Widget.BudgetBrewer.TimeframeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_timeframe_button_6m"
-                        android:checkable="true"
-                        android:text="@string/timeframe_6m" />
+                        <!-- Income Circle (Solid) -->
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/incomeCircle"
+                            android:layout_width="@dimen/income_expenses_chart_size"
+                            android:layout_height="@dimen/income_expenses_chart_size"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:indeterminate="false"
+                            app:indicatorColor="@color/chart_income"
+                            app:indicatorSize="@dimen/income_expenses_chart_size"
+                            app:showAnimationBehavior="none"
+                            app:trackColor="@color/chart_income"
+                            app:trackThickness="@dimen/income_expenses_income_thickness" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTimeframe1y"
-                        style="@style/Widget.BudgetBrewer.TimeframeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/button_height"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_timeframe_button_1y"
-                        android:checkable="true"
-                        android:text="@string/timeframe_1y" />
+                        <!-- Expenses Ring (Overlay) -->
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/expensesRing"
+                            android:layout_width="@dimen/income_expenses_chart_size"
+                            android:layout_height="@dimen/income_expenses_chart_size"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:indeterminate="false"
+                            app:indicatorColor="@color/chart_expenses"
+                            app:indicatorSize="@dimen/income_expenses_chart_size"
+                            app:showAnimationBehavior="none"
+                            app:trackColor="@android:color/transparent"
+                            app:trackThickness="@dimen/income_expenses_ring_thickness" />
+
+                        <!-- Center Text -->
+                        <LinearLayout
+                            android:layout_width="@dimen/income_expenses_center_width"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvIncomeCenter"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/exo_regular"
+                                android:gravity="center"
+                                android:includeFontPadding="false"
+                                android:maxLines="1"
+                                android:textColor="@color/text_on_main"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/income_center_text_max_size"
+                                app:autoSizeMinTextSize="@dimen/income_center_text_min_size"
+                                app:autoSizeStepGranularity="@dimen/income_center_text_step"
+                                app:autoSizeTextType="uniform"
+                                tools:ignore="TextContrastCheck"
+                                tools:text="$1,234,567.89" />
+
+                            <TextView
+                                android:id="@+id/tvIncomeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/exo_regular"
+                                android:text="@string/income"
+                                android:textColor="@color/text_on_main"
+                                android:textSize="12sp"
+                                tools:ignore="TextContrastCheck" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Expense Data -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="@dimen/chart_legend_marker_size"
+                            android:layout_height="@dimen/chart_legend_marker_size"
+                            android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
+                            android:background="@color/chart_expenses"
+                            android:importantForAccessibility="no" />
+
+                        <TextView
+                            android:id="@+id/tvExpensesData"
+                            style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/exo_regular"
+                            tools:text="Expenses: $12.34 (5.5%)" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Line Chart -->
-
-                <!-- Monthly data list -->
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chartSpendingTrends"
+                <!-- Expenses Breakdown (Donut Chart) -->
+                <LinearLayout
+                    android:id="@+id/cardExpensesBreakdown"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dashboard_line_chart_height"
-                    android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dashboard_card_spacing"
+                    android:background="@drawable/category_background"
+                    android:elevation="@dimen/dashboard_card_elevation"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dashboard_card_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_header_spacing"
+                        android:text="@string/chart_expenses_breakdown" />
+
+                    <!-- Donut Chart -->
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chartExpensesBreakdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dashboard_pie_chart_height"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                        android:importantForAccessibility="no" />
+
+                    <!-- Legend will be populated dynamically -->
+                    <LinearLayout
+                        android:id="@+id/expensesLegendContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <!-- Savings Comparison -->
+                <LinearLayout
+                    android:id="@+id/cardSavingsComparison"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dashboard_card_spacing"
+                    android:background="@drawable/category_background"
+                    android:elevation="@dimen/dashboard_card_elevation"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dashboard_card_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_header_spacing"
+                        android:text="@string/chart_savings_comparison" />
+
+                    <!-- Circular Progress Indicator -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/savingsProgressIndicator"
+                            android:layout_width="@dimen/savings_progress_size"
+                            android:layout_height="@dimen/savings_progress_size"
+                            android:layout_marginBottom="@dimen/savings_progress_label_spacing"
+                            android:fontFamily="@font/exo_regular"
+                            android:importantForAccessibility="no"
+                            android:indeterminate="false"
+                            app:indicatorColor="@color/chart_actual"
+                            app:indicatorSize="@dimen/savings_progress_size"
+                            app:trackColor="@color/chart_target"
+                            app:trackThickness="@dimen/savings_progress_thickness" />
+
+                        <TextView
+                            android:id="@+id/tvSavingsPercentage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/exo_regular"
+                            android:textColor="@color/text_on_container"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="0%" />
+
+                        <TextView
+                            android:id="@+id/tvSavingsOverachievement"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/exo_regular"
+                            android:textColor="@android:color/holo_green_dark"
+                            android:textSize="14sp"
+                            android:visibility="gone"
+                            tools:text="+25% over target" />
+                    </LinearLayout>
+
+                    <!-- Savings Comparison Legend (vertical stack) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/space_sm"
+                        android:orientation="vertical">
+
+                        <!-- Target -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/space_xs"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="@dimen/chart_legend_marker_size"
+                                android:layout_height="@dimen/chart_legend_marker_size"
+                                android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
+                                android:background="@color/chart_target"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/savings_target" />
+                        </LinearLayout>
+
+                        <!-- Actual -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="@dimen/chart_legend_marker_size"
+                                android:layout_height="@dimen/chart_legend_marker_size"
+                                android:layout_marginEnd="@dimen/chart_legend_marker_spacing"
+                                android:background="@color/chart_actual"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/actual_savings" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Data labels -->
+                    <TextView
+                        android:id="@+id/tvSavingsData"
+                        style="@style/TextAppearance.BudgetBrewer.Body.Container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/exo_regular"
+                        android:gravity="center_horizontal"
+                        tools:text="Target: $800.00  |  Actual: $500.00" />
+                </LinearLayout>
+
+                <!-- Spending Trends -->
+
+                <LinearLayout
+                    android:id="@+id/cardSpendingTrends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dashboard_card_spacing"
+                    android:background="@drawable/category_background"
+                    android:elevation="@dimen/dashboard_card_elevation"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dashboard_card_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_header_spacing"
+                        android:text="@string/chart_spending_trends" />
+
+                    <!-- Timeframe selector - individual buttons with gradient backgrounds -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                        android:background="@drawable/category_background"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/timeframe_selector_padding">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe1m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_timeframe_button_1m"
+                            android:checkable="true"
+                            android:text="@string/timeframe_1m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe3m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_timeframe_button_3m"
+                            android:checkable="true"
+                            android:text="@string/timeframe_3m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe6m"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_timeframe_button_6m"
+                            android:checkable="true"
+                            android:text="@string/timeframe_6m" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTimeframe1y"
+                            style="@style/Widget.BudgetBrewer.TimeframeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/button_height"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_timeframe_button_1y"
+                            android:checkable="true"
+                            android:text="@string/timeframe_1y" />
+                    </LinearLayout>
+
+                    <!-- Line Chart -->
+
+                    <!-- Monthly data list -->
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chartSpendingTrends"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dashboard_line_chart_height"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                        android:importantForAccessibility="no" />
+
+                    <LinearLayout
+                        android:id="@+id/spendingDataContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutSpendingByTagContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dashboard_card_spacing"
+                    android:background="@drawable/category_background"
+                    android:elevation="@dimen/dashboard_card_elevation"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dashboard_card_padding"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvSpendingByTagHeader"
+                        style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dashboard_header_spacing"
+                        android:text="@string/spending_by_tag_header" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chartSpendingByTag"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dashboard_pie_chart_height"
+                        android:layout_marginBottom="@dimen/dashboard_chart_spacing"
+                        android:importantForAccessibility="no" />
+
+                    <!-- Legend will be populated dynamically -->
+                    <LinearLayout
+                        android:id="@+id/tagsLegendContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+                <View
+                    android:id="@+id/homeDashboardColumnGap"
+                    android:layout_width="@dimen/dashboard_column_gap"
+                    android:layout_height="1dp"
                     android:importantForAccessibility="no" />
 
                 <LinearLayout
-                    android:id="@+id/spendingDataContainer"
-                    android:layout_width="match_parent"
+                    android:id="@+id/homeDashboardRightColumn"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
             </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutSpendingByTagContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/category_background"
-            android:visibility="gone"
-            android:padding="@dimen/dashboard_card_padding"
-            android:layout_marginBottom="@dimen/dashboard_card_spacing"
-            android:elevation="@dimen/dashboard_card_elevation">
-
-            <TextView
-                android:id="@+id/tvSpendingByTagHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/spending_by_tag_header"
-                style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
-                android:layout_marginBottom="@dimen/dashboard_header_spacing" />
-
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/chartSpendingByTag"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dashboard_pie_chart_height"
-                android:layout_marginBottom="@dimen/dashboard_chart_spacing"
-                android:importantForAccessibility="no" />
-
-            <!-- Legend will be populated dynamically -->
-            <LinearLayout
-                android:id="@+id/tagsLegendContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-        </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/HomeBottomSpacer"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/spacer_bottom"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/homeDashboardColumns" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <!-- Progress Bar overlay -->
@@ -426,8 +475,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
         android:background="@android:color/transparent"
-        android:elevation="4dp" />
+        android:elevation="@dimen/dashboard_card_elevation"
+        android:visibility="gone" />
 
 </FrameLayout>
