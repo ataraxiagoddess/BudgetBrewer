@@ -29,7 +29,7 @@
 
     <dimen name="dashboard_content_max_width">1120dp</dimen>
 
-    <dimen name="home_content_top_inset">96dp</dimen>
-    <dimen name="home_content_bottom_inset">104dp</dimen>
+    <dimen name="home_content_top_inset">72dp</dimen>
+    <dimen name="home_content_bottom_inset">56dp</dimen>
 
 </resources>

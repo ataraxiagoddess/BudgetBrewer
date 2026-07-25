@@ -60,7 +60,7 @@
     <dimen name="dashboard_content_max_width">1000dp</dimen>
     <dimen name="dashboard_column_gap">24dp</dimen>
 
-    <dimen name="home_content_top_inset">112dp</dimen>
-    <dimen name="home_content_bottom_inset">120dp</dimen>
+    <dimen name="home_content_top_inset">88dp</dimen>
+    <dimen name="home_content_bottom_inset">68dp</dimen>
 
 </resources>

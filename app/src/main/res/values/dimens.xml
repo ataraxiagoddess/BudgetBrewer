@@ -101,7 +101,7 @@
     <dimen name="dashboard_column_gap">16dp</dimen>
 
     <!-- Home content clearance for overlay controls -->
-    <dimen name="home_content_top_inset">96dp</dimen>      <!-- Pushes content below month selector -->
-    <dimen name="home_content_bottom_inset">104dp</dimen>   <!-- Pushes content above bottom navigation -->
+    <dimen name="home_content_top_inset">75dp</dimen>      <!-- Pushes content below month selector -->
+    <dimen name="home_content_bottom_inset">60dp</dimen>   <!-- Pushes content above bottom navigation -->
 
 </resources>
