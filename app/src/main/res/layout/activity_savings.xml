@@ -18,7 +18,7 @@
             <!-- Top spacer to account for the month selector from BaseActivity -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_top"
+                android:layout_height="@dimen/home_content_top_inset"
                 android:visibility="invisible" />
 
             <!-- ===== Available Pool Card (always visible) ===== -->
@@ -76,7 +76,7 @@
             <!-- Bottom spacer (keeps content above bottom nav) -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_bottom"
+                android:layout_height="@dimen/home_content_bottom_inset"
                 android:layout_gravity="bottom"
                 android:visibility="invisible" />
         </LinearLayout>

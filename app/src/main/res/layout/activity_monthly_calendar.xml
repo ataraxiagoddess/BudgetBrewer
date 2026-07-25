@@ -20,7 +20,7 @@
         <!-- Top spacer (accounts for month selector) -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer_top"
+            android:layout_height="@dimen/home_content_top_inset"
             android:visibility="invisible" />
 
         <!-- Month Start Amount Row -->
@@ -201,7 +201,7 @@
         <!-- Bottom spacer (accounts for bottom nav) -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer_bottom"
+            android:layout_height="@dimen/home_content_bottom_inset"
             android:visibility="invisible" />
 
     </LinearLayout>

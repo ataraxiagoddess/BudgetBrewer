@@ -11,7 +11,7 @@
     <View
         android:id="@+id/topSpacer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacer_top"
+        android:layout_height="@dimen/home_content_top_inset"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -121,7 +121,7 @@
     <View
         android:id="@+id/bottomSpacer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacer_bottom"
+        android:layout_height="@dimen/home_content_bottom_inset"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,21 +10,14 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:fillViewport="true"
-        android:paddingHorizontal="@dimen/screen_horizontal_padding"
-        android:paddingVertical="@dimen/screen_vertical_padding">
+        android:paddingStart="@dimen/screen_horizontal_padding"
+        android:paddingTop="@dimen/home_content_top_inset"
+        android:paddingEnd="@dimen/screen_horizontal_padding"
+        android:paddingBottom="@dimen/home_content_bottom_inset">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <View
-                android:id="@+id/homeTopSpacer"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacer_top"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:id="@+id/homeDashboardColumns"
@@ -34,7 +27,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/homeTopSpacer"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_default="spread"
                 app:layout_constraintWidth_max="@dimen/dashboard_content_max_width">
 
@@ -457,16 +450,8 @@
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/homeBottomSpacer"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacer_bottom"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/homeDashboardColumns" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
     <!-- Progress Bar overlay -->

@@ -4,8 +4,6 @@
     <dimen name="month_row_text_size">22sp</dimen>
     <dimen name="week_pill_text_size_tablet_land">22sp</dimen>
     <dimen name="timeframe_button_text_size">16sp</dimen>
-    <dimen name="spacer_top">80dp</dimen>
-    <dimen name="spacer_bottom">88dp</dimen>
 
     <!-- ===== DESIGN TOKENS ===== -->
     <!-- Home dashboard: 600dp+ tablet landscape -->
@@ -30,5 +28,8 @@
     <dimen name="income_center_text_max_size">22sp</dimen>
 
     <dimen name="dashboard_content_max_width">1120dp</dimen>
+
+    <dimen name="home_content_top_inset">96dp</dimen>
+    <dimen name="home_content_bottom_inset">104dp</dimen>
 
 </resources>

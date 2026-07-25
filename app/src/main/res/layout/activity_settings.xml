@@ -339,7 +339,7 @@
         <!-- Bottom spacer (ensures content is above bottom nav) -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacer_bottom"
+            android:layout_height="@dimen/home_content_bottom_inset"
             android:visibility="invisible" />
 
     </LinearLayout>

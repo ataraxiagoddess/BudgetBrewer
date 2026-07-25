@@ -23,7 +23,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_top"
+                android:layout_height="@dimen/home_content_top_inset"
                 android:visibility="invisible" />
 
             <!-- Day Header -->
@@ -53,7 +53,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_top"
+                android:layout_height="@dimen/home_content_top_inset"
                 android:visibility="invisible" />
 
             <!-- Legend -->
@@ -200,7 +200,7 @@
             <!-- Bottom spacer -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer_bottom"
+                android:layout_height="@dimen/home_content_bottom_inset"
                 android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>

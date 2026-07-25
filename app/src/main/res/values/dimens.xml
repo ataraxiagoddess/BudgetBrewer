@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Base value/dimens -->
 <resources>
-    <!-- ===== SPACERS (for month selector and bottom nav) ===== -->
-    <dimen name="spacer_top">80dp</dimen>      <!-- Pushes content below month selector -->
-    <dimen name="spacer_bottom">88dp</dimen>   <!-- Pushes content above bottom navigation -->
 
     <!-- ===== CALENDAR DOTS ===== -->
     <dimen name="dot_size">6dp</dimen>
@@ -102,5 +99,9 @@
     <!-- Responsive Home dashboard -->
     <dimen name="dashboard_content_max_width">600dp</dimen>
     <dimen name="dashboard_column_gap">16dp</dimen>
+
+    <!-- Home content clearance for overlay controls -->
+    <dimen name="home_content_top_inset">96dp</dimen>      <!-- Pushes content below month selector -->
+    <dimen name="home_content_bottom_inset">104dp</dimen>   <!-- Pushes content above bottom navigation -->
 
 </resources>

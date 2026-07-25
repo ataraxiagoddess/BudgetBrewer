@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- values-sw720dp -->
 <resources>
-    <dimen name="spacing_small">16dp</dimen>
-    <dimen name="spacing_medium">32dp</dimen>
 
     <dimen name="text_size_body">22sp</dimen>
     <dimen name="text_size_header">32sp</dimen>
@@ -61,5 +59,8 @@
 
     <dimen name="dashboard_content_max_width">1000dp</dimen>
     <dimen name="dashboard_column_gap">24dp</dimen>
+
+    <dimen name="home_content_top_inset">112dp</dimen>
+    <dimen name="home_content_bottom_inset">120dp</dimen>
 
 </resources>
