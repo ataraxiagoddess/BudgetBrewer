@@ -458,7 +458,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/HomeBottomSpacer"
+                android:id="@+id/homeBottomSpacer"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacer_bottom"
                 android:visibility="invisible"

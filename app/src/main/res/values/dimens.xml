@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Base value/dimens -->
 <resources>
     <!-- ===== SPACERS (for month selector and bottom nav) ===== -->
     <dimen name="spacer_top">80dp</dimen>      <!-- Pushes content below month selector -->
