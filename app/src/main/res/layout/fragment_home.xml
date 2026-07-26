@@ -51,10 +51,12 @@
 
                     <TextView
                         style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:id="@+id/tvIncomeExpensesHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_income_vs_expenses" />
+                        android:text="@string/chart_income_vs_expenses"
+                        android:accessibilityHeading="true"/>
 
                     <!-- Income and Expense Circles Container -->
                     <FrameLayout
@@ -165,10 +167,12 @@
 
                     <TextView
                         style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:id="@+id/tvExpensesBreakdownHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_expenses_breakdown" />
+                        android:text="@string/chart_expenses_breakdown"
+                        android:accessibilityHeading="true"/>
 
                     <!-- Donut Chart -->
                     <com.github.mikephil.charting.charts.PieChart
@@ -199,10 +203,12 @@
 
                     <TextView
                         style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:id="@+id/tvSavingsComparisonHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_savings_comparison" />
+                        android:text="@string/chart_savings_comparison"
+                        android:accessibilityHeading="true"/>
 
                     <!-- Circular Progress Indicator -->
                     <LinearLayout
@@ -322,10 +328,12 @@
 
                     <TextView
                         style="@style/TextAppearance.BudgetBrewer.Subheader.Container"
+                        android:id="@+id/tvSpendingTrendsHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_spending_trends" />
+                        android:text="@string/chart_spending_trends"
+                        android:accessibilityHeading="true"/>
 
                     <!-- Timeframe selector - individual buttons with gradient backgrounds -->
                     <LinearLayout
@@ -415,7 +423,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/spending_by_tag_header" />
+                        android:text="@string/spending_by_tag_header"
+                        android:accessibilityHeading="true" />
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/chartSpendingByTag"

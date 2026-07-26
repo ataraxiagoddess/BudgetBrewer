@@ -1,8 +1,10 @@
 package com.ataraxiagoddess.budgetbrewer.ui.home
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.accessibility.AccessibilityManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,10 +91,25 @@ class HomeFragment : Fragment(), MonthChangeListener {
         return binding.root
     }
 
+    private fun isTouchExplorationEnabled(): Boolean {
+        val accessibilityManager = requireContext().getSystemService(
+            Context.ACCESSIBILITY_SERVICE
+        ) as AccessibilityManager
+
+        return accessibilityManager.isEnabled &&
+                accessibilityManager.isTouchExplorationEnabled
+    }
+
     private fun configureDashboardColumns() {
-        val columnCount = resources.getInteger(
+        val configuredColumnCount = resources.getInteger(
             R.integer.home_dashboard_column_count
         )
+
+        val columnCount = if (isTouchExplorationEnabled()) {
+            1
+        } else {
+            configuredColumnCount
+        }
 
         val leftColumn = binding.homeDashboardLeftColumn
         val rightColumn = binding.homeDashboardRightColumn
@@ -125,6 +142,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
             columnGap.isGone = true
 
             allCards.forEach(leftColumn::addView)
+
             return
         }
 
@@ -209,25 +227,25 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.btnTimeframe1m.isChecked = true
 
         binding.btnTimeframe1m.setOnClickListener {
-            if (it.isSelected) return@setOnClickListener // already selected
+            if (binding.btnTimeframe1m == selectedTimeframeButton) return@setOnClickListener // already selected
             updateButtonSelection(binding.btnTimeframe1m)
             viewModel.setTimeframe(HomeViewModel.Timeframe.ONE_MONTH)
         }
 
         binding.btnTimeframe3m.setOnClickListener {
-            if (it.isSelected) return@setOnClickListener
+            if (binding.btnTimeframe3m == selectedTimeframeButton) return@setOnClickListener
             updateButtonSelection(binding.btnTimeframe3m)
             viewModel.setTimeframe(HomeViewModel.Timeframe.THREE_MONTHS)
         }
 
         binding.btnTimeframe6m.setOnClickListener {
-            if (it.isSelected) return@setOnClickListener
+            if (binding.btnTimeframe6m == selectedTimeframeButton) return@setOnClickListener
             updateButtonSelection(binding.btnTimeframe6m)
             viewModel.setTimeframe(HomeViewModel.Timeframe.SIX_MONTHS)
         }
 
         binding.btnTimeframe1y.setOnClickListener {
-            if (it.isSelected) return@setOnClickListener
+            if (binding.btnTimeframe1y == selectedTimeframeButton) return@setOnClickListener
             updateButtonSelection(binding.btnTimeframe1y)
             viewModel.setTimeframe(HomeViewModel.Timeframe.ONE_YEAR)
         }
@@ -409,6 +427,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.expensesLegendContainer.removeAllViews()
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
         data.expensesByCategory.forEachIndexed { index, catExpense ->
+            val accessibleText = getString(
+                R.string.expense_category_format,
+                catExpense.category.name,
+                catExpense.amount.toCurrencyDisplay(resources),
+                catExpense.percentage
+            )
             val legendRow = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
@@ -428,12 +452,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                text = getString(
-                    R.string.expense_category_format,
-                    catExpense.category.name,
-                    catExpense.amount.toCurrencyDisplay(resources),
-                    catExpense.percentage
-                )
+                text = accessibleText
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
                 textSize = 14f
                 typeface = exoRegular

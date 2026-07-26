@@ -1,9 +1,12 @@
 package com.ataraxiagoddess.budgetbrewer.ui.base
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -63,7 +66,9 @@ abstract class BaseActivity : AppCompatActivity() {
     private var isSettingMonthProgrammatically = false
     private var isSettingUpSpinner = false
     private var outerRoot: FrameLayout? = null
-
+    private var isFreshActivityLaunch = false
+    private var initialMonthFocusHandled = false
+    private var pendingInitialMonthSpinner: Spinner? = null
     protected val isRailMode: Boolean
         get() = useRail
 
@@ -141,6 +146,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        isFreshActivityLaunch = savedInstanceState == null
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, true)
@@ -149,6 +155,31 @@ abstract class BaseActivity : AppCompatActivity() {
         window.navigationBarColor = ContextCompat.getColor(this, R.color.bg_main)
         @Suppress("DEPRECATION")
         window.statusBarColor = ContextCompat.getColor(this, R.color.bg_main)
+    }
+
+    private fun isTouchExplorationEnabled(): Boolean {
+        val accessibilityManager = getSystemService(
+            ACCESSIBILITY_SERVICE
+        ) as AccessibilityManager
+
+        return accessibilityManager.isEnabled &&
+                accessibilityManager.isTouchExplorationEnabled
+    }
+
+    private fun prepareInitialMonthSpinnerAccessibility(
+        spinner: Spinner
+    ) {
+        if (
+            !isFreshActivityLaunch ||
+            initialMonthFocusHandled ||
+            !isTouchExplorationEnabled()
+        ) {
+            return
+        }
+        spinner.importantForAccessibility =
+            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+
+        pendingInitialMonthSpinner = spinner
     }
 
     // Helper to build the root layout
@@ -202,7 +233,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 // Inflate and add month selector header
                 val header = layoutInflater.inflate(R.layout.nav_rail_header, buttonBar, false)
                 railMonthSpinner = header.findViewById(R.id.monthSpinnerRail)
-                railMonthSpinner?.let(::setupMonthSpinner)
+                railMonthSpinner?.let(::prepareInitialMonthSpinnerAccessibility)
                 buttonBar.addView(header)
 
                 // Helper to create an icon‑only nav button
@@ -320,6 +351,9 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
                 monthSelectorBinding =
                     MonthSelectorBinding.inflate(layoutInflater, monthSelectorBlurView, true)
+                prepareInitialMonthSpinnerAccessibility(
+                    monthSelectorBinding.monthSpinner
+                )
                 addView(monthSelectorBlurView)
 
                 // 3. Bottom navigation – aligned to bottom (with blur)
@@ -336,11 +370,18 @@ abstract class BaseActivity : AppCompatActivity() {
                 monthSelectorBlurView.setupWith(blurTarget)
                     .setBlurRadius(10f)
                     .setBlurEnabled(true)
-
-                // Set up month selector in the usual place
-                setupMonthSelector()
             }
         }.also { outerRoot = it }
+    }
+
+    private fun finishViewInitialization() {
+        outerRoot?.post {
+            if (useRail) {
+                railMonthSpinner?.let(::setupMonthSpinner)
+            } else if (this::monthSelectorBinding.isInitialized) {
+                setupMonthSpinner(monthSelectorBinding.monthSpinner)
+            }
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -350,6 +391,7 @@ abstract class BaseActivity : AppCompatActivity() {
         val contentView = LayoutInflater.from(this).inflate(layoutResID, null, false)
         val rootLayout = createRootLayout(contentView)
         super.setContentView(rootLayout)
+        finishViewInitialization()
 
         if (!useRail) {
             setupBottomNavigation()
@@ -359,6 +401,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun setContentView(view: View?) {
         val rootLayout = createRootLayout(view!!)
         super.setContentView(rootLayout)
+        finishViewInitialization()
 
         if (!useRail) {
             setupBottomNavigation()
@@ -368,10 +411,54 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         val rootLayout = createRootLayout(view!!)
         super.setContentView(rootLayout, params)
+        finishViewInitialization()
 
         if (!useRail) {
             setupBottomNavigation()
         }
+    }
+
+    @SuppressLint("AccessibilityFocus")
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        if (
+            !hasFocus ||
+            initialMonthFocusHandled ||
+            !isFreshActivityLaunch ||
+            !isTouchExplorationEnabled()
+        ) {
+            return
+        }
+
+        val spinner = pendingInitialMonthSpinner ?: return
+
+        initialMonthFocusHandled = true
+        pendingInitialMonthSpinner = null
+
+        /*
+         * Let TalkBack announce the newly opened app window first.
+         * Then expose the Spinner and make it the first accessibility-
+         * focused control.
+         */
+        spinner.postDelayed(
+            {
+                if (
+                    spinner.isAttachedToWindow &&
+                    !isFinishing &&
+                    !isDestroyed
+                ) {
+                    spinner.importantForAccessibility =
+                        View.IMPORTANT_FOR_ACCESSIBILITY_AUTO
+
+                    spinner.performAccessibilityAction(
+                        AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
+                        null
+                    )
+                }
+            },
+            750L
+        )
     }
 
     private fun setupBottomNavigation() {
@@ -432,7 +519,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun setupMonthSpinner(spinner: Spinner) {
         generateAllMonths()
+
         val monthNames = allMonths.map { it.getDisplayName(this) }
+
+        val currentIndex = allMonths.indexOfFirst {
+            it.year == selectedMonth.year && it.month == selectedMonth.month
+        }
 
         monthAdapter = object : ArrayAdapter<String>(
             this,
@@ -450,12 +542,17 @@ abstract class BaseActivity : AppCompatActivity() {
                 divider?.visibility = if (position == count - 1) View.GONE else View.VISIBLE
                 return view
             }
+        }.apply {
+            setDropDownViewResource(R.layout.spinner_dropdown_item_month)
         }
-        monthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_month)
+
+        isSettingUpSpinner = true
 
         spinner.adapter = monthAdapter
 
-        spinner.contentDescription = getString(R.string.select_month)
+        if (currentIndex >= 0) {
+            spinner.setSelection(currentIndex, false)
+        }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -465,7 +562,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 id: Long
             ) {
                 if (isSettingUpSpinner) return
-                if (position < allMonths.size) {
+                if (position in allMonths.indices) {
                     val selected = allMonths[position]
                     if (selected != selectedMonth) {
                         selectedMonth = selected
@@ -476,18 +573,9 @@ abstract class BaseActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        val currentIndex = allMonths.indexOfFirst {
-            it.year == selectedMonth.year && it.month == selectedMonth.month
-        }
-        if (currentIndex >= 0) {
-            isSettingUpSpinner = true
-            spinner.setSelection(currentIndex)
+        spinner.post {
             isSettingUpSpinner = false
         }
-    }
-
-    private fun setupMonthSelector() {
-        setupMonthSpinner(monthSelectorBinding.monthSpinner)
     }
 
     // ----------------------------------------------------------------------

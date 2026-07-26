@@ -15,6 +15,5 @@
         android:popupBackground="@drawable/popup_background_rounded"
         android:spinnerMode="dropdown"
         android:paddingStart="12dp"
-        android:paddingEnd="40dp"
-        android:contentDescription="@string/select_month" />
+        android:paddingEnd="40dp" />
 </LinearLayout>
