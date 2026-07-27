@@ -1,6 +1,6 @@
 package com.ataraxiagoddess.budgetbrewer.ui.home
 
-import android.content.Context
+import android.content.Context.ACCESSIBILITY_SERVICE
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -45,10 +45,15 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-
     private var selectedTimeframeButton: MaterialButton? = null
-
     private lateinit var repository: BudgetRepository
+    private lateinit var accessibilityManager: AccessibilityManager
+    private val touchExplorationStateChangeListener =
+        AccessibilityManager.TouchExplorationStateChangeListener {
+            view?.post {
+                configureDashboardColumns()
+            }
+        }
 
     private data class DashboardDimensions(
         val legendMarkerSize: Int,
@@ -93,7 +98,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private fun isTouchExplorationEnabled(): Boolean {
         val accessibilityManager = requireContext().getSystemService(
-            Context.ACCESSIBILITY_SERVICE
+            ACCESSIBILITY_SERVICE
         ) as AccessibilityManager
 
         return accessibilityManager.isEnabled &&
@@ -172,6 +177,15 @@ class HomeFragment : Fragment(), MonthChangeListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        accessibilityManager =
+            requireContext().getSystemService(
+                ACCESSIBILITY_SERVICE
+            ) as AccessibilityManager
+
+        accessibilityManager.addTouchExplorationStateChangeListener(
+            touchExplorationStateChangeListener
+        )
+
         configureDashboardColumns()
 
         val db = AppDatabase.getDatabase(requireContext())
@@ -199,6 +213,11 @@ class HomeFragment : Fragment(), MonthChangeListener {
     }
 
     override fun onDestroyView() {
+        if (::accessibilityManager.isInitialized) {
+            accessibilityManager.removeTouchExplorationStateChangeListener(
+                touchExplorationStateChangeListener
+            )
+        }
         super.onDestroyView()
         _binding = null
     }
