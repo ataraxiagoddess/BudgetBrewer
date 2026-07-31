@@ -512,4 +512,7 @@
         <item>毎週</item>
         <item>隔週</item>
     </string-array>
+    <string name="spending_month_accessibility_format">%1$s、支出額は%2$s</string>
+    <string name="savings_comparison_accessibility_format">%1$s。現在の貯蓄額は、収入の20パーセントという推奨貯蓄目標に対して%2$.1fパーセントです。貯蓄目標は%3$sです。現在の貯蓄額は%4$sです。</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 </resources>

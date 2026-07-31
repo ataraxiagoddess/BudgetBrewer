@@ -512,5 +512,8 @@
     <string name="recurrence_exceeds_maximum">Doit être compris entre 5 et 366 jours</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s dépensés</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Votre épargne représente %2$.1f pour cent de l\'objectif d\'épargne recommandé, soit 20 pour cent de votre revenu. Votre objectif d\'épargne est de %3$s. Votre épargne actuelle est de %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

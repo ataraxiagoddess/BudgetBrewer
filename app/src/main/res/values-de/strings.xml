@@ -512,5 +512,8 @@
     <string name="recurrence_exceeds_maximum">Muss zwischen 5 und 366 Tagen liegen</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s ausgegeben</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Ihre Ersparnisse entsprechen %2$.1f Prozent des empfohlenen Sparziels von 20 Prozent Ihres Einkommens. Ihr Sparziel beträgt %3$s. Ihre aktuellen Ersparnisse betragen %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

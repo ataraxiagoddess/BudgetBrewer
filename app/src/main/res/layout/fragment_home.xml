@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/homeScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -55,8 +56,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_income_vs_expenses"
-                        android:accessibilityHeading="true"/>
+                        android:text="@string/chart_income_vs_expenses"/>
 
                     <!-- Income and Expense Circles Container -->
                     <FrameLayout
@@ -94,11 +94,15 @@
 
                         <!-- Center Text -->
                         <LinearLayout
+                            android:id="@+id/layoutIncomeCenter"
                             android:layout_width="@dimen/income_expenses_center_width"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:focusable="true"
                             android:gravity="center_horizontal"
-                            android:orientation="vertical">
+                            android:importantForAccessibility="yes"
+                            android:orientation="vertical"
+                            tools:ignore="TextSizeCheck">
 
                             <TextView
                                 android:id="@+id/tvIncomeCenter"
@@ -106,6 +110,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/exo_regular"
                                 android:gravity="center"
+                                android:importantForAccessibility="no"
                                 android:includeFontPadding="false"
                                 android:maxLines="1"
                                 android:textColor="@color/text_on_main"
@@ -122,6 +127,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/exo_regular"
+                                android:importantForAccessibility="no"
                                 android:text="@string/income"
                                 android:textColor="@color/text_on_main"
                                 android:textSize="12sp"
@@ -171,8 +177,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_expenses_breakdown"
-                        android:accessibilityHeading="true"/>
+                        android:text="@string/chart_expenses_breakdown"/>
 
                     <!-- Donut Chart -->
                     <com.github.mikephil.charting.charts.PieChart
@@ -198,6 +203,8 @@
                     android:layout_marginBottom="@dimen/dashboard_card_spacing"
                     android:background="@drawable/category_background"
                     android:elevation="@dimen/dashboard_card_elevation"
+                    android:importantForAccessibility="yes"
+                    android:focusable="true"
                     android:orientation="vertical"
                     android:padding="@dimen/dashboard_card_padding">
 
@@ -208,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
                         android:text="@string/chart_savings_comparison"
-                        android:accessibilityHeading="true"/>
+                        android:importantForAccessibility="no"/>
 
                     <!-- Circular Progress Indicator -->
                     <LinearLayout
@@ -216,7 +223,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_chart_spacing"
                         android:gravity="center_horizontal"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:importantForAccessibility="no">
 
                         <com.google.android.material.progressindicator.CircularProgressIndicator
                             android:id="@+id/savingsProgressIndicator"
@@ -239,7 +247,8 @@
                             android:textColor="@color/text_on_container"
                             android:textSize="24sp"
                             android:textStyle="bold"
-                            tools:text="0%" />
+                            tools:text="0%"
+                            android:importantForAccessibility="no"/>
 
                         <TextView
                             android:id="@+id/tvSavingsOverachievement"
@@ -249,7 +258,8 @@
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="14sp"
                             android:visibility="gone"
-                            tools:text="+25% over target" />
+                            tools:text="+25% over target"
+                            android:importantForAccessibility="no"/>
                     </LinearLayout>
 
                     <!-- Savings Comparison Legend (vertical stack) -->
@@ -257,6 +267,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/space_sm"
+                        android:importantForAccessibility="noHideDescendants"
                         android:orientation="vertical">
 
                         <!-- Target -->
@@ -311,7 +322,9 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/exo_regular"
                         android:gravity="center_horizontal"
-                        tools:text="Target: $800.00  |  Actual: $500.00" />
+                        tools:text="Target: $800.00  |  Actual: $500.00"
+                        android:importantForAccessibility="no"/>
+
                 </LinearLayout>
 
                 <!-- Spending Trends -->
@@ -332,61 +345,107 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/chart_spending_trends"
-                        android:accessibilityHeading="true"/>
+                        android:text="@string/chart_spending_trends"/>
 
-                    <!-- Timeframe selector - individual buttons with gradient backgrounds -->
+                    <!-- Timeframe selector -->
                     <LinearLayout
+                        android:id="@+id/timeframeSelector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_chart_spacing"
                         android:background="@drawable/category_background"
-                        android:gravity="center"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:padding="@dimen/timeframe_selector_padding">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTimeframe1m"
-                            style="@style/Widget.BudgetBrewer.TimeframeButton"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/button_height"
-                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_timeframe_button_1m"
-                            android:checkable="true"
-                            android:text="@string/timeframe_1m" />
+                        <LinearLayout
+                            android:id="@+id/timeframeRowSingle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTimeframe3m"
-                            style="@style/Widget.BudgetBrewer.TimeframeButton"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/button_height"
-                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_timeframe_button_3m"
-                            android:checkable="true"
-                            android:text="@string/timeframe_3m" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTimeframe1m"
+                                style="@style/Widget.BudgetBrewer.TimeframeButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_timeframe_button_1m"
+                                android:checkable="true"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="@dimen/button_height"
+                                android:text="@string/timeframe_1m" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTimeframe6m"
-                            style="@style/Widget.BudgetBrewer.TimeframeButton"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/button_height"
-                            android:layout_marginEnd="@dimen/timeframe_button_spacing"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_timeframe_button_6m"
-                            android:checkable="true"
-                            android:text="@string/timeframe_6m" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTimeframe3m"
+                                style="@style/Widget.BudgetBrewer.TimeframeButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_timeframe_button_3m"
+                                android:checkable="true"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="@dimen/button_height"
+                                android:text="@string/timeframe_3m" />
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnTimeframe1y"
-                            style="@style/Widget.BudgetBrewer.TimeframeButton"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/button_height"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_timeframe_button_1y"
-                            android:checkable="true"
-                            android:text="@string/timeframe_1y" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTimeframe6m"
+                                style="@style/Widget.BudgetBrewer.TimeframeButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/timeframe_button_spacing"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_timeframe_button_6m"
+                                android:checkable="true"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="@dimen/button_height"
+                                android:text="@string/timeframe_6m" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTimeframe1y"
+                                style="@style/Widget.BudgetBrewer.TimeframeButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_timeframe_button_1y"
+                                android:checkable="true"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:minHeight="@dimen/button_height"
+                                android:text="@string/timeframe_1y" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/timeframeRowsStack"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <LinearLayout
+                                android:id="@+id/timeframeRowTop"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/timeframe_button_spacing"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal" />
+
+                            <LinearLayout
+                                android:id="@+id/timeframeRowBottom"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                     <!-- Line Chart -->
@@ -423,8 +482,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dashboard_header_spacing"
-                        android:text="@string/spending_by_tag_header"
-                        android:accessibilityHeading="true" />
+                        android:text="@string/spending_by_tag_header" />
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/chartSpendingByTag"

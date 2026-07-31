@@ -512,5 +512,8 @@
     <string name="recurrence_exceeds_maximum">Deve essere compreso tra 5 e 366 giorni</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s spesi</string>
+    <string name="savings_comparison_accessibility_format">%1$s. I tuoi risparmi corrispondono al %2$.1f per cento dell\'obiettivo di risparmio consigliato, pari al 20 per cento del tuo reddito. Il tuo obiettivo di risparmio è %3$s. I tuoi risparmi attuali sono %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

@@ -512,4 +512,7 @@
         <item>Lingguhan</item>
         <item>Dalawang-lingguhan</item>
     </string-array>
+    <string name="spending_month_accessibility_format">%1$s, %2$s ang ginastos</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Ang iyong ipon ay %2$.1f porsiyento ng inirerekomendang target na 20 porsiyento ng iyong kita. Ang target mong ipon ay %3$s. Ang kasalukuyan mong ipon ay %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 </resources>

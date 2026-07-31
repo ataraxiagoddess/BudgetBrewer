@@ -512,5 +512,8 @@
     <string name="recurrence_exceeds_maximum">Debe estar entre 5 y 366 días</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s gastados</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Tus ahorros representan el %2$.1f por ciento del objetivo de ahorro recomendado del 20 por ciento de tus ingresos. Tu objetivo de ahorro es de %3$s. Tus ahorros actuales son de %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

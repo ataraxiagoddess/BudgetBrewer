@@ -512,4 +512,7 @@
         <item>साप्ताहिक</item>
         <item>द्वि-साप्ताहिक</item>
     </string-array>
+    <string name="spending_month_accessibility_format">%1$s में %2$s खर्च किए गए</string>
+    <string name="savings_comparison_accessibility_format">%1$s। आपकी बचत आपकी आय के 20 प्रतिशत के अनुशंसित बचत लक्ष्य का %2$.1f प्रतिशत है। आपका बचत लक्ष्य %3$s है। आपकी वर्तमान बचत %4$s है।</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 </resources>

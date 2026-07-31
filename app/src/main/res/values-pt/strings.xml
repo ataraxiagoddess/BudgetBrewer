@@ -512,5 +512,8 @@
     <string name="recurrence_exceeds_maximum">Deve estar entre 5 e 366 dias</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s gastos</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Suas economias correspondem a %2$.1f por cento da meta de poupança recomendada de 20 por cento da sua renda. Sua meta de poupança é %3$s. Suas economias atuais são %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

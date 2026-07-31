@@ -511,5 +511,8 @@
     <string name="recurrence_exceeds_maximum">Must be between 5 and 366 days</string>
     <string name="character_counter">%1$d/%2$d</string>
     <string name="note_counter">%1$d/%2$d</string>
+    <string name="spending_month_accessibility_format">%1$s, %2$s spent</string>
+    <string name="savings_comparison_accessibility_format">%1$s. Your savings are %2$.1f percent of the recommended savings target of 20 percent of your income. Your savings target is %3$s. Your current savings are %4$s.</string>
+    <string name="income_accessibility_format">%1$s, %2$s</string>
 
 </resources>

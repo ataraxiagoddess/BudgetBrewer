@@ -12,8 +12,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.doOnNextLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -50,8 +53,22 @@ class HomeFragment : Fragment(), MonthChangeListener {
     private lateinit var accessibilityManager: AccessibilityManager
     private val touchExplorationStateChangeListener =
         AccessibilityManager.TouchExplorationStateChangeListener {
-            view?.post {
+            val fragmentView = view ?: return@TouchExplorationStateChangeListener
+
+            fragmentView.post {
+                if (_binding == null) {
+                    return@post
+                }
+
+                val scrollAnchor = captureDashboardScrollAnchor()
+
                 configureDashboardColumns()
+
+                binding.homeScrollView.doOnNextLayout {
+                    scrollAnchor?.let(
+                        ::restoreDashboardScrollAnchor
+                    )
+                }
             }
         }
 
@@ -60,6 +77,11 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val legendMarkerSpacing: Int,
         val legendRowVerticalMargin: Int,
         val dataRowVerticalMargin: Int
+    )
+
+    private data class DashboardScrollAnchor(
+        val card: View,
+        val topOffset: Int
     )
 
     private val dashboardDimensions: DashboardDimensions
@@ -174,6 +196,232 @@ class HomeFragment : Fragment(), MonthChangeListener {
         ).forEach(rightColumn::addView)
     }
 
+    private fun dashboardCards(): List<View> {
+        return listOf(
+            binding.cardIncomeExpenses,
+            binding.cardExpensesBreakdown,
+            binding.cardSavingsComparison,
+            binding.cardSpendingTrends,
+            binding.layoutSpendingByTagContainer
+        ).filter { it.isVisible }
+    }
+
+    private fun captureDashboardScrollAnchor(): DashboardScrollAnchor? {
+        val scrollView = binding.homeScrollView
+
+        val scrollLocation = IntArray(2)
+        scrollView.getLocationOnScreen(scrollLocation)
+
+        val viewportTop = scrollLocation[1] + scrollView.paddingTop
+        val viewportBottom = scrollLocation[1] + scrollView.height - scrollView.paddingBottom
+
+        val visibleCards = dashboardCards()
+            .mapNotNull { card ->
+                val cardLocation = IntArray(2)
+                card.getLocationOnScreen(cardLocation)
+
+                val cardTop = cardLocation[1]
+                val cardBottom = cardTop + card.height
+
+                if (
+                    cardBottom > viewportTop &&
+                    cardTop < viewportBottom
+                ) {
+                    card to cardTop
+                } else {
+                    null
+                }
+            }
+
+        if (visibleCards.isEmpty()) {
+            return null
+        }
+
+        val anchor = visibleCards.minByOrNull { (_, cardTop) ->
+            kotlin.math.abs(cardTop - viewportTop)
+        } ?: return null
+
+        return DashboardScrollAnchor(
+            card = anchor.first,
+            topOffset = anchor.second - viewportTop
+        )
+    }
+
+    private fun restoreDashboardScrollAnchor(
+        anchor: DashboardScrollAnchor
+    ) {
+        val scrollView = binding.homeScrollView
+
+        if (!anchor.card.isAttachedToWindow) {
+            return
+        }
+
+        val scrollLocation = IntArray(2)
+        scrollView.getLocationOnScreen(scrollLocation)
+
+        val cardLocation = IntArray(2)
+        anchor.card.getLocationOnScreen(cardLocation)
+
+        val viewportTop = scrollLocation[1] + scrollView.paddingTop
+        val currentOffset = cardLocation[1] - viewportTop
+        val scrollDifference = currentOffset - anchor.topOffset
+
+        scrollView.scrollBy(0, scrollDifference)
+    }
+
+    private fun configureAccessibility() {
+        ViewCompat.setAccessibilityHeading(
+            binding.tvIncomeExpensesHeader,
+            true
+        )
+
+        ViewCompat.setAccessibilityHeading(
+            binding.tvExpensesBreakdownHeader,
+            true
+        )
+
+        ViewCompat.setAccessibilityHeading(
+            binding.tvSpendingTrendsHeader,
+            true
+        )
+
+        ViewCompat.setAccessibilityHeading(
+            binding.tvSpendingByTagHeader,
+            true
+        )
+
+        ViewCompat.setScreenReaderFocusable(
+            binding.cardSavingsComparison,
+            true
+        )
+    }
+
+    private fun timeframeButtons(): List<MaterialButton> {
+        return listOf(
+            binding.btnTimeframe1m,
+            binding.btnTimeframe3m,
+            binding.btnTimeframe6m,
+            binding.btnTimeframe1y
+        )
+    }
+
+    private fun configureTimeframeButtons() {
+        val buttons = timeframeButtons()
+
+        binding.timeframeSelector.doOnPreDraw {
+            val availableWidth =
+                binding.timeframeSelector.width -
+                    binding.timeframeSelector.paddingStart -
+                    binding.timeframeSelector.paddingEnd
+
+            val spacing = resources.getDimensionPixelSize(
+                R.dimen.timeframe_button_spacing
+            )
+
+            val requiredWidth = buttons.sumOf { button ->
+                button.paint.measureText(
+                    button.text.toString()
+                ).toInt() +
+                    button.compoundPaddingStart +
+                    button.compoundPaddingEnd
+            } + spacing * (buttons.size - 1)
+
+            if (requiredWidth > availableWidth) {
+                useTwoTimeframeRows(buttons)
+            } else {
+                useSingleTimeframeRow(buttons)
+            }
+        }
+    }
+
+    private fun useSingleTimeframeRow(
+        buttons: List<MaterialButton>
+    ) {
+        binding.timeframeRowSingle.isVisible = true
+        binding.timeframeRowsStack.isGone = true
+
+        binding.timeframeRowTop.removeAllViews()
+        binding.timeframeRowBottom.removeAllViews()
+
+        moveTimeframeButtons(
+            buttons = buttons,
+            parent = binding.timeframeRowSingle
+        )
+
+        equalizeTimeframeButtonHeights(buttons)
+    }
+
+    private fun useTwoTimeframeRows(
+        buttons: List<MaterialButton>
+    ) {
+        binding.timeframeRowSingle.isGone = true
+        binding.timeframeRowsStack.isVisible = true
+
+        binding.timeframeRowSingle.removeAllViews()
+
+        moveTimeframeButtons(
+            buttons = buttons.take(2),
+            parent = binding.timeframeRowTop
+        )
+
+        moveTimeframeButtons(
+            buttons = buttons.drop(2),
+            parent = binding.timeframeRowBottom
+        )
+
+        equalizeTimeframeButtonHeights(buttons)
+    }
+
+    private fun moveTimeframeButtons(
+        buttons: List<MaterialButton>,
+        parent: LinearLayout
+    ) {
+        val spacing = resources.getDimensionPixelSize(
+            R.dimen.timeframe_button_spacing
+        )
+
+        parent.removeAllViews()
+
+        buttons.forEachIndexed { index, button ->
+            (button.parent as? ViewGroup)?.removeView(button)
+
+            button.layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            ).apply {
+                height = LinearLayout.LayoutParams.WRAP_CONTENT
+                marginEnd = if (index < buttons.lastIndex) spacing else 0
+            }
+
+            parent.addView(button)
+        }
+    }
+
+    private fun equalizeTimeframeButtonHeights(
+        buttons: List<MaterialButton>
+    ) {
+        buttons.forEach { button ->
+            button.layoutParams = button.layoutParams.apply {
+                height = LinearLayout.LayoutParams.WRAP_CONTENT
+            }
+        }
+
+        binding.timeframeSelector.doOnPreDraw {
+            val tallestHeight = buttons.maxOf { button ->
+                button.measuredHeight
+            }
+
+            buttons.forEach { button ->
+                if (button.layoutParams.height != tallestHeight) {
+                    button.layoutParams = button.layoutParams.apply {
+                        height = tallestHeight
+                    }
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -187,6 +435,8 @@ class HomeFragment : Fragment(), MonthChangeListener {
         )
 
         configureDashboardColumns()
+        configureAccessibility()
+        configureTimeframeButtons()
 
         val db = AppDatabase.getDatabase(requireContext())
         repository = BudgetRepository(db)
@@ -374,6 +624,8 @@ class HomeFragment : Fragment(), MonthChangeListener {
     private fun updateIncomeVsExpensesChart(data: HomeUiState.Success) {
         val totalIncome = data.totalIncome
         val totalExpenses = data.totalExpenses
+        val formattedIncome = totalIncome.toCurrencyDisplay(resources)
+        val formattedExpenses = totalExpenses.toCurrencyDisplay(resources)
 
         val expensePercentage = if (totalIncome > 0) {
             (totalExpenses / totalIncome * 100).coerceIn(0.0, 100.0)
@@ -385,11 +637,17 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
         binding.incomeCircle.setProgressCompat(100, false)
         binding.expensesRing.setProgressCompat(expensePercentage.toInt(), true)
-        binding.tvIncomeCenter.text = totalIncome.toCurrencyDisplay(resources)
+        binding.tvIncomeCenter.text = formattedIncome
+
+        binding.layoutIncomeCenter.contentDescription = getString(
+            R.string.income_accessibility_format,
+            getString(R.string.income),
+            formattedIncome
+        )
 
         binding.tvExpensesData.text = String.format(Locale.US, "%s: %s (%.1f%%)",
             getString(R.string.expenses),
-            totalExpenses.toCurrencyDisplay(resources),
+            formattedExpenses,
             expensePercentage
         )
 
@@ -486,6 +744,8 @@ class HomeFragment : Fragment(), MonthChangeListener {
     private fun updateSavingsComparisonChart(data: HomeUiState.Success) {
         val targetAmount = data.savingsTarget
         val actualAmount = data.savingsAmount
+        val formattedTarget = targetAmount.toCurrencyDisplay(resources)
+        val formattedActual = actualAmount.toCurrencyDisplay(resources)
 
         val rawPercentage = if (targetAmount > 0) {
             actualAmount / targetAmount * 100
@@ -514,9 +774,17 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.tvSavingsData.text = getString(
             R.string.savings_comparison_format,
             getString(R.string.chart_target),
-            targetAmount.toCurrencyDisplay(resources),
+            formattedTarget,
             getString(R.string.chart_actual),
-            actualAmount.toCurrencyDisplay(resources)
+            formattedActual
+        )
+
+        binding.cardSavingsComparison.contentDescription = getString(
+            R.string.savings_comparison_accessibility_format,
+            getString(R.string.chart_savings_comparison),
+            rawPercentage,
+            formattedTarget,
+            formattedActual
         )
 
         applyExoFont(binding.tvSavingsPercentage, binding.tvSavingsData)
@@ -583,12 +851,21 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val dimensions = dashboardDimensions
 
         data.spendingHistory.forEach { spending ->
+            val monthAndYear = getString(R.string.month_year_format, getMonthName(spending.month), spending.year)
+
+            val formattedAmount = spending.amount.toCurrencyDisplay(resources)
+
             val row = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply { setMargins(0, dimensions.dataRowVerticalMargin, 0, dimensions.dataRowVerticalMargin) }
+
+                isFocusable = true
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+
+                contentDescription = getString(R.string.spending_month_accessibility_format, monthAndYear, formattedAmount)
             }
 
             val monthText = TextView(requireContext()).apply {
@@ -597,14 +874,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     1f
                 )
-                text = getString(
-                    R.string.month_year_format,
-                    getMonthName(spending.month),
-                    spending.year
-                )
+                text = monthAndYear
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
                 textSize = 14f
                 typeface = exoRegular
+
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
 
             val amountText = TextView(requireContext()).apply {
@@ -612,10 +887,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                text = spending.amount.toCurrencyDisplay(resources)
+                text = formattedAmount
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
                 textSize = 14f
                 setTypeface(exoMedium, Typeface.BOLD)
+
+                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
 
             row.addView(monthText)
@@ -703,3 +980,4 @@ class HomeFragment : Fragment(), MonthChangeListener {
         views.forEach { it.typeface = exoRegular }
     }
 }
+
