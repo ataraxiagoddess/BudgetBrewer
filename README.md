@@ -1,261 +1,469 @@
+<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-  <img src="https://raw.githubusercontent.com/ataraxiagoddess/BudgetBrewer/main/app/src/main/res/drawable/budget_brewer_logo.png" alt="Budget Brewer Logo" width="120"/>
-  <h1 style="color: #007A7C; border-bottom: 2px solid #8DCCAD; padding-bottom: 10px; display: inline-block;">Budget Brewer</h1>
-  <p style="font-size: 1.2em; color: #5E3A7C;"><em>Your companion to fast‑track your way to financial freedom</em></p>
-</div>
 
-<div align="center" style="background: #E8DDFD; padding: 20px; border-radius: 15px; margin: 20px 0;">
-  <p style="color: #007A7C; font-size: 1.1em;">
-    ⭐ <strong>100% free</strong> · No ads · No subscriptions · Open source
-  </p>
-  <p>
-    <a href="https://github.com/ataraxiagoddess/BudgetBrewer/releases"><img src="https://img.shields.io/github/v/release/ataraxiagoddess/BudgetBrewer?style=for-the-badge&label=Download&color=007A7C" alt="GitHub release"></a>
-    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
-    <img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" alt="Kotlin">
-    <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android">
-  </p>
-</div>
+<img src="app/src/main/res/drawable-nodpi/budget_brewer_logo.png"
+     alt="Budget Brewer Logo"
+     width="200">
 
----
+# Budget Brewer
 
-## 💡 Philosophy & Why I Built It
+### *Budget with intention. Spend with confidence. Without compromises.*
 
-<div style="background: #E8DDFD; padding: 20px; border-radius: 15px; margin: 20px 0;">
-  <p style="color: #007A7C; font-size: 1.1em;">
-    <strong>“Your finances truly are not something you can set and forget.”</strong>
-  </p>
-  <p>
-    I was frustrated with mainstream budgeting apps – delayed bank sync, miscategorized transactions, and features locked behind paywalls. I spent more time correcting those apps than actually managing my money. After years of perfecting a custom spreadsheet, I realized others could benefit from the same hands‑on approach without the complexity of spreadsheets. Budget Brewer was born to give you <strong>control</strong>, not automation, and to help you understand your cash flow down to the last penny.
-  </p>
-</div>
-
----
-
-## ✅ What It Is · ❌ What It Isn't
-
-<table style="width:100%; border-collapse: collapse; margin: 20px 0;">
-  <tr>
-    <td style="width:50%; background: #007A7C; color: white; padding: 15px; border-radius: 15px 0 0 15px;">
-      <h3 style="color: white; margin-top:0;">✓ What It Is</h3>
-      <ul style="list-style-type: none; padding-left:0;">
-        <li>✔ Hands‑on zero‑dollar budgeting</li>
-        <li>✔ Custom expense categories (up to 20)</li>
-        <li>✔ Recurring expenses with auto‑rollover</li>
-        <li>✔ Spending tracker without micro‑budgets</li>
-        <li>✔ Calendar view with income assignment</li>
-        <li>✔ Charts: Income vs Expenses, category breakdown, savings comparison, spending trends</li>
-        <li>✔ PIN / biometric privacy lock</li>
-        <li>✔ Data export (CSV/PDF) & optional cloud sync</li>
-        <li>✔ Tablet‑optimized layouts</li>
-      </ul>
-    </td>
-    <td style="width:50%; background: #5E3A7C; color: white; padding: 15px; border-radius: 0 15px 15px 0;">
-      <h3 style="color: white; margin-top:0;">✗ What It Isn't</h3>
-      <ul style="list-style-type: none; padding-left:0;">
-        <li>✘ No bank syncing (ever)</li>
-        <li>✘ No micro‑budgets (no “groceries” caps)</li>
-        <li>✘ No ads</li>
-        <li>✘ No subscriptions or paywalls</li>
-        <li>✘ No account required (optional for sync)</li>
-      </ul>
-    </td>
-  </tr>
-</table>
-
----
-
-## ✨ Feature Highlights
-
-<div align="center" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0;">
-  <div style="background: #8DCCAD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">📂</span><br>
-    <strong>Custom Categories</strong>
-  </div>
-  <div style="background: #E8DDFD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">📊</span><br>
-    <strong>Financial Snapshots</strong>
-  </div>
-  <div style="background: #8DCCAD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">🔄</span><br>
-    <strong>Recurring Expenses</strong>
-  </div>
-  <div style="background: #E8DDFD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">💸</span><br>
-    <strong>Spending Tracker</strong>
-  </div>
-  <div style="background: #8DCCAD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">📅</span><br>
-    <strong>Calendar View</strong>
-  </div>
-  <div style="background: #E8DDFD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">🔒</span><br>
-    <strong>PIN / Biometric Lock</strong>
-  </div>
-  <div style="background: #8DCCAD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">📤</span><br>
-    <strong>Data Export</strong>
-  </div>
-  <div style="background: #E8DDFD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">☁️</span><br>
-    <strong>Cloud Sync</strong>
-  </div>
-  <div style="background: #8DCCAD; padding: 15px; border-radius: 10px; text-align: center;">
-    <span style="font-size: 2.5rem;">📱</span><br>
-    <strong>Tablet Optimized</strong>
-  </div>
-</div>
-
----
-
-## 📖 User Guide
-
-<details>
-<summary><strong>📊 Home Page</strong></summary>
 <br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>The Home page gives you a bird’s‑eye view of your finances with four interactive charts:</p>
-  <ul>
-    <li><strong>Income vs Expenses</strong> – See your monthly income and total expenses as a percentage.</li>
-    <li><strong>Expenses by Category</strong> – A donut chart showing how your expenses break down.</li>
-    <li><strong>Savings Comparison</strong> – Compares your allocated savings to the 20% target (50/30/20 model).</li>
-    <li><strong>Spending Trends</strong> – A line chart showing monthly spending over time; use the buttons to toggle between 1, 3, 6, and 12 months.</li>
-  </ul>
-  <p><em>This page is read‑only – just observe and navigate.</em></p>
-</div>
-</details>
 
-<details>
-<summary><strong>💰 Finances Page</strong></summary>
+[![Latest Release](https://img.shields.io/github/v/release/ataraxiagoddess/BudgetBrewer?style=for-the-badge&label=Latest%20Release)](https://github.com/ataraxiagoddess/BudgetBrewer/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+![Android](https://img.shields.io/badge/Android-7.0+-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
+![XML Views](https://img.shields.io/badge/UI-XML%20Views-4285F4?style=for-the-badge)
+
 <br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>This is the heart of Budget Brewer, where you enter income and expenses.</p>
-  <ul>
-    <li><strong>Income Section:</strong> Choose your pay frequency (Weekly, Bi‑weekly, Monthly) and add income sources. Changing frequency will delete existing incomes (except tips). You can edit or delete any entry.</li>
-    <li><strong>Tips/Misc:</strong> A separate section for irregular income. Check the box to enable; unchecking it removes all tips (with confirmation).</li>
-    <li><strong>Categories:</strong> Create up to 20 custom categories. They appear as horizontally scrolling cards (grid on tablets). Tap a category to add, edit, or delete expenses within it.</li>
-    <li><strong>Expenses per Category:</strong> Add up to 20 expenses per category. Each expense can be recurring (same day monthly or every X days). You can scroll vertically inside a category to see all its expenses.</li>
-    <li><strong>Leftover Funds:</strong> After entering all income and expenses, you’ll see how much is left. Allocate it to Savings, Spending, or both. You can edit or delete allocations later.</li>
-  </ul>
-  <p><em>💡 Tip: You can pre‑fill an entire month and then tweak amounts as paychecks arrive.</em></p>
-</div>
-</details>
 
-<details>
-<summary><strong>✅ Expenses Page</strong></summary>
-<br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>A daily checklist of all your expenses for the month.</p>
-  <ul>
-    <li>Each day with expenses is listed; you can check the box to mark that day’s expenses as paid.</li>
-    <li>The remaining amount at the bottom updates automatically.</li>
-    <li>Recurring expenses show a small arrow‑circle icon for easy identification.</li>
-  </ul>
-</div>
-</details>
+![100% Free](https://img.shields.io/badge/100%25-Free-2E8B57?style=for-the-badge)
+![No Ads](https://img.shields.io/badge/No-Ads-2E8B57?style=for-the-badge)
+![No Subscriptions](https://img.shields.io/badge/No-Subscriptions-2E8B57?style=for-the-badge)
+![No Paywalls](https://img.shields.io/badge/No-Paywalls-2E8B57?style=for-the-badge)
+![Open Source](https://img.shields.io/badge/Open-Source-2E8B57?style=for-the-badge)
+![Privacy First](https://img.shields.io/badge/Privacy-First-2E8B57?style=for-the-badge)
 
-<details>
-<summary><strong>💸 Spending Page</strong></summary>
-<br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>Track your spending against your allocation.</p>
-  <ul>
-    <li>Two bubbles show your <strong>Spending Allocation</strong> (from Finances) and <strong>Remaining</strong> amount.</li>
-    <li>Add transactions by picking a date, entering a source and amount. The app warns if a transaction exceeds your remaining funds.</li>
-    <li>Transactions are listed in date order (ascending). On tablets/landscape, they appear in a two‑column grid.</li>
-  </ul>
-</div>
-</details>
-
-<details>
-<summary><strong>📅 Calendar Page</strong></summary>
-<br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>An all‑in‑one view of your income, expenses, and spending.</p>
-  <ul>
-    <li>Colored dots on each day: <span style="background: #FB50A6; width: 12px; height: 12px; display: inline-block; border-radius: 50%;"></span> expenses, <span style="background: #FFCC7A; width: 12px; height: 12px; display: inline-block; border-radius: 50%;"></span> spending, <span style="background: #b2d8b2; width: 12px; height: 12px; display: inline-block; border-radius: 50%;"></span> income.</li>
-    <li>Tap a day to see details, assign income, and view the net total.</li>
-    <li>Month start amount (carried over from previous month) can be overridden if needed. Week‑end totals help you verify your numbers.</li>
-    <li>Month end amount automatically rolls over to the next month.</li>
-  </ul>
-</div>
-</details>
-
-<details>
-<summary><strong>⚙️ Settings Page</strong></summary>
-<br>
-<div style="background: #E8DDFD; padding: 15px; border-radius: 10px;">
-  <p>Three main sections:</p>
-  <ul>
-    <li><strong>Account:</strong> Sign in/up, sign out, delete account, export data (CSV/PDF), enable PIN/biometric lock (set/change/delete PIN).</li>
-    <li><strong>Appearance:</strong> Choose Light, Dark, or System theme.</li>
-    <li><strong>Currency:</strong> Select your preferred currency symbol.</li>
-    <li>At the bottom, you'll find a “Buy me a coffee” link (Ko‑fi) and the app version.</li>
-  </ul>
-</div>
-</details>
-
----
-
-## ☁️ Account & Sync Benefits
-
-<div style="background: #007A7C; color: white; padding: 20px; border-radius: 15px; margin: 20px 0;">
-  <p><strong>Accounts are completely optional</strong> – you can use Budget Brewer anonymously with all features available locally.</p>
-  <p>If you create an account (free), you get:</p>
-  <ul style="color: white;">
-    <li>☁️ Cloud backup – never lose your data.</li>
-    <li>🔄 Sync across devices – pick up where you left off on another phone or tablet.</li>
-    <li>📤 Data export – download your data as CSV or PDF.</li>
-    <li>🔒 PIN / biometric lock – keep your financial data private.</li>
-  </ul>
-  <p>Changes made offline are queued and uploaded automatically when connectivity is restored.</p>
 </div>
 
 ---
 
-## 📸 Screenshots
+## Why Budget Brewer Exists
 
-<div align="center" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0;">
-  <img src="docs/images/1.png" alt="Home" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/2.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/3.png" alt="Expenses" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/4.png" alt="Spending" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/5.png" alt="Calendar" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/6.png" alt="Settings" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/7.png" alt="Settings Dark" style="width:25%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-  <img src="docs/images/8.png" alt="Home Landscape Dark" style="width:50%; max-width:300px; border-radius: 10px; border: 2px solid #007A7C; margin: 0 auto;">
-</div>
+Most budgeting apps are designed around automation.
+
+They encourage you to connect your bank account, automatically categorize your
+transactions, subscribe to unlock essential features, and trust an algorithm to
+understand your finances.
+
+Budget Brewer was built on a different philosophy.
+
+Budgeting is not something you should automate and forget. It is something you
+should understand.
+
+By intentionally planning your income, expenses, savings, and spending, you gain
+something no algorithm can provide: awareness.
+
+Budget Brewer does not try to replace your financial decisions. It helps you
+make better ones.
+
+Whether you are paying off debt, saving for a home, preparing for retirement, or
+simply trying to understand where your paycheck goes each month, Budget Brewer
+is designed to help you build confidence in your financial decisions.
+
+It does so without advertisements, subscriptions, hidden costs, or unnecessary
+complexity.
+
+Because your money should work for you.
+
+**Your budgeting app should too.**
 
 ---
 
-## 📥 Installation
+## Philosophy
 
-1. Download the latest APK from the [Releases page](https://github.com/ataraxiagoddess/BudgetBrewer/releases).
-2. On your Android device, open the downloaded file.
-3. If prompted, allow installation from unknown sources (you can disable this afterward).
-4. That's it! No account required – start budgeting immediately.
+Budget Brewer is guided by a few simple principles.
+
+- Intentional over automatic. Every penny should have a purpose.
+- Privacy first. Your financial information belongs to you.
+- Free forever. No subscriptions. No paywalls. No ads.
+- You remain in control. Budget Brewer is a tool, not a financial advisor.
+- Built for everyone. Accessibility, localization, and responsive design are
+  fundamental, not optional.
+- Crafted with care. Software should respect its users.
 
 ---
 
-## 📄 License
+## What Budget Brewer Is
 
-This project is licensed under the [MIT License](LICENSE).
+Budget Brewer is a hands-on, zero-dollar model budgeting app.
+
+It helps you:
+
+- record expected income;
+- record recurring monthly expenses;
+- see exactly how much money remains;
+- allocate leftover money toward savings and spending;
+- track spending through the month;
+- grow dedicated savings buckets over time;
+- review financial activity on charts and a calendar;
+- export your data;
+- optionally sync data through an account.
+
+Budget Brewer is not:
+
+- a subscription service;
+- an advertisement platform;
+- a budgeting app that monetizes your financial data;
+- a replacement for your judgment;
+- an app that requires bank linking;
+- an algorithm deciding where your money belongs.
 
 ---
 
-## 🙏 Acknowledgements
+## How Budget Brewer Works
 
-Built with:
+```mermaid
+flowchart TD
+    A[Income] --> B[Monthly Expenses]
+    B --> C[Remaining Money]
+    
+    C --> D[Savings Buckets]
+    C --> E[Spending Allowance]
+    
+    D --> F[Persists and grows over time]
+    E --> G[Tracks purchases for this month]
+```
 
-- [Kotlin](https://kotlinlang.org/) & [Android Jetpack](https://developer.android.com/jetpack)
-- [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) for beautiful charts
-- [Supabase](https://supabase.com/) for authentication and cloud sync
-- [Material Components for Android](https://github.com/material-components/material-components-android)
-- [Kizitonwose Calendar](https://github.com/kizitonwose/CalendarView) for the custom calendar view
-- [Timber](https://github.com/JakeWharton/timber) for logging
+Each month follows a straightforward workflow:
+
+1. Record your expected income.
+2. Record your recurring monthly expenses.
+3. See exactly how much money remains.
+4. Decide how much to allocate toward savings.
+5. Decide how much to keep available for spending.
+6. Track your spending throughout the month.
+
+Your spending allowance resets each month as you create a new budget.
+
+Your savings do not.
+
+Savings buckets continue to grow month after month, helping you work toward
+larger financial goals while still giving yourself permission to spend within
+the limits you have chosen.
+
+Budget Brewer is not about restricting your spending. It is about spending
+intentionally.
+
+---
+
+## Features
+
+### Monthly Budget Planning
+
+Create a monthly budget by recording income, expenses (non-recurring and recurring), savings
+allocations, and monthly spending allowance.
+
+Everything is built around a zero-dollar budgeting philosophy where every penny
+has a purpose.
+
+### Savings Buckets
+
+Create dedicated savings buckets for your financial goals.
+
+Goal buckets track progress toward a target amount. Growth buckets allow money
+to keep building without requiring a target.
+
+Savings continue growing across months while staying separate from monthly
+spending allowance.
+
+### Spending Tracking
+
+Record purchases as they happen and immediately see how they affect your
+remaining spending allowance for the month.
+
+Because expenses have already been planned, every purchase becomes a simpler
+question:
+
+*"Can I comfortably afford this today?"*
+
+### Calendar Review
+
+Review budgeting activity month by month with a calendar view that shows income,
+expenses, spending, and savings activity.
+
+### Visual Summaries
+
+Understand your finances at a glance with Home dashboard visualizations for
+income, expenses, savings, spending trends, and spending by tag.
+<!--
+The Home screen has received a focused accessibility and responsive layout pass,
+including TalkBack summaries, heading semantics, chart alternatives, and
+large-text behavior.
+-->
+### Optional Cloud Sync
+
+Budget Brewer works without an account.
+
+If you choose to create one, you can synchronize your data across devices and
+restore it when setting up a new phone.
+
+### Export Your Data
+
+CSV and PDF export are currently available to users with an account.
+
+Before release, Budget Brewer is planned to support local-only export and import
+so users can back up or move their data without creating an account.
+
+---
+
+## Screenshots
+
+The current screenshots live in `docs/images/`.
+
+
+| Home                                                        | Finances                                                        |
+|-------------------------------------------------------------|-----------------------------------------------------------------|
+| <img src="docs/images/1.png" alt="Home screen" width="220"> | <img src="docs/images/2.png" alt="Finances screen" width="220"> |
+
+| Expenses                                                        | Spending                                                        |
+|-----------------------------------------------------------------|-----------------------------------------------------------------|
+| <img src="docs/images/3.png" alt="Expenses screen" width="220"> | <img src="docs/images/4.png" alt="Spending screen" width="220"> |
+
+| Calendar                                                        | Settings                                                        |
+|-----------------------------------------------------------------|-----------------------------------------------------------------|
+| <img src="docs/images/5.png" alt="Calendar screen" width="220"> | <img src="docs/images/6.png" alt="Settings screen" width="220"> |
+
+| Settings Dark                                                                 | Home Landscape Dark                                                                 |
+|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| <img src="docs/images/7.png" alt="Settings screen in dark theme" width="220"> | <img src="docs/images/8.png" alt="Home screen in landscape dark theme" width="320"> |
+
+---
+
+## Technology
+
+Budget Brewer is a native Android application built with:
+
+- Kotlin
+- Android XML layouts
+- ViewBinding
+- Material Components for Android
+- Room
+- Supabase
+- WorkManager
+- MPAndroidChart
+- Kizitonwose Calendar
+- BlurView
+- Timber
+
+Current app configuration:
+
+- minSdk: 24
+- compileSdk: 37
+- targetSdk: 37
+- Java/Kotlin target: JVM 17
+- Room schema version: 8
+
+
+### Why Budget Brewer Uses XML Views
+
+Budget Brewer uses Android's View system with XML layouts and ViewBinding.
+
+The app relies heavily on mature View-based components, Android's resource
+qualifier system, custom XML resources, and direct platform accessibility
+behavior. Continuing with Views avoids introducing a hybrid UI stack or
+rewriting responsive and TalkBack behavior that has already been carefully
+tested across older phones, modern devices, foldables, and tablets.
+
+Jetpack Compose is capable of building accessible and adaptive interfaces.
+Budget Brewer remains with Views because they are the lower-risk and more
+coherent fit for its current architecture—not because Compose is inherently
+incapable.
+
+See [Architecture](docs/ARCHITECTURE.md#why-budget-brewer-uses-xml-views) for the
+full decision rationale.
+
+---
+
+## Architecture
+
+Budget Brewer is built around MVVM, a central repository, local Room storage,
+and offline-first synchronization.
+
+The major architecture rules are:
+
+- `BudgetRepository.kt` is the central data access layer.
+- ViewModels expose screen state and one-time UI events using the existing local
+  patterns.
+- Room is the local source of truth.
+- Supabase sync happens through `SyncManager`.
+- Failed sync operations are queued in `pending_sync` and retried by
+  `SyncWorker`.
+- Navigation is programmatic through `NavDestination`, `BaseActivity`, and
+  `NavigationManager`.
+- UI is XML and ViewBinding, not Compose.
+- Dependency injection is manual through ViewModel factories.
+
+More detail is in [Architecture](docs/ARCHITECTURE.md).
+
+---
+
+## Accessibility And Responsive Design
+
+Accessibility, localization, and responsive behavior are core parts of the app.
+
+Budget Brewer is reviewed across:
+
+- compact phones;
+- large phones;
+- tablets;
+- portrait and landscape;
+- normal and large text;
+- increased display size;
+- TalkBack;
+- longer translated labels.
+
+The Home screen is the current reference implementation for this standard. It
+now includes grouped TalkBack announcements, heading semantics, chart
+alternatives, touch-exploration layout behavior, scroll preservation during
+dashboard reflow, and responsive timeframe controls.
+
+More detail is in:
+
+- [Accessibility](docs/ACCESSIBILITY.md)
+- [Responsive Strategy](docs/RESPONSIVE_STRATEGY.md)
+- [Design System](docs/DESIGN_SYSTEM.md)
+- [Testing](docs/TESTING.md)
+- [Screen Reviews](docs/SCREEN_REVIEWS.md)
+
+---
+
+## Documentation
+
+Documentation is maintained alongside the project.
+
+Current documents:
+
+- [User Guide](docs/USER_GUIDE.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Design System](docs/DESIGN_SYSTEM.md)
+- [Responsive Strategy](docs/RESPONSIVE_STRATEGY.md)
+- [Accessibility](docs/ACCESSIBILITY.md)
+- [Testing](docs/TESTING.md)
+- [Screen Reviews](docs/SCREEN_REVIEWS.md)
+- [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
+- [Templates](docs/TEMPLATES.md)
+- [AI Agent Directives](AGENTS.md)
+
+The old full project outline has been split into focused docs so each file has a
+clear job and does not have to duplicate everything else.
+
+---
+
+## Installation
+
+The easiest way to install Budget Brewer is to download the latest APK from the
+[Releases page](https://github.com/ataraxiagoddess/BudgetBrewer/releases).
+
+1. Open the Releases page.
+2. Download the latest APK.
+3. Enable installation from unknown sources if prompted.
+4. Install Budget Brewer.
+
+Budget Brewer is currently distributed through GitHub Releases. Additional
+distribution platforms may be added in the future.
+
+---
+
+## Building From Source
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ataraxiagoddess/BudgetBrewer.git
+```
+
+Open the project in Android Studio and build normally, or run:
+
+```bash
+./gradlew assembleDebug
+```
+
+---
+
+## Project Status
+
+Budget Brewer is preparing for its first public production release.
+
+The current focus is refining the app before wider release:
+
+- responsive layouts;
+- design system consistency;
+- accessibility improvements;
+- localization review;
+- UI polish;
+- documentation;
+- performance review;
+- final testing and quality assurance.
+
+The goal is simple:
+
+**Release a budgeting application that feels thoughtful, polished, and
+trustworthy from day one.**
+
+---
+
+## Contributing
+
+Contributions of all sizes are welcome.
+
+Whether you have found a bug, have an idea for an improvement, notice a typo, or
+would like to contribute code, your help is appreciated.
+
+Please keep contributions focused, well documented, and consistent with the
+project's design principles.
+
+See [Contributing](CONTRIBUTING.md) for the working style used in this repo.
+
+---
+
+## Supporting The Project
+
+Budget Brewer is, and always will be:
+
+- free;
+- open source;
+- ad-free;
+- subscription-free.
+
+If Budget Brewer has helped you organize your finances and you would like to
+support continued development, you can do so through Ko-fi.
+
+<p align="center">
+  <a href="https://ko-fi.com/I2I41VFS1R">
+    <img
+      src="https://storage.ko-fi.com/cdn/kofi4.png?v=6"
+      alt="Support Budget Brewer on Ko-fi"
+      height="48">
+  </a>
+</p>
+
+---
+
+## License
+
+Budget Brewer is released under the MIT License.
+
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgements
+
+Budget Brewer exists because of the open-source community.
+
+Special thanks to:
+
+- Google and the Android development team
+- JetBrains for Kotlin
+- Material Design
+- MPAndroidChart
+- Supabase
+- Kizitonwose Calendar
+- Timber
+- Everyone who tests, reports bugs, contributes ideas, or uses Budget Brewer
 
 ---
 
 <div align="center">
-  <p style="color: #007A7C;">Made with ❤️ by <a href="https://github.com/ataraxiagoddess">AtaraxiaGoddess</a></p>
-  <p><a href="https://ko-fi.com/ataraxiagoddess"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=kofi&logoColor=black" alt="Ko-fi"></a></p>
+
+## Budget with intention.
+
+### Spend with confidence.
+
+**Without compromises.**
+
 </div>
