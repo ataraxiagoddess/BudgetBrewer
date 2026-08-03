@@ -65,11 +65,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditBucket"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BudgetBrewer.Button.Icon.Container"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/edit"
             app:icon="@android:drawable/ic_menu_edit"
             app:iconSize="24dp"
@@ -176,11 +175,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnWithdraw"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BudgetBrewer.Button.Icon.Container"
             android:layout_width="40dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/withdraw"
             android:rotation="180"
             android:scaleX="1.5"
@@ -196,10 +194,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDistribute"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BudgetBrewer.Button.Icon.Container"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/distribute"
             app:icon="@android:drawable/ic_input_add"
             app:iconSize="24dp"
@@ -207,11 +204,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeduct"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BudgetBrewer.Button.Icon.Container"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/deduct"
             app:icon="@drawable/ic_minus"
             app:iconSize="24dp"
@@ -219,11 +215,10 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDeleteBucket"
-            style="@style/Widget.Material3.Button.IconButton"
+            style="@style/Widget.BudgetBrewer.Button.Icon.Container"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/delete"
             app:icon="@android:drawable/ic_menu_delete"
             app:iconSize="24dp"

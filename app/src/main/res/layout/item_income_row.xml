@@ -85,10 +85,9 @@
     <!-- Edit button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnEditIncome"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Widget.BudgetBrewer.Button.Icon.Container"
         android:layout_width="38dp"
         android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/edit"
         android:visibility="gone"
         app:icon="@android:drawable/ic_menu_edit"
@@ -98,10 +97,9 @@
     <!-- Delete button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDeleteIncome"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Widget.BudgetBrewer.Button.Icon.Container"
         android:layout_width="38dp"
         android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
         android:visibility="gone"
         app:icon="@android:drawable/ic_menu_delete"
