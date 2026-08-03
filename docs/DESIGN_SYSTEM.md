@@ -262,7 +262,7 @@ Buttons should remain readable and tappable when text or display size increases.
 
 Use:
 
-- shared styles for repeated button types;
+- shared component styles for repeated button types;
 - minimum heights for touch targets;
 - `wrap_content` height when labels may need to wrap;
 - two-line labels when that is clearer than clipping;
@@ -274,19 +274,15 @@ Avoid:
 - fixed heights that clip large text;
 - shrinking text as the first response to accessibility scaling;
 - duplicating stateful button sets unless that is clearly simpler and safer.
+- mixing Material 3 widget styles with Material Components themes on the
+  same control.
 
 ### Timeframe Controls
 
-The Home timeframe selector is the current reference.
+The Home timeframe selector is the current reference implementation.
 
-Expected behavior:
-
-- use one row when labels fit comfortably;
-- use two rows when font size, display size, smaller screens, or localization
-  need more room;
-- keep button heights visually consistent when labels wrap;
-- preserve checked state and click behavior while changing layout;
-- avoid awkward `3 + 1` layouts for a fixed four-option control.
+See `RESPONSIVE_STRATEGY.md` for the rules governing when the control changes
+between one-row and two-row layouts.
 
 ## Icons
 
@@ -460,16 +456,3 @@ Every screen should be reviewed for:
 
 Accessibility should be considered complete only after the relevant checklist
 items have been verified.
-
-## Changelog
-
-### Version 1.1.0
-
-- Merged the useful component and review principles from the older UI standard
-  notes.
-- Moved layout adaptation process into `docs/RESPONSIVE_STRATEGY.md`.
-- Added Home timeframe selector guidance as the current reference pattern.
-
-### Version 1.0.0
-
-- Initial creation of the Budget Brewer Design System.

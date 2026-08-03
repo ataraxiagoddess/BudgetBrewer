@@ -147,10 +147,10 @@ CALENDAR
 SETTINGS
 ```
 
-The project may have AndroidX navigation dependencies in Gradle, but the app's
-actual navigation architecture is not a Jetpack Navigation graph. Do not add
-`nav_graph.xml`, `NavController`, or menu-resource navigation just because those
-dependencies exist.
+The app does not use the Jetpack Navigation Component.
+
+Do not introduce `nav_graph.xml`, `NavController`, or NavigationUI unless the
+project deliberately changes its navigation architecture.
 
 ## Data Model Rules
 

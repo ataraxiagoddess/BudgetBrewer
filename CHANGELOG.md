@@ -7,6 +7,24 @@ version is tagged, completed changes remain under `[Unreleased]`.
 
 ## [Unreleased]
 
+### Finances / Savings
+
+#### Fixed
+
+- Replaced incompatible Material 3 icon button styles with shared Material Components styles.
+- Removed the runtime ResourcesCompat ColorStateList inflation warning.
+
+### Build
+
+#### Changed
+
+- Removed unused Android dependencies and obsolete version-catalog entries.
+- Added Fragment KTX as an explicit dependency instead of relying on a transitive dependency.
+
+#### Verified
+
+- Verified a clean Gradle build after dependency cleanup.
+
 ### Home
 
 #### Added
@@ -54,6 +72,8 @@ version is tagged, completed changes remain under `[Unreleased]`.
 - Added architecture, accessibility, responsive strategy, testing, screen
   review, contribution, user guide, and template documentation.
 - Added a structured Home screen review.
+- Added the initial Budget Brewer design system.
+- Added Home timeframe selector guidance as a reference pattern.
 
 #### Changed
 
@@ -62,6 +82,9 @@ version is tagged, completed changes remain under `[Unreleased]`.
 - Updated the design system to separate visual standards from responsive layout
   strategy.
 - Cleaned up the README documentation structure.
+- Consolidated useful component and review standards from older UI notes.
+- Moved responsive layout adaptation rules into
+  `docs/RESPONSIVE_STRATEGY.md`.
 
 #### Fixed
 

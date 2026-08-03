@@ -51,7 +51,7 @@ patterns, persistence behavior, or anything that affects multiple screens.
 Use the checks that match the change.
 
 - Android Studio sync/build.
-- `./gradlew assembleDebug` when code or resources changed.
+- `./gradlew clean assembleDebug` when code or resources changed.
 - Android Studio inspections for targeted UI files when polishing a screen.
 - Lint review for changed layouts/resources when applicable.
 - Logcat review during manual UI testing.

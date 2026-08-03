@@ -135,6 +135,11 @@ of a structured screen review.
 
 ## Commit The Change
 
+Keep commits focused on a single logical change.
+
+Documentation updates, dependency cleanup, UI work, and bug fixes should usually
+be committed separately unless they are inseparable parts of the same change.
+
 Write commits that describe the purpose of the change.
 
 Examples:

@@ -142,9 +142,10 @@ account-related Settings flow.
 A future update may make local privacy-lock features available without requiring
 an account, supporting a fully local budgeting experience.
 
-## Planned Local-Only Data Tools
+## _Planned Local-Only Data Tools_
 
-Budget Brewer is intended to support a complete local-only experience.
+Budget Brewer is intended to support a complete local-only experience. These capabilities are
+planned and are not yet available.
 
 Planned improvements include:
 

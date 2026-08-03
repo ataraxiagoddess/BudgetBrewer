@@ -78,12 +78,12 @@ Budget Brewer is guided by a few simple principles.
 
 ## What Budget Brewer Is
 
-Budget Brewer is a hands-on, zero-dollar model budgeting app.
+Budget Brewer is a hands-on budgeting app based on the zero-dollar budgeting model.
 
 It helps you:
 
 - record expected income;
-- record recurring monthly expenses;
+- record monthly expenses;
 - see exactly how much money remains;
 - allocate leftover money toward savings and spending;
 - track spending through the month;
@@ -134,6 +134,7 @@ Savings buckets continue to grow month after month, helping you work toward
 larger financial goals while still giving yourself permission to spend within
 the limits you have chosen.
 
+
 Budget Brewer is not about restricting your spending. It is about spending
 intentionally.
 
@@ -143,8 +144,8 @@ intentionally.
 
 ### Monthly Budget Planning
 
-Create a monthly budget by recording income, expenses (non-recurring and recurring), savings
-allocations, and monthly spending allowance.
+Create a monthly budget by recording income, recurring and non-recurring
+expenses, savings allocations, and a monthly spending allowance.
 
 Everything is built around a zero-dollar budgeting philosophy where every penny
 has a purpose.
@@ -178,11 +179,7 @@ expenses, spending, and savings activity.
 
 Understand your finances at a glance with Home dashboard visualizations for
 income, expenses, savings, spending trends, and spending by tag.
-<!--
-The Home screen has received a focused accessibility and responsive layout pass,
-including TalkBack summaries, heading semantics, chart alternatives, and
-large-text behavior.
--->
+
 ### Optional Cloud Sync
 
 Budget Brewer works without an account.
@@ -201,8 +198,7 @@ so users can back up or move their data without creating an account.
 
 ## Screenshots
 
-The current screenshots live in `docs/images/`.
-
+Current screenshots are stored in `docs/images/` and are refreshed as major UI changes are completed.
 
 | Home                                                        | Finances                                                        |
 |-------------------------------------------------------------|-----------------------------------------------------------------|
@@ -224,19 +220,44 @@ The current screenshots live in `docs/images/`.
 
 ## Technology
 
-Budget Brewer is a native Android application built with:
+Budget Brewer is a native Android application built with Kotlin, XML layouts,
+and ViewBinding.
 
-- Kotlin
-- Android XML layouts
-- ViewBinding
+### Interface
+
+- Android Views and XML layouts
 - Material Components for Android
-- Room
-- Supabase
-- WorkManager
+- ConstraintLayout
 - MPAndroidChart
 - Kizitonwose Calendar
 - BlurView
+
+### Architecture And Background Work
+
+- AndroidX Lifecycle and ViewModel
+- Kotlin Coroutines
+- WorkManager
+- DataStore
+
+### Data And Synchronization
+
+- Room
+- Supabase Auth and PostgREST
+- Ktor
+- Kotlinx Serialization
+- Kotlinx DateTime
+- Multiplatform Settings
+
+### Privacy And Device Integration
+
+- AndroidX Biometric
+- Google Tink
+
+### Development And Build Tools
+
 - Timber
+- Kotlin Symbol Processing
+- Gradle version catalogs
 
 Current app configuration:
 
@@ -252,8 +273,8 @@ Current app configuration:
 Budget Brewer uses Android's View system with XML layouts and ViewBinding.
 
 The app relies heavily on mature View-based components, Android's resource
-qualifier system, custom XML resources, and direct platform accessibility
-behavior. Continuing with Views avoids introducing a hybrid UI stack or
+qualifier system, custom XML resources, and accessibility behavior built
+directly around the platform View hierarchy. Continuing with Views avoids introducing a hybrid UI stack or
 rewriting responsive and TalkBack behavior that has already been carefully
 tested across older phones, modern devices, foldables, and tablets.
 
@@ -443,18 +464,24 @@ See the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
-Budget Brewer exists because of the open-source community.
+Budget Brewer exists because of the work shared by the open-source community.
 
 Special thanks to:
 
-- Google and the Android development team
-- JetBrains for Kotlin
-- Material Design
+- Google and the AndroidX teams for the Android platform, Material Components,
+  Room, WorkManager, Lifecycle, DataStore, Biometric, ConstraintLayout, and
+  related libraries
+- JetBrains and the Kotlin community for Kotlin, Coroutines, Serialization,
+  Kotlinx DateTime, and Kotlin Symbol Processing
+- Supabase and the contributors to its Kotlin client
+- Ktor
 - MPAndroidChart
-- Supabase
 - Kizitonwose Calendar
+- BlurView
+- Google Tink
 - Timber
-- Everyone who tests, reports bugs, contributes ideas, or uses Budget Brewer
+- Everyone who tests Budget Brewer, reports bugs, improves translations,
+  contributes ideas, or contributes code
 
 ---
 
