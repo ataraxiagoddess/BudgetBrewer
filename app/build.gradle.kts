@@ -48,8 +48,6 @@ extensions.configure<ApplicationExtension> {
         viewBinding = true
         buildConfig = true
     }
-
-    packaging { resources.excludes.add("org/threeten/bp/format/ChronologyText.properties") }
 }
 
 kotlin {
@@ -81,35 +79,22 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.multiplatform.settings)
-    implementation(libs.kotlinx.atomicfu)
     implementation(libs.kotlinx.datetime)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Navigation
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.viewpager2)
-
     // Charts
     implementation(libs.mpandroidchart)   // Use the alias
     implementation(libs.calendarview)
-    implementation(libs.material.calendarview) {
-        exclude(group = "com.android.support")
-        exclude(group = "org.threeten")
-    }
-    implementation(libs.threetenbp)
 
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso)
-    androidTestImplementation(libs.androidx.room.testing)
 
     // Logging
     implementation(libs.timber)
@@ -122,4 +107,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.google.tink.android)
     implementation(libs.androidx.lifecycle.process)
+
+    implementation(libs.androidx.fragment.ktx)
 }
