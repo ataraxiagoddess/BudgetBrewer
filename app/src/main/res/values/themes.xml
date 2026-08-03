@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- ===== BASE APPLICATION THEME ===== -->
-
     <!--
     Base style for all BudgetBrewer text appearances.
     Required as the parent of the TextAppearance.BudgetBrewer.* style family.

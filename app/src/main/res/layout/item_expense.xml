@@ -61,10 +61,9 @@
     <!-- Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnEditExpense"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Widget.BudgetBrewer.Button.Icon.Container"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/edit"
         app:icon="@android:drawable/ic_menu_edit"
         app:iconSize="24dp"
@@ -72,10 +71,9 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDeleteExpense"
-        style="@style/Widget.Material3.Button.IconButton"
+        style="@style/Widget.BudgetBrewer.Button.Icon.Container"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/delete"
         app:icon="@android:drawable/ic_menu_close_clear_cancel"
         app:iconSize="24dp"

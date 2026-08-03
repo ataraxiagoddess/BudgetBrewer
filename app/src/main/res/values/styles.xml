@@ -133,6 +133,21 @@
         <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Body</item>
     </style>
 
+    <!-- Icon-only button on a container background -->
+    <style name="Widget.BudgetBrewer.Button.Icon.Container" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:minWidth">@dimen/button_height</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textColor">@color/text_on_container</item>
+        <item name="iconTint">@color/btn_on_container</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
     <!-- Navigation buttons (bottom bar) -->
     <style name="Widget.BudgetBrewer.NavButton" parent="Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/TextAppearance.BudgetBrewer.Body</item>
