@@ -142,7 +142,7 @@ account-related Settings flow.
 A future update may make local privacy-lock features available without requiring
 an account, supporting a fully local budgeting experience.
 
-## _Planned Local-Only Data Tools_
+## Planned Local-Only Data Tools
 
 Budget Brewer is intended to support a complete local-only experience. These capabilities are
 planned and are not yet available.
@@ -152,7 +152,7 @@ Planned improvements include:
 - exporting data without requiring an account;
 - importing local backup data;
 - moving data between devices through user-controlled files;
-- using PIN or biometric protection without cloud sync;
+- using PIN or biometric protection without cloud sync.
 
 An account would remain optional and would primarily provide the convenience of
 automatic synchronization and cloud-backed availability.

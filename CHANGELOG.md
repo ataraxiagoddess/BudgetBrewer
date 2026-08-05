@@ -70,13 +70,17 @@ version is tagged, completed changes remain under `[Unreleased]`.
 #### Added
 
 - Added architecture, accessibility, responsive strategy, testing, screen
-  review, contribution, user guide, and template documentation.
+  review, contribution, user guide, template, TODO, roadmap, and technical-debt
+  documentation.
 - Added a structured Home screen review.
 - Added the initial Budget Brewer design system.
 - Added Home timeframe selector guidance as a reference pattern.
 
 #### Changed
 
+- Clarified Budget Brewer's product direction and monthly budget model.
+- Separated actionable work, future product direction, and known engineering
+  improvements.
 - Reworked `AGENTS.md` into concise repository-specific instructions.
 - Split the older project report into focused documentation files.
 - Updated the design system to separate visual standards from responsive layout

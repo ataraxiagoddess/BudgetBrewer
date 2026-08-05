@@ -24,6 +24,19 @@ If something here conflicts with the code, trust the code and update the doc.
 Budget Brewer is intentionally not built with Jetpack Compose, Hilt, Dagger, or
 a Jetpack Navigation graph.
 
+### Budget Month Model
+
+A Budget Brewer budget represents a month's financial record and planning data.
+It is not a collection of category spending limits.
+
+The current model includes expected income, expenses, savings and spending
+allocations, savings activity, spending entries, checklist state, and related
+month settings.
+
+Do not introduce app-wide concepts such as "budget percentage used," automatic
+month completion, or category budget limits without a deliberate product and
+data-model decision.
+
 ## Core Architecture Rules
 
 ### UI
@@ -79,8 +92,8 @@ clear functional or maintenance benefit. A migration would be treated as an
 architectural decision requiring its own accessibility, responsiveness,
 performance, and compatibility review.
 
-XML was not necessarily the uniquely correct starting choice, but continuing with XML is now the
-lower-risk, more coherent choice for this specific application.
+XML was not necessarily the uniquely correct starting choice, but continuing with
+XML is now the lower-risk, more coherent choice for this specific application.
 
 ### State
 
@@ -289,6 +302,9 @@ Use the docs this way:
 - `docs/TESTING.md` records repeatable testing process.
 - `docs/SCREEN_REVIEWS.md` records per-screen review status.
 - `docs/USER_GUIDE.md` explains the app from the user's point of view.
+- `docs/TODO.md` records discovered, actionable work.
+- `docs/ROADMAP.md` records larger product goals and future direction.
+- `docs/TECH_DEBT.md` records known engineering improvements.
 - `CHANGELOG.md` records notable completed changes.
 - `AGENTS.md` gives concise AI/tooling instructions.
 
@@ -303,6 +319,8 @@ Do not use this file for:
 - every dependency version;
 - temporary TODO lists;
 - current bug lists;
+- roadmap planning;
+- technical-debt tracking;
 - every screen's review status;
 - changelog entries;
 - long user-guide instructions.

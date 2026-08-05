@@ -43,7 +43,7 @@ Budget Brewer was built on a different philosophy.
 Budgeting is not something you should automate and forget. It is something you
 should understand.
 
-By intentionally planning your income, expenses, savings, and spending, you gain
+By intentionally recording your income, expenses, savings, and spending, you gain
 something no algorithm can provide: awareness.
 
 Budget Brewer does not try to replace your financial decisions. It helps you
@@ -55,6 +55,13 @@ is designed to help you build confidence in your financial decisions.
 
 It does so without advertisements, subscriptions, hidden costs, or unnecessary
 complexity.
+
+Budget Brewer is built around a simple idea: your financial data belongs to you.
+The app is designed to help you build and maintain an accurate financial record
+through clear, transparent tools that stay out of your way. It does not try to
+tell you how to manage your money or make decisions on your behalf, it gives you
+the information you need to understand your finances and make those decisions
+yourself.
 
 Because your money should work for you.
 
@@ -274,9 +281,10 @@ Budget Brewer uses Android's View system with XML layouts and ViewBinding.
 
 The app relies heavily on mature View-based components, Android's resource
 qualifier system, custom XML resources, and accessibility behavior built
-directly around the platform View hierarchy. Continuing with Views avoids introducing a hybrid UI stack or
-rewriting responsive and TalkBack behavior that has already been carefully
-tested across older phones, modern devices, foldables, and tablets.
+directly around the platform View hierarchy. Continuing with Views avoids
+introducing a hybrid UI stack or rewriting responsive and TalkBack behavior
+that has already been carefully tested across older phones, modern devices,
+foldables, and tablets.
 
 Jetpack Compose is capable of building accessible and adaptive interfaces.
 Budget Brewer remains with Views because they are the lower-risk and more
@@ -357,6 +365,9 @@ Current documents:
 - [Contributing](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
 - [Templates](docs/TEMPLATES.md)
+- [Development TODO](docs/TODO.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Technical Debt](docs/TECH_DEBT.md)
 - [AI Agent Directives](AGENTS.md)
 
 The old full project outline has been split into focused docs so each file has a

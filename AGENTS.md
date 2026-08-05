@@ -11,6 +11,9 @@ inside the agent instructions.
 Read these before suggesting code, dependencies, architecture changes, or UI
 rewrites.
 
+- Do not assume a budget is a set of category spending limits. In Budget Brewer,
+  a budget represents the financial records and allocations associated with a
+  month.
 - Do not assume architecture or dependencies from this document alone. Inspect
   the current code and Gradle configuration before proposing changes.
 - No Jetpack Compose. Budget Brewer uses traditional Android XML layouts with
@@ -62,6 +65,9 @@ Before changing code or docs, read the relevant files:
 - `docs/ACCESSIBILITY.md` for TalkBack and accessibility expectations.
 - `docs/TESTING.md` for the review checklist.
 - `docs/SCREEN_REVIEWS.md` for screen-by-screen review status.
+- `docs/TODO.md` for discovered actionable work.
+- `docs/ROADMAP.md` for future product direction.
+- `docs/TECH_DEBT.md` for known engineering improvements.
 - `CHANGELOG.md` before adding user-facing changes.
 
 ## Coding Expectations
@@ -115,6 +121,9 @@ practical.
 - Put accessibility standards in `docs/ACCESSIBILITY.md`.
 - Put repeatable testing steps in `docs/TESTING.md`.
 - Put screen-specific findings in `docs/SCREEN_REVIEWS.md`.
+- Put discovered actionable work in `docs/TODO.md`.
+- Put future product direction in `docs/ROADMAP.md`.
+- Put known engineering improvements in `docs/TECH_DEBT.md`.
 
 Do not add README links to files that do not exist.
 
@@ -122,5 +131,6 @@ Do not add README links to files that do not exist.
 
 - Commit by purpose, not by file.
 - Use clear conventional commit messages where practical.
-- Avoid permanent work-in-progress commits unless the branch will be cleaned up before merging.
+- Avoid permanent work-in-progress commits unless the branch will be cleaned
+up before merging.
 - See `CONTRIBUTING.md` for the repository workflow.
