@@ -125,6 +125,7 @@ class MonthlyCalendarViewModel(
                 val settings = repository.getMonthSettings(budgetId).first()
                 val savingsTransactions = repository.getAllSavingsTransactions()
                 val savingsByDay = savingsTransactions
+                    .filter { isInMonth(it.date, month) }
                     .groupBy { getDayOfMonth(it.date) }
                     .mapValues { entry -> entry.value.sumOf { it.amount } }
 
@@ -136,12 +137,16 @@ class MonthlyCalendarViewModel(
                 }
 
                 if (!monthStartOverridden) {
-                    val newSettings = MonthSettings(
+                    val updatedSettings = settings?.copy(
+                        monthStartAmount = monthStartAmount,
+                        monthStartOverridden = false,
+                        updatedAt = System.currentTimeMillis()
+                    ) ?: MonthSettings(
                         budgetId = budgetId,
                         monthStartAmount = monthStartAmount,
                         monthStartOverridden = false
                     )
-                    repository.insertOrUpdateMonthSettings(newSettings)
+                    repository.insertOrUpdateMonthSettings(updatedSettings)
                 }
 
                 val expensesByDay = expenses.groupBy { getDayOfMonth(it.dueDate) }
@@ -221,6 +226,12 @@ class MonthlyCalendarViewModel(
     private fun getDayOfMonth(timestamp: Long): Int {
         val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
         return cal.get(Calendar.DAY_OF_MONTH)
+    }
+
+    private fun isInMonth(timestamp: Long, month: Month): Boolean {
+        val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
+        return cal.get(Calendar.YEAR) == month.year &&
+            cal.get(Calendar.MONTH) + 1 == month.month
     }
 
     private fun getDaysInMonth(year: Int, month: Int): Int {

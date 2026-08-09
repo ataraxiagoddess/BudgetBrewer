@@ -44,6 +44,7 @@ class MonthlyExpenseListAdapter(
 
         fun bind(dayExpenses: MonthlyExpenseListViewModel.DayExpenses) {
             binding.tvDayNumber.text = dayExpenses.day.toString()
+            binding.checkbox.setOnCheckedChangeListener(null)
             binding.checkbox.isChecked = dayExpenses.isChecked
 
             binding.root.contentDescription = buildString {

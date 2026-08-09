@@ -14,6 +14,12 @@ version is tagged, completed changes remain under `[Unreleased]`.
 - Changed month selection to persist only for the current app session, keeping
   screen data aligned with the selector while resetting to the real current
   month after a fresh app launch.
+- Fixed Calendar month-start recalculation so it preserves saved per-month
+  Finances settings, including pay frequency and tips visibility.
+- Fixed Calendar savings distribution totals so dated savings transactions only
+  appear in their actual month.
+- Fixed Expenses checklist rows so RecyclerView rebinding does not accidentally
+  write checkbox state changes back to storage.
 
 ### Finances / Savings
 
