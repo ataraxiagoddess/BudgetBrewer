@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 import com.android.build.api.dsl.ApplicationExtension
 
 plugins {

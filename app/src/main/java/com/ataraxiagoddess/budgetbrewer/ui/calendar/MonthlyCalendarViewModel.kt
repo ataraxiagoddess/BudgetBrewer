@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 // file: ui/calendar/MonthlyCalendarViewModel.kt
 
 package com.ataraxiagoddess.budgetbrewer.ui.calendar

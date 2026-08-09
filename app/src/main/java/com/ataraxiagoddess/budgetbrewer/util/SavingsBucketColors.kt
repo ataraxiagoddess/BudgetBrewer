@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.util
 
 import com.ataraxiagoddess.budgetbrewer.R

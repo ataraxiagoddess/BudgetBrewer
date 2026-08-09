@@ -1,4 +1,8 @@
-﻿package com.ataraxiagoddess.budgetbrewer.util
+﻿/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
+package com.ataraxiagoddess.budgetbrewer.util
 
 import android.content.Context
 import java.text.DecimalFormatSymbols

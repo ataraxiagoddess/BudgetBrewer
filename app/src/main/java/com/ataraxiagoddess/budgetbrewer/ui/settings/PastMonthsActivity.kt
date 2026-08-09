@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.settings
 
 import android.os.Bundle

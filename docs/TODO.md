@@ -40,6 +40,8 @@ Items should be concise and actionable.
 ### Accessibility / Responsive
 
 - [ ] Verify `layout-land/item_category.xml` touch targets and text rendering.
+- [ ] Investigate unexpected large numeric values announced by TalkBack when
+  first focusing the expense/category scroll area.
 
 ---
 

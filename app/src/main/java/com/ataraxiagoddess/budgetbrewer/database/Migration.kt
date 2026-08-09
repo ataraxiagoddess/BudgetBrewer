@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 @file:Suppress("ClassName")
 package com.ataraxiagoddess.budgetbrewer.database
 
