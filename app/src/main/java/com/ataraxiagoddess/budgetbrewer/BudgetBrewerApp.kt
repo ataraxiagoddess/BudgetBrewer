@@ -8,7 +8,6 @@ import android.app.Application
 import android.net.ConnectivityManager
 import android.net.Network
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.edit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -56,15 +55,6 @@ class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
         // Initialize AppLockManager (secure storage)
         AppLockManager.init(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-
-        val prefs = getSharedPreferences("budget_prefs", MODE_PRIVATE)
-        val calendar = Calendar.getInstance()
-        val currentMonth = calendar.get(Calendar.MONTH) + 1
-        val currentYear = calendar.get(Calendar.YEAR)
-        prefs.edit {
-            putInt("selected_month", currentMonth)
-            putInt("selected_year", currentYear)
-        }
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

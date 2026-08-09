@@ -7,6 +7,14 @@ version is tagged, completed changes remain under `[Unreleased]`.
 
 ## [Unreleased]
 
+### App State
+
+#### Fixed
+
+- Changed month selection to persist only for the current app session, keeping
+  screen data aligned with the selector while resetting to the real current
+  month after a fresh app launch.
+
 ### Finances / Savings
 
 #### Fixed

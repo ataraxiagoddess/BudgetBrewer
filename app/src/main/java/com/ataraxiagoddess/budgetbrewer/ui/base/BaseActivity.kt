@@ -6,7 +6,6 @@ package com.ataraxiagoddess.budgetbrewer.ui.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.accessibility.AccessibilityManager
@@ -24,7 +23,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
@@ -52,6 +50,7 @@ abstract class BaseActivity : AppCompatActivity() {
     companion object {
         private var tempBottomScrollX = 0
         private var tempRailScrollY = 0
+        private var sessionSelectedMonth: Month? = null
     }
 
     private var bottomNavScrollView: HorizontalScrollView? = null
@@ -60,9 +59,6 @@ abstract class BaseActivity : AppCompatActivity() {
     protected lateinit var navBinding: LayoutBottomNavBinding
     protected lateinit var monthSelectorBinding: MonthSelectorBinding
     protected lateinit var navigationManager: NavigationManager
-    protected val prefs: SharedPreferences by lazy {
-        getSharedPreferences("budget_prefs", MODE_PRIVATE)!!
-    }
 
     abstract val currentNavDestination: NavDestination
 
@@ -152,6 +148,11 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         isFreshActivityLaunch = savedInstanceState == null
         super.onCreate(savedInstanceState)
+
+        isSettingMonthProgrammatically = true
+        selectedMonth = sessionSelectedMonth ?: Month.current()
+        sessionSelectedMonth = selectedMonth
+        isSettingMonthProgrammatically = false
 
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
@@ -489,9 +490,6 @@ abstract class BaseActivity : AppCompatActivity() {
         val currentMonth = calendar.get(Calendar.MONTH) + 1
         val currentYear = calendar.get(Calendar.YEAR)
 
-        val savedMonth = prefs.getInt("selected_month", currentMonth)
-        val savedYear = prefs.getInt("selected_year", currentYear)
-
         repeat(12) { i ->
             calendar.set(currentYear, currentMonth - 1, 1)
             calendar.add(Calendar.MONTH, -i - 1)
@@ -515,10 +513,6 @@ abstract class BaseActivity : AppCompatActivity() {
                 )
             )
         }
-
-        isSettingMonthProgrammatically = true
-        selectedMonth = Month(savedYear, savedMonth)
-        isSettingMonthProgrammatically = false
     }
 
     private fun setupMonthSpinner(spinner: Spinner) {
@@ -601,10 +595,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun onMonthSelected(month: Month) {
-        prefs.edit {
-            putInt("selected_month", month.month)
-            putInt("selected_year", month.year)
-        }
+        sessionSelectedMonth = month
 
         val currentIndex = allMonths.indexOfFirst {
             it.year == month.year && it.month == month.month
@@ -620,19 +611,16 @@ abstract class BaseActivity : AppCompatActivity() {
             isSettingMonthProgrammatically = false
         }
 
-        monthChangeListeners.toList().forEach { it.onMonthChanged(month) }
-        onMonthChanged(month)
+        dispatchMonthChanged(month)
     }
 
     override fun onResume() {
         super.onResume()
         enforceAppLockIfNeeded()
-        val savedMonth =
-            prefs.getInt("selected_month", Calendar.getInstance().get(Calendar.MONTH) + 1)
-        val savedYear = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
-        if (selectedMonth.month != savedMonth || selectedMonth.year != savedYear) {
+        val currentSessionMonth = sessionSelectedMonth ?: Month.current()
+        if (selectedMonth != currentSessionMonth) {
             isSettingMonthProgrammatically = true
-            selectedMonth = Month(savedYear, savedMonth)
+            selectedMonth = currentSessionMonth
             isSettingMonthProgrammatically = false
             // update spinners
             if (!useRail && this::monthSelectorBinding.isInitialized) {
@@ -640,6 +628,7 @@ abstract class BaseActivity : AppCompatActivity() {
             } else if (useRail) {
                 railMonthSpinner?.let(::setupMonthSpinner)
             }
+            dispatchMonthChanged(selectedMonth)
         }
 
         // Update rail selection
@@ -652,6 +641,11 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         saveNavScroll()
+    }
+
+    private fun dispatchMonthChanged(month: Month) {
+        monthChangeListeners.toList().forEach { it.onMonthChanged(month) }
+        onMonthChanged(month)
     }
 
     private fun enforceAppLockIfNeeded() {
