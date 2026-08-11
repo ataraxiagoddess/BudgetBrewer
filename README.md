@@ -1,4 +1,3 @@
-<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
 
 <img src="app/src/main/res/drawable-nodpi/budget_brewer_logo.png"
