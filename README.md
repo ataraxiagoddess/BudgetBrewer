@@ -11,10 +11,10 @@
 <br>
 
 [![Latest Release](https://img.shields.io/github/v/release/ataraxiagoddess/BudgetBrewer?style=for-the-badge&label=Latest%20Release)](https://github.com/ataraxiagoddess/BudgetBrewer/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-![Android](https://img.shields.io/badge/Android-7.0+-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-7F52FF?style=for-the-badge)](LICENSE)
+![Android](https://img.shields.io/badge/Android-7.0+-7F52FF?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
-![XML Views](https://img.shields.io/badge/UI-XML%20Views-4285F4?style=for-the-badge)
+![XML Views](https://img.shields.io/badge/UI-XML%20Views-7F52FF?style=for-the-badge)
 
 <br>
 
