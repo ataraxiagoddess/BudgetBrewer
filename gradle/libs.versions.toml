@@ -28,6 +28,8 @@ tink = "1.23.0"
 datetime = "0.8.0"
 supabase = "3.6.0"
 fragment = "1.8.9"
+detekt = "1.23.8"
+ktlint = "14.2.0"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -65,3 +67,5 @@ androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref
 android-application = { id = "com.android.application", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
