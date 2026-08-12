@@ -2,7 +2,7 @@
 agp = "9.2.1"
 blurviewVersion = "version-3.2.0"
 desugar_jdk_libs = "2.1.5"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 ksp = "2.3.9"
 coreKtx = "1.19.0"
 appcompat = "1.7.1"
