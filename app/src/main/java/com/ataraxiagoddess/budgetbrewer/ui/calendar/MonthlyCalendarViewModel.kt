@@ -30,9 +30,8 @@ import java.util.Calendar
 class MonthlyCalendarViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context
+    private val appContext: Context,
 ) : BaseViewModel() {
-
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private var currentMonth: Month = Month.current()
 
@@ -46,12 +45,12 @@ class MonthlyCalendarViewModel(
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
         val dayTotal: Double,
-        val savingsDistributed: Double = 0.0
+        val savingsDistributed: Double = 0.0,
     )
 
     data class WeekEndTotal(
         val weekNumber: Int,
-        val total: Double
+        val total: Double,
         // isOverridden removed
     )
 
@@ -62,13 +61,19 @@ class MonthlyCalendarViewModel(
         val weeks: List<List<CalendarDay>>,
         val weekEndTotals: List<WeekEndTotal>,
         val monthEndAmount: Double,
-        val unassignedIncomes: List<Income>
+        val unassignedIncomes: List<Income>,
     )
 
     sealed class CalendarUiState {
         object Loading : CalendarUiState()
-        data class Success(val data: CalendarData) : CalendarUiState()
-        data class Error(val message: String) : CalendarUiState()
+
+        data class Success(
+            val data: CalendarData,
+        ) : CalendarUiState()
+
+        data class Error(
+            val message: String,
+        ) : CalendarUiState()
     }
 
     fun updateMonth(month: Month) {
@@ -89,11 +94,12 @@ class MonthlyCalendarViewModel(
     fun updateMonthStartAmount(amount: Double) {
         viewModelScope.launch {
             val settings = repository.getMonthSettings(budgetId).first()
-            val updatedSettings = (settings ?: MonthSettings(budgetId = budgetId, monthStartAmount = amount))
-                .copy(
-                    monthStartAmount = amount,
-                    monthStartOverridden = true
-                )
+            val updatedSettings =
+                (settings ?: MonthSettings(budgetId = budgetId, monthStartAmount = amount))
+                    .copy(
+                        monthStartAmount = amount,
+                        monthStartOverridden = true,
+                    )
             repository.insertOrUpdateMonthSettings(updatedSettings)
             // Sync after update
             val userId = AuthManager.getUserId(appContext)
@@ -124,28 +130,31 @@ class MonthlyCalendarViewModel(
                 val assignments = repository.getIncomeAssignmentsForBudget(budgetId).first()
                 val settings = repository.getMonthSettings(budgetId).first()
                 val savingsTransactions = repository.getAllSavingsTransactions()
-                val savingsByDay = savingsTransactions
-                    .filter { isInMonth(it.date, month) }
-                    .groupBy { getDayOfMonth(it.date) }
-                    .mapValues { entry -> entry.value.sumOf { it.amount } }
+                val savingsByDay =
+                    savingsTransactions
+                        .filter { isInMonth(it.date, month) }
+                        .groupBy { getDayOfMonth(it.date) }
+                        .mapValues { entry -> entry.value.sumOf { it.amount } }
 
                 val previousMonthEnd = getPreviousMonthEndAmount(month)
-                val (monthStartAmount, monthStartOverridden) = if (settings?.monthStartOverridden == true) {
-                    settings.monthStartAmount to true
-                } else {
-                    previousMonthEnd to false
-                }
+                val (monthStartAmount, monthStartOverridden) =
+                    if (settings?.monthStartOverridden == true) {
+                        settings.monthStartAmount to true
+                    } else {
+                        previousMonthEnd to false
+                    }
 
                 if (!monthStartOverridden) {
-                    val updatedSettings = settings?.copy(
-                        monthStartAmount = monthStartAmount,
-                        monthStartOverridden = false,
-                        updatedAt = System.currentTimeMillis()
-                    ) ?: MonthSettings(
-                        budgetId = budgetId,
-                        monthStartAmount = monthStartAmount,
-                        monthStartOverridden = false
-                    )
+                    val updatedSettings =
+                        settings?.copy(
+                            monthStartAmount = monthStartAmount,
+                            monthStartOverridden = false,
+                            updatedAt = System.currentTimeMillis(),
+                        ) ?: MonthSettings(
+                            budgetId = budgetId,
+                            monthStartAmount = monthStartAmount,
+                            monthStartOverridden = false,
+                        )
                     repository.insertOrUpdateMonthSettings(updatedSettings)
                 }
 
@@ -179,8 +188,8 @@ class MonthlyCalendarViewModel(
                             spendingEntries = daySpending,
                             assignedIncomes = assigned,
                             dayTotal = dayTotal,
-                            savingsDistributed = savingsByDay[day] ?: 0.0
-                        )
+                            savingsDistributed = savingsByDay[day] ?: 0.0,
+                        ),
                     )
                 }
                 while (allDays.size % 7 != 0) {
@@ -197,23 +206,24 @@ class MonthlyCalendarViewModel(
                     weekEndTotals.add(
                         WeekEndTotal(
                             weekNumber = weekIndex + 1,
-                            total = runningTotal
-                        )
+                            total = runningTotal,
+                        ),
                     )
                 }
                 val monthEndAmount = runningTotal
 
-                _uiState.value = CalendarUiState.Success(
-                    CalendarData(
-                        month = month,
-                        monthStartAmount = monthStartAmount,
-                        monthStartOverridden = monthStartOverridden,
-                        weeks = weeks,
-                        weekEndTotals = weekEndTotals,
-                        monthEndAmount = monthEndAmount,
-                        unassignedIncomes = unassignedIncomes
+                _uiState.value =
+                    CalendarUiState.Success(
+                        CalendarData(
+                            month = month,
+                            monthStartAmount = monthStartAmount,
+                            monthStartOverridden = monthStartOverridden,
+                            weeks = weeks,
+                            weekEndTotals = weekEndTotals,
+                            monthEndAmount = monthEndAmount,
+                            unassignedIncomes = unassignedIncomes,
+                        ),
                     )
-                )
             } catch (e: Exception) {
                 Timber.e(e, "loadData() failed")
                 _uiState.value = CalendarUiState.Error("Failed to load calendar: ${e.message}")
@@ -228,14 +238,20 @@ class MonthlyCalendarViewModel(
         return cal.get(Calendar.DAY_OF_MONTH)
     }
 
-    private fun isInMonth(timestamp: Long, month: Month): Boolean {
+    private fun isInMonth(
+        timestamp: Long,
+        month: Month,
+    ): Boolean {
         val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
         return cal.get(Calendar.YEAR) == month.year &&
             cal.get(Calendar.MONTH) + 1 == month.month
     }
 
-    private fun getDaysInMonth(year: Int, month: Int): Int {
-        return when (month) {
+    private fun getDaysInMonth(
+        year: Int,
+        month: Int,
+    ): Int =
+        when (month) {
             1 -> 31
             2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
             3 -> 31
@@ -250,9 +266,11 @@ class MonthlyCalendarViewModel(
             12 -> 31
             else -> throw IllegalArgumentException("Invalid month: $month")
         }
-    }
 
-    private fun getFirstDayOfWeek(year: Int, month: Int): Int {
+    private fun getFirstDayOfWeek(
+        year: Int,
+        month: Int,
+    ): Int {
         val cal = Calendar.getInstance().apply { set(year, month - 1, 1) }
         return cal.get(Calendar.DAY_OF_WEEK)
     }
@@ -263,7 +281,10 @@ class MonthlyCalendarViewModel(
         return repository.getMonthEndAmount(previousBudget.id)
     }
 
-    fun assignIncomeToDay(day: Int, income: Income) {
+    fun assignIncomeToDay(
+        day: Int,
+        income: Income,
+    ) {
         viewModelScope.launch {
             repository.assignIncomeToDay(budgetId, income.id, day)
             val assignment = repository.getIncomeAssignment(budgetId, income.id)

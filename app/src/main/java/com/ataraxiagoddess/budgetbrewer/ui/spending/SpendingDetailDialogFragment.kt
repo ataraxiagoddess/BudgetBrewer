@@ -14,9 +14,8 @@ import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
 import com.ataraxiagoddess.budgetbrewer.databinding.DialogSpendingEntryDetailBinding
 
 class SpendingDetailDialogFragment(
-    private val entry: SpendingEntry
+    private val entry: SpendingEntry,
 ) : DialogFragment() {
-
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
     }
@@ -24,7 +23,11 @@ class SpendingDetailDialogFragment(
     private var _binding: DialogSpendingEntryDetailBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = DialogSpendingEntryDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,11 +36,14 @@ class SpendingDetailDialogFragment(
         super.onStart()
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT,
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         // Dismiss dialog if both tag and note are empty

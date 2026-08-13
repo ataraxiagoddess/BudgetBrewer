@@ -23,14 +23,16 @@ fun showBudgetBrewerDialog(
     positiveButton: String = context.getString(R.string.ok),
     negativeButton: String? = context.getString(R.string.cancel),
     onPositive: () -> Unit = {},
-    onNegative: () -> Unit = {}
+    onNegative: () -> Unit = {},
 ): AlertDialog {
     val titleView = inflater.inflate(R.layout.dialog_title, null, false) as TextView
     titleView.text = title
     ViewCompat.setAccessibilityHeading(titleView, true)
 
-    val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme_BudgetBrewer)
-        .setCustomTitle(titleView)
+    val builder =
+        AlertDialog
+            .Builder(context, R.style.AlertDialogTheme_BudgetBrewer)
+            .setCustomTitle(titleView)
 
     when {
         message != null -> {

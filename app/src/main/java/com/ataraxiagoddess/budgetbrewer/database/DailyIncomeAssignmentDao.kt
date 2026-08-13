@@ -18,13 +18,19 @@ interface DailyIncomeAssignmentDao {
     fun getAssignmentsForBudget(budgetId: String): Flow<List<DailyIncomeAssignment>>
 
     @Query("SELECT * FROM daily_income_assignments WHERE budgetId = :budgetId AND dayOfMonth = :day")
-    fun getAssignmentsForDay(budgetId: String, day: Int): Flow<List<DailyIncomeAssignment>>
+    fun getAssignmentsForDay(
+        budgetId: String,
+        day: Int,
+    ): Flow<List<DailyIncomeAssignment>>
 
     @Query("SELECT incomeId FROM daily_income_assignments WHERE budgetId = :budgetId")
-    suspend fun getAssignedIncomeIds(budgetId: String): List<String>   // incomeId is now String
+    suspend fun getAssignedIncomeIds(budgetId: String): List<String> // incomeId is now String
 
     @Query("SELECT * FROM daily_income_assignments WHERE budgetId = :budgetId AND incomeId = :incomeId LIMIT 1")
-    suspend fun getAssignmentByIncomeId(budgetId: String, incomeId: String): DailyIncomeAssignment?
+    suspend fun getAssignmentByIncomeId(
+        budgetId: String,
+        incomeId: String,
+    ): DailyIncomeAssignment?
 
     // For sync
     @Query("SELECT * FROM daily_income_assignments")
@@ -40,7 +46,10 @@ interface DailyIncomeAssignmentDao {
     suspend fun delete(assignment: DailyIncomeAssignment)
 
     @Query("DELETE FROM daily_income_assignments WHERE budgetId = :budgetId AND incomeId = :incomeId")
-    suspend fun deleteByIncomeId(budgetId: String, incomeId: String)
+    suspend fun deleteByIncomeId(
+        budgetId: String,
+        incomeId: String,
+    )
 
     @Query("DELETE FROM daily_income_assignments")
     suspend fun deleteAll()

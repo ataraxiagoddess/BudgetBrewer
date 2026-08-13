@@ -26,7 +26,6 @@ import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 
 class LockActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityLockBinding
     private lateinit var biometricPrompt: BiometricPrompt
 
@@ -36,10 +35,11 @@ class LockActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Apply PIN validation filters
-        binding.etPin.filters = arrayOf(
-            ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
-            ValidationUtils.getDigitsOnlyFilter()
-        )
+        binding.etPin.filters =
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
+                ValidationUtils.getDigitsOnlyFilter(),
+            )
 
         setupBiometricPrompt()
         updateUi()
@@ -100,27 +100,32 @@ class LockActivity : AppCompatActivity() {
 
     private fun setupBiometricPrompt() {
         val executor = ContextCompat.getMainExecutor(this)
-        val callback = object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                val cipher = result.cryptoObject?.cipher
-                if (cipher != null && BiometricCryptoManager.probe(cipher)) {
-                    unlockAndProceed()
-                } else {
+        val callback =
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    val cipher = result.cryptoObject?.cipher
+                    if (cipher != null && BiometricCryptoManager.probe(cipher)) {
+                        unlockAndProceed()
+                    } else {
+                        showSnackbar(getString(R.string.biometric_failed))
+                    }
+                }
+
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence,
+                ) {
+                    if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON &&
+                        errorCode != BiometricPrompt.ERROR_USER_CANCELED
+                    ) {
+                        showSnackbar(errString.toString())
+                    }
+                }
+
+                override fun onAuthenticationFailed() {
                     showSnackbar(getString(R.string.biometric_failed))
                 }
             }
-
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON &&
-                    errorCode != BiometricPrompt.ERROR_USER_CANCELED) {
-                    showSnackbar(errString.toString())
-                }
-            }
-
-            override fun onAuthenticationFailed() {
-                showSnackbar(getString(R.string.biometric_failed))
-            }
-        }
         biometricPrompt = BiometricPrompt(this, executor, callback)
     }
 
@@ -131,24 +136,31 @@ class LockActivity : AppCompatActivity() {
             binding.btnBiometric.visibility = View.GONE
             return
         }
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.biometric_title))
-            .setSubtitle(getString(R.string.biometric_subtitle))
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .setNegativeButtonText(getString(R.string.cancel))
-            .build()
+        val promptInfo =
+            BiometricPrompt.PromptInfo
+                .Builder()
+                .setTitle(getString(R.string.biometric_title))
+                .setSubtitle(getString(R.string.biometric_subtitle))
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                .setNegativeButtonText(getString(R.string.cancel))
+                .build()
         biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
     }
 
     private fun unlockAndProceed() {
         AppLockManager.unlock()
-        startActivity(Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            },
+        )
         finish()
     }
 
-    private fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+    private fun showSnackbar(
+        message: String,
+        duration: Int = Snackbar.LENGTH_SHORT,
+    ) {
         val snackbar = Snackbar.make(findViewById(android.R.id.content), "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view

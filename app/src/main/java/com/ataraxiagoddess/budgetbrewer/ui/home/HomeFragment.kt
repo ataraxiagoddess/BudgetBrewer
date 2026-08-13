@@ -8,19 +8,19 @@ import android.content.Context.ACCESSIBILITY_SERVICE
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.accessibility.AccessibilityManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.doOnNextLayout
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.ViewCompat
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -48,8 +48,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
 
-class HomeFragment : Fragment(), MonthChangeListener {
-
+class HomeFragment :
+    Fragment(),
+    MonthChangeListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var selectedTimeframeButton: MaterialButton? = null
@@ -70,7 +71,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
                 binding.homeScrollView.doOnNextLayout {
                     scrollAnchor?.let(
-                        ::restoreDashboardScrollAnchor
+                        ::restoreDashboardScrollAnchor,
                     )
                 }
             }
@@ -80,31 +81,37 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val legendMarkerSize: Int,
         val legendMarkerSpacing: Int,
         val legendRowVerticalMargin: Int,
-        val dataRowVerticalMargin: Int
+        val dataRowVerticalMargin: Int,
     )
 
     private data class DashboardScrollAnchor(
         val card: View,
-        val topOffset: Int
+        val topOffset: Int,
     )
 
     private val dashboardDimensions: DashboardDimensions
-        get() = DashboardDimensions(
-            legendMarkerSize = resources.getDimensionPixelSize(
-                R.dimen.chart_legend_marker_size
-            ),
-            legendMarkerSpacing = resources.getDimensionPixelSize(
-                R.dimen.chart_legend_marker_spacing
-            ),
-            legendRowVerticalMargin = resources.getDimensionPixelSize(
-                R.dimen.chart_legend_row_vertical_margin
-            ),
-            dataRowVerticalMargin = resources.getDimensionPixelSize(
-                R.dimen.dashboard_data_row_vertical_margin
+        get() =
+            DashboardDimensions(
+                legendMarkerSize =
+                    resources.getDimensionPixelSize(
+                        R.dimen.chart_legend_marker_size,
+                    ),
+                legendMarkerSpacing =
+                    resources.getDimensionPixelSize(
+                        R.dimen.chart_legend_marker_spacing,
+                    ),
+                legendRowVerticalMargin =
+                    resources.getDimensionPixelSize(
+                        R.dimen.chart_legend_row_vertical_margin,
+                    ),
+                dataRowVerticalMargin =
+                    resources.getDimensionPixelSize(
+                        R.dimen.dashboard_data_row_vertical_margin,
+                    ),
             )
-        )
 
     private var snackbarCallback: ((String) -> Unit)? = null
+
     fun setSnackbarCallback(callback: (String) -> Unit) {
         snackbarCallback = callback
     }
@@ -116,31 +123,34 @@ class HomeFragment : Fragment(), MonthChangeListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     private fun isTouchExplorationEnabled(): Boolean {
-        val accessibilityManager = requireContext().getSystemService(
-            ACCESSIBILITY_SERVICE
-        ) as AccessibilityManager
+        val accessibilityManager =
+            requireContext().getSystemService(
+                ACCESSIBILITY_SERVICE,
+            ) as AccessibilityManager
 
         return accessibilityManager.isEnabled &&
-                accessibilityManager.isTouchExplorationEnabled
+            accessibilityManager.isTouchExplorationEnabled
     }
 
     private fun configureDashboardColumns() {
-        val configuredColumnCount = resources.getInteger(
-            R.integer.home_dashboard_column_count
-        )
+        val configuredColumnCount =
+            resources.getInteger(
+                R.integer.home_dashboard_column_count,
+            )
 
-        val columnCount = if (isTouchExplorationEnabled()) {
-            1
-        } else {
-            configuredColumnCount
-        }
+        val columnCount =
+            if (isTouchExplorationEnabled()) {
+                1
+            } else {
+                configuredColumnCount
+            }
 
         val leftColumn = binding.homeDashboardLeftColumn
         val rightColumn = binding.homeDashboardRightColumn
@@ -152,13 +162,14 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val trendsCard = binding.cardSpendingTrends
         val tagsCard = binding.layoutSpendingByTagContainer
 
-        val allCards = listOf(
-            incomeCard,
-            expensesCard,
-            savingsCard,
-            trendsCard,
-            tagsCard
-        )
+        val allCards =
+            listOf(
+                incomeCard,
+                expensesCard,
+                savingsCard,
+                trendsCard,
+                tagsCard,
+            )
 
         /*
          * Detach every card before rebuilding the columns.
@@ -191,24 +202,23 @@ class HomeFragment : Fragment(), MonthChangeListener {
         listOf(
             incomeCard,
             savingsCard,
-            tagsCard
+            tagsCard,
         ).forEach(leftColumn::addView)
 
         listOf(
             expensesCard,
-            trendsCard
+            trendsCard,
         ).forEach(rightColumn::addView)
     }
 
-    private fun dashboardCards(): List<View> {
-        return listOf(
+    private fun dashboardCards(): List<View> =
+        listOf(
             binding.cardIncomeExpenses,
             binding.cardExpensesBreakdown,
             binding.cardSavingsComparison,
             binding.cardSpendingTrends,
-            binding.layoutSpendingByTagContainer
+            binding.layoutSpendingByTagContainer,
         ).filter { it.isVisible }
-    }
 
     private fun captureDashboardScrollAnchor(): DashboardScrollAnchor? {
         val scrollView = binding.homeScrollView
@@ -219,41 +229,41 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val viewportTop = scrollLocation[1] + scrollView.paddingTop
         val viewportBottom = scrollLocation[1] + scrollView.height - scrollView.paddingBottom
 
-        val visibleCards = dashboardCards()
-            .mapNotNull { card ->
-                val cardLocation = IntArray(2)
-                card.getLocationOnScreen(cardLocation)
+        val visibleCards =
+            dashboardCards()
+                .mapNotNull { card ->
+                    val cardLocation = IntArray(2)
+                    card.getLocationOnScreen(cardLocation)
 
-                val cardTop = cardLocation[1]
-                val cardBottom = cardTop + card.height
+                    val cardTop = cardLocation[1]
+                    val cardBottom = cardTop + card.height
 
-                if (
-                    cardBottom > viewportTop &&
-                    cardTop < viewportBottom
-                ) {
-                    card to cardTop
-                } else {
-                    null
+                    if (
+                        cardBottom > viewportTop &&
+                        cardTop < viewportBottom
+                    ) {
+                        card to cardTop
+                    } else {
+                        null
+                    }
                 }
-            }
 
         if (visibleCards.isEmpty()) {
             return null
         }
 
-        val anchor = visibleCards.minByOrNull { (_, cardTop) ->
-            kotlin.math.abs(cardTop - viewportTop)
-        } ?: return null
+        val anchor =
+            visibleCards.minByOrNull { (_, cardTop) ->
+                kotlin.math.abs(cardTop - viewportTop)
+            } ?: return null
 
         return DashboardScrollAnchor(
             card = anchor.first,
-            topOffset = anchor.second - viewportTop
+            topOffset = anchor.second - viewportTop,
         )
     }
 
-    private fun restoreDashboardScrollAnchor(
-        anchor: DashboardScrollAnchor
-    ) {
+    private fun restoreDashboardScrollAnchor(anchor: DashboardScrollAnchor) {
         val scrollView = binding.homeScrollView
 
         if (!anchor.card.isAttachedToWindow) {
@@ -276,38 +286,37 @@ class HomeFragment : Fragment(), MonthChangeListener {
     private fun configureAccessibility() {
         ViewCompat.setAccessibilityHeading(
             binding.tvIncomeExpensesHeader,
-            true
+            true,
         )
 
         ViewCompat.setAccessibilityHeading(
             binding.tvExpensesBreakdownHeader,
-            true
+            true,
         )
 
         ViewCompat.setAccessibilityHeading(
             binding.tvSpendingTrendsHeader,
-            true
+            true,
         )
 
         ViewCompat.setAccessibilityHeading(
             binding.tvSpendingByTagHeader,
-            true
+            true,
         )
 
         ViewCompat.setScreenReaderFocusable(
             binding.cardSavingsComparison,
-            true
+            true,
         )
     }
 
-    private fun timeframeButtons(): List<MaterialButton> {
-        return listOf(
+    private fun timeframeButtons(): List<MaterialButton> =
+        listOf(
             binding.btnTimeframe1m,
             binding.btnTimeframe3m,
             binding.btnTimeframe6m,
-            binding.btnTimeframe1y
+            binding.btnTimeframe1y,
         )
-    }
 
     private fun configureTimeframeButtons() {
         val buttons = timeframeButtons()
@@ -318,17 +327,20 @@ class HomeFragment : Fragment(), MonthChangeListener {
                     binding.timeframeSelector.paddingStart -
                     binding.timeframeSelector.paddingEnd
 
-            val spacing = resources.getDimensionPixelSize(
-                R.dimen.timeframe_button_spacing
-            )
+            val spacing =
+                resources.getDimensionPixelSize(
+                    R.dimen.timeframe_button_spacing,
+                )
 
-            val requiredWidth = buttons.sumOf { button ->
-                button.paint.measureText(
-                    button.text.toString()
-                ).toInt() +
-                    button.compoundPaddingStart +
-                    button.compoundPaddingEnd
-            } + spacing * (buttons.size - 1)
+            val requiredWidth =
+                buttons.sumOf { button ->
+                    button.paint
+                        .measureText(
+                            button.text.toString(),
+                        ).toInt() +
+                        button.compoundPaddingStart +
+                        button.compoundPaddingEnd
+                } + spacing * (buttons.size - 1)
 
             if (requiredWidth > availableWidth) {
                 useTwoTimeframeRows(buttons)
@@ -338,9 +350,7 @@ class HomeFragment : Fragment(), MonthChangeListener {
         }
     }
 
-    private fun useSingleTimeframeRow(
-        buttons: List<MaterialButton>
-    ) {
+    private fun useSingleTimeframeRow(buttons: List<MaterialButton>) {
         binding.timeframeRowSingle.isVisible = true
         binding.timeframeRowsStack.isGone = true
 
@@ -349,15 +359,13 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
         moveTimeframeButtons(
             buttons = buttons,
-            parent = binding.timeframeRowSingle
+            parent = binding.timeframeRowSingle,
         )
 
         equalizeTimeframeButtonHeights(buttons)
     }
 
-    private fun useTwoTimeframeRows(
-        buttons: List<MaterialButton>
-    ) {
+    private fun useTwoTimeframeRows(buttons: List<MaterialButton>) {
         binding.timeframeRowSingle.isGone = true
         binding.timeframeRowsStack.isVisible = true
 
@@ -365,12 +373,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
         moveTimeframeButtons(
             buttons = buttons.take(2),
-            parent = binding.timeframeRowTop
+            parent = binding.timeframeRowTop,
         )
 
         moveTimeframeButtons(
             buttons = buttons.drop(2),
-            parent = binding.timeframeRowBottom
+            parent = binding.timeframeRowBottom,
         )
 
         equalizeTimeframeButtonHeights(buttons)
@@ -378,64 +386,71 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
     private fun moveTimeframeButtons(
         buttons: List<MaterialButton>,
-        parent: LinearLayout
+        parent: LinearLayout,
     ) {
-        val spacing = resources.getDimensionPixelSize(
-            R.dimen.timeframe_button_spacing
-        )
+        val spacing =
+            resources.getDimensionPixelSize(
+                R.dimen.timeframe_button_spacing,
+            )
 
         parent.removeAllViews()
 
         buttons.forEachIndexed { index, button ->
             (button.parent as? ViewGroup)?.removeView(button)
 
-            button.layoutParams = LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f
-            ).apply {
-                height = LinearLayout.LayoutParams.WRAP_CONTENT
-                marginEnd = if (index < buttons.lastIndex) spacing else 0
-            }
+            button.layoutParams =
+                LinearLayout
+                    .LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f,
+                    ).apply {
+                        height = LinearLayout.LayoutParams.WRAP_CONTENT
+                        marginEnd = if (index < buttons.lastIndex) spacing else 0
+                    }
 
             parent.addView(button)
         }
     }
 
-    private fun equalizeTimeframeButtonHeights(
-        buttons: List<MaterialButton>
-    ) {
+    private fun equalizeTimeframeButtonHeights(buttons: List<MaterialButton>) {
         buttons.forEach { button ->
-            button.layoutParams = button.layoutParams.apply {
-                height = LinearLayout.LayoutParams.WRAP_CONTENT
-            }
+            button.layoutParams =
+                button.layoutParams.apply {
+                    height = LinearLayout.LayoutParams.WRAP_CONTENT
+                }
         }
 
         binding.timeframeSelector.doOnPreDraw {
-            val tallestHeight = buttons.maxOf { button ->
-                button.measuredHeight
-            }
+            val tallestHeight =
+                buttons.maxOf { button ->
+                    button.measuredHeight
+                }
 
             buttons.forEach { button ->
                 if (button.layoutParams.height != tallestHeight) {
-                    button.layoutParams = button.layoutParams.apply {
-                        height = tallestHeight
-                    }
+                    button.layoutParams =
+                        button.layoutParams.apply {
+                            height = tallestHeight
+                        }
                 }
             }
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         accessibilityManager =
             requireContext().getSystemService(
-                ACCESSIBILITY_SERVICE
+                ACCESSIBILITY_SERVICE,
             ) as AccessibilityManager
 
         accessibilityManager.addTouchExplorationStateChangeListener(
-            touchExplorationStateChangeListener
+            touchExplorationStateChangeListener,
         )
 
         configureDashboardColumns()
@@ -469,15 +484,15 @@ class HomeFragment : Fragment(), MonthChangeListener {
     override fun onDestroyView() {
         if (::accessibilityManager.isInitialized) {
             accessibilityManager.removeTouchExplorationStateChangeListener(
-                touchExplorationStateChangeListener
+                touchExplorationStateChangeListener,
             )
         }
         super.onDestroyView()
         _binding = null
     }
 
-    private fun getMonthName(month: Int): String {
-        return when (month) {
+    private fun getMonthName(month: Int): String =
+        when (month) {
             1 -> getString(R.string.january)
             2 -> getString(R.string.february)
             3 -> getString(R.string.march)
@@ -492,7 +507,6 @@ class HomeFragment : Fragment(), MonthChangeListener {
             12 -> getString(R.string.december)
             else -> getString(R.string.unknown)
         }
-    }
 
     private fun setupTimeframeToggle() {
         // Set initial selection to "Last month" (btnTimeframe1m)
@@ -631,11 +645,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val formattedIncome = totalIncome.toCurrencyDisplay(resources)
         val formattedExpenses = totalExpenses.toCurrencyDisplay(resources)
 
-        val expensePercentage = if (totalIncome > 0) {
-            (totalExpenses / totalIncome * 100).coerceIn(0.0, 100.0)
-        } else {
-            0.0
-        }
+        val expensePercentage =
+            if (totalIncome > 0) {
+                (totalExpenses / totalIncome * 100).coerceIn(0.0, 100.0)
+            } else {
+                0.0
+            }
 
         Timber.d("Income: $totalIncome, Expenses: $totalExpenses, Expense %% of Income: $expensePercentage%%")
 
@@ -643,17 +658,21 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.expensesRing.setProgressCompat(expensePercentage.toInt(), true)
         binding.tvIncomeCenter.text = formattedIncome
 
-        binding.layoutIncomeCenter.contentDescription = getString(
-            R.string.income_accessibility_format,
-            getString(R.string.income),
-            formattedIncome
-        )
+        binding.layoutIncomeCenter.contentDescription =
+            getString(
+                R.string.income_accessibility_format,
+                getString(R.string.income),
+                formattedIncome,
+            )
 
-        binding.tvExpensesData.text = String.format(Locale.US, "%s: %s (%.1f%%)",
-            getString(R.string.expenses),
-            formattedExpenses,
-            expensePercentage
-        )
+        binding.tvExpensesData.text =
+            String.format(
+                Locale.US,
+                "%s: %s (%.1f%%)",
+                getString(R.string.expenses),
+                formattedExpenses,
+                expensePercentage,
+            )
 
         // Apply Exo font to these text views
         applyExoFont(binding.tvIncomeCenter, binding.tvExpensesData)
@@ -663,42 +682,47 @@ class HomeFragment : Fragment(), MonthChangeListener {
         if (data.expensesByCategory.isEmpty()) {
             binding.chartExpensesBreakdown.clear()
             binding.expensesLegendContainer.removeAllViews()
-            val emptyView = TextView(requireContext()).apply {
-                text = getString(R.string.no_expense_data)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-                textSize = 14f
-                gravity = android.view.Gravity.CENTER
-                val typeface = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
-                if (typeface == null) {
-                    Timber.e("Exo font not found! Using default.")
+            val emptyView =
+                TextView(requireContext()).apply {
+                    text = getString(R.string.no_expense_data)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                    textSize = 14f
+                    gravity = android.view.Gravity.CENTER
+                    val typeface = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
+                    if (typeface == null) {
+                        Timber.e("Exo font not found! Using default.")
+                    }
+                    this.typeface = typeface ?: Typeface.DEFAULT
                 }
-                this.typeface = typeface ?: Typeface.DEFAULT
-            }
             binding.expensesLegendContainer.addView(emptyView)
             return
         }
 
-        val entries = data.expensesByCategory.mapIndexed { index, catExpense ->
-            PieEntry(catExpense.amount.toFloat(), index)
-        }
+        val entries =
+            data.expensesByCategory.mapIndexed { index, catExpense ->
+                PieEntry(catExpense.amount.toFloat(), index)
+            }
 
-        val colors = CategoryColors.colors.map { colorRes ->
-            ContextCompat.getColor(requireContext(), colorRes)
-        }
+        val colors =
+            CategoryColors.colors.map { colorRes ->
+                ContextCompat.getColor(requireContext(), colorRes)
+            }
 
-        val dataSet = PieDataSet(entries, "").apply {
-            sliceSpace = 2f
-            selectionShift = 5f
-            this.colors = colors
-        }
+        val dataSet =
+            PieDataSet(entries, "").apply {
+                sliceSpace = 2f
+                selectionShift = 5f
+                this.colors = colors
+            }
 
-        val pieData = PieData(dataSet).apply {
-            setValueFormatter(PercentFormatter(binding.chartExpensesBreakdown))
-            setValueTextSize(12f)
-            setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-            // Set Exo font for the percentage labels on the chart
-            setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
-        }
+        val pieData =
+            PieData(dataSet).apply {
+                setValueFormatter(PercentFormatter(binding.chartExpensesBreakdown))
+                setValueTextSize(12f)
+                setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                // Set Exo font for the percentage labels on the chart
+                setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
+            }
 
         binding.chartExpensesBreakdown.data = pieData
         binding.chartExpensesBreakdown.invalidate()
@@ -708,36 +732,46 @@ class HomeFragment : Fragment(), MonthChangeListener {
         binding.expensesLegendContainer.removeAllViews()
         val exoRegular = ResourcesCompat.getFont(requireContext(), R.font.exo_regular)
         data.expensesByCategory.forEachIndexed { index, catExpense ->
-            val accessibleText = getString(
-                R.string.expense_category_format,
-                catExpense.category.name,
-                catExpense.amount.toCurrencyDisplay(resources),
-                catExpense.percentage
-            )
-            val legendRow = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
-            }
-
-            val colorView = View(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply { setMargins(0, 0, dimensions.legendMarkerSpacing, 0) }
-                setBackgroundColor(colors[index % colors.size])
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            }
-
-            val textView = TextView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+            val accessibleText =
+                getString(
+                    R.string.expense_category_format,
+                    catExpense.category.name,
+                    catExpense.amount.toCurrencyDisplay(resources),
+                    catExpense.percentage,
                 )
-                text = accessibleText
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-                textSize = 14f
-                typeface = exoRegular
-            }
+            val legendRow =
+                LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    layoutParams =
+                        LinearLayout
+                            .LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                            ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
+                }
+
+            val colorView =
+                View(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply {
+                            setMargins(0, 0, dimensions.legendMarkerSpacing, 0)
+                        }
+                    setBackgroundColor(colors[index % colors.size])
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }
+
+            val textView =
+                TextView(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                    text = accessibleText
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                    textSize = 14f
+                    typeface = exoRegular
+                }
 
             legendRow.addView(colorView)
             legendRow.addView(textView)
@@ -751,11 +785,12 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val formattedTarget = targetAmount.toCurrencyDisplay(resources)
         val formattedActual = actualAmount.toCurrencyDisplay(resources)
 
-        val rawPercentage = if (targetAmount > 0) {
-            actualAmount / targetAmount * 100
-        } else {
-            0.0
-        }
+        val rawPercentage =
+            if (targetAmount > 0) {
+                actualAmount / targetAmount * 100
+            } else {
+                0.0
+            }
 
         val percentageOfGoal = rawPercentage.coerceIn(0.0, 100.0)
 
@@ -766,70 +801,76 @@ class HomeFragment : Fragment(), MonthChangeListener {
         if (rawPercentage > 100.0) {
             binding.tvSavingsPercentage.text = String.format(Locale.US, "%.1f%%", rawPercentage)
             binding.tvSavingsOverachievement.visibility = View.VISIBLE
-            binding.tvSavingsOverachievement.text = getString(
-                R.string.overachievement_format,
-                rawPercentage - 100.0
-            )
+            binding.tvSavingsOverachievement.text =
+                getString(
+                    R.string.overachievement_format,
+                    rawPercentage - 100.0,
+                )
         } else {
             binding.tvSavingsPercentage.text = String.format(Locale.US, "%.1f%%", percentageOfGoal)
             binding.tvSavingsOverachievement.visibility = View.GONE
         }
 
-        binding.tvSavingsData.text = getString(
-            R.string.savings_comparison_format,
-            getString(R.string.chart_target),
-            formattedTarget,
-            getString(R.string.chart_actual),
-            formattedActual
-        )
+        binding.tvSavingsData.text =
+            getString(
+                R.string.savings_comparison_format,
+                getString(R.string.chart_target),
+                formattedTarget,
+                getString(R.string.chart_actual),
+                formattedActual,
+            )
 
-        binding.cardSavingsComparison.contentDescription = getString(
-            R.string.savings_comparison_accessibility_format,
-            getString(R.string.chart_savings_comparison),
-            rawPercentage,
-            formattedTarget,
-            formattedActual
-        )
+        binding.cardSavingsComparison.contentDescription =
+            getString(
+                R.string.savings_comparison_accessibility_format,
+                getString(R.string.chart_savings_comparison),
+                rawPercentage,
+                formattedTarget,
+                formattedActual,
+            )
 
         applyExoFont(binding.tvSavingsPercentage, binding.tvSavingsData)
     }
 
     private fun updateSpendingTrendsChart(data: HomeUiState.Success) {
-        val entries = data.spendingHistory.mapIndexed { index, spending ->
-            Entry(index.toFloat(), spending.amount.toFloat())
-        }
+        val entries =
+            data.spendingHistory.mapIndexed { index, spending ->
+                Entry(index.toFloat(), spending.amount.toFloat())
+            }
 
-        val dataSet = LineDataSet(entries, getString(R.string.chart_spending)).apply {
-            color = ContextCompat.getColor(requireContext(), R.color.chart_trend_line)
-            setCircleColor(ContextCompat.getColor(requireContext(), R.color.chart_trend_dot))
-            lineWidth = 2f
-            circleRadius = 4f
-            setDrawCircleHole(false)
-            setDrawValues(false)
-            mode = LineDataSet.Mode.CUBIC_BEZIER
-            cubicIntensity = 0.2f
-        }
+        val dataSet =
+            LineDataSet(entries, getString(R.string.chart_spending)).apply {
+                color = ContextCompat.getColor(requireContext(), R.color.chart_trend_line)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.chart_trend_dot))
+                lineWidth = 2f
+                circleRadius = 4f
+                setDrawCircleHole(false)
+                setDrawValues(false)
+                mode = LineDataSet.Mode.CUBIC_BEZIER
+                cubicIntensity = 0.2f
+            }
 
         val lineData = LineData(dataSet)
 
-        binding.chartSpendingTrends.xAxis.valueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-                val index = value.toInt()
-                return if (index in data.spendingHistory.indices) {
-                    getMonthFirstLetter(data.spendingHistory[index].month)
-                } else {
-                    ""
+        binding.chartSpendingTrends.xAxis.valueFormatter =
+            object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    val index = value.toInt()
+                    return if (index in data.spendingHistory.indices) {
+                        getMonthFirstLetter(data.spendingHistory[index].month)
+                    } else {
+                        ""
+                    }
                 }
             }
-        }
 
         binding.chartSpendingTrends.xAxis.setLabelCount(data.spendingHistory.size, true)
         binding.chartSpendingTrends.data = lineData
         binding.chartSpendingTrends.invalidate()
     }
 
-    private fun getMonthFirstLetter(month: Int): String {
-        return when (month) {
+    private fun getMonthFirstLetter(month: Int): String =
+        when (month) {
             1 -> getString(R.string.month_jan_abbr)
             2 -> getString(R.string.month_feb_abbr)
             3 -> getString(R.string.month_mar_abbr)
@@ -844,7 +885,6 @@ class HomeFragment : Fragment(), MonthChangeListener {
             12 -> getString(R.string.month_dec_abbr)
             else -> "?"
         }
-    }
 
     private fun updateSpendingDataList(data: HomeUiState.Success) {
         binding.spendingDataContainer.removeAllViews()
@@ -859,45 +899,52 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
             val formattedAmount = spending.amount.toCurrencyDisplay(resources)
 
-            val row = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, dimensions.dataRowVerticalMargin, 0, dimensions.dataRowVerticalMargin) }
+            val row =
+                LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    layoutParams =
+                        LinearLayout
+                            .LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                            ).apply { setMargins(0, dimensions.dataRowVerticalMargin, 0, dimensions.dataRowVerticalMargin) }
 
-                isFocusable = true
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                    isFocusable = true
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
 
-                contentDescription = getString(R.string.spending_month_accessibility_format, monthAndYear, formattedAmount)
-            }
+                    contentDescription = getString(R.string.spending_month_accessibility_format, monthAndYear, formattedAmount)
+                }
 
-            val monthText = TextView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1f
-                )
-                text = monthAndYear
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-                textSize = 14f
-                typeface = exoRegular
+            val monthText =
+                TextView(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1f,
+                        )
+                    text = monthAndYear
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                    textSize = 14f
+                    typeface = exoRegular
 
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            }
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }
 
-            val amountText = TextView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                text = formattedAmount
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-                textSize = 14f
-                setTypeface(exoMedium, Typeface.BOLD)
+            val amountText =
+                TextView(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                    text = formattedAmount
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                    textSize = 14f
+                    setTypeface(exoMedium, Typeface.BOLD)
 
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            }
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }
 
             row.addView(monthText)
             row.addView(amountText)
@@ -913,26 +960,30 @@ class HomeFragment : Fragment(), MonthChangeListener {
 
         binding.layoutSpendingByTagContainer.visibility = View.VISIBLE
 
-        val entries = data.spendingByTag.mapIndexed { index, tagExpense ->
-            PieEntry(tagExpense.amount.toFloat(), index)
-        }
+        val entries =
+            data.spendingByTag.mapIndexed { index, tagExpense ->
+                PieEntry(tagExpense.amount.toFloat(), index)
+            }
 
-        val colors = CategoryColors.colors.map { colorRes ->
-            ContextCompat.getColor(requireContext(), colorRes)
-        }
+        val colors =
+            CategoryColors.colors.map { colorRes ->
+                ContextCompat.getColor(requireContext(), colorRes)
+            }
 
-        val dataSet = PieDataSet(entries, "").apply {
-            sliceSpace = 2f
-            selectionShift = 5f
-            this.colors = colors
-        }
+        val dataSet =
+            PieDataSet(entries, "").apply {
+                sliceSpace = 2f
+                selectionShift = 5f
+                this.colors = colors
+            }
 
-        val pieData = PieData(dataSet).apply {
-            setValueFormatter(PercentFormatter(binding.chartSpendingByTag))
-            setValueTextSize(12f)
-            setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-            setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
-        }
+        val pieData =
+            PieData(dataSet).apply {
+                setValueFormatter(PercentFormatter(binding.chartSpendingByTag))
+                setValueTextSize(12f)
+                setValueTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                setValueTypeface(ResourcesCompat.getFont(requireContext(), R.font.exo_medium))
+            }
 
         binding.chartSpendingByTag.data = pieData
         binding.chartSpendingByTag.invalidate()
@@ -943,35 +994,45 @@ class HomeFragment : Fragment(), MonthChangeListener {
         val dimensions = dashboardDimensions
 
         data.spendingByTag.forEachIndexed { index, tagExpense ->
-            val legendRow = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
-            }
+            val legendRow =
+                LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    layoutParams =
+                        LinearLayout
+                            .LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                            ).apply { setMargins(0, dimensions.legendRowVerticalMargin, 0, dimensions.legendRowVerticalMargin) }
+                }
 
-            val colorView = View(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply { setMargins(0, 0, dimensions.legendMarkerSpacing, 0) }
-                setBackgroundColor(colors[index % colors.size])
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            }
+            val colorView =
+                View(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply {
+                            setMargins(0, 0, dimensions.legendMarkerSpacing, 0)
+                        }
+                    setBackgroundColor(colors[index % colors.size])
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                }
 
-            val textView = TextView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                text = getString(
-                    R.string.expense_category_format,
-                    tagExpense.tag,
-                    tagExpense.amount.toCurrencyDisplay(resources),
-                    tagExpense.percentage
-                )
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
-                textSize = 14f
-                typeface = exoRegular
-            }
+            val textView =
+                TextView(requireContext()).apply {
+                    layoutParams =
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                    text =
+                        getString(
+                            R.string.expense_category_format,
+                            tagExpense.tag,
+                            tagExpense.amount.toCurrencyDisplay(resources),
+                            tagExpense.percentage,
+                        )
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_container))
+                    textSize = 14f
+                    typeface = exoRegular
+                }
 
             legendRow.addView(colorView)
             legendRow.addView(textView)
@@ -984,4 +1045,3 @@ class HomeFragment : Fragment(), MonthChangeListener {
         views.forEach { it.typeface = exoRegular }
     }
 }
-

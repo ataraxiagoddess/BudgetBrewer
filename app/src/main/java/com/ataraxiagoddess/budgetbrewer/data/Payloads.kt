@@ -3,6 +3,7 @@
  */
 
 @file:Suppress("PropertyName")
+
 package com.ataraxiagoddess.budgetbrewer.data
 
 import kotlinx.serialization.Serializable
@@ -14,7 +15,7 @@ data class BudgetPayload(
     val year: Int,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -30,7 +31,7 @@ data class IncomePayload(
     val tips_order: Int?,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -42,7 +43,7 @@ data class ExpenseCategoryPayload(
     val display_order: Int,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -59,7 +60,7 @@ data class ExpensePayload(
     val created_at: Long,
     val is_active: Boolean,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -72,7 +73,7 @@ data class AllocationPayload(
     val spending_is_percentage: Boolean,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -82,7 +83,7 @@ data class DailyChecklistPayload(
     val day_of_month: Int,
     val is_checked: Boolean,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -96,7 +97,7 @@ data class SpendingEntryPayload(
     val note: String?,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -109,7 +110,7 @@ data class MonthSettingsPayload(
     val pay_frequency: String,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -120,7 +121,7 @@ data class DailyIncomeAssignmentPayload(
     val day_of_month: Int,
     val created_at: Long,
     val updated_at: Long,
-    val user_id: String
+    val user_id: String,
 )
 
 @Serializable
@@ -134,7 +135,7 @@ data class SavingsBucketPayload(
     val color_hex: String,
     val is_archived: Boolean,
     val created_at: Long,
-    val updated_at: Long
+    val updated_at: Long,
 )
 
 @Serializable
@@ -145,5 +146,5 @@ data class SavingsTransactionPayload(
     val date: Long,
     val type: String,
     val created_at: Long,
-    val updated_at: Long
+    val updated_at: Long,
 )

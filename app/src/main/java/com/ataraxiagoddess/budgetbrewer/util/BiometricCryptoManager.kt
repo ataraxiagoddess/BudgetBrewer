@@ -23,19 +23,25 @@ object BiometricCryptoManager {
     private const val KEY_ALIAS = "budget_brewer_biometric_unlock"
 
     /** A cipher bound to the Keystore key, or null if unavailable (fall back to PIN). */
-    fun createCipher(): Cipher? = runCatching {
-        newCipher(getOrCreateKey())
-    }.recoverCatching { e ->
-        if (e is KeyPermanentlyInvalidatedException) {
-            // Biometric enrollment changed since the key was created: start fresh.
-            deleteKey()
+    fun createCipher(): Cipher? =
+        runCatching {
             newCipher(getOrCreateKey())
-        } else throw e
-    }.getOrNull()
+        }.recoverCatching { e ->
+            if (e is KeyPermanentlyInvalidatedException) {
+                // Biometric enrollment changed since the key was created: start fresh.
+                deleteKey()
+                newCipher(getOrCreateKey())
+            } else {
+                throw e
+            }
+        }.getOrNull()
 
     /** True only if the Keystore released the key — i.e. real biometric auth happened. */
     fun probe(cipher: Cipher): Boolean =
-        runCatching { cipher.doFinal(byteArrayOf(0)); true }.getOrDefault(false)
+        runCatching {
+            cipher.doFinal(byteArrayOf(0))
+            true
+        }.getOrDefault(false)
 
     private fun newCipher(key: SecretKey): Cipher =
         Cipher.getInstance("AES/GCM/NoPadding").apply {
@@ -46,13 +52,15 @@ object BiometricCryptoManager {
         val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
         keyStore.getKey(KEY_ALIAS, null)?.let { return it as SecretKey }
 
-        val spec = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            buildStrongBiometricKeySpec()
-        } else {
-            buildLegacyKeySpec()
-        }
+        val spec =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                buildStrongBiometricKeySpec()
+            } else {
+                buildLegacyKeySpec()
+            }
 
-        return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+        return KeyGenerator
+            .getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             .apply { init(spec) }
             .generateKey()
     }
@@ -60,17 +68,17 @@ object BiometricCryptoManager {
     @RequiresApi(Build.VERSION_CODES.R)
     private fun buildStrongBiometricKeySpec(): KeyGenParameterSpec =
         /**
-        * SonarLint S6291 false positive: setUserAuthenticationParameters(0,
-        * AUTH_BIOMETRIC_STRONG) is the API-30 replacement for
-        * setUserAuthenticationRequired(true), which this rule doesn't recognize.
-        * We intentionally keep STRONG-only binding so the key is never released on
-        * device-credential auth alone.
-        */
-        KeyGenParameterSpec.Builder( // NOSONAR
-            KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+         * SonarLint S6291 false positive: setUserAuthenticationParameters(0,
+         * AUTH_BIOMETRIC_STRONG) is the API-30 replacement for
+         * setUserAuthenticationRequired(true), which this rule doesn't recognize.
+         * We intentionally keep STRONG-only binding so the key is never released on
+         * device-credential auth alone.
+         */
+        KeyGenParameterSpec
+            .Builder( // NOSONAR
+                KEY_ALIAS,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+            ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .setInvalidatedByBiometricEnrollment(true)
             .setUserAuthenticationParameters(0, KeyProperties.AUTH_BIOMETRIC_STRONG)
@@ -78,17 +86,18 @@ object BiometricCryptoManager {
 
     @Suppress("DEPRECATION")
     private fun buildLegacyKeySpec(): KeyGenParameterSpec =
-        KeyGenParameterSpec.Builder(
-            KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+        KeyGenParameterSpec
+            .Builder(
+                KEY_ALIAS,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+            ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .setInvalidatedByBiometricEnrollment(true)
             .setUserAuthenticationRequired(true)
             .build()
 
-    private fun deleteKey() = runCatching {
-        KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.deleteEntry(KEY_ALIAS)
-    }
+    private fun deleteKey() =
+        runCatching {
+            KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.deleteEntry(KEY_ALIAS)
+        }
 }

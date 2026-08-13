@@ -34,9 +34,8 @@ import java.util.Calendar
 class MonthlyExpenseListViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context
+    private val appContext: Context,
 ) : BaseViewModel() {
-
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
     private val _uiState = MutableStateFlow<MonthlyExpenseListUiState>(MonthlyExpenseListUiState.Loading)
@@ -46,17 +45,21 @@ class MonthlyExpenseListViewModel(
         val day: Int,
         val expenses: List<Expense>,
         val isChecked: Boolean = false,
-        val formattedExpenses: CharSequence = ""
+        val formattedExpenses: CharSequence = "",
     )
 
     sealed class MonthlyExpenseListUiState {
         object Loading : MonthlyExpenseListUiState()
+
         data class Success(
             val days: List<DayExpenses>,
             val totalAmount: Double,
-            val remainingAmount: Double
+            val remainingAmount: Double,
         ) : MonthlyExpenseListUiState()
-        data class Error(val message: String) : MonthlyExpenseListUiState()
+
+        data class Error(
+            val message: String,
+        ) : MonthlyExpenseListUiState()
     }
 
     fun updateMonth(month: Month) {
@@ -81,35 +84,39 @@ class MonthlyExpenseListViewModel(
                 val expenses = repository.getExpensesForBudget(budgetId).first()
                 val checklist = repository.getDailyChecklist(budgetId).first().associate { it.dayOfMonth to it.isChecked }
 
-                val (days, totalAmount, remainingAmount) = withContext(Dispatchers.Default) {
-                    val dayMap = mutableMapOf<Int, MutableList<Expense>>()
-                    expenses.forEach { expense ->
-                        val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
-                        dayMap.getOrPut(day) { mutableListOf() }.add(expense)
+                val (days, totalAmount, remainingAmount) =
+                    withContext(Dispatchers.Default) {
+                        val dayMap = mutableMapOf<Int, MutableList<Expense>>()
+                        expenses.forEach { expense ->
+                            val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
+                            dayMap.getOrPut(day) { mutableListOf() }.add(expense)
+                        }
+
+                        val maxDays = getDaysInMonth(budget.year, budget.month)
+                        val days =
+                            (1..maxDays).map { day ->
+                                val dayExpenses = dayMap[day] ?: emptyList()
+                                val formatted = buildFormattedExpenses(dayExpenses)
+                                DayExpenses(
+                                    day = day,
+                                    expenses = dayExpenses,
+                                    isChecked = checklist[day] ?: false,
+                                    formattedExpenses = formatted,
+                                )
+                            }
+
+                        val totalAmount = expenses.sumOf { it.amount }
+                        val checkedDays = checklist.filterValues { it }.keys
+                        val checkedAmount =
+                            expenses
+                                .filter {
+                                    val day = Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH)
+                                    checkedDays.contains(day)
+                                }.sumOf { it.amount }
+                        val remainingAmount = totalAmount - checkedAmount
+
+                        Triple(days, totalAmount, remainingAmount)
                     }
-
-                    val maxDays = getDaysInMonth(budget.year, budget.month)
-                    val days = (1..maxDays).map { day ->
-                        val dayExpenses = dayMap[day] ?: emptyList()
-                        val formatted = buildFormattedExpenses(dayExpenses)
-                        DayExpenses(
-                            day = day,
-                            expenses = dayExpenses,
-                            isChecked = checklist[day] ?: false,
-                            formattedExpenses = formatted
-                        )
-                    }
-
-                    val totalAmount = expenses.sumOf { it.amount }
-                    val checkedDays = checklist.filterValues { it }.keys
-                    val checkedAmount = expenses.filter {
-                        val day = Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH)
-                        checkedDays.contains(day)
-                    }.sumOf { it.amount }
-                    val remainingAmount = totalAmount - checkedAmount
-
-                    Triple(days, totalAmount, remainingAmount)
-                }
 
                 _uiState.value = MonthlyExpenseListUiState.Success(days, totalAmount, remainingAmount)
             } catch (e: Exception) {
@@ -144,17 +151,21 @@ class MonthlyExpenseListViewModel(
     }
 
     private fun getRecurringIconSpan(): ImageSpan? {
-        val drawable = ResourcesCompat.getDrawable(
-            appContext.resources,
-            R.drawable.ic_recurring,
-            null
-        ) ?: return null
+        val drawable =
+            ResourcesCompat.getDrawable(
+                appContext.resources,
+                R.drawable.ic_recurring,
+                null,
+            ) ?: return null
         drawable.setTint(ContextCompat.getColor(appContext, R.color.text_on_container))
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         return ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
     }
 
-    fun toggleDayChecked(day: Int, isChecked: Boolean) {
+    fun toggleDayChecked(
+        day: Int,
+        isChecked: Boolean,
+    ) {
         viewModelScope.launch {
             val existing = repository.getChecklistItem(budgetId, day)
             if (existing != null) {
@@ -185,24 +196,30 @@ class MonthlyExpenseListViewModel(
 
             val currentState = _uiState.value
             if (currentState is MonthlyExpenseListUiState.Success) {
-                val updatedDays = currentState.days.map { dayExpenses ->
-                    if (dayExpenses.day == day) dayExpenses.copy(isChecked = isChecked) else dayExpenses
-                }
+                val updatedDays =
+                    currentState.days.map { dayExpenses ->
+                        if (dayExpenses.day == day) dayExpenses.copy(isChecked = isChecked) else dayExpenses
+                    }
                 val totalAmount = currentState.totalAmount
-                val checkedAmount = updatedDays
-                    .filter { it.isChecked }
-                    .flatMap { it.expenses }
-                    .sumOf { it.amount }
+                val checkedAmount =
+                    updatedDays
+                        .filter { it.isChecked }
+                        .flatMap { it.expenses }
+                        .sumOf { it.amount }
                 val remainingAmount = totalAmount - checkedAmount
-                _uiState.value = currentState.copy(
-                    days = updatedDays,
-                    remainingAmount = remainingAmount
-                )
+                _uiState.value =
+                    currentState.copy(
+                        days = updatedDays,
+                        remainingAmount = remainingAmount,
+                    )
             }
         }
     }
 
-    private fun getDaysInMonth(year: Int, month: Int): Int {
+    private fun getDaysInMonth(
+        year: Int,
+        month: Int,
+    ): Int {
         val calendar = Calendar.getInstance()
         calendar.set(year, month - 1, 1)
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)

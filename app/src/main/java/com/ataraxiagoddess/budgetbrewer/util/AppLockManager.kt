@@ -42,23 +42,30 @@ object AppLockManager {
 
     fun init(context: Context) {
         AeadConfig.register()
-        val keysetManager = AndroidKeysetManager.Builder()
-            .withSharedPref(context, "tink_keyset", PREFS_NAME)
-            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri("android-keystore://tink_master_key_$PREFS_NAME")
-            .build()
-        aead = keysetManager.keysetHandle.getPrimitive(
-            RegistryConfiguration.get(),
-            Aead::class.java
-        )
+        val keysetManager =
+            AndroidKeysetManager
+                .Builder()
+                .withSharedPref(context, "tink_keyset", PREFS_NAME)
+                .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
+                .withMasterKeyUri("android-keystore://tink_master_key_$PREFS_NAME")
+                .build()
+        aead =
+            keysetManager.keysetHandle.getPrimitive(
+                RegistryConfiguration.get(),
+                Aead::class.java,
+            )
 
-        dataStore = androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile("encrypted_$PREFS_NAME") }
-        )
+        dataStore =
+            androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
+                produceFile = { context.preferencesDataStoreFile("encrypted_$PREFS_NAME") },
+            )
     }
 
     // Helper to read/write encrypted values
-    private suspend fun putEncryptedString(key: String, value: String?) {
+    private suspend fun putEncryptedString(
+        key: String,
+        value: String?,
+    ) {
         dataStore.edit { prefs ->
             if (value == null) {
                 prefs.remove(stringPreferencesKey(key))
@@ -71,31 +78,27 @@ object AppLockManager {
 
     private suspend fun getEncryptedString(key: String): String? {
         val encryptedBase64 = dataStore.data.first()[stringPreferencesKey(key)]
-        return if (encryptedBase64 == null) null
-        else {
+        return if (encryptedBase64 == null) {
+            null
+        } else {
             val decrypted = aead.decrypt(android.util.Base64.decode(encryptedBase64, android.util.Base64.DEFAULT), null)
             String(decrypted)
         }
     }
 
-    fun isPinEnabled(): Boolean {
-        return runBlocking { getEncryptedString(KEY_PIN_ENABLED) == "true" }
-    }
+    fun isPinEnabled(): Boolean = runBlocking { getEncryptedString(KEY_PIN_ENABLED) == "true" }
+
     fun setPinEnabled(enabled: Boolean) {
         runBlocking { putEncryptedString(KEY_PIN_ENABLED, enabled.toString()) }
     }
 
-    fun isBiometricsEnabled(): Boolean {
-        return runBlocking { getEncryptedString(KEY_BIOMETRICS_ENABLED) == "true" }
-    }
+    fun isBiometricsEnabled(): Boolean = runBlocking { getEncryptedString(KEY_BIOMETRICS_ENABLED) == "true" }
 
     fun setBiometricsEnabled(enabled: Boolean) {
         runBlocking { putEncryptedString(KEY_BIOMETRICS_ENABLED, enabled.toString()) }
     }
 
-    fun hasPin(): Boolean {
-        return runBlocking { getEncryptedString(KEY_PIN_HASH) != null }
-    }
+    fun hasPin(): Boolean = runBlocking { getEncryptedString(KEY_PIN_HASH) != null }
 
     fun setPin(pin: String) {
         val salt = generateSaltHex()
@@ -159,21 +162,28 @@ object AppLockManager {
         return elapsed > graceMs
     }
 
-    private fun hashPinLegacy(pin: String, salt: String): String {
+    private fun hashPinLegacy(
+        pin: String,
+        salt: String,
+    ): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val salted = pin + salt
         val bytes = digest.digest(salted.toByteArray())
         return bytesToHex(bytes)
     }
 
-    private fun hashPinPbkdf2(pin: String, saltHex: String): String {
+    private fun hashPinPbkdf2(
+        pin: String,
+        saltHex: String,
+    ): String {
         val salt = hexToBytes(saltHex)
         val spec = PBEKeySpec(pin.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH_BITS)
-        val factory = try {
-            SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
-        } catch (_: Exception) {
-            SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
-        }
+        val factory =
+            try {
+                SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256")
+            } catch (_: Exception) {
+                SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
+            }
         val bytes = factory.generateSecret(spec).encoded
         return bytesToHex(bytes)
     }
@@ -184,8 +194,7 @@ object AppLockManager {
         return bytesToHex(bytes)
     }
 
-    private fun bytesToHex(bytes: ByteArray): String =
-        bytes.joinToString("") { "%02x".format(it) }
+    private fun bytesToHex(bytes: ByteArray): String = bytes.joinToString("") { "%02x".format(it) }
 
     private fun hexToBytes(hex: String): ByteArray {
         val len = hex.length

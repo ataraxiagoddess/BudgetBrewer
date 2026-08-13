@@ -12,9 +12,8 @@ import timber.log.Timber
 
 class SyncWorker(
     context: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
-
     companion object {
         const val KEY_DOWNLOAD_ALL = "download_all"
     }

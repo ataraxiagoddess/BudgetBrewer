@@ -39,17 +39,18 @@ import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
 import com.ataraxiagoddess.budgetbrewer.util.Constants.DateFormats.FULL
 import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.DecimalDigitsInputFilter
+import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
-import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
 
-class SpendingActivity : BaseActivity(), MonthChangeListener {
-
+class SpendingActivity :
+    BaseActivity(),
+    MonthChangeListener {
     override val currentNavDestination: NavDestination
         get() = NavDestination.SPENDING
 
@@ -73,20 +74,21 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         setupAddButton()
 
-        adapter = SpendingEntryAdapter(
-            onEditClick = { entry ->
-                val state = viewModel.uiState.value
-                if (state is SpendingViewModel.SpendingUiState.Success) {
-                    showEditTransactionDialog(entry, state.data.remaining)
-                }
-            },
-            onDeleteClick = { entry ->
-                showDeleteConfirmationDialog(entry)
-            },
-            onItemClick = { entry ->
-                showSpendingDetailDialog(entry)
-            }
-        )
+        adapter =
+            SpendingEntryAdapter(
+                onEditClick = { entry ->
+                    val state = viewModel.uiState.value
+                    if (state is SpendingViewModel.SpendingUiState.Success) {
+                        showEditTransactionDialog(entry, state.data.remaining)
+                    }
+                },
+                onDeleteClick = { entry ->
+                    showDeleteConfirmationDialog(entry)
+                },
+                onItemClick = { entry ->
+                    showSpendingDetailDialog(entry)
+                },
+            )
 
         setupRecyclerView()
 
@@ -110,7 +112,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         }
 
         binding.recyclerView.adapter = adapter
-        //binding.recyclerView.isNestedScrollingEnabled = false
+        // binding.recyclerView.isNestedScrollingEnabled = false
     }
 
     private fun currencyInputFilters(): Array<InputFilter> {
@@ -119,8 +121,8 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         return arrayOf(
             DecimalDigitsInputFilter(
                 CurrencyPrefs.currentFractionDigits,
-                CurrencyPrefs.decimalSeparators(locale)
-            )
+                CurrencyPrefs.decimalSeparators(locale),
+            ),
         )
     }
 
@@ -202,9 +204,12 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     private fun showAddTransactionDialog(remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
-        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
-        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
-        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etTag.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etNote.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
         dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
@@ -213,14 +218,15 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         var selectedDate: Long? = null
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.add_transaction_title),
-            view = dialogBinding.root,
-            positiveButton = getString(R.string.add),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.add_transaction_title),
+                view = dialogBinding.root,
+                positiveButton = getString(R.string.add),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialogBinding.btnSelectDate.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -235,17 +241,30 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
+        val textWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
             }
-            override fun afterTextChanged(s: Editable?) {}
-        }
 
         dialogBinding.etSource.addTextChangedListener(textWatcher)
         dialogBinding.etAmount.addTextChangedListener(textWatcher)
@@ -261,11 +280,29 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             dialogBinding.tvTagCounter.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val source = dialogBinding.etSource.text.toString().trim()
-                val amount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
+                val source =
+                    dialogBinding.etSource.text
+                        .toString()
+                        .trim()
+                val amount =
+                    dialogBinding.etAmount.text
+                        .toString()
+                        .toAmountOrNull(resources)
                 val date = selectedDate
-                val tag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
-                val note = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
+                val tag =
+                    if (viewModel.tagsEnabled.value) {
+                        dialogBinding.etTag.text
+                            .toString()
+                            .trim()
+                            .takeIf { it.isNotEmpty() }
+                    } else {
+                        null
+                    }
+                val note =
+                    dialogBinding.etNote.text
+                        .toString()
+                        .trim()
+                        .takeIf { it.isNotEmpty() }
                 if (date != null && ValidationUtils.isValidName(source) && amount != null && amount > 0 && amount <= remaining) {
                     viewModel.addEntry(date, source, amount, tag, note)
                     dialog.dismiss()
@@ -276,8 +313,16 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialog.show()
     }
 
-    private fun validateAddDialog(dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, remaining: Double) {
-        val source = binding.etSource.text.toString().trim()
+    private fun validateAddDialog(
+        dialog: AlertDialog,
+        binding: DialogAddTransactionBinding,
+        date: Long?,
+        remaining: Double,
+    ) {
+        val source =
+            binding.etSource.text
+                .toString()
+                .trim()
         val amountText = binding.etAmount.text.toString()
         val amount = amountText.toAmountOrNull(resources)
         val sourceValid = source.isNotEmpty()
@@ -301,12 +346,18 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit
     }
 
-    private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double) {
+    private fun showEditTransactionDialog(
+        entry: SpendingEntry,
+        remaining: Double,
+    ) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
-        dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
-        dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
-        dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etTag.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        dialogBinding.etNote.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
         dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, entry.source.length, ValidationUtils.MAX_LENGTH_NAME)
@@ -328,14 +379,15 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         val originalNote = entry.note
         val originalTag = entry.tag
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.edit_transaction_title),
-            view = dialogBinding.root,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.edit_transaction_title),
+                view = dialogBinding.root,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialogBinding.btnSelectDate.setOnClickListener {
             val cal = Calendar.getInstance().apply { timeInMillis = entry.date }
@@ -346,21 +398,54 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
                     cal.set(year, month, dayOfMonth)
                     selectedDate = cal.timeInMillis
                     dialogBinding.btnSelectDate.text = FULL.format(cal.time)
-                    validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
+                    validateEditDialog(
+                        dialog,
+                        dialogBinding,
+                        selectedDate,
+                        originalSource,
+                        originalAmount,
+                        originalDate,
+                        originalNote,
+                        originalTag,
+                        remaining,
+                    )
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
+                cal.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
+        val textWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validateEditDialog(
+                        dialog,
+                        dialogBinding,
+                        selectedDate,
+                        originalSource,
+                        originalAmount,
+                        originalDate,
+                        originalNote,
+                        originalTag,
+                        remaining,
+                    )
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
             }
-            override fun afterTextChanged(s: Editable?) {}
-        }
 
         dialogBinding.etSource.addTextChangedListener(textWatcher)
         dialogBinding.etAmount.addTextChangedListener(textWatcher)
@@ -369,33 +454,63 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
 
         dialog.setOnShowListener {
             dialogBinding.etSource.requestFocus()
-            validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)
+            validateEditDialog(
+                dialog,
+                dialogBinding,
+                selectedDate,
+                originalSource,
+                originalAmount,
+                originalDate,
+                originalNote,
+                originalTag,
+                remaining,
+            )
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
             dialogBinding.etTag.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
             dialogBinding.tvTagCounter.visibility = if (tagsEnabled) View.VISIBLE else View.GONE
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val newSource = dialogBinding.etSource.text.toString().trim()
-                val newAmount = dialogBinding.etAmount.text.toString().toAmountOrNull(resources)
+                val newSource =
+                    dialogBinding.etSource.text
+                        .toString()
+                        .trim()
+                val newAmount =
+                    dialogBinding.etAmount.text
+                        .toString()
+                        .toAmountOrNull(resources)
                 val newDate = selectedDate
-                val newTag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null
-                val newNote = dialogBinding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
-                val amountWithinLimit = if (newAmount == originalAmount) {
-                    true
-                } else {
-                    val difference = newAmount?.minus(originalAmount)
-                    difference!! <= remaining
-                }
+                val newTag =
+                    if (viewModel.tagsEnabled.value) {
+                        dialogBinding.etTag.text
+                            .toString()
+                            .trim()
+                            .takeIf { it.isNotEmpty() }
+                    } else {
+                        null
+                    }
+                val newNote =
+                    dialogBinding.etNote.text
+                        .toString()
+                        .trim()
+                        .takeIf { it.isNotEmpty() }
+                val amountWithinLimit =
+                    if (newAmount == originalAmount) {
+                        true
+                    } else {
+                        val difference = newAmount?.minus(originalAmount)
+                        difference!! <= remaining
+                    }
                 if (newDate != null && ValidationUtils.isValidName(newSource) && newAmount > 0 && amountWithinLimit) {
-                    val updatedEntry = entry.copy(
-                        source = newSource,
-                        amount = newAmount,
-                        date = newDate,
-                        tag = newTag,
-                        note = newNote,
-                        updatedAt = System.currentTimeMillis()
-                    )
+                    val updatedEntry =
+                        entry.copy(
+                            source = newSource,
+                            amount = newAmount,
+                            date = newDate,
+                            tag = newTag,
+                            note = newNote,
+                            updatedAt = System.currentTimeMillis(),
+                        )
                     viewModel.updateEntry(updatedEntry)
                     dialog.dismiss()
                 }
@@ -414,27 +529,43 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
         originalDate: Long,
         originalNote: String?,
         originalTag: String?,
-        remaining: Double
+        remaining: Double,
     ) {
-        val source = binding.etSource.text.toString().trim()
-        val amountText = binding.etAmount.text.toString().trim()
+        val source =
+            binding.etSource.text
+                .toString()
+                .trim()
+        val amountText =
+            binding.etAmount.text
+                .toString()
+                .trim()
         val amount = amountText.toAmountOrNull(resources)
-        val note = binding.etNote.text.toString().trim().takeIf { it.isNotEmpty() }
-        val tag = binding.etTag.text.toString().trim().takeIf { it.isNotEmpty() }
+        val note =
+            binding.etNote.text
+                .toString()
+                .trim()
+                .takeIf { it.isNotEmpty() }
+        val tag =
+            binding.etTag.text
+                .toString()
+                .trim()
+                .takeIf { it.isNotEmpty() }
 
         val sourceValid = source.isNotEmpty()
         val amountValid = amount != null && amount > 0
         val dateValid = date != null
-        val withinLimit = if (amount == originalAmount) {
-            true
-        } else {
-            val newAmountVal = amount ?: 0.0
-            val difference = newAmountVal - originalAmount
-            difference <= remaining
-        }
+        val withinLimit =
+            if (amount == originalAmount) {
+                true
+            } else {
+                val newAmountVal = amount ?: 0.0
+                val difference = newAmountVal - originalAmount
+                difference <= remaining
+            }
 
         val amountValue = amount ?: 0.0
-        val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
+        val changed =
+            source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
 
         // Character counters
         binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
@@ -462,7 +593,7 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
             negativeButton = getString(R.string.cancel),
             onPositive = {
                 viewModel.deleteEntry(entry)
-            }
+            },
         ).show()
     }
 
@@ -501,8 +632,10 @@ class SpendingActivity : BaseActivity(), MonthChangeListener {
     }
 
     override fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SettingsActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun onDestroy() {

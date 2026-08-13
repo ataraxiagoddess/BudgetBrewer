@@ -44,7 +44,7 @@ extensions.configure<ApplicationExtension> {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -83,7 +83,7 @@ dependencies {
     // Room Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)   // KSP, not kapt
+    ksp(libs.androidx.room.compiler) // KSP, not kapt
 
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.supabase.gotrue.kt)
@@ -99,7 +99,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Charts
-    implementation(libs.mpandroidchart)   // Use the alias
+    implementation(libs.mpandroidchart) // Use the alias
     implementation(libs.calendarview)
 
     // Testing

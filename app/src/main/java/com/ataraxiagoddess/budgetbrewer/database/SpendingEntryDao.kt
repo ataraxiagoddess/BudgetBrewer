@@ -33,7 +33,10 @@ interface SpendingEntryDao {
 
     // Get spending entries grouped by tag for a budget
     @Query("SELECT * FROM spending_entries WHERE budgetId = :budgetId AND tag = :tag ORDER BY date ASC")
-    fun getSpendingByTag(budgetId: String, tag: String): Flow<List<SpendingEntry>>
+    fun getSpendingByTag(
+        budgetId: String,
+        tag: String,
+    ): Flow<List<SpendingEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: SpendingEntry)
@@ -44,7 +47,8 @@ interface SpendingEntryDao {
     @Delete
     suspend fun delete(entry: SpendingEntry)
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             CAST(strftime('%m', date / 1000, 'unixepoch') AS INTEGER) as month,
             CAST(strftime('%Y', date / 1000, 'unixepoch') AS INTEGER) as year,
@@ -53,17 +57,20 @@ interface SpendingEntryDao {
         WHERE budgetId = :budgetId
         GROUP BY year, month
         ORDER BY year DESC, month DESC
-    """)
+    """,
+    )
     fun getMonthlySpendingTotals(budgetId: String): Flow<List<MonthlySpending>>
 
-    @Query("""
+    @Query(
+        """
         SELECT 
             CASE WHEN tag IS NULL OR tag = '' THEN 'untagged' ELSE tag END AS tag, 
             SUM(amount) as total 
         FROM spending_entries 
         WHERE budgetId = :budgetId 
         GROUP BY CASE WHEN tag IS NULL OR tag = '' THEN 'untagged' ELSE tag END
-    """)
+    """,
+    )
     fun getSpendingTotalsByTag(budgetId: String): Flow<List<TagSpendingTotal>>
 
     @Query("DELETE FROM spending_entries")
