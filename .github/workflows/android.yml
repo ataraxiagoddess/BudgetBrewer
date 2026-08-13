@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       
     - name: set up JDK 17
       uses: actions/setup-java@v5
@@ -21,14 +21,20 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Setup Android SDK'
-      uses: android-actions/setup-android@v3
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v4
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v6
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Run ktlint
+      run: ./gradlew ktlintCheck
+
+    - name: Run detekt
+      run: ./gradlew detekt
       
     - name: Build with Gradle
       run: ./gradlew build
@@ -40,7 +46,7 @@ jobs:
       run: ./gradlew assembleDebug
 
     - name: Upload Debug APK
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: budget-brewer-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
