@@ -21,6 +21,7 @@ import com.ataraxiagoddess.budgetbrewer.MainActivity
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.databinding.ActivityLockBinding
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
+import com.ataraxiagoddess.budgetbrewer.util.BiometricCryptoManager
 import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 import com.google.android.material.snackbar.Snackbar
 
@@ -101,7 +102,12 @@ class LockActivity : AppCompatActivity() {
         val executor = ContextCompat.getMainExecutor(this)
         val callback = object : BiometricPrompt.AuthenticationCallback() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                unlockAndProceed()
+                val cipher = result.cryptoObject?.cipher
+                if (cipher != null && BiometricCryptoManager.probe(cipher)) {
+                    unlockAndProceed()
+                } else {
+                    showSnackbar(getString(R.string.biometric_failed))
+                }
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -119,13 +125,19 @@ class LockActivity : AppCompatActivity() {
     }
 
     private fun showBiometricPrompt() {
+        val cipher = BiometricCryptoManager.createCipher()
+        if (cipher == null) {
+            // No hardware-backed key available: biometric is a no-op, PIN remains.
+            binding.btnBiometric.visibility = View.GONE
+            return
+        }
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(getString(R.string.biometric_title))
             .setSubtitle(getString(R.string.biometric_subtitle))
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
             .setNegativeButtonText(getString(R.string.cancel))
             .build()
-        biometricPrompt.authenticate(promptInfo)
+        biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
     }
 
     private fun unlockAndProceed() {
