@@ -16,7 +16,10 @@ object AuthManager {
         return prefs.getString(KEY_USER_ID, null)
     }
 
-    fun saveUserId(context: Context, userId: String) {
+    fun saveUserId(
+        context: Context,
+        userId: String,
+    ) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit {
             putString(KEY_USER_ID, userId)
         }

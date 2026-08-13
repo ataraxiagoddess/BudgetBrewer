@@ -10,10 +10,14 @@ import com.ataraxiagoddess.budgetbrewer.data.Income
 
 sealed class IncomeExpensesUiState {
     object Loading : IncomeExpensesUiState()
+
     data class Success(
         val incomes: List<Income> = emptyList(),
         val categories: List<ExpenseCategory> = emptyList(),
-        val expenses: List<Expense> = emptyList()
+        val expenses: List<Expense> = emptyList(),
     ) : IncomeExpensesUiState()
-    data class Error(val message: String) : IncomeExpensesUiState()
+
+    data class Error(
+        val message: String,
+    ) : IncomeExpensesUiState()
 }

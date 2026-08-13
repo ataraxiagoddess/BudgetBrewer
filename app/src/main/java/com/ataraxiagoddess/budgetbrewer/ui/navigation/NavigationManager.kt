@@ -10,20 +10,21 @@ import timber.log.Timber
 
 class NavigationManager(
     binding: LayoutBottomNavBinding,
-    private val onNavigate: (NavDestination) -> Unit
+    private val onNavigate: (NavDestination) -> Unit,
 ) {
     private var currentDestination: NavDestination = NavDestination.HOME
 
     // Map of button views to their destinations
-    private val buttonMap = mapOf(
-        binding.navButtonHome to NavDestination.HOME,
-        binding.navButtonFinances to NavDestination.FINANCES,
-        binding.navButtonSavings to NavDestination.SAVINGS,
-        binding.navButtonExpenses to NavDestination.EXPENSES,
-        binding.navButtonSpending to NavDestination.SPENDING,
-        binding.navButtonCalendar to NavDestination.CALENDAR,
-        binding.navButtonSettings to NavDestination.SETTINGS
-    )
+    private val buttonMap =
+        mapOf(
+            binding.navButtonHome to NavDestination.HOME,
+            binding.navButtonFinances to NavDestination.FINANCES,
+            binding.navButtonSavings to NavDestination.SAVINGS,
+            binding.navButtonExpenses to NavDestination.EXPENSES,
+            binding.navButtonSpending to NavDestination.SPENDING,
+            binding.navButtonCalendar to NavDestination.CALENDAR,
+            binding.navButtonSettings to NavDestination.SETTINGS,
+        )
 
     init {
         setupClickListeners()

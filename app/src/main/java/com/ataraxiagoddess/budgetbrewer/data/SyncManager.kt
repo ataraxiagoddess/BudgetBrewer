@@ -15,24 +15,33 @@ import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 @Serializable
-private data class IdResponse(val id: String)
+private data class IdResponse(
+    val id: String,
+)
 
 /**
  * Manages synchronization between local Room database and Supabase.
  * Uses UUID primary keys for all entities (stored as String in local, as UUID in Supabase).
  */
-class SyncManager(context: Context) {
-
+class SyncManager(
+    context: Context,
+) {
     private val db = AppDatabase.getDatabase(context)
     private val supabase = SupabaseClient.client
 
-    private suspend fun queueOperation(operation: String, table: String, recordId: String, userId: String) {
-        val pending = PendingSync(
-            operation = operation,
-            table = table,
-            recordId = recordId,
-            userId = userId
-        )
+    private suspend fun queueOperation(
+        operation: String,
+        table: String,
+        recordId: String,
+        userId: String,
+    ) {
+        val pending =
+            PendingSync(
+                operation = operation,
+                table = table,
+                recordId = recordId,
+                userId = userId,
+            )
         db.pendingSyncDao().insert(pending)
     }
 
@@ -64,13 +73,15 @@ class SyncManager(context: Context) {
         }
     }
 
-    suspend fun userHasData(userId: String): Boolean {
-        return withContext(Dispatchers.IO) {
+    suspend fun userHasData(userId: String): Boolean =
+        withContext(Dispatchers.IO) {
             try {
-                val result = supabase.postgrest["budgets"].select(Columns.raw("id")) {
-                    filter { eq("user_id", userId) }
-                    limit(1)
-                }.decodeList<IdResponse>()
+                val result =
+                    supabase.postgrest["budgets"]
+                        .select(Columns.raw("id")) {
+                            filter { eq("user_id", userId) }
+                            limit(1)
+                        }.decodeList<IdResponse>()
                 val hasData = result.isNotEmpty()
                 Timber.d("userHasData for $userId: $hasData")
                 hasData
@@ -79,22 +90,25 @@ class SyncManager(context: Context) {
                 false
             }
         }
-    }
 
     /**
      * Upload a single budget.
      */
-    suspend fun uploadBudget(budget: Budget, userId: String) {
+    suspend fun uploadBudget(
+        budget: Budget,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = BudgetPayload(
-                    id = budget.id,
-                    month = budget.month,
-                    year = budget.year,
-                    created_at = budget.createdAt,
-                    updated_at = budget.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    BudgetPayload(
+                        id = budget.id,
+                        month = budget.month,
+                        year = budget.year,
+                        created_at = budget.createdAt,
+                        updated_at = budget.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["budgets"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadBudget failed, queueing")
@@ -106,23 +120,27 @@ class SyncManager(context: Context) {
     /**
      * Upload a single income.
      */
-    suspend fun uploadIncome(income: Income, userId: String) {
+    suspend fun uploadIncome(
+        income: Income,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = IncomePayload(
-                    id = income.id,
-                    budget_id = income.budgetId,
-                    source_name = income.sourceName,
-                    currency = income.currency,
-                    amount = income.amount,
-                    frequency = income.frequency.name,
-                    is_tips = income.isTips,
-                    week_number = income.weekNumber,
-                    tips_order = income.tipsOrder,
-                    created_at = income.createdAt,
-                    updated_at = income.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    IncomePayload(
+                        id = income.id,
+                        budget_id = income.budgetId,
+                        source_name = income.sourceName,
+                        currency = income.currency,
+                        amount = income.amount,
+                        frequency = income.frequency.name,
+                        is_tips = income.isTips,
+                        week_number = income.weekNumber,
+                        tips_order = income.tipsOrder,
+                        created_at = income.createdAt,
+                        updated_at = income.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["incomes"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadIncome failed, queueing")
@@ -134,19 +152,23 @@ class SyncManager(context: Context) {
     /**
      * Upload a single expense category.
      */
-    suspend fun uploadCategory(category: ExpenseCategory, userId: String) {
+    suspend fun uploadCategory(
+        category: ExpenseCategory,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = ExpenseCategoryPayload(
-                    id = category.id,
-                    budget_id = category.budgetId,
-                    name = category.name,
-                    color = category.color,
-                    display_order = category.displayOrder,
-                    created_at = category.createdAt,
-                    updated_at = category.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    ExpenseCategoryPayload(
+                        id = category.id,
+                        budget_id = category.budgetId,
+                        name = category.name,
+                        color = category.color,
+                        display_order = category.displayOrder,
+                        created_at = category.createdAt,
+                        updated_at = category.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["expense_categories"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadCategory failed, queueing")
@@ -158,33 +180,40 @@ class SyncManager(context: Context) {
     /**
      * Upload a single expense.
      */
-    suspend fun uploadExpense(expense: Expense, userId: String) {
+    suspend fun uploadExpense(
+        expense: Expense,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 val category = db.expenseCategoryDao().getCategoryById(expense.categoryId)
                 if (category != null) {
-                    val existing = supabase.postgrest["expense_categories"].select(Columns.raw("id")) {
-                        filter { eq("id", category.id) }
-                    }.decodeList<IdResponse>().firstOrNull()
+                    val existing =
+                        supabase.postgrest["expense_categories"]
+                            .select(Columns.raw("id")) {
+                                filter { eq("id", category.id) }
+                            }.decodeList<IdResponse>()
+                            .firstOrNull()
                     if (existing == null) {
                         uploadCategory(category, userId)
                     }
                 }
-                val payload = ExpensePayload(
-                    id = expense.id,
-                    category_id = expense.categoryId,
-                    description = expense.description,
-                    amount = expense.amount,
-                    due_date = expense.dueDate,
-                    recurrence_type = expense.recurrenceType.name,
-                    recurrence_interval = expense.recurrenceInterval,
-                    source_expense_id = expense.sourceExpenseId,
-                    is_overridden = expense.isOverridden,
-                    created_at = expense.createdAt,
-                    is_active = expense.isActive,
-                    updated_at = expense.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    ExpensePayload(
+                        id = expense.id,
+                        category_id = expense.categoryId,
+                        description = expense.description,
+                        amount = expense.amount,
+                        due_date = expense.dueDate,
+                        recurrence_type = expense.recurrenceType.name,
+                        recurrence_interval = expense.recurrenceInterval,
+                        source_expense_id = expense.sourceExpenseId,
+                        is_overridden = expense.isOverridden,
+                        created_at = expense.createdAt,
+                        is_active = expense.isActive,
+                        updated_at = expense.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["expenses"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadExpense failed, queueing")
@@ -196,20 +225,24 @@ class SyncManager(context: Context) {
     /**
      * Upload a single allocation.
      */
-    suspend fun uploadAllocation(allocation: Allocation, userId: String) {
+    suspend fun uploadAllocation(
+        allocation: Allocation,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = AllocationPayload(
-                    id = allocation.id,
-                    budget_id = allocation.budgetId,
-                    savings_amount = allocation.savingsAmount,
-                    savings_is_percentage = allocation.savingsIsPercentage,
-                    spending_amount = allocation.spendingAmount,
-                    spending_is_percentage = allocation.spendingIsPercentage,
-                    created_at = allocation.createdAt,
-                    updated_at = allocation.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    AllocationPayload(
+                        id = allocation.id,
+                        budget_id = allocation.budgetId,
+                        savings_amount = allocation.savingsAmount,
+                        savings_is_percentage = allocation.savingsIsPercentage,
+                        spending_amount = allocation.spendingAmount,
+                        spending_is_percentage = allocation.spendingIsPercentage,
+                        created_at = allocation.createdAt,
+                        updated_at = allocation.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["allocations"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadAllocation failed, queueing")
@@ -221,17 +254,21 @@ class SyncManager(context: Context) {
     /**
      * Upload a single daily checklist item.
      */
-    suspend fun uploadDailyChecklistItem(item: DailyChecklist, userId: String) {
+    suspend fun uploadDailyChecklistItem(
+        item: DailyChecklist,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = DailyChecklistPayload(
-                    id = item.id,
-                    budget_id = item.budgetId,
-                    day_of_month = item.dayOfMonth,
-                    is_checked = item.isChecked,
-                    updated_at = item.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    DailyChecklistPayload(
+                        id = item.id,
+                        budget_id = item.budgetId,
+                        day_of_month = item.dayOfMonth,
+                        is_checked = item.isChecked,
+                        updated_at = item.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["daily_checklist"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadDailyChecklist failed, queueing")
@@ -243,21 +280,25 @@ class SyncManager(context: Context) {
     /**
      * Upload a single spending entry.
      */
-    suspend fun uploadSpendingEntry(entry: SpendingEntry, userId: String) {
+    suspend fun uploadSpendingEntry(
+        entry: SpendingEntry,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = SpendingEntryPayload(
-                    id = entry.id,
-                    budget_id = entry.budgetId,
-                    date = entry.date,
-                    source = entry.source,
-                    amount = entry.amount,
-                    tag = entry.tag,
-                    note = entry.note,
-                    created_at = entry.createdAt,
-                    updated_at = entry.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    SpendingEntryPayload(
+                        id = entry.id,
+                        budget_id = entry.budgetId,
+                        date = entry.date,
+                        source = entry.source,
+                        amount = entry.amount,
+                        tag = entry.tag,
+                        note = entry.note,
+                        created_at = entry.createdAt,
+                        updated_at = entry.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["spending_entries"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSpendingEntry failed, queueing")
@@ -267,23 +308,27 @@ class SyncManager(context: Context) {
     }
 
     // --- Savings Buckets Sync ---
-    suspend fun uploadSavingsBucket(bucket: SavingsBucket, userId: String) {
+    suspend fun uploadSavingsBucket(
+        bucket: SavingsBucket,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             Timber.d("uploadSavingsBucket – userId = $userId")
             Timber.d("uploadSavingsBucket – upsert completed")
             try {
-                val payload = SavingsBucketPayload(
-                    id = bucket.id,
-                    user_id = userId,
-                    name = bucket.name,
-                    type = bucket.type.name,
-                    current_amount = bucket.current_amount,
-                    target_amount = bucket.target_amount,
-                    color_hex = bucket.color_hex,
-                    is_archived = bucket.is_archived,
-                    created_at = bucket.created_at,
-                    updated_at = bucket.updated_at
-                )
+                val payload =
+                    SavingsBucketPayload(
+                        id = bucket.id,
+                        user_id = userId,
+                        name = bucket.name,
+                        type = bucket.type.name,
+                        current_amount = bucket.current_amount,
+                        target_amount = bucket.target_amount,
+                        color_hex = bucket.color_hex,
+                        is_archived = bucket.is_archived,
+                        created_at = bucket.created_at,
+                        updated_at = bucket.updated_at,
+                    )
                 supabase.postgrest["savings_buckets"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsBucket failed, queueing")
@@ -293,18 +338,22 @@ class SyncManager(context: Context) {
     }
 
     // --- Savings Transactions Sync ---
-    suspend fun uploadSavingsTransaction(transaction: SavingsTransaction, userId: String) {
+    suspend fun uploadSavingsTransaction(
+        transaction: SavingsTransaction,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = SavingsTransactionPayload(
-                    id = transaction.id,
-                    bucket_id = transaction.bucket_id,
-                    amount = transaction.amount,
-                    date = transaction.date,
-                    type = transaction.type.name,
-                    created_at = transaction.created_at,
-                    updated_at = transaction.updated_at
-                )
+                val payload =
+                    SavingsTransactionPayload(
+                        id = transaction.id,
+                        bucket_id = transaction.bucket_id,
+                        amount = transaction.amount,
+                        date = transaction.date,
+                        type = transaction.type.name,
+                        created_at = transaction.created_at,
+                        updated_at = transaction.updated_at,
+                    )
                 supabase.postgrest["savings_transactions"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadSavingsTransaction failed, queueing")
@@ -316,20 +365,24 @@ class SyncManager(context: Context) {
     /**
      * Upload a single month setting.
      */
-    suspend fun uploadMonthSetting(setting: MonthSettings, userId: String) {
+    suspend fun uploadMonthSetting(
+        setting: MonthSettings,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = MonthSettingsPayload(
-                    id = setting.id,
-                    budget_id = setting.budgetId,
-                    month_start_amount = setting.monthStartAmount,
-                    month_start_overridden = setting.monthStartOverridden,
-                    tips_enabled = setting.tipsEnabled,
-                    pay_frequency = setting.payFrequency,
-                    created_at = setting.createdAt,
-                    updated_at = setting.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    MonthSettingsPayload(
+                        id = setting.id,
+                        budget_id = setting.budgetId,
+                        month_start_amount = setting.monthStartAmount,
+                        month_start_overridden = setting.monthStartOverridden,
+                        tips_enabled = setting.tipsEnabled,
+                        pay_frequency = setting.payFrequency,
+                        created_at = setting.createdAt,
+                        updated_at = setting.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["month_settings"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadMonthSettings failed, queueing")
@@ -341,18 +394,22 @@ class SyncManager(context: Context) {
     /**
      * Upload a single daily income assignment.
      */
-    suspend fun uploadDailyIncomeAssignment(assignment: DailyIncomeAssignment, userId: String) {
+    suspend fun uploadDailyIncomeAssignment(
+        assignment: DailyIncomeAssignment,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
-                val payload = DailyIncomeAssignmentPayload(
-                    id = assignment.id,
-                    budget_id = assignment.budgetId,
-                    income_id = assignment.incomeId,
-                    day_of_month = assignment.dayOfMonth,
-                    created_at = assignment.createdAt,
-                    updated_at = assignment.updatedAt,
-                    user_id = userId
-                )
+                val payload =
+                    DailyIncomeAssignmentPayload(
+                        id = assignment.id,
+                        budget_id = assignment.budgetId,
+                        income_id = assignment.incomeId,
+                        day_of_month = assignment.dayOfMonth,
+                        created_at = assignment.createdAt,
+                        updated_at = assignment.updatedAt,
+                        user_id = userId,
+                    )
                 supabase.postgrest["daily_income_assignments"].upsert(payload)
             } catch (e: Exception) {
                 Timber.e(e, "uploadDailyIncomeAssignment failed, queueing")
@@ -366,7 +423,10 @@ class SyncManager(context: Context) {
     /**
      * Delete an income from Supabase.
      */
-    suspend fun deleteIncome(incomeId: String, userId: String) {
+    suspend fun deleteIncome(
+        incomeId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["incomes"].delete {
@@ -385,7 +445,10 @@ class SyncManager(context: Context) {
     /**
      * Delete a category from Supabase.
      */
-    suspend fun deleteCategory(categoryId: String, userId: String) {
+    suspend fun deleteCategory(
+        categoryId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["expense_categories"].delete {
@@ -404,7 +467,10 @@ class SyncManager(context: Context) {
     /**
      * Delete an expense from Supabase.
      */
-    suspend fun deleteExpense(expenseId: String, userId: String) {
+    suspend fun deleteExpense(
+        expenseId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["expenses"].delete {
@@ -423,7 +489,10 @@ class SyncManager(context: Context) {
     /**
      * Delete an allocation from Supabase.
      */
-    suspend fun deleteAllocation(allocationId: String, userId: String) {
+    suspend fun deleteAllocation(
+        allocationId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["allocations"].delete {
@@ -442,7 +511,10 @@ class SyncManager(context: Context) {
     /**
      * Delete a spending entry from Supabase.
      */
-    suspend fun deleteSpendingEntry(entryId: String, userId: String) {
+    suspend fun deleteSpendingEntry(
+        entryId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["spending_entries"].delete {
@@ -461,7 +533,10 @@ class SyncManager(context: Context) {
     /**
      * Delete a savings bucket from Supabase.
      */
-    suspend fun deleteSavingsBucket(bucketId: String, userId: String) {
+    suspend fun deleteSavingsBucket(
+        bucketId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["savings_buckets"].delete {
@@ -479,7 +554,10 @@ class SyncManager(context: Context) {
     /**
      * Delete a savings bucket transaction from Supabase.
      */
-    suspend fun deleteSavingsTransaction(transactionId: String, userId: String) {
+    suspend fun deleteSavingsTransaction(
+        transactionId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["savings_transactions"].delete {
@@ -495,7 +573,10 @@ class SyncManager(context: Context) {
         }
     }
 
-    suspend fun deleteDailyChecklistItem(itemId: String, userId: String) {
+    suspend fun deleteDailyChecklistItem(
+        itemId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["daily_checklist"].delete {
@@ -514,7 +595,10 @@ class SyncManager(context: Context) {
     /**
      * Delete a daily income assignment from Supabase.
      */
-    suspend fun deleteDailyIncomeAssignment(assignmentId: String, userId: String) {
+    suspend fun deleteDailyIncomeAssignment(
+        assignmentId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["daily_income_assignments"].delete {
@@ -530,7 +614,10 @@ class SyncManager(context: Context) {
         }
     }
 
-    suspend fun deleteMonthSetting(settingId: String, userId: String) {
+    suspend fun deleteMonthSetting(
+        settingId: String,
+        userId: String,
+    ) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["month_settings"].delete {
@@ -574,86 +661,113 @@ class SyncManager(context: Context) {
     }
 
     private suspend fun downloadBudgets(userId: String) {
-        val response = supabase.postgrest["budgets"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<Budget>()
+        val response =
+            supabase.postgrest["budgets"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<Budget>()
         response.forEach { db.budgetDao().insert(it) }
     }
 
     private suspend fun downloadIncomes(userId: String) {
-        val response = supabase.postgrest["incomes"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<Income>()
+        val response =
+            supabase.postgrest["incomes"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<Income>()
         response.forEach { db.incomeDao().insert(it) }
     }
 
     private suspend fun downloadCategories(userId: String) {
-        val response = supabase.postgrest["expense_categories"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<ExpenseCategory>()
+        val response =
+            supabase.postgrest["expense_categories"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<ExpenseCategory>()
         response.forEach { db.expenseCategoryDao().insert(it) }
     }
 
     private suspend fun downloadExpenses(userId: String) {
-        val response = supabase.postgrest["expenses"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<Expense>()
+        val response =
+            supabase.postgrest["expenses"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<Expense>()
         response.forEach { db.expenseDao().insert(it) }
     }
 
     private suspend fun downloadAllocations(userId: String) {
-        val response = supabase.postgrest["allocations"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<Allocation>()
+        val response =
+            supabase.postgrest["allocations"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<Allocation>()
         response.forEach { db.allocationDao().insert(it) }
     }
 
     private suspend fun downloadDailyChecklist(userId: String) {
-        val response = supabase.postgrest["daily_checklist"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<DailyChecklist>()
+        val response =
+            supabase.postgrest["daily_checklist"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<DailyChecklist>()
         response.forEach { db.dailyChecklistDao().insert(it) }
     }
 
     private suspend fun downloadSpendingEntries(userId: String) {
-        val response = supabase.postgrest["spending_entries"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<SpendingEntry>()
+        val response =
+            supabase.postgrest["spending_entries"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<SpendingEntry>()
         response.forEach { db.spendingEntryDao().insert(it) }
     }
 
     private suspend fun downloadSavingsBuckets(userId: String) {
-        val response = supabase.postgrest["savings_buckets"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<SavingsBucket>()
+        val response =
+            supabase.postgrest["savings_buckets"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<SavingsBucket>()
         response.forEach { db.savingsBucketDao().insert(it) }
     }
 
     private suspend fun downloadSavingsTransactions() {
-        val bucketIds = db.savingsBucketDao().getAllBuckets().first().map { it.id }
+        val bucketIds =
+            db
+                .savingsBucketDao()
+                .getAllBuckets()
+                .first()
+                .map { it.id }
         if (bucketIds.isEmpty()) return
 
         val allTransactions = mutableListOf<SavingsTransaction>()
         bucketIds.forEach { bucketId ->
-            val response = supabase.postgrest["savings_transactions"].select(Columns.raw("*")) {
-                filter { eq("bucket_id", bucketId) }
-            }.decodeList<SavingsTransaction>()
+            val response =
+                supabase.postgrest["savings_transactions"]
+                    .select(Columns.raw("*")) {
+                        filter { eq("bucket_id", bucketId) }
+                    }.decodeList<SavingsTransaction>()
             allTransactions.addAll(response)
         }
         allTransactions.forEach { db.savingsTransactionDao().insert(it) }
     }
 
     private suspend fun downloadMonthSettings(userId: String) {
-        val response = supabase.postgrest["month_settings"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<MonthSettings>()
+        val response =
+            supabase.postgrest["month_settings"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<MonthSettings>()
         response.forEach { db.monthSettingsDao().insert(it) }
     }
 
     private suspend fun downloadDailyIncomeAssignments(userId: String) {
-        val response = supabase.postgrest["daily_income_assignments"].select(Columns.raw("*")) {
-            filter { eq("user_id", userId) }
-        }.decodeList<DailyIncomeAssignment>()
+        val response =
+            supabase.postgrest["daily_income_assignments"]
+                .select(Columns.raw("*")) {
+                    filter { eq("user_id", userId) }
+                }.decodeList<DailyIncomeAssignment>()
         response.forEach { db.dailyIncomeAssignmentDao().insert(it) }
     }
 

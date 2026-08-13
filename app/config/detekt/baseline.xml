@@ -83,24 +83,24 @@
     <ID>ConstructorParameterNaming:SavingsTransaction.kt$SavingsTransaction$@SerialName("created_at") val created_at: Long = System.currentTimeMillis()</ID>
     <ID>ConstructorParameterNaming:SavingsTransaction.kt$SavingsTransaction$@SerialName("updated_at") val updated_at: Long = System.currentTimeMillis()</ID>
     <ID>CyclomaticComplexMethod:BaseActivity.kt$BaseActivity$private fun createRootLayout(contentView: View): FrameLayout</ID>
-    <ID>CyclomaticComplexMethod:BudgetRepository.kt$BudgetRepository$private fun getDaysInMonth(year: Int, month: Int): Int</ID>
-    <ID>CyclomaticComplexMethod:BudgetRepository.kt$BudgetRepository$suspend fun propagateRecurringExpenses(fromBudgetId: String, toBudgetId: String)</ID>
-    <ID>CyclomaticComplexMethod:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>CyclomaticComplexMethod:ExportHelper.kt$ExportHelper$private suspend fun buildCSVForBudget(db: AppDatabase, budgetId: String): ByteArray</ID>
-    <ID>CyclomaticComplexMethod:ExportHelper.kt$ExportHelper$private suspend fun buildPDFForBudget(context: Context, db: AppDatabase, budgetId: String): ByteArray</ID>
+    <ID>CyclomaticComplexMethod:BudgetRepository.kt$BudgetRepository$private fun getDaysInMonth( year: Int, month: Int, ): Int</ID>
+    <ID>CyclomaticComplexMethod:BudgetRepository.kt$BudgetRepository$suspend fun propagateRecurringExpenses( fromBudgetId: String, toBudgetId: String, )</ID>
+    <ID>CyclomaticComplexMethod:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$override fun onViewCreated( view: View, savedInstanceState: Bundle?, )</ID>
+    <ID>CyclomaticComplexMethod:ExportHelper.kt$ExportHelper$private suspend fun buildCSVForBudget( db: AppDatabase, budgetId: String, ): ByteArray</ID>
+    <ID>CyclomaticComplexMethod:ExportHelper.kt$ExportHelper$private suspend fun buildPDFForBudget( context: Context, db: AppDatabase, budgetId: String, ): ByteArray</ID>
     <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showAddExpenseDialog(category: ExpenseCategory)</ID>
-    <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showAllocationDialog(type: AllocationType, existingAmount: Double = 0.0)</ID>
+    <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showAllocationDialog( type: AllocationType, existingAmount: Double = 0.0, )</ID>
     <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showEditExpenseDialog(expense: Expense)</ID>
-    <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI(categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList())</ID>
+    <ID>CyclomaticComplexMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI( categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList(), )</ID>
     <ID>CyclomaticComplexMethod:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$fun updateExpense(expense: Expense)</ID>
     <ID>CyclomaticComplexMethod:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$private fun populateWeekEndGrid(weekEndTotals: List&lt;MonthlyCalendarViewModel.WeekEndTotal&gt;)</ID>
-    <ID>CyclomaticComplexMethod:MonthlyCalendarViewModel.kt$MonthlyCalendarViewModel$private fun getDaysInMonth(year: Int, month: Int): Int</ID>
+    <ID>CyclomaticComplexMethod:MonthlyCalendarViewModel.kt$MonthlyCalendarViewModel$private fun getDaysInMonth( year: Int, month: Int, ): Int</ID>
     <ID>CyclomaticComplexMethod:SavingsActivity.kt$SavingsActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>CyclomaticComplexMethod:SavingsBucketAdapter.kt$SavingsBucketAdapter.ViewHolder$fun bind(bucket: SavingsBucket)</ID>
     <ID>CyclomaticComplexMethod:SettingsActivity.kt$SettingsActivity$private fun setupSectionToggles()</ID>
     <ID>CyclomaticComplexMethod:SettingsActivity.kt$SettingsActivity$private fun updateAccountSection()</ID>
-    <ID>CyclomaticComplexMethod:SpendingActivity.kt$SpendingActivity$private fun validateEditDialog( dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, originalSource: String, originalAmount: Double, originalDate: Long, originalNote: String?, originalTag: String?, remaining: Double )</ID>
+    <ID>CyclomaticComplexMethod:SpendingActivity.kt$SpendingActivity$private fun validateEditDialog( dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, originalSource: String, originalAmount: Double, originalDate: Long, originalNote: String?, originalTag: String?, remaining: Double, )</ID>
     <ID>CyclomaticComplexMethod:SyncWorker.kt$SyncWorker$override suspend fun doWork(): Result</ID>
     <ID>EmptyFunctionBlock:BaseActivity.kt$BaseActivity.&lt;no name provided&gt;${}</ID>
     <ID>EmptyFunctionBlock:CreateBucketDialogFragment.kt$CreateBucketDialogFragment.&lt;no name provided&gt;${}</ID>
@@ -115,25 +115,31 @@
     <ID>EmptyFunctionBlock:SpendingActivity.kt$SpendingActivity.&lt;no name provided&gt;${}</ID>
     <ID>ImplicitDefaultLocale:CreateBucketDialogFragment.kt$CreateBucketDialogFragment$String.format("#%06X", 0xFFFFFF and colorInt)</ID>
     <ID>ImplicitDefaultLocale:EditBucketDialogFragment.kt$EditBucketDialogFragment$String.format("#%06X", 0xFFFFFF and colorInt)</ID>
+    <ID>LargeClass:BudgetRepository.kt$BudgetRepository</ID>
     <ID>LargeClass:HomeFragment.kt$HomeFragment : FragmentMonthChangeListener</ID>
     <ID>LargeClass:IncomeExpensesActivity.kt$IncomeExpensesActivity : BaseActivityMonthChangeListener</ID>
     <ID>LargeClass:IncomeExpensesViewModel.kt$IncomeExpensesViewModel : BaseViewModel</ID>
+    <ID>LargeClass:SettingsActivity.kt$SettingsActivity : BaseActivity</ID>
+    <ID>LargeClass:SyncManager.kt$SyncManager</ID>
     <ID>LongMethod:ArchivedBucketsActivity.kt$ArchivedBucketsActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:ArchivedBucketsAdapter.kt$ArchivedBucketsAdapter.ViewHolder$fun bind(bucket: SavingsBucket)</ID>
     <ID>LongMethod:BaseActivity.kt$BaseActivity$private fun createRootLayout(contentView: View): FrameLayout</ID>
-    <ID>LongMethod:BudgetRepository.kt$BudgetRepository$suspend fun propagateRecurringExpenses(fromBudgetId: String, toBudgetId: String)</ID>
-    <ID>LongMethod:CreateBucketDialogFragment.kt$CreateBucketDialogFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:EditBucketDialogFragment.kt$EditBucketDialogFragment$override fun onViewCreated(view: View, savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:ExportHelper.kt$ExportHelper$private suspend fun buildCSVForBudget(db: AppDatabase, budgetId: String): ByteArray</ID>
-    <ID>LongMethod:ExportHelper.kt$ExportHelper$private suspend fun buildPDFForBudget(context: Context, db: AppDatabase, budgetId: String): ByteArray</ID>
+    <ID>LongMethod:BudgetRepository.kt$BudgetRepository$suspend fun propagateRecurringExpenses( fromBudgetId: String, toBudgetId: String, )</ID>
+    <ID>LongMethod:CreateBucketDialogFragment.kt$CreateBucketDialogFragment$override fun onViewCreated( view: View, savedInstanceState: Bundle?, )</ID>
+    <ID>LongMethod:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$override fun onViewCreated( view: View, savedInstanceState: Bundle?, )</ID>
+    <ID>LongMethod:EditBucketDialogFragment.kt$EditBucketDialogFragment$override fun onViewCreated( view: View, savedInstanceState: Bundle?, )</ID>
+    <ID>LongMethod:ExportHelper.kt$ExportHelper$private suspend fun buildCSVForBudget( db: AppDatabase, budgetId: String, ): ByteArray</ID>
+    <ID>LongMethod:ExportHelper.kt$ExportHelper$private suspend fun buildPDFForBudget( context: Context, db: AppDatabase, budgetId: String, ): ByteArray</ID>
     <ID>LongMethod:HomeFragment.kt$HomeFragment$private fun updateExpensesBreakdownChart(data: HomeUiState.Success)</ID>
     <ID>LongMethod:HomeFragment.kt$HomeFragment$private fun updateSpendingByTagChart(data: HomeUiState.Success)</ID>
     <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
-    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun rebuildIncomeRows(frequency: Frequency, incomes: List&lt;Income&gt;)</ID>
+    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun rebuildIncomeRows( frequency: Frequency, incomes: List&lt;Income&gt;, )</ID>
     <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showAddExpenseDialog(category: ExpenseCategory)</ID>
+    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showAllocationDialog( type: AllocationType, existingAmount: Double = 0.0, )</ID>
     <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun showEditExpenseDialog(expense: Expense)</ID>
-    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI(categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList())</ID>
-    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$override fun onItemSelected(parent: AdapterView&lt;*&gt;?, view: View?, pos: Int, id: Long)</ID>
+    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI( categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList(), )</ID>
+    <ID>LongMethod:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$override fun onItemSelected( parent: AdapterView&lt;*&gt;?, view: View?, pos: Int, id: Long, )</ID>
+    <ID>LongMethod:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$fun addExpense( categoryId: String, description: String, amount: Double, dueDate: Long, recurrenceType: RecurrenceType = RecurrenceType.NONE, recurrenceInterval: Int? = null, )</ID>
     <ID>LongMethod:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$fun updateExpense(expense: Expense)</ID>
     <ID>LongMethod:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$private fun buildNativeHeaderFooter(data: MonthlyCalendarViewModel.CalendarData)</ID>
     <ID>LongMethod:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$private fun populateWeekEndGrid(weekEndTotals: List&lt;MonthlyCalendarViewModel.WeekEndTotal&gt;)</ID>
@@ -145,11 +151,11 @@
     <ID>LongMethod:SettingsActivity.kt$SettingsActivity$private fun setupSectionToggles()</ID>
     <ID>LongMethod:SettingsActivity.kt$SettingsActivity$private fun updateAccountSection()</ID>
     <ID>LongMethod:SpendingActivity.kt$SpendingActivity$private fun showAddTransactionDialog(remaining: Double)</ID>
-    <ID>LongMethod:SpendingActivity.kt$SpendingActivity$private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double)</ID>
-    <ID>LongParameterList:CategoryAdapter.kt$CategoryAdapter$( var categories: List&lt;ExpenseCategory&gt;, var allExpenses: List&lt;Expense&gt;, private val contentWidth: Int, private val halfMargin: Int, private val isGrid: Boolean = false, private val onEditCategory: (ExpenseCategory) -&gt; Unit, private val onDeleteCategory: (ExpenseCategory) -&gt; Unit, private val onAddExpense: (ExpenseCategory) -&gt; Unit, private val onEditExpense: (Expense) -&gt; Unit, private val onDeleteExpense: (Expense) -&gt; Unit )</ID>
-    <ID>LongParameterList:DialogHelper.kt$( inflater: LayoutInflater, context: Context, title: String, message: String? = null, view: View? = null, positiveButton: String = context.getString(R.string.ok), negativeButton: String? = context.getString(R.string.cancel), onPositive: () -&gt; Unit = {}, onNegative: () -&gt; Unit = {} )</ID>
-    <ID>LongParameterList:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$( categoryId: String, description: String, amount: Double, dueDate: Long, recurrenceType: RecurrenceType = RecurrenceType.NONE, recurrenceInterval: Int? = null )</ID>
-    <ID>LongParameterList:SpendingActivity.kt$SpendingActivity$( dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, originalSource: String, originalAmount: Double, originalDate: Long, originalNote: String?, originalTag: String?, remaining: Double )</ID>
+    <ID>LongMethod:SpendingActivity.kt$SpendingActivity$private fun showEditTransactionDialog( entry: SpendingEntry, remaining: Double, )</ID>
+    <ID>LongParameterList:CategoryAdapter.kt$CategoryAdapter$( var categories: List&lt;ExpenseCategory&gt;, var allExpenses: List&lt;Expense&gt;, private val contentWidth: Int, private val halfMargin: Int, private val isGrid: Boolean = false, private val onEditCategory: (ExpenseCategory) -&gt; Unit, private val onDeleteCategory: (ExpenseCategory) -&gt; Unit, private val onAddExpense: (ExpenseCategory) -&gt; Unit, private val onEditExpense: (Expense) -&gt; Unit, private val onDeleteExpense: (Expense) -&gt; Unit, )</ID>
+    <ID>LongParameterList:DialogHelper.kt$( inflater: LayoutInflater, context: Context, title: String, message: String? = null, view: View? = null, positiveButton: String = context.getString(R.string.ok), negativeButton: String? = context.getString(R.string.cancel), onPositive: () -&gt; Unit = {}, onNegative: () -&gt; Unit = {}, )</ID>
+    <ID>LongParameterList:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$( categoryId: String, description: String, amount: Double, dueDate: Long, recurrenceType: RecurrenceType = RecurrenceType.NONE, recurrenceInterval: Int? = null, )</ID>
+    <ID>LongParameterList:SpendingActivity.kt$SpendingActivity$( dialog: AlertDialog, binding: DialogAddTransactionBinding, date: Long?, originalSource: String, originalAmount: Double, originalDate: Long, originalNote: String?, originalTag: String?, remaining: Double, )</ID>
     <ID>LoopWithTooManyJumpStatements:BudgetRepository.kt$BudgetRepository$for</ID>
     <ID>MagicNumber:AppLockManager.kt$AppLockManager$16</ID>
     <ID>MagicNumber:AppLockManager.kt$AppLockManager$4</ID>
@@ -298,77 +304,79 @@
     <ID>MagicNumber:VerifyEmailFragment.kt$VerifyEmailFragment$6</ID>
     <ID>MagicNumber:VerticalNestedScrollView.kt$VerticalNestedScrollView$10</ID>
     <ID>MaxLineLength:AppLockManager.kt$AppLockManager$prefs[stringPreferencesKey(key)] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)</ID>
-    <ID>MaxLineLength:ArchivedBucketsAdapter.kt$ArchivedBucketsAdapter.ViewHolder$(bucket.current_amount / bucket.target_amount).toFloat().coerceIn(0f, 1f)</ID>
     <ID>MaxLineLength:ArchivedBucketsAdapter.kt$ArchivedBucketsAdapter.ViewHolder$binding.tvActualAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)</ID>
-    <ID>MaxLineLength:ArchivedBucketsAdapter.kt$ArchivedBucketsAdapter.ViewHolder$val</ID>
     <ID>MaxLineLength:BucketHistoryDialogFragment.kt$BucketHistoryDialogFragment$allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }</ID>
-    <ID>MaxLineLength:BudgetDao.kt$BudgetDao$@Query("SELECT * FROM budgets WHERE (year &lt; :currentYear OR (year = :currentYear AND month &lt; :currentMonth)) ORDER BY year DESC, month DESC")</ID>
+    <ID>MaxLineLength:BudgetDao.kt$BudgetDao$"SELECT * FROM budgets WHERE (year &lt; :currentYear OR (year = :currentYear AND month &lt; :currentMonth)) ORDER BY year DESC, month DESC"</ID>
     <ID>MaxLineLength:BudgetDao.kt$BudgetDao$@Query("SELECT * FROM budgets WHERE (year &lt; :year OR (year = :year AND month &lt; :month)) ORDER BY year DESC, month DESC LIMIT 1")</ID>
+    <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$fun</ID>
+    <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$fun getAllSavingsTransactionsFlow(): Flow&lt;List&lt;SavingsTransaction&gt;&gt;</ID>
     <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$fun getAllocationForBudget(budgetId: String): Flow&lt;Allocation?&gt;</ID>
     <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$fun getCategoriesForBudget(budgetId: String): Flow&lt;List&lt;ExpenseCategory&gt;&gt;</ID>
-    <ID>MaxLineLength:CreateBucketDialogFragment.kt$CreateBucketDialogFragment$binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$fun getSpendingTotalsByTag(budgetId: String): Flow&lt;List&lt;TagSpendingTotal&gt;&gt;</ID>
+    <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$suspend fun getAllSavingsTransactions(): List&lt;SavingsTransaction&gt;</ID>
+    <ID>MaxLineLength:BudgetRepository.kt$BudgetRepository$suspend fun getTotalDistributedToBuckets(): Double</ID>
+    <ID>MaxLineLength:CreateBucketDialogFragment.kt$CreateBucketDialogFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:CreateBucketDialogFragment.kt$CreateBucketDialogFragment.&lt;no name provided&gt;$binding.tvBucketNameCounter.text = getString(R.string.character_counter, name.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
-    <ID>MaxLineLength:DayDetailDialogFragment.kt$DayDetailDialogFragment$val</ID>
     <ID>MaxLineLength:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$dayData.dayTotal &lt; 0 -&gt; tvNetTotal.setTextColor(ContextCompat.getColor(requireContext(), R.color.net_negative))</ID>
     <ID>MaxLineLength:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$dayData.dayTotal &gt; 0 -&gt; tvNetTotal.setTextColor(ContextCompat.getColor(requireContext(), R.color.net_positive))</ID>
     <ID>MaxLineLength:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$text = getString(R.string.expense_item_format, expense.description, expense.amount.toCurrencyDisplay(resources))</ID>
     <ID>MaxLineLength:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$text = getString(R.string.spending_item_format, spending.source, spending.amount.toCurrencyDisplay(resources))</ID>
     <ID>MaxLineLength:DayDetailModalDialogFragment.kt$DayDetailModalDialogFragment$tvIncomeText.text = getString(R.string.income_item_format, income.sourceName, income.amount.toCurrencyDisplay(resources))</ID>
-    <ID>MaxLineLength:DistributeDialogFragment.kt$DistributeDialogFragment$binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))</ID>
-    <ID>MaxLineLength:EditBucketDialogFragment.kt$EditBucketDialogFragment$binding.editTextBucketName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:EditBucketDialogFragment.kt$EditBucketDialogFragment$binding.tvBucketNameCounter.text = getString(R.string.character_counter, existingBucket.name.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
+    <ID>MaxLineLength:DistributeDialogFragment.kt$DistributeDialogFragment$arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))</ID>
+    <ID>MaxLineLength:EditBucketDialogFragment.kt$EditBucketDialogFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:EditBucketDialogFragment.kt$EditBucketDialogFragment.&lt;no name provided&gt;$binding.tvBucketNameCounter.text = getString(R.string.character_counter, name.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
-    <ID>MaxLineLength:EditTransactionDialogFragment.kt$EditTransactionDialogFragment$binding.etAmount.filters = arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))</ID>
+    <ID>MaxLineLength:EditTransactionDialogFragment.kt$EditTransactionDialogFragment$arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))</ID>
     <ID>MaxLineLength:EditTransactionDialogFragment.kt$EditTransactionDialogFragment.&lt;no name provided&gt;$val isValid = newAmount != null &amp;&amp; newAmount &gt; 0.0 &amp;&amp; newAmount != originalAmount &amp;&amp; newAmount &lt;= maxAllowed</ID>
     <ID>MaxLineLength:EncryptedDataStoreSettings.kt$EncryptedDataStoreSettings$prefs[stringPreferencesKey(key)] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)</ID>
     <ID>MaxLineLength:ExpenseDao.kt$ExpenseDao$@Query("SELECT SUM(amount) FROM expenses WHERE categoryId IN (SELECT id FROM expense_categories WHERE budgetId = :budgetId)")</ID>
     <ID>MaxLineLength:ExportHelper.kt$ExportHelper$drawSection("INCOMES", listOf("Source" to 1.5f, "Amount" to 1f, "Frequency" to 0.8f, "Tips?" to 0.5f), incomeRows)</ID>
     <ID>MaxLineLength:ExportHelper.kt$ExportHelper$drawSection("SPENDING ENTRIES", listOf("Date" to 1f, "Source" to 1.2f, "Amount" to 1f, "Tag" to 1f, "Note" to 1.5f), spendingRows)</ID>
+    <ID>MaxLineLength:ExportHelper.kt$ExportHelper$put(MediaStore.MediaColumns.MIME_TYPE, if (fileName.endsWith(".csv")) "text/csv" else "application/pdf")</ID>
     <ID>MaxLineLength:ExportHelper.kt$ExportHelper$val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)</ID>
     <ID>MaxLineLength:ExportHelper.kt$ExportHelper$val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)</ID>
+    <ID>MaxLineLength:Extensions.kt$fun Double.toPercentDisplay(resources: Resources): String</ID>
+    <ID>MaxLineLength:HomeFragment.kt$HomeFragment$)</ID>
     <ID>MaxLineLength:HomeFragment.kt$HomeFragment$contentDescription = getString(R.string.spending_month_accessibility_format, monthAndYear, formattedAmount)</ID>
-    <ID>MaxLineLength:HomeFragment.kt$HomeFragment$layoutParams = LinearLayout.LayoutParams(dimensions.legendMarkerSize, dimensions.legendMarkerSize).apply { setMargins(0, 0, dimensions.legendMarkerSpacing, 0) }</ID>
-    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$binding.btnAddTip.visibility = if (tipEntryHolders.size &lt; Constants.MAX_TIPS &amp;&amp; binding.checkBoxTips.isChecked) View.VISIBLE else View.GONE</ID>
+    <ID>MaxLineLength:HomeViewModel.kt$HomeViewModel$val percentage = if (totalTaggedAmount &gt; 0) tagTotal.total / totalTaggedAmount * 100 else 0.0</ID>
+    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$binding.categoriesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)</ID>
-    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$etDescription.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$etName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$if (categoriesList == categories &amp;&amp; expensesList == expenses &amp;&amp; binding.categoriesRecyclerView.adapter != null) return</ID>
+    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun String.toFrequencyOrDefault(): Frequency</ID>
+    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft - binding.categoriesRecyclerView.paddingRight</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$showSnackbar(getString(R.string.max_expenses_per_category_reached, Constants.MAX_EXPENSES_PER_CATEGORY))</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$tvDescriptionCounter.text = getString(R.string.character_counter, description.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$tvDescriptionCounter.text = getString(R.string.character_counter, expense.description.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$tvSourceCounter.text = getString(R.string.character_counter, income.sourceName.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$tvSourceCounter.text = getString(R.string.character_counter, tip.sourceName.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$val addButton = layoutInflater.inflate(R.layout.button_add_allocation, placeholder, false) as MaterialButton</ID>
-    <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$val contentAreaWidth = recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft - binding.categoriesRecyclerView.paddingRight</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity$val placeholder = if (type == AllocationType.Savings) binding.savingsPlaceholder else binding.spendingPlaceholder</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()</ID>
+    <ID>MaxLineLength:IncomeExpensesViewModel.kt$IncomeExpensesViewModel$Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH) == oldDay</ID>
     <ID>MaxLineLength:LockActivity.kt$LockActivity$return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS</ID>
+    <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$"Week ${weekEndTotals[i + 1].weekNumber} total, ${weekEndTotals[i + 1].total.toCurrencyDisplay(resources)}"</ID>
     <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$pill1.contentDescription = "Week ${weekEndTotals[i].weekNumber} total, ${weekEndTotals[i].total.toCurrencyDisplay(resources)}"</ID>
-    <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$pill2.contentDescription = "Week ${weekEndTotals[i + 1].weekNumber} total, ${weekEndTotals[i + 1].total.toCurrencyDisplay(resources)}"</ID>
     <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$val pill = layoutInflater.inflate(R.layout.item_week_end_pill, binding.weekEndContainer, false) as LinearLayout</ID>
     <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity.&lt;no name provided&gt;$val isValid = !isEmpty &amp;&amp; newAmount != null &amp;&amp; newAmount &gt;= 0 &amp;&amp; ValidationUtils.isValidAmount(newAmount)</ID>
     <ID>MaxLineLength:MonthlyCalendarActivity.kt$MonthlyCalendarActivity.DayViewContainer$view.setBackgroundColor(ContextCompat.getColor(this@MonthlyCalendarActivity, android.R.color.transparent))</ID>
-    <ID>MaxLineLength:MonthlyExpenseListAdapter.kt$MonthlyExpenseListAdapter.DayDiffCallback$override</ID>
     <ID>MaxLineLength:MonthlyExpenseListViewModel.kt$MonthlyExpenseListViewModel$val checklist = repository.getDailyChecklist(budgetId).first().associate { it.dayOfMonth to it.isChecked }</ID>
     <ID>MaxLineLength:MonthlyExpenseListViewModel.kt$MonthlyExpenseListViewModel$val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)</ID>
+    <ID>MaxLineLength:MonthlyExpenseListViewModel.kt$MonthlyExpenseListViewModel$val day = Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH)</ID>
     <ID>MaxLineLength:PastMonthsActivity.kt$PastMonthsActivity$layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)</ID>
     <ID>MaxLineLength:PastMonthsActivity.kt$PastMonthsActivity$val uri = ExportHelper.exportBudgetToCSV(this@PastMonthsActivity, budget.id, "${budget.month}_${budget.year}")</ID>
     <ID>MaxLineLength:PastMonthsActivity.kt$PastMonthsActivity$val uri = ExportHelper.exportBudgetToPDF(this@PastMonthsActivity, budget.id, "${budget.month}_${budget.year}")</ID>
+    <ID>MaxLineLength:ResetPasswordFragment.kt$ResetPasswordFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:ResetPasswordFragment.kt$ResetPasswordFragment$binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD</ID>
     <ID>MaxLineLength:ResetPasswordFragment.kt$ResetPasswordFragment$binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD</ID>
     <ID>MaxLineLength:ResetPasswordFragment.kt$ResetPasswordFragment$binding.etNewPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD</ID>
-    <ID>MaxLineLength:ResetPasswordFragment.kt$ResetPasswordFragment$val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SavingsActivity.kt$SavingsActivity$ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.btn_on_main))</ID>
+    <ID>MaxLineLength:SavingsActivity.kt$SavingsActivity$ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.text_disabled))</ID>
     <ID>MaxLineLength:SavingsActivity.kt$SavingsActivity$message = getString(R.string.withdraw_confirmation, bucket.name, bucket.current_amount.toCurrencyDisplay(resources))</ID>
     <ID>MaxLineLength:SavingsBucketAdapter.kt$SavingsBucketAdapter.ViewHolder$binding.tvActualAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)</ID>
     <ID>MaxLineLength:SavingsBucketAdapter.kt$SavingsBucketAdapter.ViewHolder$binding.tvTargetAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$androidx.core.view.ViewCompat.setStateDescription(binding.btnAccount, getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed))</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$androidx.core.view.ViewCompat.setStateDescription(binding.btnAppearance, getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed))</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$androidx.core.view.ViewCompat.setStateDescription(binding.btnArchive, getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed))</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$androidx.core.view.ViewCompat.setStateDescription(binding.btnCurrency, getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed))</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$androidx.core.view.ViewCompat.setStateDescription(binding.btnLegal, getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed))</ID>
+    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())</ID>
+    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnArchive.setIconResource((if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right))</ID>
@@ -376,55 +384,47 @@
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS</ID>
-    <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())</ID>
     <ID>MaxLineLength:SettingsActivity.kt$SettingsActivity$val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerTOS.md".toUri())</ID>
-    <ID>MaxLineLength:SignInFragment.kt$SignInFragment$binding.etEmail.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:SignInFragment.kt$SignInFragment$binding.etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SignInFragment.kt$SignInFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SignInFragment.kt$SignInFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SignInFragment.kt$SignInFragment$binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD</ID>
-    <ID>MaxLineLength:SignInFragment.kt$SignInFragment$editText.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$!password.matches(Regex(".*[!@#$%^&amp;*()_+\\-=\\[\\]{};':\"\\\\|,.&lt;&gt;/?].*")) -&gt; getString(R.string.password_strength_weak)</ID>
+    <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD</ID>
     <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD</ID>
     <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD</ID>
-    <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$val emailFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:SignUpFragment.kt$SignUpFragment$val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
+    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$binding.tvNoteCounter.text = getString(R.string.note_counter, binding.etNote.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$binding.tvSpendingAllocation.text = getString(R.string.spending_bubble, spendingAmount.toCurrencyDisplay(resources))</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$binding.tvTagCounter.text = getString(R.string.character_counter, binding.etTag.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid &amp;&amp; amountValid &amp;&amp; dateValid &amp;&amp; withinLimit &amp;&amp; changed</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.etNote.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.etTag.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.tvNoteCounter.text = getString(R.string.note_counter, entry.note?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, entry.source.length, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$dialogBinding.tvTagCounter.text = getString(R.string.character_counter, entry.tag?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)</ID>
     <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$if</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$private</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$val changed = source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$val newTag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$val tag = if (viewModel.tagsEnabled.value) dialogBinding.etTag.text.toString().trim().takeIf { it.isNotEmpty() } else null</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)</ID>
-    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity.&lt;no name provided&gt;$validateEditDialog(dialog, dialogBinding, selectedDate, originalSource, originalAmount, originalDate, originalNote, originalTag, remaining)</ID>
+    <ID>MaxLineLength:SpendingActivity.kt$SpendingActivity$source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag</ID>
     <ID>MaxLineLength:SpendingEntryDao.kt$SpendingEntryDao$@Query("SELECT DISTINCT tag FROM spending_entries WHERE budgetId = :budgetId AND tag IS NOT NULL AND tag != '' ORDER BY tag ASC")</ID>
+    <ID>MaxLineLength:SpendingPrefs.kt$SpendingPrefs$private fun getPrefs(context: Context): SharedPreferences</ID>
     <ID>NestedBlockDepth:BaseActivity.kt$BaseActivity$private fun createRootLayout(contentView: View): FrameLayout</ID>
     <ID>NestedBlockDepth:MonthlyCalendarActivity.kt$MonthlyCalendarActivity$private fun populateWeekEndGrid(weekEndTotals: List&lt;MonthlyCalendarViewModel.WeekEndTotal&gt;)</ID>
     <ID>PrintStackTrace:ExportHelper.kt$ExportHelper$e</ID>
     <ID>ReturnCount:AppLockManager.kt$AppLockManager$fun shouldRequireUnlock(graceMs: Long): Boolean</ID>
     <ID>ReturnCount:AppLockManager.kt$AppLockManager$fun verifyPin(pin: String): Boolean</ID>
     <ID>ReturnCount:BaseActivity.kt$BaseActivity$private fun enforceAppLockIfNeeded()</ID>
-    <ID>ReturnCount:BudgetRepository.kt$BudgetRepository$fun generateOccurrenceDatesInMonth( baseDate: Long, intervalDays: Int, targetMonth: Int, targetYear: Int ): List&lt;Long&gt;</ID>
+    <ID>ReturnCount:BudgetRepository.kt$BudgetRepository$fun generateOccurrenceDatesInMonth( baseDate: Long, intervalDays: Int, targetMonth: Int, targetYear: Int, ): List&lt;Long&gt;</ID>
     <ID>ReturnCount:BudgetRepository.kt$BudgetRepository$suspend fun deleteExpense(expense: Expense): String?</ID>
-    <ID>ReturnCount:BudgetRepository.kt$BudgetRepository$suspend fun shiftMonthlyDueDate(sourceDueDate: Long, sourceBudgetId: String, targetBudgetId: String): Long</ID>
+    <ID>ReturnCount:BudgetRepository.kt$BudgetRepository$suspend fun shiftMonthlyDueDate( sourceDueDate: Long, sourceBudgetId: String, targetBudgetId: String, ): Long</ID>
     <ID>ReturnCount:CurrencyPrefs.kt$CurrencyPrefs$fun extractCode(value: String): String</ID>
-    <ID>ReturnCount:CurrencyPrefs.kt$CurrencyPrefs$fun parseAmount(input: String, locale: Locale): Double?</ID>
-    <ID>ReturnCount:DecimalDigitsInputFilter.kt$DecimalDigitsInputFilter$override fun filter( source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ): CharSequence?</ID>
-    <ID>ReturnCount:ExportHelper.kt$ExportHelper$private fun saveToDownloads(context: Context, fileName: String, data: ByteArray): Uri?</ID>
+    <ID>ReturnCount:CurrencyPrefs.kt$CurrencyPrefs$fun parseAmount( input: String, locale: Locale, ): Double?</ID>
+    <ID>ReturnCount:DecimalDigitsInputFilter.kt$DecimalDigitsInputFilter$override fun filter( source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int, ): CharSequence?</ID>
+    <ID>ReturnCount:ExportHelper.kt$ExportHelper$private fun saveToDownloads( context: Context, fileName: String, data: ByteArray, ): Uri?</ID>
     <ID>ReturnCount:HomeFragment.kt$HomeFragment$private fun captureDashboardScrollAnchor(): DashboardScrollAnchor?</ID>
-    <ID>ReturnCount:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI(categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList())</ID>
-    <ID>ReturnCount:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$override fun onItemSelected(parent: AdapterView&lt;*&gt;?, view: View?, pos: Int, id: Long)</ID>
+    <ID>ReturnCount:IncomeExpensesActivity.kt$IncomeExpensesActivity$private fun updateCategoriesUI( categories: List&lt;ExpenseCategory&gt;, expenses: List&lt;Expense&gt; = emptyList(), )</ID>
+    <ID>ReturnCount:IncomeExpensesActivity.kt$IncomeExpensesActivity.&lt;no name provided&gt;$override fun onItemSelected( parent: AdapterView&lt;*&gt;?, view: View?, pos: Int, id: Long, )</ID>
     <ID>ReturnCount:SignUpFragment.kt$SignUpFragment$private fun validateInputs(): Boolean</ID>
     <ID>ReturnCount:SyncWorker.kt$SyncWorker$override suspend fun doWork(): Result</ID>
     <ID>ReturnCount:VerticalNestedScrollView.kt$VerticalNestedScrollView$override fun onInterceptTouchEvent(ev: MotionEvent): Boolean</ID>
@@ -474,10 +474,6 @@
     <ID>TooManyFunctions:SpendingEntryDao.kt$SpendingEntryDao</ID>
     <ID>TooManyFunctions:SyncManager.kt$SyncManager</ID>
     <ID>VariableNaming:BaseViewModel.kt$BaseViewModel$@Suppress("PropertyName") protected val _event = MutableSharedFlow&lt;UiEvent&gt;()</ID>
-    <ID>WildcardImport:AppDatabase.kt$import com.ataraxiagoddess.budgetbrewer.data.*</ID>
-    <ID>WildcardImport:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
-    <ID>WildcardImport:ExportHelper.kt$import android.graphics.*</ID>
     <ID>WildcardImport:SavingsBucketDao.kt$import androidx.room.*</ID>
-    <ID>WildcardImport:SavingsTransactionDao.kt$import androidx.room.*</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -16,13 +16,13 @@ import java.util.UUID
 enum class RecurrenceType {
     NONE,
     MONTHLY_SAME_DAY,
-    EVERY_X_DAYS
+    EVERY_X_DAYS,
 }
 
 @Serializable
 @Entity(
     tableName = "expenses",
-    indices = [Index(value = ["categoryId"])]
+    indices = [Index(value = ["categoryId"])],
 )
 data class Expense(
     @PrimaryKey
@@ -49,7 +49,7 @@ data class Expense(
     @SerialName("updated_at")
     val updatedAt: Long = System.currentTimeMillis(),
     @SerialName("is_active")
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
 ) {
     @Suppress("unused")
     fun getDayOfMonth(): Int {

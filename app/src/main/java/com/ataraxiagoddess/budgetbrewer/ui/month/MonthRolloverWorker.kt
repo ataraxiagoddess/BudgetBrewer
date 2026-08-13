@@ -14,11 +14,10 @@ import java.util.Calendar
 
 class MonthRolloverWorker(
     context: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
-
-    override suspend fun doWork(): Result {
-        return try {
+    override suspend fun doWork(): Result =
+        try {
             val db = AppDatabase.getDatabase(applicationContext)
             val repo = BudgetRepository(db)
 
@@ -34,5 +33,4 @@ class MonthRolloverWorker(
             Timber.e(e, "Month rollover failed")
             Result.retry()
         }
-    }
 }

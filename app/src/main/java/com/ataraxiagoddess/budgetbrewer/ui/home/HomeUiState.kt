@@ -8,6 +8,7 @@ import com.ataraxiagoddess.budgetbrewer.data.ExpenseCategory
 
 sealed class HomeUiState {
     object Loading : HomeUiState()
+
     data class Success(
         val totalIncome: Double = 0.0,
         val totalExpenses: Double = 0.0,
@@ -15,25 +16,28 @@ sealed class HomeUiState {
         val savingsAmount: Double = 0.0,
         val savingsTarget: Double = 0.0,
         val spendingHistory: List<MonthlySpending> = emptyList(),
-        val spendingByTag: List<TagExpense> = emptyList()
+        val spendingByTag: List<TagExpense> = emptyList(),
     ) : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
+
+    data class Error(
+        val message: String,
+    ) : HomeUiState()
 }
 
 data class CategoryExpense(
     val category: ExpenseCategory,
     val amount: Double,
-    val percentage: Double
+    val percentage: Double,
 )
 
 data class MonthlySpending(
     val month: Int,
     val year: Int,
-    val amount: Double
+    val amount: Double,
 )
 
 data class TagExpense(
     val tag: String,
     val amount: Double,
-    val percentage: Double
+    val percentage: Double,
 )

@@ -29,5 +29,5 @@ data class Allocation(
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 )

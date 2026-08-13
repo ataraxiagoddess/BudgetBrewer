@@ -33,7 +33,9 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
+class BudgetBrewerApp :
+    Application(),
+    DefaultLifecycleObserver {
     @OptIn(SupabaseInternal::class)
     override fun onCreate() {
         super<Application>.onCreate()
@@ -42,7 +44,10 @@ class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
 
         // Initialize Supabase with session persistence
         try {
-            val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+            val userId =
+                SupabaseClient.client.auth
+                    .currentUserOrNull()
+                    ?.id
             if (userId != null) {
                 AuthManager.saveUserId(this@BudgetBrewerApp, userId)
             }
@@ -69,51 +74,62 @@ class BudgetBrewerApp : Application(), DefaultLifecycleObserver {
 
         // --- Register network callback for instant sync ---
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                // Network is now available – trigger sync
-                CoroutineScope(Dispatchers.IO).launch {
-                    SyncHelper.triggerSyncIfNeeded(this@BudgetBrewerApp)
+        connectivityManager.registerDefaultNetworkCallback(
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    // Network is now available – trigger sync
+                    CoroutineScope(Dispatchers.IO).launch {
+                        SyncHelper.triggerSyncIfNeeded(this@BudgetBrewerApp)
+                    }
                 }
-            }
-        })
+            },
+        )
     }
 
     private fun scheduleMonthRollover() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                .build()
 
-        val rolloverRequest = PeriodicWorkRequestBuilder<MonthRolloverWorker>(
-            1, TimeUnit.DAYS
-        ).setConstraints(constraints)
-            .setInitialDelay(calculateTimeToMidnight(), TimeUnit.MILLISECONDS)
-            .build()
+        val rolloverRequest =
+            PeriodicWorkRequestBuilder<MonthRolloverWorker>(
+                1,
+                TimeUnit.DAYS,
+            ).setConstraints(constraints)
+                .setInitialDelay(calculateTimeToMidnight(), TimeUnit.MILLISECONDS)
+                .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "month_rollover",
             ExistingPeriodicWorkPolicy.KEEP,
-            rolloverRequest
+            rolloverRequest,
         )
     }
 
     private fun scheduleSyncWorker() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-        val syncRequest = PeriodicWorkRequestBuilder<SyncWorker>(
-            8, TimeUnit.HOURS,   // repeat interval
-            2, TimeUnit.HOURS    // flex interval – allows system to run within a window
-        ).setConstraints(constraints)
-            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.MINUTES)
-            .build()
+        val syncRequest =
+            PeriodicWorkRequestBuilder<SyncWorker>(
+                8,
+                TimeUnit.HOURS, // repeat interval
+                2,
+                TimeUnit.HOURS, // flex interval – allows system to run within a window
+            ).setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.MINUTES)
+                .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "offline_sync",
             ExistingPeriodicWorkPolicy.KEEP,
-            syncRequest
+            syncRequest,
         )
     }
 

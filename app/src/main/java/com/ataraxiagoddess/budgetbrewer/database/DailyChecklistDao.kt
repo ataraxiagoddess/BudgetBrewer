@@ -19,7 +19,10 @@ interface DailyChecklistDao {
     fun getChecklistForBudget(budgetId: String): Flow<List<DailyChecklist>>
 
     @Query("SELECT * FROM daily_checklist WHERE budgetId = :budgetId AND dayOfMonth = :day")
-    suspend fun getChecklistItem(budgetId: String, day: Int): DailyChecklist?
+    suspend fun getChecklistItem(
+        budgetId: String,
+        day: Int,
+    ): DailyChecklist?
 
     // For sync
     @Query("SELECT * FROM daily_checklist")
@@ -27,7 +30,6 @@ interface DailyChecklistDao {
 
     @Query("SELECT * FROM daily_checklist WHERE id = :id")
     suspend fun getChecklistItemById(id: String): DailyChecklist?
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: DailyChecklist)

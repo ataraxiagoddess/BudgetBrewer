@@ -21,19 +21,26 @@ import kotlin.math.abs
 
 class TransactionHistoryAdapter(
     private val onEditClick: ((SavingsTransaction) -> Unit)? = null,
-    private val onDeleteClick: ((SavingsTransaction) -> Unit)? = null
+    private val onDeleteClick: ((SavingsTransaction) -> Unit)? = null,
 ) : ListAdapter<SavingsTransaction, TransactionHistoryAdapter.ViewHolder>(DiffCallback) {
-
     private val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
 
-    class ViewHolder(val binding: ItemTransactionHistoryBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(
+        val binding: ItemTransactionHistoryBinding,
+    ) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         val binding = ItemTransactionHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val tx = getItem(position)
         holder.binding.tvDate.text = dateFormat.format(tx.date)
         val amount = tx.amount
@@ -58,24 +65,28 @@ class TransactionHistoryAdapter(
         // Conditionally determine the suffix
         val editSuffix = if (onEditClick != null) ", double tap to edit or delete" else ""
 
-        holder.binding.root.contentDescription = context.getString(
-            R.string.transaction_description,
-            dateStr,
-            signStr,
-            amountStr,
-            editSuffix
-        )
+        holder.binding.root.contentDescription =
+            context.getString(
+                R.string.transaction_description,
+                dateStr,
+                signStr,
+                amountStr,
+                editSuffix,
+            )
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<SavingsTransaction>() {
-            override fun areItemsTheSame(oldItem: SavingsTransaction, newItem: SavingsTransaction): Boolean {
-                return oldItem.id == newItem.id
-            }
+        private val DiffCallback =
+            object : DiffUtil.ItemCallback<SavingsTransaction>() {
+                override fun areItemsTheSame(
+                    oldItem: SavingsTransaction,
+                    newItem: SavingsTransaction,
+                ): Boolean = oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: SavingsTransaction, newItem: SavingsTransaction): Boolean {
-                return oldItem == newItem
+                override fun areContentsTheSame(
+                    oldItem: SavingsTransaction,
+                    newItem: SavingsTransaction,
+                ): Boolean = oldItem == newItem
             }
-        }
     }
 }

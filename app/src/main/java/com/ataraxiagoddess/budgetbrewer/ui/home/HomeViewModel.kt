@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val isTagsEnabled: Boolean
+    private val isTagsEnabled: Boolean,
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -30,7 +30,10 @@ class HomeViewModel(
     private var selectedMonth: Month = Month.current()
 
     enum class Timeframe {
-        ONE_MONTH, THREE_MONTHS, SIX_MONTHS, ONE_YEAR
+        ONE_MONTH,
+        THREE_MONTHS,
+        SIX_MONTHS,
+        ONE_YEAR,
     }
 
     init {
@@ -38,7 +41,7 @@ class HomeViewModel(
             val currentMonth = Month.current()
             val (newBudgetId, _) = repository.getOrCreateBudgetChain(currentMonth.month, currentMonth.year)
             budgetId = newBudgetId
-            savedStateHandle["budgetId"] = budgetId  // update saved state as well
+            savedStateHandle["budgetId"] = budgetId // update saved state as well
             loadData()
         }
     }
@@ -77,13 +80,16 @@ class HomeViewModel(
             val totalIncome = incomes.sumOf { it.amount }
             val totalExpenses = expenses.sumOf { it.amount }
 
-            val expensesByCategory = categories.map { category ->
-                val categoryTotal = expenses
-                    .filter { it.categoryId == category.id }
-                    .sumOf { it.amount }
-                val percentage = if (totalExpenses > 0) categoryTotal / totalExpenses * 100 else 0.0
-                CategoryExpense(category, categoryTotal, percentage)
-            }.filter { it.amount > 0 }
+            val expensesByCategory =
+                categories
+                    .map { category ->
+                        val categoryTotal =
+                            expenses
+                                .filter { it.categoryId == category.id }
+                                .sumOf { it.amount }
+                        val percentage = if (totalExpenses > 0) categoryTotal / totalExpenses * 100 else 0.0
+                        CategoryExpense(category, categoryTotal, percentage)
+                    }.filter { it.amount > 0 }
 
             val savingsTarget = totalIncome * 0.2
             val savingsAmount = allocation?.savingsAmount ?: 0.0
@@ -91,26 +97,29 @@ class HomeViewModel(
             // Compute spending history for the selected timeframe
             val spendingHistory = buildSpendingHistory()
 
-            val spendingByTag = if (isTagsEnabled) {
-                val tagTotals = repository.getSpendingTotalsByTag(budgetId).first()
-                val totalTaggedAmount = tagTotals.sumOf { it.total }
-                tagTotals.map { tagTotal ->
-                    val percentage = if (totalTaggedAmount > 0) tagTotal.total / totalTaggedAmount * 100 else 0.0
-                    TagExpense(tagTotal.tag, tagTotal.total, percentage)
-                }.filter { it.amount > 0 }
-            } else {
-                emptyList()
-            }
+            val spendingByTag =
+                if (isTagsEnabled) {
+                    val tagTotals = repository.getSpendingTotalsByTag(budgetId).first()
+                    val totalTaggedAmount = tagTotals.sumOf { it.total }
+                    tagTotals
+                        .map { tagTotal ->
+                            val percentage = if (totalTaggedAmount > 0) tagTotal.total / totalTaggedAmount * 100 else 0.0
+                            TagExpense(tagTotal.tag, tagTotal.total, percentage)
+                        }.filter { it.amount > 0 }
+                } else {
+                    emptyList()
+                }
 
-            _uiState.value = Success(
-                totalIncome = totalIncome,
-                totalExpenses = totalExpenses,
-                expensesByCategory = expensesByCategory,
-                savingsAmount = savingsAmount,
-                savingsTarget = savingsTarget,
-                spendingHistory = spendingHistory,
-                spendingByTag = spendingByTag
-            )
+            _uiState.value =
+                Success(
+                    totalIncome = totalIncome,
+                    totalExpenses = totalExpenses,
+                    expensesByCategory = expensesByCategory,
+                    savingsAmount = savingsAmount,
+                    savingsTarget = savingsTarget,
+                    spendingHistory = spendingHistory,
+                    spendingByTag = spendingByTag,
+                )
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -120,12 +129,13 @@ class HomeViewModel(
     }
 
     private suspend fun buildSpendingHistory(): List<MonthlySpending> {
-        val monthsToInclude = when (_timeframe.value) {
-            Timeframe.ONE_MONTH -> 2
-            Timeframe.THREE_MONTHS -> 3
-            Timeframe.SIX_MONTHS -> 6
-            Timeframe.ONE_YEAR -> 12
-        }
+        val monthsToInclude =
+            when (_timeframe.value) {
+                Timeframe.ONE_MONTH -> 2
+                Timeframe.THREE_MONTHS -> 3
+                Timeframe.SIX_MONTHS -> 6
+                Timeframe.ONE_YEAR -> 12
+            }
         val result = mutableListOf<MonthlySpending>()
         for (i in 0 until monthsToInclude) {
             var month = selectedMonth.month - i

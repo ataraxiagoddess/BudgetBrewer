@@ -22,7 +22,6 @@ import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
 class ResetPasswordFragment : Fragment() {
-
     private var _binding: FragmentResetPasswordBinding? = null
     private val binding get() = _binding!!
 
@@ -47,13 +46,16 @@ class ResetPasswordFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvEmailSent.text = getString(R.string.reset_code_sent, email ?: "")
@@ -62,17 +64,22 @@ class ResetPasswordFragment : Fragment() {
         requestResetCode()
 
         // Apply input filters
-        binding.etCode.filters = arrayOf(
-            ValidationUtils.getLengthFilter(6),
-            ValidationUtils.getDigitsOnlyFilter()
-        )
-        
-        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+        binding.etCode.filters =
+            arrayOf(
+                ValidationUtils.getLengthFilter(6),
+                ValidationUtils.getDigitsOnlyFilter(),
+            )
+
+        val passwordFilter =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
         binding.etNewPassword.filters = passwordFilter
         binding.etConfirmPassword.filters = passwordFilter
 
         binding.btnVerify.setOnClickListener {
-            val code = binding.etCode.text.toString().trim()
+            val code =
+                binding.etCode.text
+                    .toString()
+                    .trim()
             val newPassword = binding.etNewPassword.text.toString()
             val confirmPassword = binding.etConfirmPassword.text.toString()
 
@@ -166,17 +173,21 @@ class ResetPasswordFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
                 binding.btnResend.isEnabled = true
-                val message = when {
-                    e.message?.contains("Email not found", ignoreCase = true) == true ->
-                        getString(R.string.error_email_not_found)
-                    else -> getString(R.string.reset_request_failed, e.message)
-                }
+                val message =
+                    when {
+                        e.message?.contains("Email not found", ignoreCase = true) == true ->
+                            getString(R.string.error_email_not_found)
+                        else -> getString(R.string.reset_request_failed, e.message)
+                    }
                 (activity as? AuthActivity)?.showSnackbar(message)
             }
         }
     }
 
-    private fun verifyCodeAndResetPassword(code: String, newPassword: String) {
+    private fun verifyCodeAndResetPassword(
+        code: String,
+        newPassword: String,
+    ) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnVerify.isEnabled = false
 
@@ -188,7 +199,7 @@ class ResetPasswordFragment : Fragment() {
                 SupabaseClient.client.auth.verifyEmailOtp(
                     type = OtpType.Email.RECOVERY,
                     email = email,
-                    token = code
+                    token = code,
                 )
 
                 // After verification, update the password
@@ -202,15 +213,16 @@ class ResetPasswordFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
 
-                val message = when {
-                    e.message?.contains("Cannot reuse previous password", ignoreCase = true) == true ->
-                        getString(R.string.password_same_as_old)
-                    e.message?.contains("weak", ignoreCase = true) == true ->
-                        getString(R.string.password_too_weak)
-                    e.message?.contains("Invalid", ignoreCase = true) == true ->
-                        getString(R.string.error_invalid_code)
-                    else -> getString(R.string.reset_failed, e.message)
-                }
+                val message =
+                    when {
+                        e.message?.contains("Cannot reuse previous password", ignoreCase = true) == true ->
+                            getString(R.string.password_same_as_old)
+                        e.message?.contains("weak", ignoreCase = true) == true ->
+                            getString(R.string.password_too_weak)
+                        e.message?.contains("Invalid", ignoreCase = true) == true ->
+                            getString(R.string.error_invalid_code)
+                        else -> getString(R.string.reset_failed, e.message)
+                    }
                 (activity as? AuthActivity)?.showSnackbar(message)
             }
         }

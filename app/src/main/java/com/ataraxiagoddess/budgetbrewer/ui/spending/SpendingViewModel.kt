@@ -28,9 +28,8 @@ import kotlinx.coroutines.launch
 class SpendingViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context
+    private val appContext: Context,
 ) : BaseViewModel() {
-
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
     private val _uiState = MutableStateFlow<SpendingUiState>(SpendingUiState.Loading)
@@ -44,13 +43,19 @@ class SpendingViewModel(
     data class SpendingUiData(
         val entries: List<SpendingEntry> = emptyList(),
         val allocation: Allocation? = null,
-        val remaining: Double = 0.0
+        val remaining: Double = 0.0,
     )
 
     sealed class SpendingUiState {
         object Loading : SpendingUiState()
-        data class Success(val data: SpendingUiData) : SpendingUiState()
-        data class Error(val message: String) : SpendingUiState()
+
+        data class Success(
+            val data: SpendingUiData,
+        ) : SpendingUiState()
+
+        data class Error(
+            val message: String,
+        ) : SpendingUiState()
     }
 
     fun toggleTagsEnabled() {
@@ -75,44 +80,52 @@ class SpendingViewModel(
 
     fun loadData() {
         loadDataJob?.cancel()
-        loadDataJob = viewModelScope.launch {
-            _uiState.value = SpendingUiState.Loading
-            try {
-                val budget = repository.getBudgetById(budgetId)
-                val userId = AuthManager.getUserId(appContext)
-                if (budget != null && userId != null) {
-                    SyncManager(appContext).uploadBudget(budget, userId)
+        loadDataJob =
+            viewModelScope.launch {
+                _uiState.value = SpendingUiState.Loading
+                try {
+                    val budget = repository.getBudgetById(budgetId)
+                    val userId = AuthManager.getUserId(appContext)
+                    if (budget != null && userId != null) {
+                        SyncManager(appContext).uploadBudget(budget, userId)
+                    }
+                    combine(
+                        repository.getSpendingEntriesForBudget(budgetId),
+                        repository.getAllocationForBudget(budgetId),
+                    ) { entries, allocation ->
+                        val totalSpent = entries.sumOf { it.amount }
+                        val spendingAmount = allocation?.spendingAmount ?: 0.0
+                        val remaining = spendingAmount - totalSpent
+                        SpendingUiData(entries, allocation, remaining)
+                    }.collect { data ->
+                        _uiState.value = SpendingUiState.Success(data)
+                    }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    _uiState.value = SpendingUiState.Error("Failed to load transactions: ${e.message}")
+                    emitError(R.string.error_load_transactions, e)
                 }
-                combine(
-                    repository.getSpendingEntriesForBudget(budgetId),
-                    repository.getAllocationForBudget(budgetId)
-                ) { entries, allocation ->
-                    val totalSpent = entries.sumOf { it.amount }
-                    val spendingAmount = allocation?.spendingAmount ?: 0.0
-                    val remaining = spendingAmount - totalSpent
-                    SpendingUiData(entries, allocation, remaining)
-                }.collect { data ->
-                    _uiState.value = SpendingUiState.Success(data)
-                }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                _uiState.value = SpendingUiState.Error("Failed to load transactions: ${e.message}")
-                emitError(R.string.error_load_transactions, e)
             }
-        }
     }
 
-    fun addEntry(date: Long, source: String, amount: Double, tag: String? = null, note: String? = null) {
+    fun addEntry(
+        date: Long,
+        source: String,
+        amount: Double,
+        tag: String? = null,
+        note: String? = null,
+    ) {
         safeLaunch(R.string.error_add_transaction) {
-            val entry = SpendingEntry(
-                budgetId = budgetId,
-                date = date,
-                source = source,
-                amount = amount,
-                tag = tag,
-                note = note
-            )
+            val entry =
+                SpendingEntry(
+                    budgetId = budgetId,
+                    date = date,
+                    source = source,
+                    amount = amount,
+                    tag = tag,
+                    note = note,
+                )
             repository.insertSpendingEntry(entry)
             // Sync after insert
             val userId = AuthManager.getUserId(appContext)
