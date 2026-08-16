@@ -409,7 +409,7 @@ spacing2
 
 Whenever practical:
 
-- use ViewBinding;
+- use ViewBinding or `findViewById` consistently with the file being edited;
 - avoid hardcoded dimensions;
 - avoid hardcoded colors;
 - avoid hardcoded strings;

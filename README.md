@@ -226,8 +226,11 @@ Current screenshots are stored in `docs/images/` and are refreshed as major UI c
 
 ## Technology
 
-Budget Brewer is a native Android application built with Kotlin, XML layouts,
-and ViewBinding.
+Budget Brewer is a native Android application built with Kotlin and XML layouts.
+
+ViewBinding is enabled in Gradle and used in parts of the app, but the codebase
+is not fully converted to ViewBinding. Some screens and dynamic/dialog-heavy
+areas still use `findViewById`.
 
 ### Interface
 
@@ -276,7 +279,10 @@ Current app configuration:
 
 ### Why Budget Brewer Uses XML Views
 
-Budget Brewer uses Android's View system with XML layouts and ViewBinding.
+Budget Brewer uses Android's View system with XML layouts.
+
+The app currently uses a mix of generated ViewBinding classes and
+`findViewById`, depending on the screen and component.
 
 The app relies heavily on mature View-based components, Android's resource
 qualifier system, custom XML resources, and accessibility behavior built
@@ -311,7 +317,8 @@ The major architecture rules are:
   `SyncWorker`.
 - Navigation is programmatic through `NavDestination`, `BaseActivity`, and
   `NavigationManager`.
-- UI is XML and ViewBinding, not Compose.
+- UI is XML Views, not Compose. View access is currently mixed between
+  ViewBinding and `findViewById`.
 - Dependency injection is manual through ViewModel factories.
 
 More detail is in [Architecture](docs/ARCHITECTURE.md).
