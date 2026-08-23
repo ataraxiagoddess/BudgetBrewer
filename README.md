@@ -1,4 +1,3 @@
-<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
 
 <img src="app/src/main/res/drawable-nodpi/budget_brewer_logo.png"
@@ -12,10 +11,10 @@
 <br>
 
 [![Latest Release](https://img.shields.io/github/v/release/ataraxiagoddess/BudgetBrewer?style=for-the-badge&label=Latest%20Release)](https://github.com/ataraxiagoddess/BudgetBrewer/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-![Android](https://img.shields.io/badge/Android-7.0+-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-7F52FF?style=for-the-badge)](LICENSE)
+![Android](https://img.shields.io/badge/Android-7.0+-7F52FF?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
-![XML Views](https://img.shields.io/badge/UI-XML%20Views-4285F4?style=for-the-badge)
+![XML Views](https://img.shields.io/badge/UI-XML%20Views-7F52FF?style=for-the-badge)
 
 <br>
 
@@ -227,8 +226,11 @@ Current screenshots are stored in `docs/images/` and are refreshed as major UI c
 
 ## Technology
 
-Budget Brewer is a native Android application built with Kotlin, XML layouts,
-and ViewBinding.
+Budget Brewer is a native Android application built with Kotlin and XML layouts.
+
+ViewBinding is enabled in Gradle and used in parts of the app, but the codebase
+is not fully converted to ViewBinding. Some screens and dynamic/dialog-heavy
+areas still use `findViewById`.
 
 ### Interface
 
@@ -277,7 +279,10 @@ Current app configuration:
 
 ### Why Budget Brewer Uses XML Views
 
-Budget Brewer uses Android's View system with XML layouts and ViewBinding.
+Budget Brewer uses Android's View system with XML layouts.
+
+The app currently uses a mix of generated ViewBinding classes and
+`findViewById`, depending on the screen and component.
 
 The app relies heavily on mature View-based components, Android's resource
 qualifier system, custom XML resources, and accessibility behavior built
@@ -312,7 +317,8 @@ The major architecture rules are:
   `SyncWorker`.
 - Navigation is programmatic through `NavDestination`, `BaseActivity`, and
   `NavigationManager`.
-- UI is XML and ViewBinding, not Compose.
+- UI is XML Views, not Compose. View access is currently mixed between
+  ViewBinding and `findViewById`.
 - Dependency injection is manual through ViewModel factories.
 
 More detail is in [Architecture](docs/ARCHITECTURE.md).

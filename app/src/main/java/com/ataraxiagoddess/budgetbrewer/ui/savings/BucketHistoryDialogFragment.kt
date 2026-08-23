@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.os.Bundle
@@ -20,9 +24,8 @@ class BucketHistoryDialogFragment(
     private val isArchived: Boolean = false,
     // Callbacks for editing/deleting transactions (null when read‑only)
     private val onEditTransaction: ((SavingsTransaction) -> Unit)? = null,
-    private val onDeleteTransaction: ((SavingsTransaction) -> Unit)? = null
+    private val onDeleteTransaction: ((SavingsTransaction) -> Unit)? = null,
 ) : DialogFragment() {
-
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
     }
@@ -30,7 +33,11 @@ class BucketHistoryDialogFragment(
     private var _binding: DialogBucketHistoryBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = DialogBucketHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -39,29 +46,35 @@ class BucketHistoryDialogFragment(
         super.onStart()
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT,
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBucketName.text = bucketName
-        androidx.core.view.ViewCompat.setAccessibilityHeading(binding.tvBucketName, true)
+        androidx.core.view.ViewCompat
+            .setAccessibilityHeading(binding.tvBucketName, true)
         binding.recyclerViewTransactions.layoutManager = LinearLayoutManager(requireContext())
 
-        val adapter = TransactionHistoryAdapter(
-            onEditClick = if (isArchived) null else onEditTransaction,
-            onDeleteClick = if (isArchived) null else onDeleteTransaction
-        )
+        val adapter =
+            TransactionHistoryAdapter(
+                onEditClick = if (isArchived) null else onEditTransaction,
+                onDeleteClick = if (isArchived) null else onDeleteTransaction,
+            )
         binding.recyclerViewTransactions.adapter = adapter
 
         lifecycleScope.launch {
             repository.getSavingsTransactionsByBucket(bucketId).collect { allTransactions ->
-                val visibleTransactions = if (isArchived) {
-                    allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }
-                } else {
-                    allTransactions
-                }
+                val visibleTransactions =
+                    if (isArchived) {
+                        allTransactions.filter { it.type != com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType.WITHDRAWAL }
+                    } else {
+                        allTransactions
+                    }
 
                 // If all transactions are deleted, close the dialog
                 if (visibleTransactions.isEmpty()) {

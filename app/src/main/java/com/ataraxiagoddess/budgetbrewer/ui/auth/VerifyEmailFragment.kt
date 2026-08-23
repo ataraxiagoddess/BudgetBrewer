@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.auth
 
 import android.content.Context
@@ -17,7 +21,6 @@ import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 
 class VerifyEmailFragment : Fragment() {
-
     private var _binding: FragmentVerifyEmailBinding? = null
     private val binding get() = _binding!!
 
@@ -42,13 +45,16 @@ class VerifyEmailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentVerifyEmailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvEmailSent.text = getString(R.string.verification_code_sent, email ?: "")
@@ -59,13 +65,17 @@ class VerifyEmailFragment : Fragment() {
         binding.tvSignInInstead.typeface = exoRegular
 
         // Apply PIN validation filters (6-digit code)
-        binding.etCode.filters = arrayOf(
-            ValidationUtils.getLengthFilter(6),
-            ValidationUtils.getDigitsOnlyFilter()
-        )
+        binding.etCode.filters =
+            arrayOf(
+                ValidationUtils.getLengthFilter(6),
+                ValidationUtils.getDigitsOnlyFilter(),
+            )
 
         binding.btnVerify.setOnClickListener {
-            val code = binding.etCode.text.toString().trim()
+            val code =
+                binding.etCode.text
+                    .toString()
+                    .trim()
             if (code.length == 6 && code.all { it.isDigit() }) {
                 verifyCode(code)
             } else {
@@ -96,7 +106,7 @@ class VerifyEmailFragment : Fragment() {
                 SupabaseClient.client.auth.verifyEmailOtp(
                     type = OtpType.Email.SIGNUP,
                     email = email,
-                    token = code
+                    token = code,
                 )
 
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.email_verified))
@@ -104,11 +114,12 @@ class VerifyEmailFragment : Fragment() {
             } catch (e: Exception) {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
-                val message = when {
-                    e.message?.contains("Invalid", ignoreCase = true) == true ->
-                        getString(R.string.error_invalid_code)
-                    else -> getString(R.string.verification_failed, e.message)
-                }
+                val message =
+                    when {
+                        e.message?.contains("Invalid", ignoreCase = true) == true ->
+                            getString(R.string.error_invalid_code)
+                        else -> getString(R.string.verification_failed, e.message)
+                    }
                 (activity as? AuthActivity)?.showSnackbar(message)
             }
         }

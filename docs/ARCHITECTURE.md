@@ -17,12 +17,16 @@ If something here conflicts with the code, trust the code and update the doc.
   optional cloud sync, and offline-first behavior
 - minSdk: 24
 - compileSdk / targetSdk: 37
-- UI framework: Android XML layouts with ViewBinding
+- UI framework: Android XML layouts using the traditional View system
 - Architecture: MVVM + central repository + Room + offline-first Supabase sync
 - Database: Room, currently schema version 8
 
 Budget Brewer is intentionally not built with Jetpack Compose, Hilt, Dagger, or
 a Jetpack Navigation graph.
+
+ViewBinding is enabled in Gradle and used in parts of the app, but the codebase
+is not fully converted to ViewBinding. Some screens and dynamic/dialog-heavy
+areas still use `findViewById`.
 
 ### Budget Month Model
 
@@ -41,7 +45,9 @@ data-model decision.
 
 ### UI
 
-- Screens are built with XML layouts and ViewBinding.
+- Screens are built with XML layouts.
+- View access is mixed: some files use generated ViewBinding classes, while
+  others use `findViewById`.
 - Activities and Fragments should observe state, bind views, and handle view
   events.
 - Heavy budgeting logic should not live in Activities or Fragments.

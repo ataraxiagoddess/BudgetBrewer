@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.auth
 
 import android.content.Context
@@ -24,7 +28,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SignInFragment : Fragment() {
-
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
 
@@ -62,23 +65,31 @@ class SignInFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         setupPasswordToggle()
 
         // Apply length filters
-        binding.etEmail.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
-        binding.etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+        binding.etEmail.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+        binding.etPassword.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
 
         binding.btnSignIn.setOnClickListener {
-            val email = binding.etEmail.text.toString().trim()
+            val email =
+                binding.etEmail.text
+                    .toString()
+                    .trim()
             val password = binding.etPassword.text.toString()
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 signIn(email, password)
@@ -104,34 +115,42 @@ class SignInFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_single_edittext, binding.root, false)
         val editText = dialogView.findViewById<EditText>(R.id.etInput)
         editText.hint = getString(R.string.email)
-        
-        // Apply email length filter
-        editText.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = requireContext(),
-            title = getString(R.string.forgot_password),
-            view = dialogView,
-            positiveButton = getString(R.string.send),
-            negativeButton = getString(R.string.cancel),
-            onPositive = {
-                val email = editText.text.toString().trim()
-                if (email.isNotEmpty()) {
-                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        (activity as? AuthActivity)?.navigateToResetPassword(email)
+        // Apply email length filter
+        editText.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = requireContext(),
+                title = getString(R.string.forgot_password),
+                view = dialogView,
+                positiveButton = getString(R.string.send),
+                negativeButton = getString(R.string.cancel),
+                onPositive = {
+                    val email = editText.text.toString().trim()
+                    if (email.isNotEmpty()) {
+                        if (android.util.Patterns.EMAIL_ADDRESS
+                                .matcher(email)
+                                .matches()
+                        ) {
+                            (activity as? AuthActivity)?.navigateToResetPassword(email)
+                        } else {
+                            showError(getString(R.string.enter_valid_email))
+                        }
                     } else {
-                        showError(getString(R.string.enter_valid_email))
+                        showError(getString(R.string.enter_email))
                     }
-                } else {
-                    showError(getString(R.string.enter_email))
-                }
-            }
-        )
+                },
+            )
         dialog.show()
     }
 
-    private fun signIn(email: String, password: String) {
+    private fun signIn(
+        email: String,
+        password: String,
+    ) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnSignIn.isEnabled = false
 
@@ -142,7 +161,10 @@ class SignInFragment : Fragment() {
                     this.password = password
                 }
 
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                val userId =
+                    SupabaseClient.client.auth
+                        .currentUserOrNull()
+                        ?.id
                 if (userId != null) {
                     AuthManager.saveUserId(requireContext(), userId)
 
@@ -164,13 +186,14 @@ class SignInFragment : Fragment() {
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.signed_in_success))
                 requireActivity().finish()
             } catch (e: Exception) {
-                val message = when {
-                    e.message?.contains("Invalid login credentials", ignoreCase = true) == true ->
-                        getString(R.string.error_invalid_credentials)
-                    e.message?.contains("Email not confirmed", ignoreCase = true) == true ->
-                        getString(R.string.error_email_not_confirmed)
-                    else -> getString(R.string.sign_in_failed, e.message)
-                }
+                val message =
+                    when {
+                        e.message?.contains("Invalid login credentials", ignoreCase = true) == true ->
+                            getString(R.string.error_invalid_credentials)
+                        e.message?.contains("Email not confirmed", ignoreCase = true) == true ->
+                            getString(R.string.error_email_not_confirmed)
+                        else -> getString(R.string.sign_in_failed, e.message)
+                    }
                 (activity as? AuthActivity)?.showSnackbar(message)
             } finally {
                 binding.progressBar.visibility = View.GONE

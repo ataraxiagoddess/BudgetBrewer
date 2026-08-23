@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.data
 
 import androidx.room.Entity
@@ -10,7 +14,7 @@ import java.util.UUID
 @Serializable
 @Entity(
     tableName = "daily_checklist",
-    indices = [Index(value = ["budgetId"])]
+    indices = [Index(value = ["budgetId"])],
 )
 data class DailyChecklist(
     @PrimaryKey
@@ -25,5 +29,5 @@ data class DailyChecklist(
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 )

@@ -1,9 +1,20 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 import com.android.build.api.dsl.ApplicationExtension
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint)
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    baseline = file("config/detekt/baseline.xml")
 }
 
 extensions.configure<ApplicationExtension> {
@@ -33,7 +44,7 @@ extensions.configure<ApplicationExtension> {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -72,7 +83,7 @@ dependencies {
     // Room Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)   // KSP, not kapt
+    ksp(libs.androidx.room.compiler) // KSP, not kapt
 
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.supabase.gotrue.kt)
@@ -88,7 +99,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Charts
-    implementation(libs.mpandroidchart)   // Use the alias
+    implementation(libs.mpandroidchart) // Use the alias
     implementation(libs.calendarview)
 
     // Testing

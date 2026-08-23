@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.data
 
 import androidx.room.Entity
@@ -31,10 +35,12 @@ data class Income(
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
 )
 
 @Serializable
 enum class Frequency {
-    MONTHLY, WEEKLY, BIWEEKLY
+    MONTHLY,
+    WEEKLY,
+    BIWEEKLY,
 }

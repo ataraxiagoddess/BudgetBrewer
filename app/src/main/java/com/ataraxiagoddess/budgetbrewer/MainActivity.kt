@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer
 
 import android.app.ActivityOptions
@@ -27,7 +31,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainActivity : BaseActivity() {
-
     override val currentNavDestination: NavDestination
         get() = NavDestination.HOME
 
@@ -49,22 +52,26 @@ class MainActivity : BaseActivity() {
                 val budgetCount = db.budgetDao().getAllBudgetsSync().size
                 if (budgetCount == 0) {
                     // No local data yet – schedule a one‑time background download
-                    val inputData = androidx.work.Data.Builder()
-                        .putBoolean(SyncWorker.KEY_DOWNLOAD_ALL, true)
-                        .build()
-                    val workRequest = OneTimeWorkRequestBuilder<SyncWorker>()
-                        .setInputData(inputData)
-                        .setConstraints(
-                            Constraints.Builder()
-                                .setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build()
-                        )
-                        .build()
-                    WorkManager.getInstance(this@MainActivity)
+                    val inputData =
+                        androidx.work.Data
+                            .Builder()
+                            .putBoolean(SyncWorker.KEY_DOWNLOAD_ALL, true)
+                            .build()
+                    val workRequest =
+                        OneTimeWorkRequestBuilder<SyncWorker>()
+                            .setInputData(inputData)
+                            .setConstraints(
+                                Constraints
+                                    .Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build(),
+                            ).build()
+                    WorkManager
+                        .getInstance(this@MainActivity)
                         .enqueueUniqueWork(
                             "initial_download",
                             ExistingWorkPolicy.KEEP,
-                            workRequest
+                            workRequest,
                         )
                 }
             }
@@ -75,7 +82,8 @@ class MainActivity : BaseActivity() {
             homeFragment.setSnackbarCallback { message ->
                 showSnackbar(message)
             }
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, homeFragment)
                 .commit()
         }
@@ -114,7 +122,9 @@ class MainActivity : BaseActivity() {
     }
 
     override fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SettingsActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 }

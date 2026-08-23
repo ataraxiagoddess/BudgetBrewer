@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.home
 
 import android.annotation.SuppressLint
@@ -13,7 +17,7 @@ import java.util.Calendar
 @Suppress("UNCHECKED_CAST")
 class HomeViewModelFactory(
     private val repository: BudgetRepository,
-    private val context: Context
+    private val context: Context,
 ) : ViewModelProvider.Factory {
     @SuppressLint("VisibleForTests")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -21,9 +25,10 @@ class HomeViewModelFactory(
         val month = prefs.getInt("selected_month", Calendar.getInstance().get(Calendar.MONTH) + 1)
         val year = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
 
-        val budgetId = runBlocking {
-            repository.getOrCreateBudgetChain(month, year).first
-        }
+        val budgetId =
+            runBlocking {
+                repository.getOrCreateBudgetChain(month, year).first
+            }
         val isTagsEnabled = SpendingPrefs.isTagsEnabled(context)
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
         return HomeViewModel(repository, savedStateHandle, isTagsEnabled) as T

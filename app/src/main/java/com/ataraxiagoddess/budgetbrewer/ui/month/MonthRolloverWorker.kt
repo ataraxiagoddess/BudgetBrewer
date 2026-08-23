@@ -1,7 +1,10 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.month
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
@@ -11,11 +14,10 @@ import java.util.Calendar
 
 class MonthRolloverWorker(
     context: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
-
-    override suspend fun doWork(): Result {
-        return try {
+    override suspend fun doWork(): Result =
+        try {
             val db = AppDatabase.getDatabase(applicationContext)
             val repo = BudgetRepository(db)
 
@@ -26,17 +28,9 @@ class MonthRolloverWorker(
             // Create/update budget chain for the new month
             val (_, _) = repo.getOrCreateBudgetChain(currentMonth, currentYear)
 
-            // Update shared preferences to point to new month
-            val prefs = applicationContext.getSharedPreferences("budget_prefs", Context.MODE_PRIVATE)
-            prefs.edit {
-                putInt("selected_month", currentMonth)
-                putInt("selected_year", currentYear)
-            }
-
             Result.success()
         } catch (e: Exception) {
             Timber.e(e, "Month rollover failed")
             Result.retry()
         }
-    }
 }

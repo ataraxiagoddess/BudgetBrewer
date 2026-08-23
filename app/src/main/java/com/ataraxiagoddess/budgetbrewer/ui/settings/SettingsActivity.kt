@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.settings
 
 import android.annotation.SuppressLint
@@ -81,14 +85,15 @@ private data class DeleteAccountResponse(
     val success: Boolean? = null,
     val error: String? = null,
     val code: Int? = null,
-    val message: String? = null
+    val message: String? = null,
 )
 
 @Serializable
-private data class SavingsBucketIdResponse(val id: String)
+private data class SavingsBucketIdResponse(
+    val id: String,
+)
 
 class SettingsActivity : BaseActivity() {
-
     override val currentNavDestination: NavDestination
         get() = NavDestination.SETTINGS
     private lateinit var binding: ActivitySettingsBinding
@@ -158,7 +163,6 @@ class SettingsActivity : BaseActivity() {
                     updateAccountSection()
                 }
         }
-
     }
 
     override fun onResume() {
@@ -191,25 +195,37 @@ class SettingsActivity : BaseActivity() {
             isAccountExpanded = !isAccountExpanded
             binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
             binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            androidx.core.view.ViewCompat.setStateDescription(binding.btnAccount, getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(
+                binding.btnAccount,
+                getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed),
+            )
         }
         binding.btnAppearance.setOnClickListener {
             isAppearanceExpanded = !isAppearanceExpanded
             binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
             binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            androidx.core.view.ViewCompat.setStateDescription(binding.btnAppearance, getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(
+                binding.btnAppearance,
+                getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed),
+            )
         }
         binding.btnCurrency.setOnClickListener {
             isCurrencyExpanded = !isCurrencyExpanded
             binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
             binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            androidx.core.view.ViewCompat.setStateDescription(binding.btnCurrency, getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(
+                binding.btnCurrency,
+                getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed),
+            )
         }
         binding.btnArchive.setOnClickListener {
             isArchiveExpanded = !isArchiveExpanded
             binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
             binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-            androidx.core.view.ViewCompat.setStateDescription(binding.btnArchive, getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(
+                binding.btnArchive,
+                getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed),
+            )
         }
         binding.btnPastMonths.setOnClickListener {
             val intent = Intent(this, PastMonthsActivity::class.java)
@@ -223,10 +239,14 @@ class SettingsActivity : BaseActivity() {
             isLegalExpanded = !isLegalExpanded
             binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
             binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)
-            androidx.core.view.ViewCompat.setStateDescription(binding.btnLegal, getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed))
+            androidx.core.view.ViewCompat.setStateDescription(
+                binding.btnLegal,
+                getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed),
+            )
         }
         binding.btnPrivacyPolicy.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
+            val intent =
+                Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
             startActivity(intent)
         }
         binding.btnTermsOfService.setOnClickListener {
@@ -272,51 +292,70 @@ class SettingsActivity : BaseActivity() {
     private fun setupCurrency() {
         val currencies = resources.getStringArray(R.array.currencies)
 
-        val adapter = object : ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item,
-            currencies
-        ) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent) as TextView
-                view.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
-                view.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
-                return view
-            }
+        val adapter =
+            object : ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                currencies,
+            ) {
+                override fun getView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup,
+                ): View {
+                    val view = super.getView(position, convertView, parent) as TextView
+                    view.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
+                    view.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
+                    return view
+                }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = convertView ?: LayoutInflater.from(context)
-                    .inflate(R.layout.spinner_dropdown_item, parent, false)
-                val textView = view.findViewById<TextView>(android.R.id.text1)
-                textView.text = getItem(position)
-                textView.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
-                textView.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
-                return view
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup,
+                ): View {
+                    val view =
+                        convertView ?: LayoutInflater
+                            .from(context)
+                            .inflate(R.layout.spinner_dropdown_item, parent, false)
+                    val textView = view.findViewById<TextView>(android.R.id.text1)
+                    textView.text = getItem(position)
+                    textView.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
+                    textView.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
+                    return view
+                }
             }
-        }
         binding.spinnerCurrency.adapter = adapter
         binding.spinnerCurrency.contentDescription = getString(R.string.select_currency)
 
-        val defaultCurrency = currencies[0]  // first item, e.g., "$ (USD)"
+        val defaultCurrency = currencies[0] // first item, e.g., "$ (USD)"
         val savedCurrency = settingsPrefs.getString("currency", defaultCurrency) ?: defaultCurrency
-        val position = currencies.indexOf(savedCurrency).takeIf { it >= 0 }
-            ?: currencies.indexOfFirst { it.contains("($savedCurrency)") }.takeIf { it >= 0 }
-            ?: 0
+        val position =
+            currencies.indexOf(savedCurrency).takeIf { it >= 0 }
+                ?: currencies.indexOfFirst { it.contains("($savedCurrency)") }.takeIf { it >= 0 }
+                ?: 0
         binding.spinnerCurrency.setSelection(position)
 
-        binding.spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selected = currencies[position]
-                val code = CurrencyPrefs.extractCode(selected)
-                settingsPrefs.edit { putString("currency", code) }
-                CurrencyPrefs.updateCurrency(code)
+        binding.spinnerCurrency.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long,
+                ) {
+                    val selected = currencies[position]
+                    val code = CurrencyPrefs.extractCode(selected)
+                    settingsPrefs.edit { putString("currency", code) }
+                    CurrencyPrefs.updateCurrency(code)
 
-                lifecycleScope.launch {
-                    repository.updateAllIncomesCurrency(CurrencyPrefs.currentCode)
+                    lifecycleScope.launch {
+                        repository.updateAllIncomesCurrency(CurrencyPrefs.currentCode)
+                    }
                 }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
     }
 
     private fun setupKoFi() {
@@ -358,17 +397,17 @@ class SettingsActivity : BaseActivity() {
                         showSetPinDialog { pin ->
                             AppLockManager.setPin(pin)
                             AppLockManager.setPinEnabled(true)
-                            AppLockManager.unlock()                     // <-- keep unlocked
+                            AppLockManager.unlock() // <-- keep unlocked
                             binding.switchBiometrics.isEnabled = isBiometricAvailable()
                             binding.btnChangePin.visibility = View.VISIBLE
-                            binding.btnDeletePin.visibility = View.VISIBLE   // <-- show delete
-                            showSnackbar(getString(R.string.pin_set))        // optional feedback
+                            binding.btnDeletePin.visibility = View.VISIBLE // <-- show delete
+                            showSnackbar(getString(R.string.pin_set)) // optional feedback
                         }
                     } else {
                         AppLockManager.setPinEnabled(true)
                         binding.switchBiometrics.isEnabled = isBiometricAvailable()
                         binding.btnChangePin.visibility = View.VISIBLE
-                        binding.btnDeletePin.visibility = View.VISIBLE   // <-- show delete
+                        binding.btnDeletePin.visibility = View.VISIBLE // <-- show delete
                     }
                 } else {
                     AppLockManager.setPinEnabled(false)
@@ -396,7 +435,7 @@ class SettingsActivity : BaseActivity() {
             binding.btnChangePin.setOnClickListener {
                 showSetPinDialog { newPin ->
                     AppLockManager.setPin(newPin)
-                    AppLockManager.unlock()                     // <-- keep unlocked
+                    AppLockManager.unlock() // <-- keep unlocked
                     binding.btnDeletePin.visibility = View.VISIBLE
                     showSnackbar(getString(R.string.pin_set))
                 }
@@ -420,7 +459,7 @@ class SettingsActivity : BaseActivity() {
                         binding.switchPinLock.isChecked = false
                         updateAccountSection()
                         showSnackbar(getString(R.string.pin_deleted))
-                    }
+                    },
                 ).show()
             }
 
@@ -447,9 +486,10 @@ class SettingsActivity : BaseActivity() {
         }
 
         binding.btnSignIn.setOnClickListener {
-            val intent = Intent(this, AuthActivity::class.java).apply {
-                putExtra(EXTRA_START_FRAGMENT, FRAGMENT_SIGN_IN)
-            }
+            val intent =
+                Intent(this, AuthActivity::class.java).apply {
+                    putExtra(EXTRA_START_FRAGMENT, FRAGMENT_SIGN_IN)
+                }
             startActivity(intent)
         }
 
@@ -459,10 +499,13 @@ class SettingsActivity : BaseActivity() {
                 val month = calendar.get(Calendar.MONTH) + 1
                 val year = calendar.get(Calendar.YEAR)
                 val (budgetId, _) = repository.getOrCreateBudgetChain(month, year)
-                val label = "${month}_${year}"
-                val uri = ExportHelper.exportBudgetToCSV(
-                    this@SettingsActivity, budgetId, label
-                )
+                val label = "${month}_$year"
+                val uri =
+                    ExportHelper.exportBudgetToCSV(
+                        this@SettingsActivity,
+                        budgetId,
+                        label,
+                    )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, true)
                 } else {
@@ -477,10 +520,13 @@ class SettingsActivity : BaseActivity() {
                 val month = calendar.get(Calendar.MONTH) + 1
                 val year = calendar.get(Calendar.YEAR)
                 val (budgetId, _) = repository.getOrCreateBudgetChain(month, year)
-                val label = "${month}_${year}"
-                val uri = ExportHelper.exportBudgetToPDF(
-                    this@SettingsActivity, budgetId, label
-                )
+                val label = "${month}_$year"
+                val uri =
+                    ExportHelper.exportBudgetToPDF(
+                        this@SettingsActivity,
+                        budgetId,
+                        label,
+                    )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, false)
                 } else {
@@ -490,9 +536,10 @@ class SettingsActivity : BaseActivity() {
         }
 
         binding.btnSignUp.setOnClickListener {
-            val intent = Intent(this, AuthActivity::class.java).apply {
-                putExtra(EXTRA_START_FRAGMENT, FRAGMENT_SIGN_UP)
-            }
+            val intent =
+                Intent(this, AuthActivity::class.java).apply {
+                    putExtra(EXTRA_START_FRAGMENT, FRAGMENT_SIGN_UP)
+                }
             startActivity(intent)
         }
         binding.btnSignOut.setOnClickListener {
@@ -531,7 +578,8 @@ class SettingsActivity : BaseActivity() {
         val btnToggle = dialogView.findViewById<ImageButton>(R.id.btnTogglePassword)
 
         // Apply password length filter
-        etPassword.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+        etPassword.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
 
         // Toggle password visibility
         btnToggle.setOnClickListener {
@@ -550,26 +598,41 @@ class SettingsActivity : BaseActivity() {
             etPassword.text?.let { etPassword.setSelection(it.length) }
         }
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.delete_account),
-            view = dialogView,
-            positiveButton = getString(R.string.delete),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.delete_account),
+                view = dialogView,
+                positiveButton = getString(R.string.delete),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             val deleteButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             deleteButton.isEnabled = false
 
-            etPassword.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    deleteButton.isEnabled = !s.isNullOrBlank()
-                }
-                override fun afterTextChanged(s: Editable?) {}
-            })
+            etPassword.addTextChangedListener(
+                object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {}
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {
+                        deleteButton.isEnabled = !s.isNullOrBlank()
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {}
+                },
+            )
 
             deleteButton.setOnClickListener {
                 val password = etPassword.text.toString()
@@ -584,10 +647,11 @@ class SettingsActivity : BaseActivity() {
     private fun deleteAccount(password: String) {
         lifecycleScope.launch {
             val currentUser = SupabaseClient.client.auth.currentUserOrNull()
-            val email = currentUser?.email ?: run {
-                showSnackbar("No signed‑in user found")
-                return@launch
-            }
+            val email =
+                currentUser?.email ?: run {
+                    showSnackbar("No signed‑in user found")
+                    return@launch
+                }
 
             try {
                 // 1. Re‑authenticate
@@ -596,18 +660,21 @@ class SettingsActivity : BaseActivity() {
                     this.password = password
                 }
 
-                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
-                    ?: throw Exception("User ID not found after re‑auth")
+                val userId =
+                    SupabaseClient.client.auth
+                        .currentUserOrNull()
+                        ?.id
+                        ?: throw Exception("User ID not found after re‑auth")
 
                 // 2. Delete all user data from Supabase tables (RLS will restrict)
                 val db = AppDatabase.getDatabase(this@SettingsActivity)
                 db.pendingSyncDao().deleteForUser(userId)
-                val savingsBucketIds = SupabaseClient.client.postgrest["savings_buckets"]
-                    .select(Columns.raw("id")) {
-                        filter { eq("user_id", userId) }
-                    }
-                    .decodeList<SavingsBucketIdResponse>()
-                    .map { it.id }
+                val savingsBucketIds =
+                    SupabaseClient.client.postgrest["savings_buckets"]
+                        .select(Columns.raw("id")) {
+                            filter { eq("user_id", userId) }
+                        }.decodeList<SavingsBucketIdResponse>()
+                        .map { it.id }
 
                 SupabaseClient.client.postgrest["daily_income_assignments"].delete { filter { eq("user_id", userId) } }
                 SupabaseClient.client.postgrest["spending_entries"].delete { filter { eq("user_id", userId) } }
@@ -628,29 +695,32 @@ class SettingsActivity : BaseActivity() {
                 // 3. Delete the user's auth account via Edge Function
                 withContext(Dispatchers.IO) {
                     val session = SupabaseClient.client.auth.currentSessionOrNull()
-                    val accessToken = session?.accessToken
-                        ?: throw Exception("No access token available")
+                    val accessToken =
+                        session?.accessToken
+                            ?: throw Exception("No access token available")
 
                     // Stop auto‑refresh so the SDK doesn't try to use the soon‑to‑be‑deleted session
                     SupabaseClient.client.auth.stopAutoRefreshForCurrentSession()
 
                     val functionUrl = "${SupabaseClient.SUPABASE_URL}/functions/v1/delete-user"
-                    val response: HttpResponse = SupabaseClient.client.httpClient.post(functionUrl) {
-                        contentType(ContentType.Application.Json)
-                        headers {
-                            append("Authorization", "Bearer $accessToken")
+                    val response: HttpResponse =
+                        SupabaseClient.client.httpClient.post(functionUrl) {
+                            contentType(ContentType.Application.Json)
+                            headers {
+                                append("Authorization", "Bearer $accessToken")
+                            }
                         }
-                    }
 
                     val responseBody = response.bodyAsText()
                     Timber.d("Edge function response: ${response.status}")
 
                     val json = Json { ignoreUnknownKeys = true }
-                    val result = try {
-                        json.decodeFromString<DeleteAccountResponse>(responseBody)
-                    } catch (_: Exception) {
-                        throw Exception("Invalid response: $responseBody")
-                    }
+                    val result =
+                        try {
+                            json.decodeFromString<DeleteAccountResponse>(responseBody)
+                        } catch (_: Exception) {
+                            throw Exception("Invalid response: $responseBody")
+                        }
 
                     if (response.status != HttpStatusCode.OK || result.error != null) {
                         throw Exception(result.error ?: "Unknown error (HTTP ${response.status})")
@@ -665,20 +735,22 @@ class SettingsActivity : BaseActivity() {
                 AuthManager.clear(this@SettingsActivity)
 
                 // 6. Navigate to AuthActivity with a fresh task
-                val intent = Intent(this@SettingsActivity, AuthActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
+                val intent =
+                    Intent(this@SettingsActivity, AuthActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
                 startActivity(intent)
                 finish()
 
                 showSnackbar(getString(R.string.delete_account_success))
             } catch (e: Exception) {
                 Timber.e(e, "Account deletion failed")
-                val message = if (e.message?.contains("Invalid login credentials") == true) {
-                    getString(R.string.delete_account_wrong_password)
-                } else {
-                    getString(R.string.delete_account_failed, e.message)
-                }
+                val message =
+                    if (e.message?.contains("Invalid login credentials") == true) {
+                        getString(R.string.delete_account_wrong_password)
+                    } else {
+                        getString(R.string.delete_account_failed, e.message)
+                    }
                 showSnackbar(message)
             }
         }
@@ -701,10 +773,11 @@ class SettingsActivity : BaseActivity() {
         val tvError = dialogView.findViewById<TextView>(R.id.tvError)
 
         // Apply PIN validation filters
-        val pinFilters = arrayOf(
-            ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
-            ValidationUtils.getDigitsOnlyFilter()
-        )
+        val pinFilters =
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
+                ValidationUtils.getDigitsOnlyFilter(),
+            )
         etPin.filters = pinFilters
         etConfirmPin.filters = pinFilters
 
@@ -743,32 +816,46 @@ class SettingsActivity : BaseActivity() {
             etConfirmPin.text?.let { etConfirmPin.setSelection(it.length) }
         }
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.set_pin),
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.set_pin),
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             etPin.requestFocus()
             val saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             saveButton.isEnabled = false
 
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val pin = etPin.text.toString()
-                    val confirm = etConfirmPin.text.toString()
-                    saveButton.isEnabled = ValidationUtils.isValidPin(pin) &&
+            val textWatcher =
+                object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {}
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {
+                        val pin = etPin.text.toString()
+                        val confirm = etConfirmPin.text.toString()
+                        saveButton.isEnabled = ValidationUtils.isValidPin(pin) &&
                             ValidationUtils.isValidPin(confirm) &&
                             pin == confirm
-                    tvError.visibility = View.GONE
+                        tvError.visibility = View.GONE
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {}
                 }
-                override fun afterTextChanged(s: Editable?) {}
-            }
             etPin.addTextChangedListener(textWatcher)
             etConfirmPin.addTextChangedListener(textWatcher)
 
@@ -788,13 +875,17 @@ class SettingsActivity : BaseActivity() {
     }
 
     override fun navigateToHome() {
-        startActivity(Intent(this, MainActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, MainActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun navigateToFinances() {
-        startActivity(Intent(this, IncomeExpensesActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, IncomeExpensesActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun navigateToSavings() {
@@ -803,41 +894,59 @@ class SettingsActivity : BaseActivity() {
     }
 
     override fun navigateToExpenses() {
-        startActivity(Intent(this, MonthlyExpenseListActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, MonthlyExpenseListActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun navigateToSpending() {
-        startActivity(Intent(this, SpendingActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SpendingActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun navigateToCalendar() {
-        startActivity(Intent(this, MonthlyCalendarActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, MonthlyCalendarActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
-    private fun showExportSuccessSnackbar(uri: Uri, isCsv: Boolean) {
+    private fun showExportSuccessSnackbar(
+        uri: Uri,
+        isCsv: Boolean,
+    ) {
         // Custom span to apply typeface (works on all API levels)
-        class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
+        class CustomTypefaceSpan(
+            private val typeface: Typeface,
+        ) : MetricAffectingSpan() {
             override fun updateMeasureState(textPaint: TextPaint) {
                 textPaint.typeface = typeface
             }
+
             override fun updateDrawState(textPaint: TextPaint) {
                 textPaint.typeface = typeface
             }
         }
 
         // Create styled "Share" text
-        val shareText = SpannableString(getString(R.string.share)).apply {
-            val exoBold = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_semi_bold)
-                ?: ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_bold)
-            if (exoBold != null) {
-                setSpan(CustomTypefaceSpan(exoBold), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val shareText =
+            SpannableString(getString(R.string.share)).apply {
+                val exoBold =
+                    ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_semi_bold)
+                        ?: ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_bold)
+                if (exoBold != null) {
+                    setSpan(CustomTypefaceSpan(exoBold), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_main)),
+                    0,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                )
             }
-            setSpan(ForegroundColorSpan(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_main)),
-                0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
 
         val snackbar = Snackbar.make(binding.root, R.string.export_saved, Snackbar.LENGTH_LONG)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE

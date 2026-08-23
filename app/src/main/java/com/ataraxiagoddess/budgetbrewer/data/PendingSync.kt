@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.data
 
 import androidx.room.Entity
@@ -12,5 +16,5 @@ data class PendingSync(
     val table: String,
     val recordId: String,
     val userId: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 )

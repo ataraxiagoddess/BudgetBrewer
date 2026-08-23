@@ -16,8 +16,11 @@ rewrites.
   month.
 - Do not assume architecture or dependencies from this document alone. Inspect
   the current code and Gradle configuration before proposing changes.
-- No Jetpack Compose. Budget Brewer uses traditional Android XML layouts with
-  ViewBinding.
+- No Jetpack Compose. Budget Brewer uses the traditional Android View system
+  with XML layouts.
+- ViewBinding is enabled and used in parts of the app, but the project is not
+  fully converted to ViewBinding. Some screens and dynamic/dialog-heavy areas
+  still use `findViewById`.
 - No Hilt or Dagger. Dependency injection is manual through ViewModel factories.
 - No MVI rewrite. The app uses standard MVVM with ViewModels, UI state, and UI
   events.
@@ -44,7 +47,8 @@ rewrites.
 - Package: `com.ataraxiagoddess.budgetbrewer`
 - minSdk: 24
 - compileSdk / targetSdk: 37
-- UI: XML layouts, ViewBinding, Material Components
+- UI: XML layouts, Material Components, and mixed view access with ViewBinding
+  plus `findViewById`
 - Architecture: MVVM + central repository + Room + offline-first Supabase sync
 - Database: Room, currently version 8
 - Sync: Room first, then Supabase through `SyncManager`; failed operations are
@@ -85,6 +89,8 @@ Before changing code or docs, read the relevant files:
 - Use resource dimensions instead of raw pixel values for spacing, margins,
   padding, and runtime-created views.
 - Prefer existing styles and drawables before creating a new one-off style.
+- Do not convert a screen to ViewBinding as incidental cleanup. Treat that as a
+  separate refactor if it is ever done.
 
 ## UI And Accessibility Expectations
 
@@ -93,7 +99,9 @@ not as cleanup after the screen is already built.
 
 For UI work:
 
-- Preserve the XML/ViewBinding approach.
+- Preserve the XML View-system approach. Use ViewBinding where the local file
+  already uses it, and `findViewById` where that is the established local
+  pattern.
 - Keep text readable at larger font and display sizes.
 - Use minimum heights for touch targets instead of fixed heights when labels may
   need to grow.

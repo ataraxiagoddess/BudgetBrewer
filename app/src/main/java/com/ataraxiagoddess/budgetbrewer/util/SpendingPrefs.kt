@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.util
 
 import android.content.Context
@@ -9,15 +13,14 @@ object SpendingPrefs {
     private const val KEY_TAGS_ENABLED = "tags_enabled"
     private const val DEFAULT_TAGS_ENABLED = false
 
-    private fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
+    private fun getPrefs(context: Context): SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun isTagsEnabled(context: Context): Boolean {
-        return getPrefs(context).getBoolean(KEY_TAGS_ENABLED, DEFAULT_TAGS_ENABLED)
-    }
+    fun isTagsEnabled(context: Context): Boolean = getPrefs(context).getBoolean(KEY_TAGS_ENABLED, DEFAULT_TAGS_ENABLED)
 
-    fun setTagsEnabled(context: Context, enabled: Boolean) {
+    fun setTagsEnabled(
+        context: Context,
+        enabled: Boolean,
+    ) {
         getPrefs(context).edit { putBoolean(KEY_TAGS_ENABLED, enabled) }
     }
 }

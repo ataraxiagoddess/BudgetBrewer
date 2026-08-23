@@ -1,4 +1,8 @@
-﻿package com.ataraxiagoddess.budgetbrewer.util
+﻿/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
+package com.ataraxiagoddess.budgetbrewer.util
 
 import android.content.Context
 import java.text.DecimalFormatSymbols
@@ -41,16 +45,24 @@ object CurrencyPrefs {
         return symbolToCode(trimmed)
     }
 
-    fun format(amount: Double, locale: Locale): String {
-        return formatWithCode(amount, currentCode, locale)
-    }
+    fun format(
+        amount: Double,
+        locale: Locale,
+    ): String = formatWithCode(amount, currentCode, locale)
 
-    fun formatWithCurrency(amount: Double, currencyValue: String, locale: Locale): String {
+    fun formatWithCurrency(
+        amount: Double,
+        currencyValue: String,
+        locale: Locale,
+    ): String {
         val code = extractCode(currencyValue)
         return formatWithCode(amount, code, locale)
     }
 
-    fun formatPlain(amount: Double, locale: Locale): String {
+    fun formatPlain(
+        amount: Double,
+        locale: Locale,
+    ): String {
         val formatter = NumberFormat.getNumberInstance(locale)
         formatter.minimumFractionDigits = currentFractionDigits
         formatter.maximumFractionDigits = currentFractionDigits
@@ -58,7 +70,10 @@ object CurrencyPrefs {
         return formatter.format(amount)
     }
 
-    fun parseAmount(input: String, locale: Locale): Double? {
+    fun parseAmount(
+        input: String,
+        locale: Locale,
+    ): Double? {
         val trimmed = input.trim()
         if (trimmed.isEmpty()) return null
         val formatter = NumberFormat.getNumberInstance(locale)
@@ -73,8 +88,8 @@ object CurrencyPrefs {
         return if (separator == '.') setOf('.') else setOf(separator, '.')
     }
 
-    private fun symbolToCode(symbol: String): String {
-        return when (symbol) {
+    private fun symbolToCode(symbol: String): String =
+        when (symbol) {
             "$" -> "USD"
             "€" -> "EUR"
             "£" -> "GBP"
@@ -84,9 +99,12 @@ object CurrencyPrefs {
             "R$" -> "BRL"
             else -> "USD"
         }
-    }
 
-    private fun formatWithCode(amount: Double, code: String, locale: Locale): String {
+    private fun formatWithCode(
+        amount: Double,
+        code: String,
+        locale: Locale,
+    ): String {
         val currency = Currency.getInstance(code)
         val formatter = NumberFormat.getCurrencyInstance(locale)
         val digits = max(0, currency.defaultFractionDigits)
@@ -96,4 +114,3 @@ object CurrencyPrefs {
         return formatter.format(amount)
     }
 }
-

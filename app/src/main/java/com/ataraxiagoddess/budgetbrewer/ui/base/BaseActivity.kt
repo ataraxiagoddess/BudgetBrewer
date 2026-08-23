@@ -1,16 +1,19 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.accessibility.AccessibilityManager
-import android.view.accessibility.AccessibilityNodeInfo
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
@@ -20,7 +23,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
@@ -28,11 +30,11 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.AuthManager
 import com.ataraxiagoddess.budgetbrewer.databinding.LayoutBottomNavBinding
 import com.ataraxiagoddess.budgetbrewer.databinding.MonthSelectorBinding
+import com.ataraxiagoddess.budgetbrewer.ui.lock.LockActivity
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavigationManager
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity
-import com.ataraxiagoddess.budgetbrewer.ui.lock.LockActivity
 import com.ataraxiagoddess.budgetbrewer.util.AppLockManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -42,12 +44,12 @@ import timber.log.Timber
 import java.util.Calendar
 
 abstract class BaseActivity : AppCompatActivity() {
-
     private val appLockGraceMs = 5 * 60 * 1000L
 
     companion object {
         private var tempBottomScrollX = 0
         private var tempRailScrollY = 0
+        private var sessionSelectedMonth: Month? = null
     }
 
     private var bottomNavScrollView: HorizontalScrollView? = null
@@ -56,9 +58,6 @@ abstract class BaseActivity : AppCompatActivity() {
     protected lateinit var navBinding: LayoutBottomNavBinding
     protected lateinit var monthSelectorBinding: MonthSelectorBinding
     protected lateinit var navigationManager: NavigationManager
-    protected val prefs: SharedPreferences by lazy {
-        getSharedPreferences("budget_prefs", MODE_PRIVATE)!!
-    }
 
     abstract val currentNavDestination: NavDestination
 
@@ -99,7 +98,10 @@ abstract class BaseActivity : AppCompatActivity() {
     // ----------------------------------------------------------------------
     // Snackbar helper (fixed width on tablets, no setMaxWidth)
     // ----------------------------------------------------------------------
-    protected fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+    protected fun showSnackbar(
+        message: String,
+        duration: Int = Snackbar.LENGTH_SHORT,
+    ) {
         val snackbar = Snackbar.make(outerRoot!!, "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view
@@ -122,21 +124,23 @@ abstract class BaseActivity : AppCompatActivity() {
             snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         defaultText.visibility = View.GONE
 
-        val customText = layoutInflater.inflate(
-            R.layout.snackbar_custom,
-            snackbarView as ViewGroup,
-            false
-        ) as TextView
+        val customText =
+            layoutInflater.inflate(
+                R.layout.snackbar_custom,
+                snackbarView as ViewGroup,
+                false,
+            ) as TextView
         customText.text = message
         customText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
         customText.setTextColor(ContextCompat.getColor(this, R.color.text_on_container))
         customText.textSize = 18f
         customText.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
-        val lp = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        val lp =
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
         lp.gravity = Gravity.CENTER
         customText.layoutParams = lp
 
@@ -149,6 +153,11 @@ abstract class BaseActivity : AppCompatActivity() {
         isFreshActivityLaunch = savedInstanceState == null
         super.onCreate(savedInstanceState)
 
+        isSettingMonthProgrammatically = true
+        selectedMonth = sessionSelectedMonth ?: Month.current()
+        sessionSelectedMonth = selectedMonth
+        isSettingMonthProgrammatically = false
+
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         @Suppress("DEPRECATION")
@@ -158,17 +167,16 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun isTouchExplorationEnabled(): Boolean {
-        val accessibilityManager = getSystemService(
-            ACCESSIBILITY_SERVICE
-        ) as AccessibilityManager
+        val accessibilityManager =
+            getSystemService(
+                ACCESSIBILITY_SERVICE,
+            ) as AccessibilityManager
 
         return accessibilityManager.isEnabled &&
-                accessibilityManager.isTouchExplorationEnabled
+            accessibilityManager.isTouchExplorationEnabled
     }
 
-    private fun prepareInitialMonthSpinnerAccessibility(
-        spinner: Spinner
-    ) {
+    private fun prepareInitialMonthSpinnerAccessibility(spinner: Spinner) {
         if (
             !isFreshActivityLaunch ||
             initialMonthFocusHandled ||
@@ -184,194 +192,217 @@ abstract class BaseActivity : AppCompatActivity() {
 
     // Helper to build the root layout
     private fun createRootLayout(contentView: View): FrameLayout {
-        return FrameLayout(this).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            fitsSystemWindows = true
-
-            // 1. BlurTarget – hosts the main content
-            val blurTarget = BlurTarget(this@BaseActivity).apply {
-                layoutParams = FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                addView(
-                    contentView, FrameLayout.LayoutParams(
+        return FrameLayout(this)
+            .apply {
+                layoutParams =
+                    ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                )
-                id = View.generateViewId()
-            }
-            addView(blurTarget)
-
-            if (useRail) {
-                // Scrollable container for custom button bar
-                val railContainer = NestedScrollView(this@BaseActivity).apply {
-                    layoutParams = FrameLayout.LayoutParams(
-                        resources.getDimensionPixelSize(R.dimen.navigation_rail_width),
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        Gravity.START
                     )
-                    isFillViewport = true
-                    isScrollContainer = true
-                    isNestedScrollingEnabled = true
-                }
-                railNavScrollView = railContainer
+                fitsSystemWindows = true
 
-                val buttonBar = LinearLayout(this@BaseActivity).apply {
-                    layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                    orientation = LinearLayout.VERTICAL
-                    setBackgroundColor(ContextCompat.getColor(context, R.color.bg_main))
-                }
+                // 1. BlurTarget – hosts the main content
+                val blurTarget =
+                    BlurTarget(this@BaseActivity).apply {
+                        layoutParams =
+                            FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                            )
+                        addView(
+                            contentView,
+                            FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                            ),
+                        )
+                        id = View.generateViewId()
+                    }
+                addView(blurTarget)
 
-                // Inflate and add month selector header
-                val header = layoutInflater.inflate(R.layout.nav_rail_header, buttonBar, false)
-                railMonthSpinner = header.findViewById(R.id.monthSpinnerRail)
-                railMonthSpinner?.let(::prepareInitialMonthSpinnerAccessibility)
-                buttonBar.addView(header)
-
-                // Helper to create an icon‑only nav button
-                fun createNavButton(
-                    destination: NavDestination,
-                    iconRes: Int,
-                    bgRes: Int,
-                    labelRes: Int
-                ): MaterialButton {
-                    return MaterialButton(this@BaseActivity).apply {
-                        layoutParams = LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            resources.getDimensionPixelSize(R.dimen.button_height)
-                        ).apply {
-                            topMargin = 4
-                            bottomMargin = 4
+                if (useRail) {
+                    // Scrollable container for custom button bar
+                    val railContainer =
+                        NestedScrollView(this@BaseActivity).apply {
+                            layoutParams =
+                                FrameLayout.LayoutParams(
+                                    resources.getDimensionPixelSize(R.dimen.navigation_rail_width),
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    Gravity.START,
+                                )
+                            isFillViewport = true
+                            isScrollContainer = true
+                            isNestedScrollingEnabled = true
                         }
-                        setIconResource(iconRes)
-                        iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
-                        setBackgroundResource(bgRes)
-                        backgroundTintList = null
-                        iconTint = ContextCompat.getColorStateList(context, R.color.text_on_main)
-                        contentDescription = getString(labelRes)
-                        setOnClickListener {
-                            if (destination == currentNavDestination) {
-                                return@setOnClickListener
+                    railNavScrollView = railContainer
+
+                    val buttonBar =
+                        LinearLayout(this@BaseActivity).apply {
+                            layoutParams =
+                                ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                )
+                            orientation = LinearLayout.VERTICAL
+                            setBackgroundColor(ContextCompat.getColor(context, R.color.bg_main))
+                        }
+
+                    // Inflate and add month selector header
+                    val header = layoutInflater.inflate(R.layout.nav_rail_header, buttonBar, false)
+                    railMonthSpinner = header.findViewById(R.id.monthSpinnerRail)
+                    railMonthSpinner?.let(::prepareInitialMonthSpinnerAccessibility)
+                    buttonBar.addView(header)
+
+                    // Helper to create an icon‑only nav button
+                    fun createNavButton(
+                        destination: NavDestination,
+                        iconRes: Int,
+                        bgRes: Int,
+                        labelRes: Int,
+                    ): MaterialButton {
+                        return MaterialButton(this@BaseActivity).apply {
+                            layoutParams =
+                                LinearLayout
+                                    .LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        resources.getDimensionPixelSize(R.dimen.button_height),
+                                    ).apply {
+                                        topMargin = 4
+                                        bottomMargin = 4
+                                    }
+                            setIconResource(iconRes)
+                            iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
+                            setBackgroundResource(bgRes)
+                            backgroundTintList = null
+                            iconTint = ContextCompat.getColorStateList(context, R.color.text_on_main)
+                            contentDescription = getString(labelRes)
+                            setOnClickListener {
+                                if (destination == currentNavDestination) {
+                                    return@setOnClickListener
+                                }
+                                when (destination) {
+                                    NavDestination.HOME -> navigateToHome()
+                                    NavDestination.FINANCES -> navigateToFinances()
+                                    NavDestination.SAVINGS -> navigateToSavings()
+                                    NavDestination.EXPENSES -> navigateToExpenses()
+                                    NavDestination.SPENDING -> navigateToSpending()
+                                    NavDestination.CALENDAR -> navigateToCalendar()
+                                    NavDestination.SETTINGS -> navigateToSettings()
+                                }
+                                // Update rail state after navigation
+                                updateRailSelection()
                             }
-                            when (destination) {
-                                NavDestination.HOME -> navigateToHome()
-                                NavDestination.FINANCES -> navigateToFinances()
-                                NavDestination.SAVINGS -> navigateToSavings()
-                                NavDestination.EXPENSES -> navigateToExpenses()
-                                NavDestination.SPENDING -> navigateToSpending()
-                                NavDestination.CALENDAR -> navigateToCalendar()
-                                NavDestination.SETTINGS -> navigateToSettings()
-                            }
-                            // Update rail state after navigation
-                            updateRailSelection()
                         }
                     }
+
+                    railButtons[NavDestination.HOME] =
+                        createNavButton(
+                            NavDestination.HOME,
+                            R.drawable.ic_cottage,
+                            R.drawable.bg_nav_button_home,
+                            R.string.nav_home,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.HOME])
+
+                    railButtons[NavDestination.FINANCES] =
+                        createNavButton(
+                            NavDestination.FINANCES,
+                            R.drawable.ic_account_balance,
+                            R.drawable.bg_nav_button_finances,
+                            R.string.nav_finances,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.FINANCES])
+
+                    railButtons[NavDestination.SAVINGS] =
+                        createNavButton(
+                            NavDestination.SAVINGS,
+                            R.drawable.ic_savings,
+                            R.drawable.bg_nav_button_savings,
+                            R.string.nav_savings,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.SAVINGS])
+
+                    railButtons[NavDestination.EXPENSES] =
+                        createNavButton(
+                            NavDestination.EXPENSES,
+                            R.drawable.ic_receipt,
+                            R.drawable.bg_nav_button_expenses,
+                            R.string.nav_expenses,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.EXPENSES])
+
+                    railButtons[NavDestination.SPENDING] =
+                        createNavButton(
+                            NavDestination.SPENDING,
+                            R.drawable.ic_paid,
+                            R.drawable.bg_nav_button_spending,
+                            R.string.nav_spending,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.SPENDING])
+
+                    railButtons[NavDestination.CALENDAR] =
+                        createNavButton(
+                            NavDestination.CALENDAR,
+                            R.drawable.ic_calendar_today,
+                            R.drawable.bg_nav_button_calendar,
+                            R.string.nav_calendar,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.CALENDAR])
+
+                    railButtons[NavDestination.SETTINGS] =
+                        createNavButton(
+                            NavDestination.SETTINGS,
+                            R.drawable.ic_settings,
+                            R.drawable.bg_nav_button_settings,
+                            R.string.settings,
+                        )
+                    buttonBar.addView(railButtons[NavDestination.SETTINGS])
+
+                    railContainer.addView(buttonBar)
+                    addView(railContainer)
+
+                    // Adjust blurTarget margin to start after rail container
+                    (blurTarget.layoutParams as FrameLayout.LayoutParams).marginStart =
+                        resources.getDimensionPixelSize(R.dimen.navigation_rail_width)
+
+                    // Initialize rail visibility
+                    updateRailSelection()
+                } else {
+                    // 2. Month selector – aligned to top (with blur)
+                    val monthSelectorBlurView =
+                        BlurView(this@BaseActivity).apply {
+                            layoutParams =
+                                FrameLayout
+                                    .LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ).apply { gravity = Gravity.TOP }
+                        }
+                    monthSelectorBinding =
+                        MonthSelectorBinding.inflate(layoutInflater, monthSelectorBlurView, true)
+                    prepareInitialMonthSpinnerAccessibility(
+                        monthSelectorBinding.monthSpinner,
+                    )
+                    addView(monthSelectorBlurView)
+
+                    // 3. Bottom navigation – aligned to bottom (with blur)
+                    navBinding = LayoutBottomNavBinding.inflate(layoutInflater, this, true)
+                    (navBinding.root.layoutParams as? FrameLayout.LayoutParams)?.gravity =
+                        Gravity.BOTTOM
+                    val bottomBlurView = navBinding.root
+                    bottomNavScrollView = navBinding.root.findViewById(R.id.bottomNavScroll)
+
+                    // Configure blur for both BlurViews
+                    bottomBlurView
+                        .setupWith(blurTarget)
+                        .setBlurRadius(10f)
+                        .setBlurEnabled(true)
+                    monthSelectorBlurView
+                        .setupWith(blurTarget)
+                        .setBlurRadius(10f)
+                        .setBlurEnabled(true)
                 }
-
-                railButtons[NavDestination.HOME] = createNavButton(
-                    NavDestination.HOME,
-                    R.drawable.ic_cottage,
-                    R.drawable.bg_nav_button_home,
-                    R.string.nav_home
-                )
-                buttonBar.addView(railButtons[NavDestination.HOME])
-
-                railButtons[NavDestination.FINANCES] = createNavButton(
-                    NavDestination.FINANCES,
-                    R.drawable.ic_account_balance,
-                    R.drawable.bg_nav_button_finances,
-                    R.string.nav_finances
-                )
-                buttonBar.addView(railButtons[NavDestination.FINANCES])
-
-                railButtons[NavDestination.SAVINGS] = createNavButton(
-                    NavDestination.SAVINGS,
-                    R.drawable.ic_savings,
-                    R.drawable.bg_nav_button_savings,
-                    R.string.nav_savings
-                )
-                buttonBar.addView(railButtons[NavDestination.SAVINGS])
-
-                railButtons[NavDestination.EXPENSES] = createNavButton(
-                    NavDestination.EXPENSES,
-                    R.drawable.ic_receipt,
-                    R.drawable.bg_nav_button_expenses,
-                    R.string.nav_expenses
-                )
-                buttonBar.addView(railButtons[NavDestination.EXPENSES])
-
-                railButtons[NavDestination.SPENDING] = createNavButton(
-                    NavDestination.SPENDING,
-                    R.drawable.ic_paid,
-                    R.drawable.bg_nav_button_spending,
-                    R.string.nav_spending
-                )
-                buttonBar.addView(railButtons[NavDestination.SPENDING])
-
-                railButtons[NavDestination.CALENDAR] = createNavButton(
-                    NavDestination.CALENDAR,
-                    R.drawable.ic_calendar_today,
-                    R.drawable.bg_nav_button_calendar,
-                    R.string.nav_calendar
-                )
-                buttonBar.addView(railButtons[NavDestination.CALENDAR])
-
-                railButtons[NavDestination.SETTINGS] = createNavButton(
-                    NavDestination.SETTINGS,
-                    R.drawable.ic_settings,
-                    R.drawable.bg_nav_button_settings,
-                    R.string.settings
-                )
-                buttonBar.addView(railButtons[NavDestination.SETTINGS])
-
-                railContainer.addView(buttonBar)
-                addView(railContainer)
-
-                // Adjust blurTarget margin to start after rail container
-                (blurTarget.layoutParams as FrameLayout.LayoutParams).marginStart =
-                    resources.getDimensionPixelSize(R.dimen.navigation_rail_width)
-
-                // Initialize rail visibility
-                updateRailSelection()
-            } else {
-                // 2. Month selector – aligned to top (with blur)
-                val monthSelectorBlurView = BlurView(this@BaseActivity).apply {
-                    layoutParams = FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    ).apply { gravity = Gravity.TOP }
-                }
-                monthSelectorBinding =
-                    MonthSelectorBinding.inflate(layoutInflater, monthSelectorBlurView, true)
-                prepareInitialMonthSpinnerAccessibility(
-                    monthSelectorBinding.monthSpinner
-                )
-                addView(monthSelectorBlurView)
-
-                // 3. Bottom navigation – aligned to bottom (with blur)
-                navBinding = LayoutBottomNavBinding.inflate(layoutInflater, this, true)
-                (navBinding.root.layoutParams as? FrameLayout.LayoutParams)?.gravity =
-                    Gravity.BOTTOM
-                val bottomBlurView = navBinding.root
-                bottomNavScrollView = navBinding.root.findViewById(R.id.bottomNavScroll)
-
-                // Configure blur for both BlurViews
-                bottomBlurView.setupWith(blurTarget)
-                    .setBlurRadius(10f)
-                    .setBlurEnabled(true)
-                monthSelectorBlurView.setupWith(blurTarget)
-                    .setBlurRadius(10f)
-                    .setBlurEnabled(true)
-            }
-        }.also { outerRoot = it }
+            }.also { outerRoot = it }
     }
 
     private fun finishViewInitialization() {
@@ -408,7 +439,10 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+    override fun setContentView(
+        view: View?,
+        params: ViewGroup.LayoutParams?,
+    ) {
         val rootLayout = createRootLayout(view!!)
         super.setContentView(rootLayout, params)
         finishViewInitialization()
@@ -453,26 +487,27 @@ abstract class BaseActivity : AppCompatActivity() {
 
                     spinner.performAccessibilityAction(
                         AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
-                        null
+                        null,
                     )
                 }
             },
-            750L
+            750L,
         )
     }
 
     private fun setupBottomNavigation() {
-        navigationManager = NavigationManager(navBinding) { destination ->
-            when (destination) {
-                NavDestination.HOME -> navigateToHome()
-                NavDestination.FINANCES -> navigateToFinances()
-                NavDestination.SAVINGS -> navigateToSavings()
-                NavDestination.EXPENSES -> navigateToExpenses()
-                NavDestination.SPENDING -> navigateToSpending()
-                NavDestination.CALENDAR -> navigateToCalendar()
-                NavDestination.SETTINGS -> navigateToSettings()
+        navigationManager =
+            NavigationManager(navBinding) { destination ->
+                when (destination) {
+                    NavDestination.HOME -> navigateToHome()
+                    NavDestination.FINANCES -> navigateToFinances()
+                    NavDestination.SAVINGS -> navigateToSavings()
+                    NavDestination.EXPENSES -> navigateToExpenses()
+                    NavDestination.SPENDING -> navigateToSpending()
+                    NavDestination.CALENDAR -> navigateToCalendar()
+                    NavDestination.SETTINGS -> navigateToSettings()
+                }
             }
-        }
         navigationManager.updateForDestination(currentNavDestination)
     }
 
@@ -485,17 +520,15 @@ abstract class BaseActivity : AppCompatActivity() {
         val currentMonth = calendar.get(Calendar.MONTH) + 1
         val currentYear = calendar.get(Calendar.YEAR)
 
-        val savedMonth = prefs.getInt("selected_month", currentMonth)
-        val savedYear = prefs.getInt("selected_year", currentYear)
-
         repeat(12) { i ->
             calendar.set(currentYear, currentMonth - 1, 1)
             calendar.add(Calendar.MONTH, -i - 1)
             allMonths.add(
-                0, Month(
+                0,
+                Month(
                     year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1
-                )
+                    month = calendar.get(Calendar.MONTH) + 1,
+                ),
             )
         }
 
@@ -507,14 +540,10 @@ abstract class BaseActivity : AppCompatActivity() {
             allMonths.add(
                 Month(
                     year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1
-                )
+                    month = calendar.get(Calendar.MONTH) + 1,
+                ),
             )
         }
-
-        isSettingMonthProgrammatically = true
-        selectedMonth = Month(savedYear, savedMonth)
-        isSettingMonthProgrammatically = false
     }
 
     private fun setupMonthSpinner(spinner: Spinner) {
@@ -522,29 +551,31 @@ abstract class BaseActivity : AppCompatActivity() {
 
         val monthNames = allMonths.map { it.getDisplayName(this) }
 
-        val currentIndex = allMonths.indexOfFirst {
-            it.year == selectedMonth.year && it.month == selectedMonth.month
-        }
-
-        monthAdapter = object : ArrayAdapter<String>(
-            this,
-            R.layout.spinner_closed_month,
-            android.R.id.text1,
-            monthNames
-        ) {
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val divider = view.findViewById<View>(R.id.divider)
-                divider?.visibility = if (position == count - 1) View.GONE else View.VISIBLE
-                return view
+        val currentIndex =
+            allMonths.indexOfFirst {
+                it.year == selectedMonth.year && it.month == selectedMonth.month
             }
-        }.apply {
-            setDropDownViewResource(R.layout.spinner_dropdown_item_month)
-        }
+
+        monthAdapter =
+            object : ArrayAdapter<String>(
+                this,
+                R.layout.spinner_closed_month,
+                android.R.id.text1,
+                monthNames,
+            ) {
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup,
+                ): View {
+                    val view = super.getDropDownView(position, convertView, parent)
+                    val divider = view.findViewById<View>(R.id.divider)
+                    divider?.visibility = if (position == count - 1) View.GONE else View.VISIBLE
+                    return view
+                }
+            }.apply {
+                setDropDownViewResource(R.layout.spinner_dropdown_item_month)
+            }
 
         isSettingUpSpinner = true
 
@@ -554,24 +585,25 @@ abstract class BaseActivity : AppCompatActivity() {
             spinner.setSelection(currentIndex, false)
         }
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (isSettingUpSpinner) return
-                if (position in allMonths.indices) {
-                    val selected = allMonths[position]
-                    if (selected != selectedMonth) {
-                        selectedMonth = selected
+        spinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long,
+                ) {
+                    if (isSettingUpSpinner) return
+                    if (position in allMonths.indices) {
+                        val selected = allMonths[position]
+                        if (selected != selectedMonth) {
+                            selectedMonth = selected
+                        }
                     }
                 }
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
 
         spinner.post {
             isSettingUpSpinner = false
@@ -597,14 +629,12 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun onMonthSelected(month: Month) {
-        prefs.edit {
-            putInt("selected_month", month.month)
-            putInt("selected_year", month.year)
-        }
+        sessionSelectedMonth = month
 
-        val currentIndex = allMonths.indexOfFirst {
-            it.year == month.year && it.month == month.month
-        }
+        val currentIndex =
+            allMonths.indexOfFirst {
+                it.year == month.year && it.month == month.month
+            }
         if (currentIndex >= 0) {
             isSettingMonthProgrammatically = true
             // update both possible spinners
@@ -616,19 +646,16 @@ abstract class BaseActivity : AppCompatActivity() {
             isSettingMonthProgrammatically = false
         }
 
-        monthChangeListeners.toList().forEach { it.onMonthChanged(month) }
-        onMonthChanged(month)
+        dispatchMonthChanged(month)
     }
 
     override fun onResume() {
         super.onResume()
         enforceAppLockIfNeeded()
-        val savedMonth =
-            prefs.getInt("selected_month", Calendar.getInstance().get(Calendar.MONTH) + 1)
-        val savedYear = prefs.getInt("selected_year", Calendar.getInstance().get(Calendar.YEAR))
-        if (selectedMonth.month != savedMonth || selectedMonth.year != savedYear) {
+        val currentSessionMonth = sessionSelectedMonth ?: Month.current()
+        if (selectedMonth != currentSessionMonth) {
             isSettingMonthProgrammatically = true
-            selectedMonth = Month(savedYear, savedMonth)
+            selectedMonth = currentSessionMonth
             isSettingMonthProgrammatically = false
             // update spinners
             if (!useRail && this::monthSelectorBinding.isInitialized) {
@@ -636,6 +663,7 @@ abstract class BaseActivity : AppCompatActivity() {
             } else if (useRail) {
                 railMonthSpinner?.let(::setupMonthSpinner)
             }
+            dispatchMonthChanged(selectedMonth)
         }
 
         // Update rail selection
@@ -650,6 +678,11 @@ abstract class BaseActivity : AppCompatActivity() {
         saveNavScroll()
     }
 
+    private fun dispatchMonthChanged(month: Month) {
+        monthChangeListeners.toList().forEach { it.onMonthChanged(month) }
+        onMonthChanged(month)
+    }
+
     private fun enforceAppLockIfNeeded() {
         if (!AppLockManager.isPinEnabled()) return
         if (AuthManager.getUserId(this) == null) return
@@ -657,17 +690,20 @@ abstract class BaseActivity : AppCompatActivity() {
 
         AppLockManager.lock()
 
-        startActivity(Intent(this, LockActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
+        startActivity(
+            Intent(this, LockActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            },
+        )
     }
 
     private fun updateMonthSelector() {
         // Only used in non‑rail mode
         if (!useRail && this::monthSelectorBinding.isInitialized) {
-            val currentIndex = allMonths.indexOfFirst {
-                it.year == selectedMonth.year && it.month == selectedMonth.month
-            }
+            val currentIndex =
+                allMonths.indexOfFirst {
+                    it.year == selectedMonth.year && it.month == selectedMonth.month
+                }
             if (currentIndex >= 0) {
                 monthSelectorBinding.monthSpinner.setSelection(currentIndex)
             }
@@ -702,11 +738,17 @@ abstract class BaseActivity : AppCompatActivity() {
     // Navigation methods (to be overridden by subclasses)
     // ----------------------------------------------------------------------
     protected open fun navigateToHome() {}
+
     protected open fun navigateToFinances() {}
+
     protected open fun navigateToSavings() {}
+
     protected open fun navigateToExpenses() {}
+
     protected open fun navigateToSpending() {}
+
     protected open fun navigateToCalendar() {}
+
     protected open fun navigateToSettings() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }

@@ -77,8 +77,9 @@ import timber.log.Timber
 import java.util.Calendar
 import kotlin.math.abs
 
-class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
-
+class IncomeExpensesActivity :
+    BaseActivity(),
+    MonthChangeListener {
     override val currentNavDestination: NavDestination
         get() = NavDestination.FINANCES
     private lateinit var binding: ActivityIncomeExpensesBinding
@@ -99,10 +100,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     private val tipEntryHolders = mutableListOf<TipEntryHolder>()
 
     // Simple data class for income rows
-    data class IncomeRow(val timeFrame: String, val weekNumber: Int)
+    data class IncomeRow(
+        val timeFrame: String,
+        val weekNumber: Int,
+    )
 
     // ViewHolder for income rows (read‑only)
-    class IncomeRowHolder(rowView: View) {
+    class IncomeRowHolder(
+        rowView: View,
+    ) {
         val tvTimeFrame: TextView = rowView.findViewById(R.id.tvTimeFrame)
         val tvSource: TextView = rowView.findViewById(R.id.tvSource)
         val tvAmount: TextView = rowView.findViewById(R.id.tvAmount)
@@ -113,7 +119,9 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         var frequency: Frequency = Frequency.MONTHLY
     }
 
-    class TipEntryHolder(itemView: View) {
+    class TipEntryHolder(
+        itemView: View,
+    ) {
         val tvSource: TextView = itemView.findViewById(R.id.tvTipSource)
         val tvAmount: TextView = itemView.findViewById(R.id.tvTipAmount)
         val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditTip)
@@ -129,24 +137,35 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         Timber.d("Month changed to: ${month.getDisplayName(this)}")
         viewModel.updateMonth(month)
     }
-    private fun createSimpleTextWatcher(onTextChanged: (s: CharSequence?) -> Unit): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+    private fun createSimpleTextWatcher(onTextChanged: (s: CharSequence?) -> Unit): TextWatcher =
+        object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int,
+            ) {}
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int,
+            ) {
                 onTextChanged(s)
             }
+
             override fun afterTextChanged(s: Editable?) {}
         }
-    }
-
 
     private fun currencyInputFilters(): Array<InputFilter> {
         val locale = resources.configuration.locales[0]
         return arrayOf(
             DecimalDigitsInputFilter(
                 CurrencyPrefs.currentFractionDigits,
-                CurrencyPrefs.decimalSeparators(locale)
-            )
+                CurrencyPrefs.decimalSeparators(locale),
+            ),
         )
     }
 
@@ -157,8 +176,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
     private fun getCurrentFrequency(): Frequency = currentMonthFrequency
 
-    private fun String.toFrequencyOrDefault(): Frequency =
-        runCatching { Frequency.valueOf(this) }.getOrDefault(Frequency.MONTHLY)
+    private fun String.toFrequencyOrDefault(): Frequency = runCatching { Frequency.valueOf(this) }.getOrDefault(Frequency.MONTHLY)
 
     // ==================== LIFECYCLE ====================
 
@@ -174,19 +192,24 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         snapHelper?.attachToRecyclerView(binding.categoriesRecyclerView)
 
         // Add scroll listener to track current category
-        binding.categoriesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    snapHelper?.findSnapView(layoutManager)?.let { snapView ->
-                        val position = layoutManager.getPosition(snapView)
-                        if (categoriesList.isNotEmpty()) {
-                            currentCategoryIndex = position % categoriesList.size
+        binding.categoriesRecyclerView.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(
+                    recyclerView: RecyclerView,
+                    newState: Int,
+                ) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        snapHelper?.findSnapView(layoutManager)?.let { snapView ->
+                            val position = layoutManager.getPosition(snapView)
+                            if (categoriesList.isNotEmpty()) {
+                                currentCategoryIndex = position % categoriesList.size
+                            }
                         }
                     }
                 }
-            }
-        })
+            },
+        )
 
         binding.categoriesRecyclerView.itemAnimator = null
 
@@ -263,7 +286,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                         isProgrammaticTipsChange = true
                         binding.checkBoxTips.isChecked = settings.tipsEnabled
                     }
-                    
+
                     if (settings.tipsEnabled) {
                         binding.tipsSectionContainer.visibility = View.VISIBLE
                         rebuildTipsGrid(viewModel.tipsList.value)
@@ -304,11 +327,12 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
                     // Error message that might have dynamic content
                     is UiEvent.ShowError -> {
-                        val message = if (!event.errorMessage.isNullOrBlank()) {
-                            getString(event.errorResId, event.errorMessage)
-                        } else {
-                            getString(event.errorResId)
-                        }
+                        val message =
+                            if (!event.errorMessage.isNullOrBlank()) {
+                                getString(event.errorResId, event.errorMessage)
+                            } else {
+                                getString(event.errorResId)
+                            }
                         showSnackbar(message)
                     }
 
@@ -318,13 +342,14 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                             inflater = layoutInflater,
                             context = this@IncomeExpensesActivity,
                             title = getString(R.string.savings_allocation_conflict_title),
-                            message = getString(
-                                R.string.savings_allocation_conflict_message,
-                                event.distributedTotal.toCurrencyDisplay(resources)
-                            ),
+                            message =
+                                getString(
+                                    R.string.savings_allocation_conflict_message,
+                                    event.distributedTotal.toCurrencyDisplay(resources),
+                                ),
                             positiveButton = getString(R.string.ok),
                             negativeButton = null,
-                            onPositive = { /* do nothing, just dismiss */ }
+                            onPositive = { /* do nothing, just dismiss */ },
                         ).show()
                     }
                 }
@@ -396,8 +421,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     }
 
     override fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SettingsActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     // ==================== FREQUENCY SPINNER ====================
@@ -410,21 +437,26 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         // so that frequencyDisplayNames[0] = "Monthly" (translated), etc.
 
         // 2. Adapter with localized strings
-        val adapter = object : ArrayAdapter<String>(
-            this,
-            R.layout.spinner_closed,
-            android.R.id.text1,
-            frequencyDisplayNames
-        ) {
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = layoutInflater.inflate(R.layout.spinner_dropdown_item, parent, false)
-                val textView = view.findViewById<TextView>(android.R.id.text1)
-                textView.text = getItem(position)
-                val divider = view.findViewById<View>(R.id.divider)
-                divider.visibility = if (position == count - 1) View.GONE else View.VISIBLE
-                return view
+        val adapter =
+            object : ArrayAdapter<String>(
+                this,
+                R.layout.spinner_closed,
+                android.R.id.text1,
+                frequencyDisplayNames,
+            ) {
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: ViewGroup,
+                ): View {
+                    val view = layoutInflater.inflate(R.layout.spinner_dropdown_item, parent, false)
+                    val textView = view.findViewById<TextView>(android.R.id.text1)
+                    textView.text = getItem(position)
+                    val divider = view.findViewById<View>(R.id.divider)
+                    divider.visibility = if (position == count - 1) View.GONE else View.VISIBLE
+                    return view
+                }
             }
-        }
 
         binding.spinnerFrequency.adapter = adapter
         binding.spinnerFrequency.setOnTouchListener { _, event ->
@@ -434,86 +466,93 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             false
         }
 
-        binding.spinnerFrequency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-                if (isProgrammaticChange) {
-                    isProgrammaticChange = false
+        binding.spinnerFrequency.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    pos: Int,
+                    id: Long,
+                ) {
+                    if (isProgrammaticChange) {
+                        isProgrammaticChange = false
+                        isUserFrequencySelection = false
+                        return
+                    }
+
+                    if (!isUserFrequencySelection) {
+                        return
+                    }
                     isUserFrequencySelection = false
-                    return
-                }
 
-                if (!isUserFrequencySelection) {
-                    return
-                }
-                isUserFrequencySelection = false
+                    // 3. Map the selected position directly to Frequency enum (order matches)
+                    val newFrequency = Frequency.entries[pos]
+                    val previous = currentMonthFrequency
 
-                // 3. Map the selected position directly to Frequency enum (order matches)
-                val newFrequency = Frequency.entries[pos]
-                val previous = currentMonthFrequency
+                    if (previousFrequency == null) {
+                        currentMonthFrequency = newFrequency
+                        previousFrequency = newFrequency
+                        viewModel.updatePayFrequency(newFrequency)
+                        viewModel.setSelectedPayFrequency(newFrequency)
+                        val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
+                        rebuildIncomeRows(newFrequency, currentIncomes)
+                        return
+                    }
 
-                if (previousFrequency == null) {
-                    currentMonthFrequency = newFrequency
-                    previousFrequency = newFrequency
-                    viewModel.updatePayFrequency(newFrequency)
-                    viewModel.setSelectedPayFrequency(newFrequency)
-                    val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
-                    rebuildIncomeRows(newFrequency, currentIncomes)
-                    return
-                }
+                    if (newFrequency == previous) {
+                        val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
+                        rebuildIncomeRows(newFrequency, currentIncomes)
+                        return
+                    }
 
-                if (newFrequency == previous) {
-                    val currentIncomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
-                    rebuildIncomeRows(newFrequency, currentIncomes)
-                    return
-                }
-
-                val incomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
-                val regularIncomes = incomes.filterNot { it.isTips }
-                if (regularIncomes.isEmpty()) {
-                    currentMonthFrequency = newFrequency
-                    previousFrequency = newFrequency
-                    viewModel.updatePayFrequency(newFrequency)
-                    viewModel.setSelectedPayFrequency(newFrequency)
-                    rebuildIncomeRows(newFrequency, emptyList())
-                    return
-                }
-
-                val dialog = showBudgetBrewerDialog(
-                    inflater = layoutInflater,
-                    context = this@IncomeExpensesActivity,
-                    title = getString(R.string.change_frequency_title),
-                    message = getString(R.string.change_frequency_message),
-                    positiveButton = getString(R.string.ok),
-                    negativeButton = getString(R.string.cancel)
-                )
-
-                dialog.setOnShowListener {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        viewModel.deleteIncomesNotOfFrequency(newFrequency)
+                    val incomes = (viewModel.uiState.value as? IncomeExpensesUiState.Success)?.incomes ?: emptyList()
+                    val regularIncomes = incomes.filterNot { it.isTips }
+                    if (regularIncomes.isEmpty()) {
                         currentMonthFrequency = newFrequency
                         previousFrequency = newFrequency
                         viewModel.updatePayFrequency(newFrequency)
                         viewModel.setSelectedPayFrequency(newFrequency)
                         rebuildIncomeRows(newFrequency, emptyList())
-                        dialog.dismiss()
+                        return
                     }
 
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-                        isProgrammaticChange = true
-                        isUserFrequencySelection = false
-                        // 4. Restore previous selection using its display name
-                        val previousDisplayName = getFrequencyDisplayName(previous)
-                        val previousPosition = frequencyDisplayNames.indexOf(previousDisplayName)
-                        binding.spinnerFrequency.setSelection(previousPosition)
-                        dialog.dismiss()
+                    val dialog =
+                        showBudgetBrewerDialog(
+                            inflater = layoutInflater,
+                            context = this@IncomeExpensesActivity,
+                            title = getString(R.string.change_frequency_title),
+                            message = getString(R.string.change_frequency_message),
+                            positiveButton = getString(R.string.ok),
+                            negativeButton = getString(R.string.cancel),
+                        )
+
+                    dialog.setOnShowListener {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                            viewModel.deleteIncomesNotOfFrequency(newFrequency)
+                            currentMonthFrequency = newFrequency
+                            previousFrequency = newFrequency
+                            viewModel.updatePayFrequency(newFrequency)
+                            viewModel.setSelectedPayFrequency(newFrequency)
+                            rebuildIncomeRows(newFrequency, emptyList())
+                            dialog.dismiss()
+                        }
+
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+                            isProgrammaticChange = true
+                            isUserFrequencySelection = false
+                            // 4. Restore previous selection using its display name
+                            val previousDisplayName = getFrequencyDisplayName(previous)
+                            val previousPosition = frequencyDisplayNames.indexOf(previousDisplayName)
+                            binding.spinnerFrequency.setSelection(previousPosition)
+                            dialog.dismiss()
+                        }
                     }
+
+                    dialog.show()
                 }
 
-                dialog.show()
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
     }
 
     // 5. Helper to get the localized display name for a Frequency enum
@@ -524,25 +563,32 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
     // ==================== INCOME ROWS ====================
 
-    private fun rebuildIncomeRows(frequency: Frequency, incomes: List<Income>) {
-        val rows = when (frequency) {
-            Frequency.MONTHLY -> listOf(
-                IncomeRow(getString(R.string.monthly_income), 1),
-                IncomeRow(getString(R.string.other_income), 2)
-            )
-            Frequency.BIWEEKLY -> listOf(
-                IncomeRow(getString(R.string.weeks_1_2), 1),
-                IncomeRow(getString(R.string.weeks_3_4), 2),
-                IncomeRow(getString(R.string.week_5_other), 3)
-            )
-            Frequency.WEEKLY -> listOf(
-                IncomeRow(getString(R.string.week_1), 1),
-                IncomeRow(getString(R.string.week_2), 2),
-                IncomeRow(getString(R.string.week_3), 3),
-                IncomeRow(getString(R.string.week_4), 4),
-                IncomeRow(getString(R.string.week_5), 5)
-            )
-        }
+    private fun rebuildIncomeRows(
+        frequency: Frequency,
+        incomes: List<Income>,
+    ) {
+        val rows =
+            when (frequency) {
+                Frequency.MONTHLY ->
+                    listOf(
+                        IncomeRow(getString(R.string.monthly_income), 1),
+                        IncomeRow(getString(R.string.other_income), 2),
+                    )
+                Frequency.BIWEEKLY ->
+                    listOf(
+                        IncomeRow(getString(R.string.weeks_1_2), 1),
+                        IncomeRow(getString(R.string.weeks_3_4), 2),
+                        IncomeRow(getString(R.string.week_5_other), 3),
+                    )
+                Frequency.WEEKLY ->
+                    listOf(
+                        IncomeRow(getString(R.string.week_1), 1),
+                        IncomeRow(getString(R.string.week_2), 2),
+                        IncomeRow(getString(R.string.week_3), 3),
+                        IncomeRow(getString(R.string.week_4), 4),
+                        IncomeRow(getString(R.string.week_5), 5),
+                    )
+            }
 
         binding.incomeFieldsContainer.removeAllViews()
         rows.forEach { row ->
@@ -566,14 +612,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 holder.btnEdit.setOnClickListener { showEditIncomeDialog(existing) }
                 holder.btnDelete.setOnClickListener { viewModel.deleteIncome(existing) }
 
-                rowView.contentDescription = buildString {
-                    append(row.timeFrame)
-                    append(", ")
-                    append(existing.sourceName)
-                    append(", ")
-                    append(existing.amount.toCurrencyDisplay(rowView.resources))
-                    append(", double tap to edit or delete")
-                }
+                rowView.contentDescription =
+                    buildString {
+                        append(row.timeFrame)
+                        append(", ")
+                        append(existing.sourceName)
+                        append(", ")
+                        append(existing.amount.toCurrencyDisplay(rowView.resources))
+                        append(", double tap to edit or delete")
+                    }
             } else {
                 holder.tvSource.visibility = View.GONE
                 holder.tvAmount.visibility = View.GONE
@@ -583,10 +630,11 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
                 holder.btnAdd.setOnClickListener { showAddIncomeDialog(row.weekNumber) }
 
-                rowView.contentDescription = buildString {
-                    append(row.timeFrame)
-                    append(", no income added, double tap to add")
-                }
+                rowView.contentDescription =
+                    buildString {
+                        append(row.timeFrame)
+                        append(", no income added, double tap to add")
+                    }
             }
 
             rowView.tag = holder
@@ -608,15 +656,16 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 rebuildTipsGrid(viewModel.tipsList.value)
                 viewModel.updateTipsEnabled(true)
             } else {
-                val dialog = showBudgetBrewerDialog(
-                    inflater = layoutInflater,
-                    context = this,
-                    title = getString(R.string.tips_misc),
-                    message = getString(R.string.tips_delete_warning),
-                    positiveButton = getString(R.string.yes),
-                    negativeButton = getString(R.string.no),
-                    onPositive = { } // Override this in the listener
-                )
+                val dialog =
+                    showBudgetBrewerDialog(
+                        inflater = layoutInflater,
+                        context = this,
+                        title = getString(R.string.tips_misc),
+                        message = getString(R.string.tips_delete_warning),
+                        positiveButton = getString(R.string.yes),
+                        negativeButton = getString(R.string.no),
+                        onPositive = { }, // Override this in the listener
+                    )
 
                 dialog.setOnShowListener {
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
@@ -668,17 +717,18 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                     message = getString(R.string.delete_tip_confirm),
                     positiveButton = getString(R.string.delete),
                     negativeButton = getString(R.string.cancel),
-                    onPositive = { viewModel.deleteTip(tip) }
+                    onPositive = { viewModel.deleteTip(tip) },
                 ).show()
             }
 
-            entryView.contentDescription = buildString {
-                append("Tip, ")
-                append(tip.sourceName)
-                append(", ")
-                append(tip.amount.toCurrencyDisplay(entryView.resources))
-                append(", double tap to edit or delete")
-            }
+            entryView.contentDescription =
+                buildString {
+                    append("Tip, ")
+                    append(tip.sourceName)
+                    append(", ")
+                    append(tip.amount.toCurrencyDisplay(entryView.resources))
+                    append(", double tap to edit or delete")
+                }
 
             tipEntryHolders.add(holder)
             binding.tipsContainer.addView(entryView)
@@ -687,55 +737,71 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     }
 
     private fun updateAddTipButtonVisibility() {
-        binding.btnAddTip.visibility = if (tipEntryHolders.size < Constants.MAX_TIPS && binding.checkBoxTips.isChecked) View.VISIBLE else View.GONE
+        binding.btnAddTip.visibility =
+            if (tipEntryHolders.size < Constants.MAX_TIPS && binding.checkBoxTips.isChecked) View.VISIBLE else View.GONE
     }
 
     // ==================== INCOME DIALOGS ====================
 
     private fun showAddIncomeDialog(weekNumber: Int) {
         @SuppressLint("InflateParams")
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null,false)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_income, null, false)
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
         val tvSourceCounter = dialogView.findViewById<TextView>(R.id.tvSourceCounter)
         tvSourceCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
-        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.add_income_dialog_title),
-            view = dialogView,
-            positiveButton = getString(R.string.add),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.add_income_dialog_title),
+                view = dialogView,
+                positiveButton = getString(R.string.add),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             addButton.isEnabled = false
 
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val source = etSource.text.toString()
-                    tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+            val textWatcher =
+                object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {}
 
-                    val amount = etAmount.text.toString().toAmountOrNull(resources)
-                    val amountValid = amount != null && ValidationUtils.isValidAmount(amount)
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {
+                        val source = etSource.text.toString()
+                        tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
 
-                    if (amount != null && !ValidationUtils.isValidAmount(amount)) {
-                        tvAmountError.text = getString(R.string.amount_exceeds_maximum)
-                        tvAmountError.visibility = View.VISIBLE
-                    } else {
-                        tvAmountError.visibility = View.INVISIBLE
+                        val amount = etAmount.text.toString().toAmountOrNull(resources)
+                        val amountValid = amount != null && ValidationUtils.isValidAmount(amount)
+
+                        if (amount != null && !ValidationUtils.isValidAmount(amount)) {
+                            tvAmountError.text = getString(R.string.amount_exceeds_maximum)
+                            tvAmountError.visibility = View.VISIBLE
+                        } else {
+                            tvAmountError.visibility = View.INVISIBLE
+                        }
+
+                        addButton.isEnabled = source.isNotBlank() && amountValid
                     }
 
-                    addButton.isEnabled = source.isNotBlank() && amountValid
+                    override fun afterTextChanged(s: Editable?) {}
                 }
-                override fun afterTextChanged(s: Editable?) {}
-            }
             etSource.addTextChangedListener(textWatcher)
             etAmount.addTextChangedListener(textWatcher)
 
@@ -758,7 +824,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val etSource = dialogView.findViewById<EditText>(R.id.etIncomeSource)
         val tvSourceCounter = dialogView.findViewById<TextView>(R.id.tvSourceCounter)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
-        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
         etSource.setText(ValidationUtils.sanitizeString(income.sourceName))
@@ -768,14 +835,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val originalSource = income.sourceName
         val originalAmount = income.amount
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.edit_income_dialog_title),
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.edit_income_dialog_title),
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         fun validate() {
             val source = etSource.text.toString().trim()
@@ -794,15 +862,28 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = changed && amountValid
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val source = etSource.text.toString()
-                tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
-                validate()
+        val textWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    val source = etSource.text.toString()
+                    tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
             }
-            override fun afterTextChanged(s: Editable?) {}
-        }
         etSource.addTextChangedListener(textWatcher)
         etAmount.addTextChangedListener(textWatcher)
 
@@ -831,43 +912,58 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val tvSourceCounter = dialogView.findViewById<TextView>(R.id.tvSourceCounter)
         tvSourceCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
-        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.add_tip_dialog_title),
-            view = dialogView,
-            positiveButton = getString(R.string.add),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.add_tip_dialog_title),
+                view = dialogView,
+                positiveButton = getString(R.string.add),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             addButton.isEnabled = false
 
-            val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val source = etSource.text.toString()
-                    tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+            val textWatcher =
+                object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {}
 
-                    val amount = etAmount.text.toString().toAmountOrNull(resources)
-                    val amountValid = amount != null && ValidationUtils.isValidAmount(amount)
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {
+                        val source = etSource.text.toString()
+                        tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
 
-                    if (amount != null && !ValidationUtils.isValidAmount(amount)) {
-                        tvAmountError.text = getString(R.string.amount_exceeds_maximum)
-                        tvAmountError.visibility = View.VISIBLE
-                    } else {
-                        tvAmountError.visibility = View.INVISIBLE
+                        val amount = etAmount.text.toString().toAmountOrNull(resources)
+                        val amountValid = amount != null && ValidationUtils.isValidAmount(amount)
+
+                        if (amount != null && !ValidationUtils.isValidAmount(amount)) {
+                            tvAmountError.text = getString(R.string.amount_exceeds_maximum)
+                            tvAmountError.visibility = View.VISIBLE
+                        } else {
+                            tvAmountError.visibility = View.INVISIBLE
+                        }
+
+                        addButton.isEnabled = source.isNotBlank() && amountValid
                     }
 
-                    addButton.isEnabled = source.isNotBlank() && amountValid
+                    override fun afterTextChanged(s: Editable?) {}
                 }
-                override fun afterTextChanged(s: Editable?) {}
-            }
             etSource.addTextChangedListener(textWatcher)
             etAmount.addTextChangedListener(textWatcher)
 
@@ -890,7 +986,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val etSource = dialogView.findViewById<EditText>(R.id.etTipSource)
         val tvSourceCounter = dialogView.findViewById<TextView>(R.id.tvSourceCounter)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
-        etSource.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etSource.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
         etSource.setText(ValidationUtils.sanitizeString(tip.sourceName))
@@ -900,14 +997,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val originalSource = tip.sourceName
         val originalAmount = tip.amount
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.edit_tip_dialog_title),
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.edit_tip_dialog_title),
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         fun validate() {
             val source = etSource.text.toString().trim()
@@ -926,15 +1024,28 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = changed && amountValid
         }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val source = etSource.text.toString()
-                tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
-                validate()
+        val textWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    val source = etSource.text.toString()
+                    tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
             }
-            override fun afterTextChanged(s: Editable?) {}
-        }
         etSource.addTextChangedListener(textWatcher)
         etAmount.addTextChangedListener(textWatcher)
 
@@ -962,7 +1073,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             if (state is IncomeExpensesUiState.Success) {
                 if (state.categories.size >= Constants.MAX_CATEGORIES) {
                     showSnackbar(getString(R.string.max_categories_reached, Constants.MAX_CATEGORIES))
-            } else {
+                } else {
                     showAddCategoryDialog()
                 }
             }
@@ -973,24 +1084,28 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_category, null, false)
         val etName = dialogView.findViewById<EditText>(R.id.etCategoryName)
-        etName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etName.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.add_category_title),
-            view = dialogView,
-            positiveButton = getString(R.string.add),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.add_category_title),
+                view = dialogView,
+                positiveButton = getString(R.string.add),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             addButton.isEnabled = false
 
-            etName.addTextChangedListener(createSimpleTextWatcher {
-                addButton.isEnabled = !it.isNullOrBlank()
-            })
+            etName.addTextChangedListener(
+                createSimpleTextWatcher {
+                    addButton.isEnabled = !it.isNullOrBlank()
+                },
+            )
 
             addButton.setOnClickListener {
                 val name = etName.text.toString().trim()
@@ -1008,30 +1123,48 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_category, null, false)
         val etName = dialogView.findViewById<EditText>(R.id.etCategoryName)
-        etName.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etName.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         etName.setText(ValidationUtils.sanitizeString(category.name))
 
         val originalName = category.name
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.edit_category_title),
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.edit_category_title),
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         fun validate() {
             val newName = etName.text.toString().trim()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = newName.isNotEmpty() && newName != originalName
         }
 
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validate() }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        etName.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            },
+        )
 
         dialog.setOnShowListener {
             validate()
@@ -1049,15 +1182,16 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
     }
 
     private fun showDeleteCategoryDialog(category: ExpenseCategory) {
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.delete_category_title),
-            message = getString(R.string.delete_category_message, category.name),
-            positiveButton = getString(R.string.delete),
-            negativeButton = getString(R.string.cancel),
-            onPositive = { viewModel.deleteCategory(category) }
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.delete_category_title),
+                message = getString(R.string.delete_category_message, category.name),
+                positiveButton = getString(R.string.delete),
+                negativeButton = getString(R.string.cancel),
+                onPositive = { viewModel.deleteCategory(category) },
+            )
 
         // Need to handle the custom button behavior
         dialog.setOnShowListener {
@@ -1079,7 +1213,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val tvDescriptionCounter = dialogView.findViewById<TextView>(R.id.tvDescriptionCounter)
         tvDescriptionCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
-        etDescription.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etDescription.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
@@ -1110,14 +1245,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         etEveryXDays.inputType = InputType.TYPE_CLASS_NUMBER
         etEveryXDays.filters = arrayOf(ValidationUtils.getLengthFilter(3))
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.add_expense_title, category.name),
-            view = dialogView,
-            positiveButton = getString(R.string.add),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.add_expense_title, category.name),
+                view = dialogView,
+                positiveButton = getString(R.string.add),
+                negativeButton = getString(R.string.cancel),
+            )
 
         fun validateAndEnable() {
             val addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE) ?: return
@@ -1201,7 +1337,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
@@ -1214,17 +1350,23 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 val date = selectedDate
                 if (!ValidationUtils.isValidName(description)) return@setOnClickListener
                 if (date != null && description.isNotEmpty()) {
-                    val recurrenceType = if (cbRecurring.isChecked) {
-                        when {
-                            radioMonthly.isChecked -> RecurrenceType.MONTHLY_SAME_DAY
-                            radioEveryX.isChecked -> RecurrenceType.EVERY_X_DAYS
-                            else -> RecurrenceType.NONE
+                    val recurrenceType =
+                        if (cbRecurring.isChecked) {
+                            when {
+                                radioMonthly.isChecked -> RecurrenceType.MONTHLY_SAME_DAY
+                                radioEveryX.isChecked -> RecurrenceType.EVERY_X_DAYS
+                                else -> RecurrenceType.NONE
+                            }
+                        } else {
+                            RecurrenceType.NONE
                         }
-                    } else RecurrenceType.NONE
 
-                    val interval = if (recurrenceType == RecurrenceType.EVERY_X_DAYS) {
-                        etEveryXDays.text.toString().toIntOrNull()
-                    } else null
+                    val interval =
+                        if (recurrenceType == RecurrenceType.EVERY_X_DAYS) {
+                            etEveryXDays.text.toString().toIntOrNull()
+                        } else {
+                            null
+                        }
 
                     viewModel.addExpense(category.id, description, amount, date, recurrenceType, interval)
                     dialog.dismiss()
@@ -1242,7 +1384,8 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val tvDescriptionCounter = dialogView.findViewById<TextView>(R.id.tvDescriptionCounter)
         val tvAmountError = dialogView.findViewById<TextView>(R.id.tvAmountError)
         val tvRecurrenceError = dialogView.findViewById<TextView>(R.id.tvRecurrenceError)
-        etDescription.filters = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+        etDescription.filters =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
         val btnSelectDate = dialogView.findViewById<Button>(R.id.btnSelectDate)
@@ -1295,30 +1438,33 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         etEveryXDays.inputType = InputType.TYPE_CLASS_NUMBER
         etEveryXDays.filters = arrayOf(ValidationUtils.getLengthFilter(3))
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = getString(R.string.edit_expense_title),
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = getString(R.string.edit_expense_title),
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
-        fun getCurrentRecurrenceType(): RecurrenceType {
-            return if (cbRecurring.isChecked) {
+        fun getCurrentRecurrenceType(): RecurrenceType =
+            if (cbRecurring.isChecked) {
                 when {
                     radioMonthly.isChecked -> RecurrenceType.MONTHLY_SAME_DAY
                     radioEveryX.isChecked -> RecurrenceType.EVERY_X_DAYS
                     else -> RecurrenceType.NONE
                 }
-            } else RecurrenceType.NONE
-        }
+            } else {
+                RecurrenceType.NONE
+            }
 
-        fun getCurrentInterval(): Int? {
-            return if (getCurrentRecurrenceType() == RecurrenceType.EVERY_X_DAYS) {
+        fun getCurrentInterval(): Int? =
+            if (getCurrentRecurrenceType() == RecurrenceType.EVERY_X_DAYS) {
                 etEveryXDays.text.toString().toIntOrNull()
-            } else null
-        }
+            } else {
+                null
+            }
 
         fun validate() {
             val description = etDescription.text.toString()
@@ -1360,14 +1506,19 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             val currentRecurrence = getCurrentRecurrenceType()
             val currentInterval = getCurrentInterval()
 
-            val changed = descriptionTrimmed != originalDescription ||
+            val changed =
+                descriptionTrimmed != originalDescription ||
                     amount != originalAmount ||
                     selectedDate != originalDate ||
                     currentRecurrence != originalRecurrenceType ||
                     currentInterval != originalInterval
 
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                descriptionValid && amountValid && dateValid && recurrenceValid && changed
+                descriptionValid &&
+                amountValid &&
+                dateValid &&
+                recurrenceValid &&
+                changed
         }
 
         // Set up listeners
@@ -1381,21 +1532,69 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             validate()
         }
 
-        etDescription.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validate() }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-        etAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validate() }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-        etEveryXDays.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { validate() }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        etDescription.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            },
+        )
+        etAmount.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            },
+        )
+        etEveryXDays.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    validate()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            },
+        )
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.radioEveryX) {
@@ -1423,7 +1622,7 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.DAY_OF_MONTH),
             ).show()
         }
 
@@ -1437,13 +1636,14 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 if (date != null && description.isNotEmpty() && amount >= 0) {
                     val recurrenceType = getCurrentRecurrenceType()
                     val interval = getCurrentInterval()
-                    val updatedExpense = expense.copy(
-                        description = description,
-                        amount = amount,
-                        dueDate = date,
-                        recurrenceType = recurrenceType,
-                        recurrenceInterval = interval
-                    )
+                    val updatedExpense =
+                        expense.copy(
+                            description = description,
+                            amount = amount,
+                            dueDate = date,
+                            recurrenceType = recurrenceType,
+                            recurrenceInterval = interval,
+                        )
                     viewModel.updateExpense(updatedExpense)
                     dialog.dismiss()
                 }
@@ -1455,7 +1655,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
     // ==================== ALLOCATION SECTION ====================
 
-    private fun showAllocationDialog(type: AllocationType, existingAmount: Double = 0.0) {
+    private fun showAllocationDialog(
+        type: AllocationType,
+        existingAmount: Double = 0.0,
+    ) {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_allocation, null, false)
         val etAmount = dialogView.findViewById<EditText>(R.id.etAllocationAmount)
@@ -1463,14 +1666,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         val tvError = dialogView.findViewById<TextView>(R.id.tvAllocationError)
         if (existingAmount > 0) etAmount.setText(existingAmount.toCurrencyEdit(resources))
 
-        val dialog = showBudgetBrewerDialog(
-            inflater = layoutInflater,
-            context = this,
-            title = type.displayName,
-            view = dialogView,
-            positiveButton = getString(R.string.save),
-            negativeButton = getString(R.string.cancel)
-        )
+        val dialog =
+            showBudgetBrewerDialog(
+                inflater = layoutInflater,
+                context = this,
+                title = type.displayName,
+                view = dialogView,
+                positiveButton = getString(R.string.save),
+                negativeButton = getString(R.string.cancel),
+            )
 
         dialog.setOnShowListener {
             val saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -1481,33 +1685,42 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
             val totalExpenses = state?.expenses?.sumOf { it.amount } ?: 0.0
             val leftover = totalIncome - totalExpenses
             val allocation = viewModel.allocation.value
-            val otherAllocated = when (type) {
-                AllocationType.Savings -> allocation?.spendingAmount ?: 0.0
-                else -> allocation?.savingsAmount ?: 0.0
-            }
-
-            etAmount.addTextChangedListener(createSimpleTextWatcher { s ->
-                val input = s.toString().trim()
-                val amount = input.toAmountOrNull(resources)
-
-                val isValid = amount != null && amount > 0.0
-                val withinLimit = amount != null && (amount + otherAllocated) <= leftover + Constants.EPSILON
-
-                saveButton.isEnabled = isValid && withinLimit
-
-                if (amount != null && amount > 0.0 && !withinLimit) {
-                    val excess = amount + otherAllocated - leftover
-                    tvError.text = getString(
-                        R.string.allocation_exceeds_funds, excess.toCurrencyDisplay(resources)
-                    )
-                    tvError.visibility = View.VISIBLE
-                } else {
-                    tvError.visibility = View.INVISIBLE
+            val otherAllocated =
+                when (type) {
+                    AllocationType.Savings -> allocation?.spendingAmount ?: 0.0
+                    else -> allocation?.savingsAmount ?: 0.0
                 }
-            })
+
+            etAmount.addTextChangedListener(
+                createSimpleTextWatcher { s ->
+                    val input = s.toString().trim()
+                    val amount = input.toAmountOrNull(resources)
+
+                    val isValid = amount != null && amount > 0.0
+                    val withinLimit = amount != null && (amount + otherAllocated) <= leftover + Constants.EPSILON
+
+                    saveButton.isEnabled = isValid && withinLimit
+
+                    if (amount != null && amount > 0.0 && !withinLimit) {
+                        val excess = amount + otherAllocated - leftover
+                        tvError.text =
+                            getString(
+                                R.string.allocation_exceeds_funds,
+                                excess.toCurrencyDisplay(resources),
+                            )
+                        tvError.visibility = View.VISIBLE
+                    } else {
+                        tvError.visibility = View.INVISIBLE
+                    }
+                },
+            )
 
             saveButton.setOnClickListener {
-                val amount = etAmount.text.toString().trim().toAmountOrNull(resources) ?: 0.0
+                val amount =
+                    etAmount.text
+                        .toString()
+                        .trim()
+                        .toAmountOrNull(resources) ?: 0.0
                 if (type == AllocationType.Savings) {
                     viewModel.setSavingsAllocation(amount)
                 } else {
@@ -1534,11 +1747,16 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 } else {
                     viewModel.deleteSpendingAllocation()
                 }
-            }
+            },
         ).show()
     }
 
-    private fun updateAllocationRow(type: AllocationType, amount: Double, totalIncome: Double, leftover: Double) {
+    private fun updateAllocationRow(
+        type: AllocationType,
+        amount: Double,
+        totalIncome: Double,
+        leftover: Double,
+    ) {
         val placeholder = if (type == AllocationType.Savings) binding.savingsPlaceholder else binding.spendingPlaceholder
         placeholder.removeAllViews()
 
@@ -1556,14 +1774,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
                 showDeleteAllocationDialog(type)
             }
 
-            itemView.contentDescription = buildString {
-                append(type.displayName)
-                append(" allocation, ")
-                append(amount.toCurrencyDisplay(itemView.resources))
-                append(", ")
-                append(percent.toPercentDisplay(itemView.resources))
-                append(", double tap to edit or delete")
-            }
+            itemView.contentDescription =
+                buildString {
+                    append(type.displayName)
+                    append(" allocation, ")
+                    append(amount.toCurrencyDisplay(itemView.resources))
+                    append(", ")
+                    append(percent.toPercentDisplay(itemView.resources))
+                    append(", double tap to edit or delete")
+                }
 
             placeholder.addView(itemView)
         } else {
@@ -1598,20 +1817,24 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
 
         val allocated = (allocation?.savingsAmount ?: 0.0) + (allocation?.spendingAmount ?: 0.0)
 
-        val status = when {
-            totalExpenses > totalIncome -> getString(R.string.allocation_status_expenses_exceed)
-            leftover <= 0 -> getString(R.string.allocation_status_no_funds)
-            allocated > leftover + Constants.EPSILON -> getString(R.string.allocation_status_overallocated)
-            abs(allocated - leftover) < Constants.EPSILON -> getString(R.string.allocation_status_fully_allocated)
-            else -> getString(R.string.allocation_status_available)
-        }
+        val status =
+            when {
+                totalExpenses > totalIncome -> getString(R.string.allocation_status_expenses_exceed)
+                leftover <= 0 -> getString(R.string.allocation_status_no_funds)
+                allocated > leftover + Constants.EPSILON -> getString(R.string.allocation_status_overallocated)
+                abs(allocated - leftover) < Constants.EPSILON -> getString(R.string.allocation_status_fully_allocated)
+                else -> getString(R.string.allocation_status_available)
+            }
         binding.tvAllocationStatus.text = status
         binding.tvAllocationStatus.contentDescription = status
     }
 
     // ==================== CATEGORIES UI ====================
 
-    private fun updateCategoriesUI(categories: List<ExpenseCategory>, expenses: List<Expense> = emptyList()) {
+    private fun updateCategoriesUI(
+        categories: List<ExpenseCategory>,
+        expenses: List<Expense> = emptyList(),
+    ) {
         // Guard: if nothing changed and adapter exists, skip entirely
         if (categoriesList == categories && expensesList == expenses && binding.categoriesRecyclerView.adapter != null) return
         val categoriesChanged = categoriesList != categories
@@ -1680,9 +1903,10 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         } else {
             if (isLandscape) {
                 val availableWidth = screenWidth - horizontalPadding - gap
-                contentWidth = (availableWidth * 0.40f).toInt().coerceAtMost(
-                    resources.getDimensionPixelSize(R.dimen.category_card_width_land)
-                )
+                contentWidth =
+                    (availableWidth * 0.40f).toInt().coerceAtMost(
+                        resources.getDimensionPixelSize(R.dimen.category_card_width_land),
+                    )
                 halfMargin = gap / 2
             } else {
                 val extraReduction = resources.getDimensionPixelSize(R.dimen.card_width_reduction)
@@ -1704,28 +1928,29 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         previousCategoriesSize = categories.size
 
         // Create adapter (always infinite scrolling, so isGrid = false)
-        val adapter = CategoryAdapter(
-            categories = categories,
-            allExpenses = stateExpenses,
-            contentWidth = contentWidth,
-            halfMargin = halfMargin,
-            isGrid = false,
-            onEditCategory = { category -> showEditCategoryDialog(category) },
-            onDeleteCategory = { category -> showDeleteCategoryDialog(category) },
-            onAddExpense = { category ->
-                val innerState = viewModel.uiState.value
-                if (innerState is IncomeExpensesUiState.Success) {
-                    val expensesForCategory = innerState.expenses.filter { it.categoryId == category.id }
-                    if (expensesForCategory.size >= Constants.MAX_EXPENSES_PER_CATEGORY) {
-                        showSnackbar(getString(R.string.max_expenses_per_category_reached, Constants.MAX_EXPENSES_PER_CATEGORY))
-                    } else {
-                        showAddExpenseDialog(category)
+        val adapter =
+            CategoryAdapter(
+                categories = categories,
+                allExpenses = stateExpenses,
+                contentWidth = contentWidth,
+                halfMargin = halfMargin,
+                isGrid = false,
+                onEditCategory = { category -> showEditCategoryDialog(category) },
+                onDeleteCategory = { category -> showDeleteCategoryDialog(category) },
+                onAddExpense = { category ->
+                    val innerState = viewModel.uiState.value
+                    if (innerState is IncomeExpensesUiState.Success) {
+                        val expensesForCategory = innerState.expenses.filter { it.categoryId == category.id }
+                        if (expensesForCategory.size >= Constants.MAX_EXPENSES_PER_CATEGORY) {
+                            showSnackbar(getString(R.string.max_expenses_per_category_reached, Constants.MAX_EXPENSES_PER_CATEGORY))
+                        } else {
+                            showAddExpenseDialog(category)
+                        }
                     }
-                }
-            },
-            onEditExpense = { expense -> showEditExpenseDialog(expense) },
-            onDeleteExpense = { expense -> viewModel.deleteExpense(expense) }
-        )
+                },
+                onEditExpense = { expense -> showEditExpenseDialog(expense) },
+                onDeleteExpense = { expense -> viewModel.deleteExpense(expense) },
+            )
         binding.categoriesRecyclerView.adapter = adapter
 
         // Clear any existing fling listener and attach PagerSnapHelper
@@ -1734,13 +1959,15 @@ class IncomeExpensesActivity : BaseActivity(), MonthChangeListener {
         pagerSnapHelper.attachToRecyclerView(binding.categoriesRecyclerView)
 
         if (categories.isNotEmpty()) {
-            val startPosition = (Int.MAX_VALUE / 2) - ((Int.MAX_VALUE / 2) % categories.size) +
+            val startPosition =
+                (Int.MAX_VALUE / 2) - ((Int.MAX_VALUE / 2) % categories.size) +
                     (currentCategoryIndex % categories.size)
 
             binding.categoriesRecyclerView.post {
                 val layoutManager = binding.categoriesRecyclerView.layoutManager as LinearLayoutManager
                 val recyclerViewWidth = binding.categoriesRecyclerView.width
-                val contentAreaWidth = recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft - binding.categoriesRecyclerView.paddingRight
+                val contentAreaWidth =
+                    recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft - binding.categoriesRecyclerView.paddingRight
                 val itemTotalWidth = contentWidth + (halfMargin * 2)
                 val targetOffset = (contentAreaWidth - itemTotalWidth) / 2
                 layoutManager.scrollToPositionWithOffset(startPosition, targetOffset)

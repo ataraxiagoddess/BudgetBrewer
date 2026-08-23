@@ -1,9 +1,13 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.data
 
 import android.content.Context
-import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.SettingsSessionManager
+import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 
 object SupabaseClient {
@@ -16,14 +20,15 @@ object SupabaseClient {
     fun initialize(context: Context) {
         val encryptedSettings = EncryptedDataStoreSettings.getInstance(context, "supabase_auth")
 
-        client = createSupabaseClient(
-            supabaseUrl = SUPABASE_URL,
-            supabaseKey = SUPABASE_PUBLISHABLE_KEY
-        ) {
-            install(Postgrest)
-            install(Auth) {
-                sessionManager = SettingsSessionManager(encryptedSettings)
+        client =
+            createSupabaseClient(
+                supabaseUrl = SUPABASE_URL,
+                supabaseKey = SUPABASE_PUBLISHABLE_KEY,
+            ) {
+                install(Postgrest)
+                install(Auth) {
+                    sessionManager = SettingsSessionManager(encryptedSettings)
+                }
             }
-        }
     }
 }

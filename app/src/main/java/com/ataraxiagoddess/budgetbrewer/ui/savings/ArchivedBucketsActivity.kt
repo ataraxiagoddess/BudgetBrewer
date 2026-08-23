@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.app.ActivityOptions
@@ -21,7 +25,6 @@ import com.ataraxiagoddess.budgetbrewer.util.GridSpacingItemDecoration
 import kotlinx.coroutines.launch
 
 class ArchivedBucketsActivity : BaseActivity() {
-
     override val currentNavDestination: NavDestination
         get() = NavDestination.SETTINGS
 
@@ -42,11 +45,12 @@ class ArchivedBucketsActivity : BaseActivity() {
             finish()
         }
 
-        adapter = ArchivedBucketsAdapter(
-            onRestoreClick = { bucket -> viewModel.restoreBucket(bucket) },
-            onDeleteClick = { bucket -> viewModel.deleteBucket(bucket) },
-            onCardClick = { bucket -> showHistoryDialog(bucket) }
-        )
+        adapter =
+            ArchivedBucketsAdapter(
+                onRestoreClick = { bucket -> viewModel.restoreBucket(bucket) },
+                onDeleteClick = { bucket -> viewModel.deleteBucket(bucket) },
+                onCardClick = { bucket -> showHistoryDialog(bucket) },
+            )
         val isTablet = resources.getBoolean(R.bool.is_tablet)
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -59,7 +63,7 @@ class ArchivedBucketsActivity : BaseActivity() {
                     binding.recyclerView.removeItemDecorationAt(0)
                 }
                 binding.recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true)
+                    GridSpacingItemDecoration(2, spacing, true),
                 )
             }
             !isTablet && isLandscape -> {
@@ -70,7 +74,7 @@ class ArchivedBucketsActivity : BaseActivity() {
                     binding.recyclerView.removeItemDecorationAt(0)
                 }
                 binding.recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true)
+                    GridSpacingItemDecoration(2, spacing, true),
                 )
             }
             else -> {
@@ -106,17 +110,20 @@ class ArchivedBucketsActivity : BaseActivity() {
         val db = AppDatabase.getDatabase(this)
         val repository = BudgetRepository(db)
         // No edit/delete callbacks → read-only
-        val dialog = BucketHistoryDialogFragment(
-            bucketName = bucket.name,
-            bucketId = bucket.id,
-            repository = repository,
-            isArchived = true
-        )
+        val dialog =
+            BucketHistoryDialogFragment(
+                bucketName = bucket.name,
+                bucketId = bucket.id,
+                repository = repository,
+                isArchived = true,
+            )
         dialog.show(supportFragmentManager, "BucketHistory")
     }
 
     override fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SettingsActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 }

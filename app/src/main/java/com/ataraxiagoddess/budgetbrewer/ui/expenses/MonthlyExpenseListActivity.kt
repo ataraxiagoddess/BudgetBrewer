@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.expenses
 
 import android.app.ActivityOptions
@@ -27,8 +31,9 @@ import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
-
+class MonthlyExpenseListActivity :
+    BaseActivity(),
+    MonthChangeListener {
     override val currentNavDestination: NavDestination
         get() = NavDestination.EXPENSES
 
@@ -58,11 +63,12 @@ class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
     }
 
     private fun setupRecyclerView() {
-        adapter = MonthlyExpenseListAdapter(
-            onCheckboxChanged = { day, isChecked ->
-                viewModel.toggleDayChecked(day, isChecked)
-            }
-        )
+        adapter =
+            MonthlyExpenseListAdapter(
+                onCheckboxChanged = { day, isChecked ->
+                    viewModel.toggleDayChecked(day, isChecked)
+                },
+            )
 
         val isTablet = resources.getBoolean(R.bool.is_tablet)
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -149,8 +155,10 @@ class MonthlyExpenseListActivity : BaseActivity(), MonthChangeListener {
     }
 
     override fun navigateToSettings() {
-        startActivity(Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        startActivity(
+            Intent(this, SettingsActivity::class.java),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+        )
     }
 
     override fun onDestroy() {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.auth
 
 import android.content.Context
@@ -21,7 +25,6 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.launch
 
 class SignUpFragment : Fragment() {
-
     private var _binding: FragmentSignUpBinding? = null
     private val binding get() = _binding!!
 
@@ -40,13 +43,16 @@ class SignUpFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         setupPasswordToggles()
@@ -87,9 +93,11 @@ class SignUpFragment : Fragment() {
 
     private fun setupValidation() {
         // Apply length filters
-        val emailFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
-        val passwordFilter = arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
-        
+        val emailFilter =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+        val passwordFilter =
+            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+
         binding.etEmail.filters = emailFilter
         binding.etConfirmEmail.filters = emailFilter
         binding.etPassword.filters = passwordFilter
@@ -120,24 +128,50 @@ class SignUpFragment : Fragment() {
 
     private fun setupMatchValidation() {
         // Email match watcher
-        val emailWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updateEmailMatch()
+        val emailWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    updateEmailMatch()
+                }
+
+                override fun afterTextChanged(s: Editable?) {} // ← nullable Editable
             }
-            override fun afterTextChanged(s: Editable?) {}  // ← nullable Editable
-        }
         binding.etEmail.addTextChangedListener(emailWatcher)
         binding.etConfirmEmail.addTextChangedListener(emailWatcher)
 
         // Password match watcher
-        val passwordWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updatePasswordMatch()
+        val passwordWatcher =
+            object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {}
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
+                    updatePasswordMatch()
+                }
+
+                override fun afterTextChanged(s: Editable?) {} // ← nullable Editable
             }
-            override fun afterTextChanged(s: Editable?) {}  // ← nullable Editable
-        }
         binding.etPassword.addTextChangedListener(passwordWatcher)
         binding.etConfirmPassword.addTextChangedListener(passwordWatcher)
     }
@@ -181,8 +215,14 @@ class SignUpFragment : Fragment() {
     }
 
     private fun validateInputs(): Boolean {
-        val email = binding.etEmail.text.toString().trim()
-        val confirmEmail = binding.etConfirmEmail.text.toString().trim()
+        val email =
+            binding.etEmail.text
+                .toString()
+                .trim()
+        val confirmEmail =
+            binding.etConfirmEmail.text
+                .toString()
+                .trim()
         val password = binding.etPassword.text.toString()
         val confirmPassword = binding.etConfirmPassword.text.toString()
 
@@ -221,12 +261,13 @@ class SignUpFragment : Fragment() {
         return true
     }
 
-    private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+    private fun isValidEmail(email: String): Boolean =
+        android.util.Patterns.EMAIL_ADDRESS
+            .matcher(email)
+            .matches()
 
-    private fun getPasswordStrength(password: String): String {
-        return when {
+    private fun getPasswordStrength(password: String): String =
+        when {
             password.length < 8 -> getString(R.string.password_strength_weak)
             !password.matches(Regex(".*[A-Z].*")) -> getString(R.string.password_strength_weak)
             !password.matches(Regex(".*[a-z].*")) -> getString(R.string.password_strength_weak)
@@ -235,7 +276,6 @@ class SignUpFragment : Fragment() {
             password.length >= 10 -> getString(R.string.password_strength_strong)
             else -> getString(R.string.password_strength_medium)
         }
-    }
 
     private fun signUp() {
         binding.progressBar.visibility = View.VISIBLE
@@ -243,7 +283,10 @@ class SignUpFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val email = binding.etEmail.text.toString().trim()
+                val email =
+                    binding.etEmail.text
+                        .toString()
+                        .trim()
                 val password = binding.etPassword.text.toString()
 
                 SupabaseClient.client.auth.signUpWith(Email) {
@@ -253,11 +296,12 @@ class SignUpFragment : Fragment() {
 
                 (activity as? AuthActivity)?.navigateToVerifyEmail(email)
             } catch (e: Exception) {
-                val message = when {
-                    e.message?.contains("User already registered", ignoreCase = true) == true ->
-                        getString(R.string.error_user_exists)
-                    else -> getString(R.string.sign_up_failed, e.message)
-                }
+                val message =
+                    when {
+                        e.message?.contains("User already registered", ignoreCase = true) == true ->
+                            getString(R.string.error_user_exists)
+                        else -> getString(R.string.sign_up_failed, e.message)
+                    }
                 (activity as? AuthActivity)?.showSnackbar(message)
             } finally {
                 binding.progressBar.visibility = View.GONE

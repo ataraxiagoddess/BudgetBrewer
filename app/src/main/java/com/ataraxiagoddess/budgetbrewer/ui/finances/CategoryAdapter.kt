@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.finances
 
 import android.view.LayoutInflater
@@ -29,10 +33,12 @@ class CategoryAdapter(
     private val onDeleteCategory: (ExpenseCategory) -> Unit,
     private val onAddExpense: (ExpenseCategory) -> Unit,
     private val onEditExpense: (Expense) -> Unit,
-    private val onDeleteExpense: (Expense) -> Unit
+    private val onDeleteExpense: (Expense) -> Unit,
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-
-    fun updateData(categories: List<ExpenseCategory>, expenses: List<Expense>) {
+    fun updateData(
+        categories: List<ExpenseCategory>,
+        expenses: List<Expense>,
+    ) {
         this.categories = categories
         this.allExpenses = expenses
         if (isGrid) {
@@ -50,15 +56,21 @@ class CategoryAdapter(
 
     override fun getItemCount(): Int = if (isGrid) categories.size else Int.MAX_VALUE
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_category, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): CategoryViewHolder {
+        val view =
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.item_category, parent, false)
 
         if (contentWidth == ViewGroup.LayoutParams.MATCH_PARENT) {
-            view.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            view.layoutParams =
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                )
         } else {
             val lp = ViewGroup.MarginLayoutParams(contentWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
             lp.leftMargin = halfMargin
@@ -69,23 +81,29 @@ class CategoryAdapter(
         return CategoryViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: CategoryViewHolder,
+        position: Int,
+    ) {
         if (categories.isEmpty()) return
 
-        val actualPosition = if (isGrid) {
-            if (position >= categories.size) {
-                Timber.w("CategoryAdapter: Invalid grid position $position, size=${categories.size}. Clamping.")
-                categories.size - 1
+        val actualPosition =
+            if (isGrid) {
+                if (position >= categories.size) {
+                    Timber.w("CategoryAdapter: Invalid grid position $position, size=${categories.size}. Clamping.")
+                    categories.size - 1
+                } else {
+                    position
+                }
             } else {
-                position
+                position % categories.size
             }
-        } else {
-            position % categories.size
-        }
         holder.bind(categories[actualPosition])
     }
 
-    inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CategoryViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView) {
         private val tvName: TextView = itemView.findViewById(R.id.tvCategoryName)
         private val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditCategory)
         private val btnDelete: MaterialButton = itemView.findViewById(R.id.btnDeleteCategory)
@@ -98,9 +116,10 @@ class CategoryAdapter(
             btnDelete.setOnClickListener { onDeleteCategory(category) }
             btnAddExpense.setOnClickListener { onAddExpense(category) }
 
-            val categoryExpenses = allExpenses
-                .filter { it.categoryId == category.id }
-                .sortedBy { it.dueDate }
+            val categoryExpenses =
+                allExpenses
+                    .filter { it.categoryId == category.id }
+                    .sortedBy { it.dueDate }
 
             expensesContainer.removeAllViews()
             categoryExpenses.forEach { expense ->
@@ -111,8 +130,10 @@ class CategoryAdapter(
 
         private fun createExpenseView(expense: Expense): View {
             val context = itemView.context
-            val expenseView = LayoutInflater.from(context)
-                .inflate(R.layout.item_expense, expensesContainer, false)
+            val expenseView =
+                LayoutInflater
+                    .from(context)
+                    .inflate(R.layout.item_expense, expensesContainer, false)
 
             val tvDescription = expenseView.findViewById<TextView>(R.id.tvExpenseDescription)
             val tvAmount = expenseView.findViewById<TextView>(R.id.tvExpenseAmount)
@@ -136,17 +157,18 @@ class CategoryAdapter(
             btnEdit.setOnClickListener { onEditExpense(expense) }
             btnDelete.setOnClickListener { onDeleteExpense(expense) }
 
-            expenseView.contentDescription = buildString {
-                append(expense.description)
-                append(", ")
-                append(expense.amount.toCurrencyDisplay(itemView.resources))
-                append(", due ")
-                append(DateFormat.getDateInstance(DateFormat.FULL).format(Date(expense.dueDate)))
-                if (expense.recurrenceType != RecurrenceType.NONE) {
-                    append(", recurring")
+            expenseView.contentDescription =
+                buildString {
+                    append(expense.description)
+                    append(", ")
+                    append(expense.amount.toCurrencyDisplay(itemView.resources))
+                    append(", due ")
+                    append(DateFormat.getDateInstance(DateFormat.FULL).format(Date(expense.dueDate)))
+                    if (expense.recurrenceType != RecurrenceType.NONE) {
+                        append(", recurring")
+                    }
+                    append(", double tap to edit or delete")
                 }
-                append(", double tap to edit or delete")
-            }
 
             return expenseView
         }

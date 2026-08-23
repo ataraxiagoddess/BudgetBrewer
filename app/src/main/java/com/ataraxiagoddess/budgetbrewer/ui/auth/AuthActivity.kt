@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.auth
 
 import android.os.Bundle
@@ -16,8 +20,9 @@ import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity.Companion.E
 import com.ataraxiagoddess.budgetbrewer.ui.settings.SettingsActivity.Companion.FRAGMENT_SIGN_UP
 import com.google.android.material.snackbar.Snackbar
 
-class AuthActivity : AppCompatActivity(), AuthNavigationListener {
-
+class AuthActivity :
+    AppCompatActivity(),
+    AuthNavigationListener {
     private lateinit var binding: ActivityAuthBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +69,10 @@ class AuthActivity : AppCompatActivity(), AuthNavigationListener {
         }
     }
 
-    fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
+    fun showSnackbar(
+        message: String,
+        duration: Int = Snackbar.LENGTH_SHORT,
+    ) {
         val snackbar = Snackbar.make(findViewById(android.R.id.content), "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view

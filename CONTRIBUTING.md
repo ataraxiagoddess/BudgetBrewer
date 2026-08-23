@@ -92,7 +92,8 @@ Keep each branch focused on one coherent change.
 
 While working:
 
-- follow the existing XML/ViewBinding architecture;
+- follow the existing XML View-system architecture, including the current mix of
+  ViewBinding and `findViewById`;
 - do not introduce Compose, Hilt, or a Navigation graph;
 - use existing styles and resources where practical;
 - add user-facing strings through Android resources;

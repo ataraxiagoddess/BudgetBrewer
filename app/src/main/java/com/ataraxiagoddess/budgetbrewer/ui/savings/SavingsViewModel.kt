@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.savings
 
 import android.content.Context
@@ -27,9 +31,8 @@ import kotlinx.coroutines.launch
 class SavingsViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context
+    private val appContext: Context,
 ) : BaseViewModel() {
-
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
     private val _uiState = MutableStateFlow<SavingsUiState>(SavingsUiState.Loading)
@@ -42,8 +45,10 @@ class SavingsViewModel(
     val bucketEvents = _bucketEvents.asSharedFlow()
 
     /** Reactive available pool – recalculates automatically when allocations or transactions change */
-    val availablePool: StateFlow<Double> = repository.getAvailableSavingsPool()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+    val availablePool: StateFlow<Double> =
+        repository
+            .getAvailableSavingsPool()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     init {
         loadData()
@@ -64,23 +69,22 @@ class SavingsViewModel(
             try {
                 combine(
                     repository.getActiveSavingsBuckets(),
-                    repository.getAllSavingsTransactionsFlow()
+                    repository.getAllSavingsTransactionsFlow(),
                 ) { buckets, transactions ->
                     val transactionCounts = transactions.groupingBy { it.bucket_id }.eachCount()
                     Pair(buckets, transactionCounts)
-                }
-                    .catch { e ->
-                        _uiState.value = SavingsUiState.Error(e.message ?: "Unknown error")
-                        emitError(R.string.error_load_data, e)
-                    }
-                    .collect { (buckets, transactionCounts) ->
-                        _uiState.value = SavingsUiState.Success(
+                }.catch { e ->
+                    _uiState.value = SavingsUiState.Error(e.message ?: "Unknown error")
+                    emitError(R.string.error_load_data, e)
+                }.collect { (buckets, transactionCounts) ->
+                    _uiState.value =
+                        SavingsUiState.Success(
                             buckets = buckets,
                             isEmpty = buckets.isEmpty(),
                             maxBucketsReached = buckets.size >= Constants.MAX_SAVINGS_BUCKETS,
-                            transactionCounts = transactionCounts
+                            transactionCounts = transactionCounts,
                         )
-                    }
+                }
             } catch (e: Exception) {
                 _uiState.value = SavingsUiState.Error(e.message ?: "Unknown error")
                 emitError(R.string.error_load_data, e)
@@ -121,7 +125,11 @@ class SavingsViewModel(
         }
     }
 
-    fun distributeFunds(bucket: SavingsBucket, amount: Double, availablePool: Double) {
+    fun distributeFunds(
+        bucket: SavingsBucket,
+        amount: Double,
+        availablePool: Double,
+    ) {
         safeLaunch(R.string.error_distribute) {
             // Validate against the provided pool (which is the current value at the time the dialog was shown)
             if (amount > availablePool && amount > 0) {
@@ -171,7 +179,10 @@ class SavingsViewModel(
         }
     }
 
-    fun editTransaction(transaction: SavingsTransaction, newAmount: Double) {
+    fun editTransaction(
+        transaction: SavingsTransaction,
+        newAmount: Double,
+    ) {
         safeLaunch(R.string.error_distribute) {
             repository.editTransactionAmount(transaction, newAmount)
             val updatedTransaction = transaction.copy(amount = newAmount)

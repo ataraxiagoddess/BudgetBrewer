@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.ui.settings
 
 import android.os.Bundle
@@ -21,7 +25,6 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class PastMonthsActivity : BaseActivity() {
-
     override val currentNavDestination: NavDestination
         get() = NavDestination.SETTINGS
 
@@ -56,12 +59,13 @@ class PastMonthsActivity : BaseActivity() {
                 pastBudgets = budgets
                 if (budgets.isEmpty()) {
                     binding.previewContainer.removeAllViews()
-                    val emptyView = TextView(this@PastMonthsActivity).apply {
-                        text = getString(R.string.no_past_months)
-                        setTextColor(getColor(R.color.text_on_main))
-                        textSize = 16f
-                        gravity = android.view.Gravity.CENTER
-                    }
+                    val emptyView =
+                        TextView(this@PastMonthsActivity).apply {
+                            text = getString(R.string.no_past_months)
+                            setTextColor(getColor(R.color.text_on_main))
+                            textSize = 16f
+                            gravity = android.view.Gravity.CENTER
+                        }
                     binding.previewContainer.addView(emptyView)
                 } else {
                     setupMonthSpinner(budgets)
@@ -72,33 +76,51 @@ class PastMonthsActivity : BaseActivity() {
 
     private fun setupMonthSpinner(budgets: List<Budget>) {
         val monthNames = budgets.map { "${it.month}/${it.year}" }
-        val adapter = object : ArrayAdapter<String>(
-            this, android.R.layout.simple_spinner_item, monthNames
-        ) {
-            override fun getView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
-                val view = super.getView(position, convertView, parent) as TextView
-                view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
-                view.setTextColor(getColor(R.color.text_on_main))
-                return view
-            }
+        val adapter =
+            object : ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                monthNames,
+            ) {
+                override fun getView(
+                    position: Int,
+                    convertView: View?,
+                    parent: android.view.ViewGroup,
+                ): View {
+                    val view = super.getView(position, convertView, parent) as TextView
+                    view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
+                    view.setTextColor(getColor(R.color.text_on_main))
+                    return view
+                }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: android.view.ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent) as TextView
-                view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
-                return view
+                override fun getDropDownView(
+                    position: Int,
+                    convertView: View?,
+                    parent: android.view.ViewGroup,
+                ): View {
+                    val view = super.getDropDownView(position, convertView, parent) as TextView
+                    view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
+                    return view
+                }
             }
-        }
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerPastMonths.adapter = adapter
         binding.spinnerPastMonths.contentDescription = getString(R.string.select_month)
 
-        binding.spinnerPastMonths.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedBudget = budgets[position]
-                loadPreview(budgets[position])
+        binding.spinnerPastMonths.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long,
+                ) {
+                    selectedBudget = budgets[position]
+                    loadPreview(budgets[position])
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
     }
 
     private fun loadPreview(budget: Budget) {
@@ -130,36 +152,44 @@ class PastMonthsActivity : BaseActivity() {
     }
 
     private fun addSectionLabel(text: String) {
-        val tv = TextView(this).apply {
-            this.text = text
-            setTextColor(getColor(R.color.text_on_main))
-            textSize = 18f
-            typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_semi_bold)
-            setPadding(0, 16, 0, 8)
-            androidx.core.view.ViewCompat.setAccessibilityHeading(this, true)
-        }
+        val tv =
+            TextView(this).apply {
+                this.text = text
+                setTextColor(getColor(R.color.text_on_main))
+                textSize = 18f
+                typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_semi_bold)
+                setPadding(0, 16, 0, 8)
+                androidx.core.view.ViewCompat
+                    .setAccessibilityHeading(this, true)
+            }
         binding.previewContainer.addView(tv)
     }
 
-    private fun addDataRow(label: String, value: String) {
-        val row = android.widget.LinearLayout(this).apply {
-            orientation = android.widget.LinearLayout.HORIZONTAL
-            setPadding(16, 8, 16, 8)
-        }
+    private fun addDataRow(
+        label: String,
+        value: String,
+    ) {
+        val row =
+            android.widget.LinearLayout(this).apply {
+                orientation = android.widget.LinearLayout.HORIZONTAL
+                setPadding(16, 8, 16, 8)
+            }
         val exoRegular = ResourcesCompat.getFont(this, R.font.exo_regular)
-        val labelTv = TextView(this).apply {
-            text = label
-            setTextColor(getColor(R.color.text_on_main))
-            textSize = 14f
-            typeface = exoRegular
-            layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-        }
-        val valueTv = TextView(this).apply {
-            text = value
-            setTextColor(getColor(R.color.text_on_main))
-            textSize = 14f
-            typeface = exoRegular
-        }
+        val labelTv =
+            TextView(this).apply {
+                text = label
+                setTextColor(getColor(R.color.text_on_main))
+                textSize = 14f
+                typeface = exoRegular
+                layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            }
+        val valueTv =
+            TextView(this).apply {
+                text = value
+                setTextColor(getColor(R.color.text_on_main))
+                textSize = 14f
+                typeface = exoRegular
+            }
         row.addView(labelTv)
         row.addView(valueTv)
         row.contentDescription = "$label, $value"

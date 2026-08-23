@@ -1,6 +1,14 @@
+/*
+ * Copyright (c) 2026 AtaraxiaGoddess. All rights reserved.
+ */
+
 package com.ataraxiagoddess.budgetbrewer.database
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.ataraxiagoddess.budgetbrewer.data.SavingsTransaction
 import com.ataraxiagoddess.budgetbrewer.data.SavingsTransactionType
 import kotlinx.coroutines.flow.Flow
@@ -29,16 +37,25 @@ interface SavingsTransactionDao {
     suspend fun getTransactionById(id: String): SavingsTransaction?
 
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId AND date = :date ORDER BY date DESC")
-    suspend fun getTransactionsByBucketAndDate(bucketId: String, date: Long): List<SavingsTransaction>
+    suspend fun getTransactionsByBucketAndDate(
+        bucketId: String,
+        date: Long,
+    ): List<SavingsTransaction>
 
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId AND date <= :endDate ORDER BY date DESC")
-    fun getTransactionsByBucketUntil(bucketId: String, endDate: Long): Flow<List<SavingsTransaction>>
+    fun getTransactionsByBucketUntil(
+        bucketId: String,
+        endDate: Long,
+    ): Flow<List<SavingsTransaction>>
 
     @Query("SELECT * FROM savings_transactions WHERE date = :date ORDER BY date DESC")
     suspend fun getTransactionsByDate(date: Long): List<SavingsTransaction>
 
     @Query("SELECT * FROM savings_transactions WHERE bucket_id = :bucketId AND type = :type ORDER BY date DESC")
-    fun getTransactionsByBucketAndType(bucketId: String, type: SavingsTransactionType): Flow<List<SavingsTransaction>>
+    fun getTransactionsByBucketAndType(
+        bucketId: String,
+        type: SavingsTransactionType,
+    ): Flow<List<SavingsTransaction>>
 
     @Query("DELETE FROM savings_transactions WHERE bucket_id = :bucketId")
     suspend fun deleteByBucketId(bucketId: String)
