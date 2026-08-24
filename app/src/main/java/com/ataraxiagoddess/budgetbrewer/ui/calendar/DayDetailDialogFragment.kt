@@ -35,7 +35,7 @@ class DayDetailDialogFragment : DialogFragment() {
 
         fun newInstance(
             dayData: DayData,
-            unassignedIncomes: List<Income>,
+            unassignedIncomes: List<Income>
         ): DayDetailDialogFragment {
             val fragment = DayDetailDialogFragment()
             val args =
@@ -53,7 +53,7 @@ class DayDetailDialogFragment : DialogFragment() {
         val expenses: List<Expense>,
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
-        val dayTotal: Double,
+        val dayTotal: Double
     ) : java.io.Serializable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +62,8 @@ class DayDetailDialogFragment : DialogFragment() {
             @Suppress("UNCHECKED_CAST")
             unassignedIncomes =
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    it.getSerializable(ARG_UNASSIGNED, ArrayList::class.java) as? ArrayList<Income> ?: arrayListOf()
+                    it.getSerializable(ARG_UNASSIGNED, ArrayList::class.java) as? ArrayList<Income>
+                        ?: arrayListOf()
                 } else {
                     @Suppress("DEPRECATION")
                     it.getSerializable(ARG_UNASSIGNED) as? ArrayList<Income> ?: arrayListOf()
@@ -89,16 +90,15 @@ class DayDetailDialogFragment : DialogFragment() {
             object : ArrayAdapter<Income>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
-                unassignedIncomes,
+                unassignedIncomes
             ) {
-                override fun getView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup,
-                ): View {
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     val view = super.getView(position, convertView, parent) as TextView
                     val income = getItem(position)
-                    view.text = income?.let { "${it.sourceName} (${it.amount.toCurrencyDisplay(resources)})" }
+                    view.text =
+                        income?.let {
+                            "${it.sourceName} (${it.amount.toCurrencyDisplay(resources)})"
+                        }
                     view.typeface = exoRegular
                     return view
                 }
@@ -106,7 +106,7 @@ class DayDetailDialogFragment : DialogFragment() {
                 override fun getDropDownView(
                     position: Int,
                     convertView: View?,
-                    parent: ViewGroup,
+                    parent: ViewGroup
                 ): View {
                     val view =
                         convertView ?: LayoutInflater
@@ -114,9 +114,14 @@ class DayDetailDialogFragment : DialogFragment() {
                             .inflate(R.layout.spinner_dropdown_item, parent, false)
                     val textView = view.findViewById<TextView>(android.R.id.text1)
                     val income = getItem(position)
-                    textView.text = income?.let { "${it.sourceName} (${it.amount.toCurrencyDisplay(resources)})" }
+                    textView.text =
+                        income?.let {
+                            "${it.sourceName} (${it.amount.toCurrencyDisplay(resources)})"
+                        }
                     textView.typeface = exoRegular
-                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_dialog))
+                    textView.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.text_on_dialog)
+                    )
                     return view
                 }
             }
@@ -129,11 +134,12 @@ class DayDetailDialogFragment : DialogFragment() {
                     layoutInflater.inflate(R.layout.dialog_title, null).apply {
                         findViewById<TextView>(R.id.dialogTitle)?.apply {
                             text = getString(R.string.assign_income)
-                            typeface = ResourcesCompat.getFont(requireContext(), R.font.exo_medium_italic)
+                            typeface =
+                                ResourcesCompat.getFont(requireContext(), R.font.exo_medium_italic)
                         }
                         androidx.core.view.ViewCompat
                             .setAccessibilityHeading(this, true)
-                    },
+                    }
                 ).setView(view)
                 .setPositiveButton(R.string.assign, null)
                 .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
@@ -151,7 +157,7 @@ class DayDetailDialogFragment : DialogFragment() {
                         parent: AdapterView<*>?,
                         view: View?,
                         position: Int,
-                        id: Long,
+                        id: Long
                     ) {
                         assignButton.isEnabled = true
                     }

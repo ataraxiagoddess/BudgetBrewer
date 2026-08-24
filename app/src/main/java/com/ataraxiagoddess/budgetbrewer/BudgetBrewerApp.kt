@@ -26,12 +26,12 @@ import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
 import com.ataraxiagoddess.budgetbrewer.util.SyncHelper
 import io.github.jan.supabase.annotations.SupabaseInternal
 import io.github.jan.supabase.auth.auth
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 class BudgetBrewerApp :
     Application(),
@@ -69,7 +69,10 @@ class BudgetBrewerApp :
         scheduleSyncWorker()
 
         val settingsPrefs = getSharedPreferences("settings", MODE_PRIVATE)
-        val themeMode = settingsPrefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val themeMode = settingsPrefs.getInt(
+            "theme_mode",
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
         AppCompatDelegate.setDefaultNightMode(themeMode)
 
         // --- Register network callback for instant sync ---
@@ -83,7 +86,7 @@ class BudgetBrewerApp :
                         SyncHelper.triggerSyncIfNeeded(this@BudgetBrewerApp)
                     }
                 }
-            },
+            }
         )
     }
 
@@ -97,7 +100,7 @@ class BudgetBrewerApp :
         val rolloverRequest =
             PeriodicWorkRequestBuilder<MonthRolloverWorker>(
                 1,
-                TimeUnit.DAYS,
+                TimeUnit.DAYS
             ).setConstraints(constraints)
                 .setInitialDelay(calculateTimeToMidnight(), TimeUnit.MILLISECONDS)
                 .build()
@@ -105,7 +108,7 @@ class BudgetBrewerApp :
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "month_rollover",
             ExistingPeriodicWorkPolicy.KEEP,
-            rolloverRequest,
+            rolloverRequest
         )
     }
 
@@ -121,7 +124,7 @@ class BudgetBrewerApp :
                 8,
                 TimeUnit.HOURS, // repeat interval
                 2,
-                TimeUnit.HOURS, // flex interval – allows system to run within a window
+                TimeUnit.HOURS // flex interval – allows system to run within a window
             ).setConstraints(constraints)
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.MINUTES)
                 .build()
@@ -129,7 +132,7 @@ class BudgetBrewerApp :
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "offline_sync",
             ExistingPeriodicWorkPolicy.KEEP,
-            syncRequest,
+            syncRequest
         )
     }
 

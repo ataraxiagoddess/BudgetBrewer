@@ -28,6 +28,6 @@ object CategoryColors {
             R.color.category_color_17,
             R.color.category_color_18,
             R.color.category_color_19,
-            R.color.category_color_20,
+            R.color.category_color_20
         )
 }

@@ -10,13 +10,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
-import kotlinx.coroutines.runBlocking
 import java.util.Calendar
+import kotlinx.coroutines.runBlocking
 
 @Suppress("UNCHECKED_CAST")
 class MonthlyCalendarViewModelFactory(
     private val repository: BudgetRepository,
-    private val context: Context,
+    private val context: Context
 ) : ViewModelProvider.Factory {
     @SuppressLint("VisibleForTests")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -30,6 +30,10 @@ class MonthlyCalendarViewModelFactory(
             }
 
         val savedStateHandle = SavedStateHandle(mapOf("budgetId" to budgetId))
-        return MonthlyCalendarViewModel(repository, savedStateHandle, context.applicationContext) as T
+        return MonthlyCalendarViewModel(
+            repository,
+            savedStateHandle,
+            context.applicationContext
+        ) as T
     }
 }

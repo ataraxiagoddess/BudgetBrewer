@@ -40,8 +40,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import eightbitlab.com.blurview.BlurTarget
 import eightbitlab.com.blurview.BlurView
-import timber.log.Timber
 import java.util.Calendar
+import timber.log.Timber
 
 abstract class BaseActivity : AppCompatActivity() {
     private val appLockGraceMs = 5 * 60 * 1000L
@@ -98,10 +98,7 @@ abstract class BaseActivity : AppCompatActivity() {
     // ----------------------------------------------------------------------
     // Snackbar helper (fixed width on tablets, no setMaxWidth)
     // ----------------------------------------------------------------------
-    protected fun showSnackbar(
-        message: String,
-        duration: Int = Snackbar.LENGTH_SHORT,
-    ) {
+    protected fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
         val snackbar = Snackbar.make(outerRoot!!, "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view
@@ -128,7 +125,7 @@ abstract class BaseActivity : AppCompatActivity() {
             layoutInflater.inflate(
                 R.layout.snackbar_custom,
                 snackbarView as ViewGroup,
-                false,
+                false
             ) as TextView
         customText.text = message
         customText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
@@ -139,7 +136,7 @@ abstract class BaseActivity : AppCompatActivity() {
         val lp =
             FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
         lp.gravity = Gravity.CENTER
         customText.layoutParams = lp
@@ -169,7 +166,7 @@ abstract class BaseActivity : AppCompatActivity() {
     private fun isTouchExplorationEnabled(): Boolean {
         val accessibilityManager =
             getSystemService(
-                ACCESSIBILITY_SERVICE,
+                ACCESSIBILITY_SERVICE
             ) as AccessibilityManager
 
         return accessibilityManager.isEnabled &&
@@ -197,7 +194,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 layoutParams =
                     ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     )
                 fitsSystemWindows = true
 
@@ -207,14 +204,14 @@ abstract class BaseActivity : AppCompatActivity() {
                         layoutParams =
                             FrameLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
                             )
                         addView(
                             contentView,
                             FrameLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                            ),
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
                         )
                         id = View.generateViewId()
                     }
@@ -228,7 +225,7 @@ abstract class BaseActivity : AppCompatActivity() {
                                 FrameLayout.LayoutParams(
                                     resources.getDimensionPixelSize(R.dimen.navigation_rail_width),
                                     ViewGroup.LayoutParams.MATCH_PARENT,
-                                    Gravity.START,
+                                    Gravity.START
                                 )
                             isFillViewport = true
                             isScrollContainer = true
@@ -241,7 +238,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             layoutParams =
                                 ViewGroup.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
                                 )
                             orientation = LinearLayout.VERTICAL
                             setBackgroundColor(ContextCompat.getColor(context, R.color.bg_main))
@@ -258,14 +255,14 @@ abstract class BaseActivity : AppCompatActivity() {
                         destination: NavDestination,
                         iconRes: Int,
                         bgRes: Int,
-                        labelRes: Int,
+                        labelRes: Int
                     ): MaterialButton {
                         return MaterialButton(this@BaseActivity).apply {
                             layoutParams =
                                 LinearLayout
                                     .LayoutParams(
                                         ViewGroup.LayoutParams.MATCH_PARENT,
-                                        resources.getDimensionPixelSize(R.dimen.button_height),
+                                        resources.getDimensionPixelSize(R.dimen.button_height)
                                     ).apply {
                                         topMargin = 4
                                         bottomMargin = 4
@@ -274,7 +271,8 @@ abstract class BaseActivity : AppCompatActivity() {
                             iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
                             setBackgroundResource(bgRes)
                             backgroundTintList = null
-                            iconTint = ContextCompat.getColorStateList(context, R.color.text_on_main)
+                            iconTint =
+                                ContextCompat.getColorStateList(context, R.color.text_on_main)
                             contentDescription = getString(labelRes)
                             setOnClickListener {
                                 if (destination == currentNavDestination) {
@@ -300,7 +298,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.HOME,
                             R.drawable.ic_cottage,
                             R.drawable.bg_nav_button_home,
-                            R.string.nav_home,
+                            R.string.nav_home
                         )
                     buttonBar.addView(railButtons[NavDestination.HOME])
 
@@ -309,7 +307,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.FINANCES,
                             R.drawable.ic_account_balance,
                             R.drawable.bg_nav_button_finances,
-                            R.string.nav_finances,
+                            R.string.nav_finances
                         )
                     buttonBar.addView(railButtons[NavDestination.FINANCES])
 
@@ -318,7 +316,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.SAVINGS,
                             R.drawable.ic_savings,
                             R.drawable.bg_nav_button_savings,
-                            R.string.nav_savings,
+                            R.string.nav_savings
                         )
                     buttonBar.addView(railButtons[NavDestination.SAVINGS])
 
@@ -327,7 +325,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.EXPENSES,
                             R.drawable.ic_receipt,
                             R.drawable.bg_nav_button_expenses,
-                            R.string.nav_expenses,
+                            R.string.nav_expenses
                         )
                     buttonBar.addView(railButtons[NavDestination.EXPENSES])
 
@@ -336,7 +334,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.SPENDING,
                             R.drawable.ic_paid,
                             R.drawable.bg_nav_button_spending,
-                            R.string.nav_spending,
+                            R.string.nav_spending
                         )
                     buttonBar.addView(railButtons[NavDestination.SPENDING])
 
@@ -345,7 +343,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.CALENDAR,
                             R.drawable.ic_calendar_today,
                             R.drawable.bg_nav_button_calendar,
-                            R.string.nav_calendar,
+                            R.string.nav_calendar
                         )
                     buttonBar.addView(railButtons[NavDestination.CALENDAR])
 
@@ -354,7 +352,7 @@ abstract class BaseActivity : AppCompatActivity() {
                             NavDestination.SETTINGS,
                             R.drawable.ic_settings,
                             R.drawable.bg_nav_button_settings,
-                            R.string.settings,
+                            R.string.settings
                         )
                     buttonBar.addView(railButtons[NavDestination.SETTINGS])
 
@@ -375,13 +373,13 @@ abstract class BaseActivity : AppCompatActivity() {
                                 FrameLayout
                                     .LayoutParams(
                                         ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
                                     ).apply { gravity = Gravity.TOP }
                         }
                     monthSelectorBinding =
                         MonthSelectorBinding.inflate(layoutInflater, monthSelectorBlurView, true)
                     prepareInitialMonthSpinnerAccessibility(
-                        monthSelectorBinding.monthSpinner,
+                        monthSelectorBinding.monthSpinner
                     )
                     addView(monthSelectorBlurView)
 
@@ -439,10 +437,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    override fun setContentView(
-        view: View?,
-        params: ViewGroup.LayoutParams?,
-    ) {
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         val rootLayout = createRootLayout(view!!)
         super.setContentView(rootLayout, params)
         finishViewInitialization()
@@ -487,11 +482,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
                     spinner.performAccessibilityAction(
                         AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
-                        null,
+                        null
                     )
                 }
             },
-            750L,
+            750L
         )
     }
 
@@ -527,8 +522,8 @@ abstract class BaseActivity : AppCompatActivity() {
                 0,
                 Month(
                     year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1,
-                ),
+                    month = calendar.get(Calendar.MONTH) + 1
+                )
             )
         }
 
@@ -540,8 +535,8 @@ abstract class BaseActivity : AppCompatActivity() {
             allMonths.add(
                 Month(
                     year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1,
-                ),
+                    month = calendar.get(Calendar.MONTH) + 1
+                )
             )
         }
     }
@@ -561,12 +556,12 @@ abstract class BaseActivity : AppCompatActivity() {
                 this,
                 R.layout.spinner_closed_month,
                 android.R.id.text1,
-                monthNames,
+                monthNames
             ) {
                 override fun getDropDownView(
                     position: Int,
                     convertView: View?,
-                    parent: ViewGroup,
+                    parent: ViewGroup
                 ): View {
                     val view = super.getDropDownView(position, convertView, parent)
                     val divider = view.findViewById<View>(R.id.divider)
@@ -591,7 +586,7 @@ abstract class BaseActivity : AppCompatActivity() {
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long,
+                    id: Long
                 ) {
                     if (isSettingUpSpinner) return
                     if (position in allMonths.indices) {
@@ -693,7 +688,7 @@ abstract class BaseActivity : AppCompatActivity() {
         startActivity(
             Intent(this, LockActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            },
+            }
         )
     }
 

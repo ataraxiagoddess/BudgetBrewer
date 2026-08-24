@@ -16,10 +16,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BudgetDao {
     @Query("SELECT * FROM budgets WHERE month = :month AND year = :year")
-    fun getBudget(
-        month: Int,
-        year: Int,
-    ): Flow<Budget?>
+    fun getBudget(month: Int, year: Int): Flow<Budget?>
 
     @Query("SELECT * FROM budgets ORDER BY year DESC, month DESC")
     fun getAllBudgets(): Flow<List<Budget>>
@@ -28,21 +25,17 @@ interface BudgetDao {
     suspend fun getAllBudgetsSync(): List<Budget>
 
     @Query(
-        "SELECT * FROM budgets WHERE (year < :currentYear OR (year = :currentYear AND month < :currentMonth)) ORDER BY year DESC, month DESC",
+        "SELECT * FROM budgets WHERE (year < :currentYear OR (year = :currentYear AND month < :currentMonth)) ORDER BY year DESC, month DESC"
     )
-    fun getPastBudgets(
-        currentMonth: Int,
-        currentYear: Int,
-    ): Flow<List<Budget>>
+    fun getPastBudgets(currentMonth: Int, currentYear: Int): Flow<List<Budget>>
 
     @Query("SELECT * FROM budgets WHERE id = :id")
     suspend fun getBudgetById(id: String): Budget?
 
-    @Query("SELECT * FROM budgets WHERE (year < :year OR (year = :year AND month < :month)) ORDER BY year DESC, month DESC LIMIT 1")
-    suspend fun findPreviousBudget(
-        month: Int,
-        year: Int,
-    ): Budget?
+    @Query(
+        "SELECT * FROM budgets WHERE (year < :year OR (year = :year AND month < :month)) ORDER BY year DESC, month DESC LIMIT 1"
+    )
+    suspend fun findPreviousBudget(month: Int, year: Int): Budget?
 
     @Query("DELETE FROM budgets")
     suspend fun deleteAll()

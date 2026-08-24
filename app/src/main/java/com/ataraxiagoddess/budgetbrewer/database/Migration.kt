@@ -30,7 +30,7 @@ object Migration_1_2 : Migration(1, 2) {
                 created_at INTEGER NOT NULL,
                 updated_at INTEGER NOT NULL
             )
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         // Create savings_transactions table matching the SavingsTransaction entity
@@ -44,15 +44,23 @@ object Migration_1_2 : Migration(1, 2) {
                 type TEXT NOT NULL,
                 created_at INTEGER NOT NULL
             )
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         // Create indices for performance
-        db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_buckets_budget_id ON savings_buckets(budget_id)")
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS index_savings_buckets_budget_id ON savings_buckets(budget_id)"
+        )
         db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_buckets_type ON savings_buckets(type)")
-        db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_transactions_bucket_id ON savings_transactions(bucket_id)")
-        db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_transactions_date ON savings_transactions(date)")
-        db.execSQL("CREATE INDEX IF NOT EXISTS index_savings_transactions_type ON savings_transactions(type)")
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS index_savings_transactions_bucket_id ON savings_transactions(bucket_id)"
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS index_savings_transactions_date ON savings_transactions(date)"
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS index_savings_transactions_type ON savings_transactions(type)"
+        )
     }
 }
 
@@ -75,7 +83,7 @@ object Migration_2_3 : Migration(2, 3) {
                 created_at INTEGER NOT NULL,
                 updated_at INTEGER NOT NULL
             )
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         // Copy existing data
@@ -84,7 +92,7 @@ object Migration_2_3 : Migration(2, 3) {
             INSERT INTO savings_buckets_new (id, name, type, current_amount, target_amount, color_hex, is_archived, created_at, updated_at)
             SELECT id, name, type, current_amount, target_amount, color_hex, is_archived, created_at, updated_at
             FROM savings_buckets
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         // Drop old table and rename new one
@@ -108,14 +116,18 @@ object Migration_4_5 : Migration(4, 5) {
     override fun migrate(db: SupportSQLiteDatabase) {
         // Add tipsEnabled and payFrequency columns to month_settings table
         db.execSQL("ALTER TABLE month_settings ADD COLUMN tipsEnabled INTEGER NOT NULL DEFAULT 0")
-        db.execSQL("ALTER TABLE month_settings ADD COLUMN payFrequency TEXT NOT NULL DEFAULT 'MONTHLY'")
+        db.execSQL(
+            "ALTER TABLE month_settings ADD COLUMN payFrequency TEXT NOT NULL DEFAULT 'MONTHLY'"
+        )
     }
 }
 
 object Migration_5_6 : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
         // Add updated_at column to savings_transactions
-        db.execSQL("ALTER TABLE savings_transactions ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0")
+        db.execSQL(
+            "ALTER TABLE savings_transactions ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0"
+        )
         db.execSQL("UPDATE savings_transactions SET updated_at = created_at")
     }
 }
@@ -149,7 +161,7 @@ object Migration_7_8 : Migration(7, 8) {
                 sourceExpenseId TEXT,
                 isOverridden INTEGER NOT NULL DEFAULT 0
             )
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         db.execSQL(
@@ -162,7 +174,7 @@ object Migration_7_8 : Migration(7, 8) {
                 id, categoryId, description, amount, dueDate, recurrenceType, recurrenceInterval,
                 createdAt, updatedAt, isActive, sourceExpenseId, isOverridden
             FROM expenses
-            """.trimIndent(),
+            """.trimIndent()
         )
 
         db.execSQL("DROP TABLE expenses")

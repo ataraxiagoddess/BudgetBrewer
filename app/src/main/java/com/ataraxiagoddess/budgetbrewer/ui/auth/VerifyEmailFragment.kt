@@ -45,16 +45,13 @@ class VerifyEmailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentVerifyEmailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvEmailSent.text = getString(R.string.verification_code_sent, email ?: "")
@@ -68,7 +65,7 @@ class VerifyEmailFragment : Fragment() {
         binding.etCode.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(6),
-                ValidationUtils.getDigitsOnlyFilter(),
+                ValidationUtils.getDigitsOnlyFilter()
             )
 
         binding.btnVerify.setOnClickListener {
@@ -106,7 +103,7 @@ class VerifyEmailFragment : Fragment() {
                 SupabaseClient.client.auth.verifyEmailOtp(
                     type = OtpType.Email.SIGNUP,
                     email = email,
-                    token = code,
+                    token = code
                 )
 
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.email_verified))
@@ -135,7 +132,9 @@ class VerifyEmailFragment : Fragment() {
                 SupabaseClient.client.auth.resendEmail(OtpType.Email.SIGNUP, email)
                 (activity as? AuthActivity)?.showSnackbar(getString(R.string.code_resent))
             } catch (e: Exception) {
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.resend_failed, e.message))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.resend_failed, e.message)
+                )
             } finally {
                 binding.progressBar.visibility = View.GONE
                 binding.btnResend.isEnabled = true

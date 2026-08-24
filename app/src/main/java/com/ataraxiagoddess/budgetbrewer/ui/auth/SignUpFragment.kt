@@ -43,16 +43,13 @@ class SignUpFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupPasswordToggles()
@@ -64,12 +61,16 @@ class SignUpFragment : Fragment() {
     private fun setupPasswordToggles() {
         binding.btnTogglePassword.setOnClickListener {
             val currentInputType = binding.etPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-                binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
+                binding.etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
                 binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
-                binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
                 binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
@@ -78,25 +79,39 @@ class SignUpFragment : Fragment() {
 
         binding.btnToggleConfirmPassword.setOnClickListener {
             val currentInputType = binding.etConfirmPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-                binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
+                binding.etConfirmPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_off)
-                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.show_password)
+                binding.btnToggleConfirmPassword.contentDescription =
+                    getString(R.string.show_password)
             } else {
-                binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.etConfirmPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_on)
-                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.hide_password)
+                binding.btnToggleConfirmPassword.contentDescription =
+                    getString(R.string.hide_password)
             }
-            binding.etConfirmPassword.text?.let { binding.etConfirmPassword.setSelection(it.length) }
+            binding.etConfirmPassword.text?.let {
+                binding.etConfirmPassword.setSelection(it.length)
+            }
         }
     }
 
     private fun setupValidation() {
         // Apply length filters
         val emailFilter =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         val passwordFilter =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
 
         binding.etEmail.filters = emailFilter
         binding.etConfirmEmail.filters = emailFilter
@@ -134,15 +149,10 @@ class SignUpFragment : Fragment() {
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     updateEmailMatch()
                 }
 
@@ -158,15 +168,10 @@ class SignUpFragment : Fragment() {
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     updatePasswordMatch()
                 }
 
@@ -261,21 +266,21 @@ class SignUpFragment : Fragment() {
         return true
     }
 
-    private fun isValidEmail(email: String): Boolean =
-        android.util.Patterns.EMAIL_ADDRESS
-            .matcher(email)
-            .matches()
+    private fun isValidEmail(email: String): Boolean = android.util.Patterns.EMAIL_ADDRESS
+        .matcher(email)
+        .matches()
 
-    private fun getPasswordStrength(password: String): String =
-        when {
-            password.length < 8 -> getString(R.string.password_strength_weak)
-            !password.matches(Regex(".*[A-Z].*")) -> getString(R.string.password_strength_weak)
-            !password.matches(Regex(".*[a-z].*")) -> getString(R.string.password_strength_weak)
-            !password.matches(Regex(".*[0-9].*")) -> getString(R.string.password_strength_weak)
-            !password.matches(Regex(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) -> getString(R.string.password_strength_weak)
-            password.length >= 10 -> getString(R.string.password_strength_strong)
-            else -> getString(R.string.password_strength_medium)
-        }
+    private fun getPasswordStrength(password: String): String = when {
+        password.length < 8 -> getString(R.string.password_strength_weak)
+        !password.matches(Regex(".*[A-Z].*")) -> getString(R.string.password_strength_weak)
+        !password.matches(Regex(".*[a-z].*")) -> getString(R.string.password_strength_weak)
+        !password.matches(Regex(".*[0-9].*")) -> getString(R.string.password_strength_weak)
+        !password.matches(
+            Regex(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")
+        ) -> getString(R.string.password_strength_weak)
+        password.length >= 10 -> getString(R.string.password_strength_strong)
+        else -> getString(R.string.password_strength_medium)
+    }
 
     private fun signUp() {
         binding.progressBar.visibility = View.VISIBLE

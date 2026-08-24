@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val isTagsEnabled: Boolean,
+    private val isTagsEnabled: Boolean
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -33,13 +33,16 @@ class HomeViewModel(
         ONE_MONTH,
         THREE_MONTHS,
         SIX_MONTHS,
-        ONE_YEAR,
+        ONE_YEAR
     }
 
     init {
         viewModelScope.launch {
             val currentMonth = Month.current()
-            val (newBudgetId, _) = repository.getOrCreateBudgetChain(currentMonth.month, currentMonth.year)
+            val (newBudgetId, _) = repository.getOrCreateBudgetChain(
+                currentMonth.month,
+                currentMonth.year
+            )
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = budgetId // update saved state as well
             loadData()
@@ -87,7 +90,13 @@ class HomeViewModel(
                             expenses
                                 .filter { it.categoryId == category.id }
                                 .sumOf { it.amount }
-                        val percentage = if (totalExpenses > 0) categoryTotal / totalExpenses * 100 else 0.0
+                        val percentage = if (totalExpenses >
+                            0
+                        ) {
+                            categoryTotal / totalExpenses * 100
+                        } else {
+                            0.0
+                        }
                         CategoryExpense(category, categoryTotal, percentage)
                     }.filter { it.amount > 0 }
 
@@ -103,7 +112,13 @@ class HomeViewModel(
                     val totalTaggedAmount = tagTotals.sumOf { it.total }
                     tagTotals
                         .map { tagTotal ->
-                            val percentage = if (totalTaggedAmount > 0) tagTotal.total / totalTaggedAmount * 100 else 0.0
+                            val percentage = if (totalTaggedAmount >
+                                0
+                            ) {
+                                tagTotal.total / totalTaggedAmount * 100
+                            } else {
+                                0.0
+                            }
                             TagExpense(tagTotal.tag, tagTotal.total, percentage)
                         }.filter { it.amount > 0 }
                 } else {
@@ -118,7 +133,7 @@ class HomeViewModel(
                     savingsAmount = savingsAmount,
                     savingsTarget = savingsTarget,
                     spendingHistory = spendingHistory,
-                    spendingByTag = spendingByTag,
+                    spendingByTag = spendingByTag
                 )
         } catch (e: CancellationException) {
             throw e

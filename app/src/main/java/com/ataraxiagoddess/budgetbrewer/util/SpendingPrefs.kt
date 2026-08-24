@@ -17,10 +17,7 @@ object SpendingPrefs {
 
     fun isTagsEnabled(context: Context): Boolean = getPrefs(context).getBoolean(KEY_TAGS_ENABLED, DEFAULT_TAGS_ENABLED)
 
-    fun setTagsEnabled(
-        context: Context,
-        enabled: Boolean,
-    ) {
+    fun setTagsEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit { putBoolean(KEY_TAGS_ENABLED, enabled) }
     }
 }
