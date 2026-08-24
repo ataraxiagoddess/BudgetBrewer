@@ -427,11 +427,11 @@ class MonthlyCalendarActivity :
         binding.monthStartRow.setOnClickListener {
             showEditAmountDialog(
                 title =
-                    if (data.monthStartOverridden) {
-                        getString(R.string.overwrite_month_start)
-                    } else {
-                        getString(R.string.edit_month_start)
-                    },
+                if (data.monthStartOverridden) {
+                    getString(R.string.overwrite_month_start)
+                } else {
+                    getString(R.string.edit_month_start)
+                },
                 currentAmount = data.monthStartAmount,
                 isOverridden = data.monthStartOverridden,
                 onSave = { newAmount -> viewModel.updateMonthStartAmount(newAmount) }

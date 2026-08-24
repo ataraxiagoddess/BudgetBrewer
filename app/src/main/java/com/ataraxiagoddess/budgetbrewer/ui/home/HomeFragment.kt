@@ -90,21 +90,21 @@ class HomeFragment :
         get() =
             DashboardDimensions(
                 legendMarkerSize =
-                    resources.getDimensionPixelSize(
-                        R.dimen.chart_legend_marker_size
-                    ),
+                resources.getDimensionPixelSize(
+                    R.dimen.chart_legend_marker_size
+                ),
                 legendMarkerSpacing =
-                    resources.getDimensionPixelSize(
-                        R.dimen.chart_legend_marker_spacing
-                    ),
+                resources.getDimensionPixelSize(
+                    R.dimen.chart_legend_marker_spacing
+                ),
                 legendRowVerticalMargin =
-                    resources.getDimensionPixelSize(
-                        R.dimen.chart_legend_row_vertical_margin
-                    ),
+                resources.getDimensionPixelSize(
+                    R.dimen.chart_legend_row_vertical_margin
+                ),
                 dataRowVerticalMargin =
-                    resources.getDimensionPixelSize(
-                        R.dimen.dashboard_data_row_vertical_margin
-                    )
+                resources.getDimensionPixelSize(
+                    R.dimen.dashboard_data_row_vertical_margin
+                )
             )
 
     private var snackbarCallback: ((String) -> Unit)? = null

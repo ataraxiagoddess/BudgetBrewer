@@ -375,10 +375,10 @@ class IncomeExpensesActivity :
                             context = this@IncomeExpensesActivity,
                             title = getString(R.string.savings_allocation_conflict_title),
                             message =
-                                getString(
-                                    R.string.savings_allocation_conflict_message,
-                                    event.distributedTotal.toCurrencyDisplay(resources)
-                                ),
+                            getString(
+                                R.string.savings_allocation_conflict_message,
+                                event.distributedTotal.toCurrencyDisplay(resources)
+                            ),
                             positiveButton = getString(R.string.ok),
                             negativeButton = null,
                             onPositive = { /* do nothing, just dismiss */ }
