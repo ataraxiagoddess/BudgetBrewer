@@ -145,7 +145,8 @@ class IncomeExpensesActivity :
                 start: Int,
                 count: Int,
                 after: Int,
-            ) {}
+            ) {
+            }
 
             override fun onTextChanged(
                 s: CharSequence?,
@@ -986,8 +987,11 @@ class IncomeExpensesActivity :
         dialog.setOnShowListener {
             validate() // initially disabled
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val source = etSource.text.toString().trim()
-                val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
+                val source =
+                    etSource.text.toString().trim()
+                val amount =
+                    etAmount.text.toString().toAmountOrNull(resources)
+                        ?: 0.0
                 if (ValidationUtils.isValidName(source) && amount > 0 &&
                     ValidationUtils.isValidAmount(
                         amount,
