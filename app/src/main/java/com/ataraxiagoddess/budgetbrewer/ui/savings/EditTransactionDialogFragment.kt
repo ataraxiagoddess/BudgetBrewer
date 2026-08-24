@@ -22,7 +22,7 @@ import kotlin.math.abs
 class EditTransactionDialogFragment(
     private val transaction: SavingsTransaction,
     private val maxAllowed: Double,
-    private val onSave: (Double) -> Unit,
+    private val onSave: (Double) -> Unit
 ) : DialogFragment() {
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
@@ -34,7 +34,7 @@ class EditTransactionDialogFragment(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = DialogDistributeBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,14 +44,11 @@ class EditTransactionDialogFragment(
         super.onStart()
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.etAmount.requestFocus()
 
@@ -63,7 +60,12 @@ class EditTransactionDialogFragment(
         val locale = if (locales.isEmpty) Locale.getDefault() else locales[0]
         binding.etAmount.setText(String.format(Locale.US, "%.2f", originalAmount))
         binding.etAmount.filters =
-            arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))
+            arrayOf(
+                DecimalDigitsInputFilter(
+                    CurrencyPrefs.currentFractionDigits,
+                    CurrencyPrefs.decimalSeparators(locale)
+                )
+            )
 
         val saveButton = binding.buttonSave
         saveButton.isEnabled = false
@@ -74,26 +76,26 @@ class EditTransactionDialogFragment(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val newAmount = s.toString().toDoubleOrNull()
-                    val isValid = newAmount != null && newAmount > 0.0 && newAmount != originalAmount && newAmount <= maxAllowed
+                    val isValid =
+                        newAmount != null &&
+                            newAmount > 0.0 &&
+                            newAmount != originalAmount &&
+                            newAmount <= maxAllowed
                     val showError = newAmount != null && newAmount > 0.0 && newAmount > maxAllowed
 
                     binding.tvError.visibility = if (showError) View.VISIBLE else View.INVISIBLE
-                    binding.tvError.text = if (showError) getString(R.string.amount_exceeds_maximum_allowed) else ""
+                    binding.tvError.text =
+                        if (showError) getString(R.string.amount_exceeds_maximum_allowed) else ""
                     saveButton.isEnabled = isValid
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
 
         binding.buttonCancel.setOnClickListener { dismiss() }

@@ -5,35 +5,27 @@
 package com.ataraxiagoddess.budgetbrewer.data
 
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
+import java.util.Calendar
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
-import java.util.Calendar
-import java.util.UUID
 
-class BudgetRepository(
-    private val db: AppDatabase,
-) {
+class BudgetRepository(private val db: AppDatabase) {
     private val budgetChainMutex = Mutex()
     private val propagateMutex = Mutex()
 
     // --- Budget ---
     suspend fun insertBudget(budget: Budget) = db.budgetDao().insert(budget)
 
-    fun getBudget(
-        month: Int,
-        year: Int,
-    ): Flow<Budget?> = db.budgetDao().getBudget(month, year)
+    fun getBudget(month: Int, year: Int): Flow<Budget?> = db.budgetDao().getBudget(month, year)
 
     suspend fun getBudgetById(id: String): Budget? = db.budgetDao().getBudgetById(id)
 
-    fun getPastBudgets(
-        currentMonth: Int,
-        currentYear: Int,
-    ): Flow<List<Budget>> = db.budgetDao().getPastBudgets(currentMonth, currentYear)
+    fun getPastBudgets(currentMonth: Int, currentYear: Int): Flow<List<Budget>> = db.budgetDao().getPastBudgets(currentMonth, currentYear)
 
     // --- Income ---
     suspend fun insertIncome(income: Income) = db.incomeDao().insert(income)
@@ -72,7 +64,9 @@ class BudgetRepository(
             val checklistItem = db.dailyChecklistDao().getChecklistItem(category.budgetId, day)
             if (checklistItem != null) {
                 db.dailyChecklistDao().delete(checklistItem)
-                Timber.d("Deleted orphaned checklist item for day $day, budget ${category.budgetId}")
+                Timber.d(
+                    "Deleted orphaned checklist item for day $day, budget ${category.budgetId}"
+                )
                 return checklistItem.id
             }
         }
@@ -93,10 +87,7 @@ class BudgetRepository(
     // --- Daily Checklist ---
     fun getDailyChecklist(budgetId: String): Flow<List<DailyChecklist>> = db.dailyChecklistDao().getChecklistForBudget(budgetId)
 
-    suspend fun getChecklistItem(
-        budgetId: String,
-        day: Int,
-    ): DailyChecklist? = db.dailyChecklistDao().getChecklistItem(budgetId, day)
+    suspend fun getChecklistItem(budgetId: String, day: Int): DailyChecklist? = db.dailyChecklistDao().getChecklistItem(budgetId, day)
 
     suspend fun updateChecklistItem(item: DailyChecklist) {
         db.dailyChecklistDao().update(item)
@@ -110,10 +101,7 @@ class BudgetRepository(
         db.dailyChecklistDao().delete(item)
     }
 
-    private suspend fun ensureChecklistItem(
-        budgetId: String,
-        dayOfMonth: Int,
-    ) {
+    private suspend fun ensureChecklistItem(budgetId: String, dayOfMonth: Int) {
         val existing = db.dailyChecklistDao().getChecklistItem(budgetId, dayOfMonth)
         if (existing == null) {
             val item =
@@ -122,7 +110,7 @@ class BudgetRepository(
                     budgetId = budgetId,
                     dayOfMonth = dayOfMonth,
                     isChecked = false,
-                    updatedAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
                 )
             db.dailyChecklistDao().insert(item)
             Timber.d("Created checklist item for budget $budgetId, day $dayOfMonth")
@@ -130,8 +118,7 @@ class BudgetRepository(
     }
 
     // --- Spending Entries ---
-    fun getSpendingEntriesForBudget(budgetId: String): Flow<List<SpendingEntry>> =
-        db.spendingEntryDao().getSpendingEntriesForBudget(budgetId)
+    fun getSpendingEntriesForBudget(budgetId: String): Flow<List<SpendingEntry>> = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId)
 
     suspend fun insertSpendingEntry(entry: SpendingEntry) = db.spendingEntryDao().insert(entry)
 
@@ -139,17 +126,13 @@ class BudgetRepository(
 
     suspend fun deleteSpendingEntry(entry: SpendingEntry) = db.spendingEntryDao().delete(entry)
 
-    suspend fun getSpendingTotalForBudget(budgetId: String): Double =
-        db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf {
-            it.amount
-        }
+    suspend fun getSpendingTotalForBudget(budgetId: String): Double = db.spendingEntryDao().getSpendingEntriesForBudget(budgetId).first().sumOf {
+        it.amount
+    }
 
     fun getSpendingTotalsByTag(budgetId: String): Flow<List<TagSpendingTotal>> = db.spendingEntryDao().getSpendingTotalsByTag(budgetId)
 
-    suspend fun getSpendingTotalForMonth(
-        month: Int,
-        year: Int,
-    ): Double {
+    suspend fun getSpendingTotalForMonth(month: Int, year: Int): Double {
         val budget = getBudget(month, year).first() ?: return 0.0
         return getSpendingTotalForBudget(budget.id)
     }
@@ -161,20 +144,26 @@ class BudgetRepository(
 
     suspend fun insertSavingsBucket(bucket: SavingsBucket) = db.savingsBucketDao().insert(bucket)
 
-    suspend fun distributeFunds(
-        bucket: SavingsBucket,
-        amount: Double,
-    ): SavingsTransaction {
+    suspend fun distributeFunds(bucket: SavingsBucket, amount: Double): SavingsTransaction {
         val transaction =
             SavingsTransaction(
                 bucket_id = bucket.id,
                 amount = amount,
                 date = System.currentTimeMillis(),
-                type = if (amount >= 0) SavingsTransactionType.ALLOCATION else SavingsTransactionType.DEDUCTION,
+                type = if (amount >=
+                    0
+                ) {
+                    SavingsTransactionType.ALLOCATION
+                } else {
+                    SavingsTransactionType.DEDUCTION
+                }
             )
         db.savingsTransactionDao().insert(transaction)
         val total = db.savingsTransactionDao().getTotalForBucket(bucket.id)
-        val updatedBucket = bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
+        val updatedBucket = bucket.copy(
+            current_amount = total,
+            updated_at = System.currentTimeMillis()
+        )
         db.savingsBucketDao().update(updatedBucket)
         return transaction
     }
@@ -186,13 +175,15 @@ class BudgetRepository(
         db.savingsBucketDao().delete(bucket)
     }
 
-    suspend fun getTotalDistributedToBuckets(): Double = db.savingsTransactionDao().getAllTransactionsSync().sumOf { it.amount }
+    suspend fun getTotalDistributedToBuckets(): Double = db.savingsTransactionDao().getAllTransactionsSync().sumOf {
+        it.amount
+    }
 
     suspend fun archiveBucket(bucket: SavingsBucket) {
         val updatedBucket =
             bucket.copy(
                 is_archived = true,
-                updated_at = System.currentTimeMillis(),
+                updated_at = System.currentTimeMillis()
             )
         db.savingsBucketDao().update(updatedBucket)
     }
@@ -203,49 +194,48 @@ class BudgetRepository(
         val updatedBucket =
             bucket.copy(
                 is_archived = false,
-                updated_at = System.currentTimeMillis(),
+                updated_at = System.currentTimeMillis()
             )
         db.savingsBucketDao().update(updatedBucket)
     }
 
-    suspend fun editTransactionAmount(
-        transaction: SavingsTransaction,
-        newAmount: Double,
-    ) {
+    suspend fun editTransactionAmount(transaction: SavingsTransaction, newAmount: Double) {
         val updated =
             transaction.copy(
                 amount = newAmount,
-                updated_at = System.currentTimeMillis(),
+                updated_at = System.currentTimeMillis()
             )
         db.savingsTransactionDao().updateTransaction(updated)
         val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
         val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
-        db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
+        db.savingsBucketDao().update(
+            bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
+        )
     }
 
     suspend fun deleteTransaction(transaction: SavingsTransaction) {
         db.savingsTransactionDao().deleteTransactionById(transaction.id)
         val total = db.savingsTransactionDao().getTotalForBucket(transaction.bucket_id)
         val bucket = db.savingsBucketDao().getBucketById(transaction.bucket_id) ?: return
-        db.savingsBucketDao().update(bucket.copy(current_amount = total, updated_at = System.currentTimeMillis()))
+        db.savingsBucketDao().update(
+            bucket.copy(current_amount = total, updated_at = System.currentTimeMillis())
+        )
     }
 
-    fun getAvailableSavingsPool(): Flow<Double> =
-        combine(
-            db.allocationDao().getAllAllocations(),
-            db.savingsTransactionDao().getAllTransactions(),
-        ) { allocations, transactions ->
-            val totalAllocated = allocations.sumOf { it.savingsAmount }
-            val totalDistributed =
-                transactions
-                    .filter { it.type != SavingsTransactionType.WITHDRAWAL }
-                    .sumOf { it.amount }
-            totalAllocated - totalDistributed
-        }
+    fun getAvailableSavingsPool(): Flow<Double> = combine(
+        db.allocationDao().getAllAllocations(),
+        db.savingsTransactionDao().getAllTransactions()
+    ) { allocations, transactions ->
+        val totalAllocated = allocations.sumOf { it.savingsAmount }
+        val totalDistributed =
+            transactions
+                .filter { it.type != SavingsTransactionType.WITHDRAWAL }
+                .sumOf { it.amount }
+        totalAllocated - totalDistributed
+    }
 
     // --- Savings Transactions ---
-    fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> =
-        db.savingsTransactionDao().getTransactionsByBucket(bucketId)
+    fun getSavingsTransactionsByBucket(bucketId: String): Flow<List<SavingsTransaction>> = db.savingsTransactionDao().getTransactionsByBucket(bucketId)
 
     suspend fun getAllSavingsTransactions(): List<SavingsTransaction> = db.savingsTransactionDao().getAllTransactions().first()
 
@@ -280,7 +270,8 @@ class BudgetRepository(
         for (day in 1..daysInMonth) {
             val dayExpenses = expensesByDay[day] ?: emptyList()
             val daySpending = spendingByDay[day] ?: emptyList()
-            val assigned = assignmentMap[day]?.mapNotNull { incomesById[it.incomeId] } ?: emptyList()
+            val assigned =
+                assignmentMap[day]?.mapNotNull { incomesById[it.incomeId] } ?: emptyList()
             val dayIncomeTotal = assigned.sumOf { it.amount }
             val dayExpenseTotal = dayExpenses.sumOf { it.amount } + daySpending.sumOf { it.amount }
             val dayTotal = dayIncomeTotal - dayExpenseTotal
@@ -291,8 +282,8 @@ class BudgetRepository(
                     expenses = dayExpenses,
                     spendingEntries = daySpending,
                     assignedIncomes = assigned,
-                    dayTotal = dayTotal,
-                ),
+                    dayTotal = dayTotal
+                )
             )
         }
         while (allDays.size % 7 != 0) {
@@ -308,10 +299,7 @@ class BudgetRepository(
         return runningTotal
     }
 
-    private fun getFirstDayOfWeek(
-        year: Int,
-        month: Int,
-    ): Int {
+    private fun getFirstDayOfWeek(year: Int, month: Int): Int {
         val cal = Calendar.getInstance().apply { set(year, month - 1, 1) }
         return cal.get(Calendar.DAY_OF_WEEK)
     }
@@ -322,7 +310,7 @@ class BudgetRepository(
         val expenses: List<Expense>,
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
-        val dayTotal: Double,
+        val dayTotal: Double
     )
 
     fun getMonthSettings(budgetId: String): Flow<MonthSettings?> = db.monthSettingsDao().getSettingsForBudget(budgetId)
@@ -346,8 +334,8 @@ class BudgetRepository(
             MonthSettings(
                 budgetId = budgetId,
                 monthStartAmount = previousEnd,
-                monthStartOverridden = false,
-            ),
+                monthStartOverridden = false
+            )
         )
         Timber.d("Initialised MonthSettings for budget $budgetId: start=$previousEnd")
     }
@@ -363,7 +351,7 @@ class BudgetRepository(
         baseDate: Long,
         intervalDays: Int,
         targetMonth: Int,
-        targetYear: Int,
+        targetYear: Int
     ): List<Long> {
         val dates = mutableListOf<Long>()
         val targetStart =
@@ -406,70 +394,53 @@ class BudgetRepository(
         return dates
     }
 
-    private fun getDaysInMonth(
-        year: Int,
-        month: Int,
-    ): Int =
-        when (month) {
-            1 -> 31
-            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
-            3 -> 31
-            4 -> 30
-            5 -> 31
-            6 -> 30
-            7 -> 31
-            8 -> 31
-            9 -> 30
-            10 -> 31
-            11 -> 30
-            12 -> 31
-            else -> throw IllegalArgumentException("Invalid month: $month")
-        }
+    private fun getDaysInMonth(year: Int, month: Int): Int = when (month) {
+        1 -> 31
+        2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+        3 -> 31
+        4 -> 30
+        5 -> 31
+        6 -> 30
+        7 -> 31
+        8 -> 31
+        9 -> 30
+        10 -> 31
+        11 -> 30
+        12 -> 31
+        else -> throw IllegalArgumentException("Invalid month: $month")
+    }
 
     // --- Daily Income Assignments ---
-    fun getIncomeAssignmentsForBudget(budgetId: String): Flow<List<DailyIncomeAssignment>> =
-        db.dailyIncomeAssignmentDao().getAssignmentsForBudget(budgetId)
+    fun getIncomeAssignmentsForBudget(budgetId: String): Flow<List<DailyIncomeAssignment>> = db.dailyIncomeAssignmentDao().getAssignmentsForBudget(budgetId)
 
-    suspend fun getIncomeAssignment(
-        budgetId: String,
-        incomeId: String,
-    ): DailyIncomeAssignment? = db.dailyIncomeAssignmentDao().getAssignmentByIncomeId(budgetId, incomeId)
+    suspend fun getIncomeAssignment(budgetId: String, incomeId: String): DailyIncomeAssignment? = db.dailyIncomeAssignmentDao().getAssignmentByIncomeId(budgetId, incomeId)
 
-    suspend fun assignIncomeToDay(
-        budgetId: String,
-        incomeId: String,
-        day: Int,
-    ) {
+    suspend fun assignIncomeToDay(budgetId: String, incomeId: String, day: Int) {
         val assignment =
             DailyIncomeAssignment(
                 budgetId = budgetId,
                 incomeId = incomeId,
-                dayOfMonth = day,
+                dayOfMonth = day
             )
         db.dailyIncomeAssignmentDao().insert(assignment)
     }
 
-    suspend fun removeIncomeAssignment(
-        budgetId: String,
-        incomeId: String,
-    ) {
+    suspend fun removeIncomeAssignment(budgetId: String, incomeId: String) {
         db.dailyIncomeAssignmentDao().deleteByIncomeId(budgetId, incomeId)
     }
 
-    suspend fun findPreviousBudget(
-        month: Int,
-        year: Int,
-    ): Budget? = db.budgetDao().findPreviousBudget(month, year)
+    suspend fun findPreviousBudget(month: Int, year: Int): Budget? = db.budgetDao().findPreviousBudget(month, year)
 
     // ---------- CORRECTED propagateRecurringExpenses ----------
-    suspend fun propagateRecurringExpenses(
-        fromBudgetId: String,
-        toBudgetId: String,
-    ) = propagateMutex.withLock {
+    suspend fun propagateRecurringExpenses(fromBudgetId: String, toBudgetId: String) = propagateMutex.withLock {
         // 1. Get source and target data
-        val sourceCategories = db.expenseCategoryDao().getCategoriesForBudget(fromBudgetId).first()
+        val sourceCategories = db.expenseCategoryDao().getCategoriesForBudget(
+            fromBudgetId
+        ).first()
         val sourceExpenses = db.expenseDao().getExpensesForBudget(fromBudgetId).first()
-        val targetCategories = db.expenseCategoryDao().getCategoriesForBudget(toBudgetId).first()
+        val targetCategories = db.expenseCategoryDao().getCategoriesForBudget(
+            toBudgetId
+        ).first()
         val targetExpenses = db.expenseDao().getExpensesForBudget(toBudgetId).first()
 
         // 2. Build category mapping (sourceCategoryId -> targetCategoryId)
@@ -488,7 +459,7 @@ class BudgetRepository(
                         name = sourceCategory.name,
                         color = sourceCategory.color,
                         displayOrder = sourceCategory.displayOrder,
-                        createdAt = System.currentTimeMillis(),
+                        createdAt = System.currentTimeMillis()
                     )
                 db.expenseCategoryDao().insert(newCategory)
                 categoryMap[sourceCategoryId] = newCategory.id
@@ -496,11 +467,19 @@ class BudgetRepository(
         }
 
         // 3. Handle MONTHLY_SAME_DAY (1-to-1 propagation)
-        val sourceMonthly = sourceExpenses.filter { it.recurrenceType == RecurrenceType.MONTHLY_SAME_DAY }
-        val targetMonthly = targetExpenses.filter { it.recurrenceType == RecurrenceType.MONTHLY_SAME_DAY }
+        val sourceMonthly = sourceExpenses.filter {
+            it.recurrenceType ==
+                RecurrenceType.MONTHLY_SAME_DAY
+        }
+        val targetMonthly = targetExpenses.filter {
+            it.recurrenceType ==
+                RecurrenceType.MONTHLY_SAME_DAY
+        }
 
         val sourceMonthlyMap = sourceMonthly.associateBy { it.id }
-        val targetMonthlyMap = targetMonthly.filter { it.sourceExpenseId != null }.associateBy { it.sourceExpenseId!! }
+        val targetMonthlyMap = targetMonthly.filter {
+            it.sourceExpenseId != null
+        }.associateBy { it.sourceExpenseId!! }
 
         val monthlyKeysToInsert = sourceMonthlyMap.keys - targetMonthlyMap.keys
         val monthlyKeysToUpdate = sourceMonthlyMap.keys.intersect(targetMonthlyMap.keys)
@@ -509,13 +488,17 @@ class BudgetRepository(
         suspend fun shiftMonthlyDueDate(
             sourceDueDate: Long,
             sourceBudgetId: String,
-            targetBudgetId: String,
+            targetBudgetId: String
         ): Long {
-            val sourceBudget = db.budgetDao().getBudgetById(sourceBudgetId) ?: return sourceDueDate
-            val targetBudget = db.budgetDao().getBudgetById(targetBudgetId) ?: return sourceDueDate
+            val sourceBudget =
+                db.budgetDao().getBudgetById(sourceBudgetId) ?: return sourceDueDate
+            val targetBudget =
+                db.budgetDao().getBudgetById(targetBudgetId) ?: return sourceDueDate
             val cal = Calendar.getInstance()
             cal.timeInMillis = sourceDueDate
-            val monthDiff = (targetBudget.year - sourceBudget.year) * 12 + (targetBudget.month - sourceBudget.month)
+            val monthDiff =
+                (targetBudget.year - sourceBudget.year) * 12 +
+                    (targetBudget.month - sourceBudget.month)
             cal.add(Calendar.MONTH, monthDiff)
             return cal.timeInMillis
         }
@@ -524,7 +507,8 @@ class BudgetRepository(
         for (key in monthlyKeysToInsert) {
             val sourceExpense = sourceMonthlyMap[key]!!
             val targetCategoryId = categoryMap[sourceExpense.categoryId] ?: continue
-            val newDueDate = shiftMonthlyDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
+            val newDueDate =
+                shiftMonthlyDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
             val newExpense =
                 Expense(
                     categoryId = targetCategoryId,
@@ -535,11 +519,13 @@ class BudgetRepository(
                     recurrenceInterval = sourceExpense.recurrenceInterval,
                     sourceExpenseId = sourceExpense.id,
                     createdAt = System.currentTimeMillis(),
-                    isActive = sourceExpense.isActive,
+                    isActive = sourceExpense.isActive
                 )
             db.expenseDao().insert(newExpense)
             ensureChecklistItem(toBudgetId, getDayOfMonth(newDueDate))
-            Timber.d("Inserted monthly recurring expense: ${sourceExpense.description} to budget $toBudgetId")
+            Timber.d(
+                "Inserted monthly recurring expense: ${sourceExpense.description} to budget $toBudgetId"
+            )
         }
 
         // Update existing monthly expenses
@@ -551,7 +537,8 @@ class BudgetRepository(
                 continue
             }
             val oldDueDate = targetExpense.dueDate
-            val newDueDate = shiftMonthlyDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
+            val newDueDate =
+                shiftMonthlyDueDate(sourceExpense.dueDate, fromBudgetId, toBudgetId)
             if (targetExpense.amount != sourceExpense.amount ||
                 targetExpense.description != sourceExpense.description ||
                 targetExpense.dueDate != newDueDate ||
@@ -565,7 +552,7 @@ class BudgetRepository(
                         dueDate = newDueDate,
                         recurrenceType = sourceExpense.recurrenceType,
                         recurrenceInterval = sourceExpense.recurrenceInterval,
-                        updatedAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
                     )
                 db.expenseDao().update(updated)
 
@@ -577,7 +564,9 @@ class BudgetRepository(
                             .expenseDao()
                             .getExpensesForBudget(toBudgetId)
                             .first()
-                            .any { getDayOfMonth(it.dueDate) == oldDay && it.id != targetExpense.id }
+                            .any {
+                                getDayOfMonth(it.dueDate) == oldDay && it.id != targetExpense.id
+                            }
                     if (!remainingOnOldDay) {
                         db.dailyChecklistDao().getChecklistItem(toBudgetId, oldDay)?.let {
                             db.dailyChecklistDao().delete(it)
@@ -585,7 +574,9 @@ class BudgetRepository(
                     }
                 }
                 ensureChecklistItem(toBudgetId, getDayOfMonth(newDueDate))
-                Timber.d("Updated monthly recurring expense: ${sourceExpense.description} in budget $toBudgetId")
+                Timber.d(
+                    "Updated monthly recurring expense: ${sourceExpense.description} in budget $toBudgetId"
+                )
             }
         }
 
@@ -605,11 +596,15 @@ class BudgetRepository(
                     db.dailyChecklistDao().delete(it)
                 }
             }
-            Timber.d("Deleted monthly recurring expense: ${targetExpense.description} from budget $toBudgetId")
+            Timber.d(
+                "Deleted monthly recurring expense: ${targetExpense.description} from budget $toBudgetId"
+            )
         }
 
         // 4. Handle EVERY_X_DAYS (master-children model)
-        val sourceEveryX = sourceExpenses.filter { it.recurrenceType == RecurrenceType.EVERY_X_DAYS }
+        val sourceEveryX = sourceExpenses.filter {
+            it.recurrenceType == RecurrenceType.EVERY_X_DAYS
+        }
         val masterIds = sourceEveryX.map { it.sourceExpenseId ?: it.id }.toSet()
         val targetBudget = db.budgetDao().getBudgetById(toBudgetId) ?: return@withLock
 
@@ -630,12 +625,13 @@ class BudgetRepository(
                     baseDate = patternSource.dueDate,
                     intervalDays = intervalDays,
                     targetMonth = targetBudget.month,
-                    targetYear = targetBudget.year,
+                    targetYear = targetBudget.year
                 )
 
             val existingChildren =
                 targetExpenses.filter {
-                    it.sourceExpenseId == masterId && it.recurrenceType == RecurrenceType.EVERY_X_DAYS
+                    it.sourceExpenseId == masterId &&
+                        it.recurrenceType == RecurrenceType.EVERY_X_DAYS
                 }
             val existingByDate = existingChildren.associateBy { it.dueDate }
             val targetDateSet = targetDates.toSet()
@@ -653,7 +649,7 @@ class BudgetRepository(
                                 amount = patternSource.amount,
                                 description = patternSource.description,
                                 recurrenceInterval = patternSource.recurrenceInterval,
-                                updatedAt = patternSource.updatedAt,
+                                updatedAt = patternSource.updatedAt
                             )
                         db.expenseDao().update(updated)
                     }
@@ -669,11 +665,13 @@ class BudgetRepository(
                             sourceExpenseId = masterId,
                             createdAt = System.currentTimeMillis(),
                             updatedAt = patternSource.updatedAt,
-                            isActive = patternSource.isActive,
+                            isActive = patternSource.isActive
                         )
                     db.expenseDao().insert(newChild)
                     ensureChecklistItem(toBudgetId, getDayOfMonth(date))
-                    Timber.d("Inserted EVERY_X_DAYS child: ${patternSource.description} on $date")
+                    Timber.d(
+                        "Inserted EVERY_X_DAYS child: ${patternSource.description} on $date"
+                    )
                 }
             }
 
@@ -693,16 +691,15 @@ class BudgetRepository(
                             db.dailyChecklistDao().delete(it)
                         }
                     }
-                    Timber.d("Deleted EVERY_X_DAYS child: ${existing.description} from budget $toBudgetId")
+                    Timber.d(
+                        "Deleted EVERY_X_DAYS child: ${existing.description} from budget $toBudgetId"
+                    )
                 }
             }
         }
     }
 
-    suspend fun getOrCreateBudgetChain(
-        targetMonth: Int,
-        targetYear: Int,
-    ): Pair<String, Boolean> {
+    suspend fun getOrCreateBudgetChain(targetMonth: Int, targetYear: Int): Pair<String, Boolean> {
         return budgetChainMutex.withLock {
             Timber.d("getOrCreateBudgetChain: target $targetMonth/$targetYear")
             var created = false

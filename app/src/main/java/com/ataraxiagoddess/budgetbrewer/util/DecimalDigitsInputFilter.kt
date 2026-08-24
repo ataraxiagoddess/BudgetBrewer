@@ -9,7 +9,7 @@ import android.text.Spanned
 
 class DecimalDigitsInputFilter(
     private val digitsAfterZero: Int = 2,
-    private val decimalSeparators: Set<Char> = setOf('.'),
+    private val decimalSeparators: Set<Char> = setOf('.')
 ) : InputFilter {
     override fun filter(
         source: CharSequence,
@@ -17,7 +17,7 @@ class DecimalDigitsInputFilter(
         end: Int,
         dest: Spanned,
         dstart: Int,
-        dend: Int,
+        dend: Int
     ): CharSequence? {
         val builder = StringBuilder(dest)
         builder.replace(dstart, dend, source.subSequence(start, end).toString())

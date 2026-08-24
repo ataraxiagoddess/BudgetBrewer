@@ -35,10 +35,10 @@ import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
         DailyIncomeAssignment::class,
         PendingSync::class,
         SavingsBucket::class,
-        SavingsTransaction::class,
+        SavingsTransaction::class
     ],
     version = 8,
-    exportSchema = true,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -70,25 +70,24 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
-                val instance =
-                    Room
-                        .databaseBuilder(
-                            context.applicationContext,
-                            AppDatabase::class.java,
-                            "budget_brewer.db",
-                        ).addMigrations(
-                            Migration_1_2,
-                            Migration_2_3,
-                            Migration_3_4,
-                            Migration_4_5,
-                            Migration_5_6,
-                            Migration_6_7,
-                            Migration_7_8,
-                        ).build()
-                INSTANCE = instance
-                instance
-            }
+        fun getDatabase(context: Context): AppDatabase = INSTANCE ?: synchronized(this) {
+            val instance =
+                Room
+                    .databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "budget_brewer.db"
+                    ).addMigrations(
+                        Migration_1_2,
+                        Migration_2_3,
+                        Migration_3_4,
+                        Migration_4_5,
+                        Migration_5_6,
+                        Migration_6_7,
+                        Migration_7_8
+                    ).build()
+            INSTANCE = instance
+            instance
+        }
     }
 }

@@ -34,7 +34,7 @@ class DayDetailModalDialogFragment : DialogFragment() {
 
         fun newInstance(
             dayData: DayData,
-            unassignedIncomes: List<Income>,
+            unassignedIncomes: List<Income>
         ): DayDetailModalDialogFragment {
             val fragment = DayDetailModalDialogFragment()
             val args =
@@ -53,7 +53,7 @@ class DayDetailModalDialogFragment : DialogFragment() {
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
         val dayTotal: Double,
-        val savingsDistributed: Double = 0.0,
+        val savingsDistributed: Double = 0.0
     ) : java.io.Serializable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,8 @@ class DayDetailModalDialogFragment : DialogFragment() {
             @Suppress("UNCHECKED_CAST")
             unassignedIncomes =
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                    it.getSerializable(ARG_UNASSIGNED, ArrayList::class.java) as? ArrayList<Income> ?: arrayListOf()
+                    it.getSerializable(ARG_UNASSIGNED, ArrayList::class.java) as? ArrayList<Income>
+                        ?: arrayListOf()
                 } else {
                     @Suppress("DEPRECATION")
                     it.getSerializable(ARG_UNASSIGNED) as? ArrayList<Income> ?: arrayListOf()
@@ -81,13 +82,10 @@ class DayDetailModalDialogFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_day_detail, container, false)
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val tvDayTitle = view.findViewById<TextView>(R.id.tvDayTitle)
@@ -117,16 +115,23 @@ class DayDetailModalDialogFragment : DialogFragment() {
                     text = getString(R.string.no_expenses_for_day)
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.text_disabled))
                     typeface = exoRegular
-                },
+                }
             )
         } else {
             dayData.expenses.forEach { expense ->
                 expensesContainer.addView(
                     TextView(requireContext()).apply {
-                        text = getString(R.string.expense_item_format, expense.description, expense.amount.toCurrencyDisplay(resources))
-                        setTextColor(ContextCompat.getColor(requireContext(), R.color.dialog_content_text))
+                        text =
+                            getString(
+                                R.string.expense_item_format,
+                                expense.description,
+                                expense.amount.toCurrencyDisplay(resources)
+                            )
+                        setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.dialog_content_text)
+                        )
                         typeface = exoRegular
-                    },
+                    }
                 )
             }
         }
@@ -138,16 +143,23 @@ class DayDetailModalDialogFragment : DialogFragment() {
                     text = getString(R.string.no_spending_for_day)
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.text_disabled))
                     typeface = exoRegular
-                },
+                }
             )
         } else {
             dayData.spendingEntries.forEach { spending ->
                 spendingContainer.addView(
                     TextView(requireContext()).apply {
-                        text = getString(R.string.spending_item_format, spending.source, spending.amount.toCurrencyDisplay(resources))
-                        setTextColor(ContextCompat.getColor(requireContext(), R.color.dialog_content_text))
+                        text =
+                            getString(
+                                R.string.spending_item_format,
+                                spending.source,
+                                spending.amount.toCurrencyDisplay(resources)
+                            )
+                        setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.dialog_content_text)
+                        )
                         typeface = exoRegular
-                    },
+                    }
                 )
             }
         }
@@ -159,16 +171,27 @@ class DayDetailModalDialogFragment : DialogFragment() {
                     text = getString(R.string.no_income_for_day)
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.text_disabled))
                     typeface = exoRegular
-                },
+                }
             )
         } else {
             dayData.assignedIncomes.forEach { income ->
-                val itemView = layoutInflater.inflate(R.layout.item_assigned_income, incomeContainer, false)
+                val itemView = layoutInflater.inflate(
+                    R.layout.item_assigned_income,
+                    incomeContainer,
+                    false
+                )
                 val tvIncomeText = itemView.findViewById<TextView>(R.id.tvIncomeText)
                 val btnDelete = itemView.findViewById<MaterialButton>(R.id.btnDelete)
-                tvIncomeText.text = getString(R.string.income_item_format, income.sourceName, income.amount.toCurrencyDisplay(resources))
+                tvIncomeText.text =
+                    getString(
+                        R.string.income_item_format,
+                        income.sourceName,
+                        income.amount.toCurrencyDisplay(resources)
+                    )
                 tvIncomeText.typeface = exoRegular
-                tvIncomeText.setTextColor(ContextCompat.getColor(requireContext(), R.color.dialog_content_text))
+                tvIncomeText.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.dialog_content_text)
+                )
                 btnDelete.setOnClickListener {
                     onDeleteIncome?.invoke(income)
                     dismiss()
@@ -188,11 +211,18 @@ class DayDetailModalDialogFragment : DialogFragment() {
         }
 
         // Net total
-        tvNetTotal.text = getString(R.string.net_total, dayData.dayTotal.toCurrencyDisplay(resources))
+        tvNetTotal.text =
+            getString(R.string.net_total, dayData.dayTotal.toCurrencyDisplay(resources))
         when {
-            dayData.dayTotal > 0 -> tvNetTotal.setTextColor(ContextCompat.getColor(requireContext(), R.color.net_positive))
-            dayData.dayTotal < 0 -> tvNetTotal.setTextColor(ContextCompat.getColor(requireContext(), R.color.net_negative))
-            else -> tvNetTotal.setTextColor(ContextCompat.getColor(requireContext(), R.color.net_zero))
+            dayData.dayTotal > 0 -> tvNetTotal.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.net_positive)
+            )
+            dayData.dayTotal < 0 -> tvNetTotal.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.net_negative)
+            )
+            else -> tvNetTotal.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.net_zero)
+            )
         }
 
         // Assign income button
@@ -216,9 +246,9 @@ class DayDetailModalDialogFragment : DialogFragment() {
                     expenses = dayData.expenses,
                     spendingEntries = dayData.spendingEntries,
                     assignedIncomes = dayData.assignedIncomes,
-                    dayTotal = dayData.dayTotal,
+                    dayTotal = dayData.dayTotal
                 ),
-                unassignedIncomes,
+                unassignedIncomes
             ).apply {
                 setOnAssignIncomeListener { selectedIncome ->
                     onAssignIncome?.invoke(selectedIncome)

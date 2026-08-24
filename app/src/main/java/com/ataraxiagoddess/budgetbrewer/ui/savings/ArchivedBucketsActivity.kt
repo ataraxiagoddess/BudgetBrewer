@@ -49,7 +49,7 @@ class ArchivedBucketsActivity : BaseActivity() {
             ArchivedBucketsAdapter(
                 onRestoreClick = { bucket -> viewModel.restoreBucket(bucket) },
                 onDeleteClick = { bucket -> viewModel.deleteBucket(bucket) },
-                onCardClick = { bucket -> showHistoryDialog(bucket) },
+                onCardClick = { bucket -> showHistoryDialog(bucket) }
             )
         val isTablet = resources.getBoolean(R.bool.is_tablet)
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -63,7 +63,7 @@ class ArchivedBucketsActivity : BaseActivity() {
                     binding.recyclerView.removeItemDecorationAt(0)
                 }
                 binding.recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true),
+                    GridSpacingItemDecoration(2, spacing, true)
                 )
             }
             !isTablet && isLandscape -> {
@@ -74,7 +74,7 @@ class ArchivedBucketsActivity : BaseActivity() {
                     binding.recyclerView.removeItemDecorationAt(0)
                 }
                 binding.recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true),
+                    GridSpacingItemDecoration(2, spacing, true)
                 )
             }
             else -> {
@@ -88,7 +88,8 @@ class ArchivedBucketsActivity : BaseActivity() {
                 when (state) {
                     is ArchivedBucketsUiState.Success -> {
                         adapter.submitList(state.buckets)
-                        binding.emptyView.visibility = if (state.buckets.isEmpty()) View.VISIBLE else View.GONE
+                        binding.emptyView.visibility =
+                            if (state.buckets.isEmpty()) View.VISIBLE else View.GONE
                     }
                     else -> {}
                 }
@@ -115,7 +116,7 @@ class ArchivedBucketsActivity : BaseActivity() {
                 bucketName = bucket.name,
                 bucketId = bucket.id,
                 repository = repository,
-                isArchived = true,
+                isArchived = true
             )
         dialog.show(supportFragmentManager, "BucketHistory")
     }
@@ -123,7 +124,7 @@ class ArchivedBucketsActivity : BaseActivity() {
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 }

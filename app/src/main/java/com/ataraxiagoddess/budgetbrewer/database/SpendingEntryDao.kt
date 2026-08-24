@@ -28,15 +28,16 @@ interface SpendingEntryDao {
     suspend fun getSpendingEntryById(id: String): SpendingEntry?
 
     // Get all unique tags for a budget (excluding null and empty)
-    @Query("SELECT DISTINCT tag FROM spending_entries WHERE budgetId = :budgetId AND tag IS NOT NULL AND tag != '' ORDER BY tag ASC")
+    @Query(
+        "SELECT DISTINCT tag FROM spending_entries WHERE budgetId = :budgetId AND tag IS NOT NULL AND tag != '' ORDER BY tag ASC"
+    )
     fun getAllTagsByBudgetId(budgetId: String): Flow<List<String>>
 
     // Get spending entries grouped by tag for a budget
-    @Query("SELECT * FROM spending_entries WHERE budgetId = :budgetId AND tag = :tag ORDER BY date ASC")
-    fun getSpendingByTag(
-        budgetId: String,
-        tag: String,
-    ): Flow<List<SpendingEntry>>
+    @Query(
+        "SELECT * FROM spending_entries WHERE budgetId = :budgetId AND tag = :tag ORDER BY date ASC"
+    )
+    fun getSpendingByTag(budgetId: String, tag: String): Flow<List<SpendingEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entry: SpendingEntry)
@@ -57,7 +58,7 @@ interface SpendingEntryDao {
         WHERE budgetId = :budgetId
         GROUP BY year, month
         ORDER BY year DESC, month DESC
-    """,
+    """
     )
     fun getMonthlySpendingTotals(budgetId: String): Flow<List<MonthlySpending>>
 
@@ -69,7 +70,7 @@ interface SpendingEntryDao {
         FROM spending_entries 
         WHERE budgetId = :budgetId 
         GROUP BY CASE WHEN tag IS NULL OR tag = '' THEN 'untagged' ELSE tag END
-    """,
+    """
     )
     fun getSpendingTotalsByTag(budgetId: String): Flow<List<TagSpendingTotal>>
 

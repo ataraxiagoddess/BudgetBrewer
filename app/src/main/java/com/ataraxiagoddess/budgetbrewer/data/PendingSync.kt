@@ -16,5 +16,5 @@ data class PendingSync(
     val table: String,
     val recordId: String,
     val userId: String,
-    val timestamp: Long = System.currentTimeMillis(),
+    val timestamp: Long = System.currentTimeMillis()
 )

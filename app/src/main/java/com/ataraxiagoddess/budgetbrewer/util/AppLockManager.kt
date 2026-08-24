@@ -13,12 +13,12 @@ import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.RegistryConfiguration
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 object AppLockManager {
     private const val PREFS_NAME = "app_lock"
@@ -38,7 +38,8 @@ object AppLockManager {
         private set
 
     private lateinit var aead: Aead
-    private lateinit var dataStore: androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>
+    private lateinit var dataStore:
+        androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>
 
     fun init(context: Context) {
         AeadConfig.register()
@@ -52,26 +53,24 @@ object AppLockManager {
         aead =
             keysetManager.keysetHandle.getPrimitive(
                 RegistryConfiguration.get(),
-                Aead::class.java,
+                Aead::class.java
             )
 
         dataStore =
             androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
-                produceFile = { context.preferencesDataStoreFile("encrypted_$PREFS_NAME") },
+                produceFile = { context.preferencesDataStoreFile("encrypted_$PREFS_NAME") }
             )
     }
 
     // Helper to read/write encrypted values
-    private suspend fun putEncryptedString(
-        key: String,
-        value: String?,
-    ) {
+    private suspend fun putEncryptedString(key: String, value: String?) {
         dataStore.edit { prefs ->
             if (value == null) {
                 prefs.remove(stringPreferencesKey(key))
             } else {
                 val encrypted = aead.encrypt(value.toByteArray(), null)
-                prefs[stringPreferencesKey(key)] = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
+                prefs[stringPreferencesKey(key)] =
+                    android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT)
             }
         }
     }
@@ -81,7 +80,10 @@ object AppLockManager {
         return if (encryptedBase64 == null) {
             null
         } else {
-            val decrypted = aead.decrypt(android.util.Base64.decode(encryptedBase64, android.util.Base64.DEFAULT), null)
+            val decrypted = aead.decrypt(
+                android.util.Base64.decode(encryptedBase64, android.util.Base64.DEFAULT),
+                null
+            )
             String(decrypted)
         }
     }
@@ -92,7 +94,10 @@ object AppLockManager {
         runBlocking { putEncryptedString(KEY_PIN_ENABLED, enabled.toString()) }
     }
 
-    fun isBiometricsEnabled(): Boolean = runBlocking { getEncryptedString(KEY_BIOMETRICS_ENABLED) == "true" }
+    fun isBiometricsEnabled(): Boolean = runBlocking {
+        getEncryptedString(KEY_BIOMETRICS_ENABLED) ==
+            "true"
+    }
 
     fun setBiometricsEnabled(enabled: Boolean) {
         runBlocking { putEncryptedString(KEY_BIOMETRICS_ENABLED, enabled.toString()) }
@@ -162,20 +167,14 @@ object AppLockManager {
         return elapsed > graceMs
     }
 
-    private fun hashPinLegacy(
-        pin: String,
-        salt: String,
-    ): String {
+    private fun hashPinLegacy(pin: String, salt: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
         val salted = pin + salt
         val bytes = digest.digest(salted.toByteArray())
         return bytesToHex(bytes)
     }
 
-    private fun hashPinPbkdf2(
-        pin: String,
-        saltHex: String,
-    ): String {
+    private fun hashPinPbkdf2(pin: String, saltHex: String): String {
         val salt = hexToBytes(saltHex)
         val spec = PBEKeySpec(pin.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH_BITS)
         val factory =

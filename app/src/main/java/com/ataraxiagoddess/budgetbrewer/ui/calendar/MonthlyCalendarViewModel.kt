@@ -19,18 +19,18 @@ import com.ataraxiagoddess.budgetbrewer.data.SpendingEntry
 import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
+import java.util.Calendar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
 
 class MonthlyCalendarViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context,
+    private val appContext: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
     private var currentMonth: Month = Month.current()
@@ -45,12 +45,12 @@ class MonthlyCalendarViewModel(
         val spendingEntries: List<SpendingEntry>,
         val assignedIncomes: List<Income>,
         val dayTotal: Double,
-        val savingsDistributed: Double = 0.0,
+        val savingsDistributed: Double = 0.0
     )
 
     data class WeekEndTotal(
         val weekNumber: Int,
-        val total: Double,
+        val total: Double
         // isOverridden removed
     )
 
@@ -61,19 +61,15 @@ class MonthlyCalendarViewModel(
         val weeks: List<List<CalendarDay>>,
         val weekEndTotals: List<WeekEndTotal>,
         val monthEndAmount: Double,
-        val unassignedIncomes: List<Income>,
+        val unassignedIncomes: List<Income>
     )
 
     sealed class CalendarUiState {
         object Loading : CalendarUiState()
 
-        data class Success(
-            val data: CalendarData,
-        ) : CalendarUiState()
+        data class Success(val data: CalendarData) : CalendarUiState()
 
-        data class Error(
-            val message: String,
-        ) : CalendarUiState()
+        data class Error(val message: String) : CalendarUiState()
     }
 
     fun updateMonth(month: Month) {
@@ -98,7 +94,7 @@ class MonthlyCalendarViewModel(
                 (settings ?: MonthSettings(budgetId = budgetId, monthStartAmount = amount))
                     .copy(
                         monthStartAmount = amount,
-                        monthStartOverridden = true,
+                        monthStartOverridden = true
                     )
             repository.insertOrUpdateMonthSettings(updatedSettings)
             // Sync after update
@@ -149,11 +145,11 @@ class MonthlyCalendarViewModel(
                         settings?.copy(
                             monthStartAmount = monthStartAmount,
                             monthStartOverridden = false,
-                            updatedAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis()
                         ) ?: MonthSettings(
                             budgetId = budgetId,
                             monthStartAmount = monthStartAmount,
-                            monthStartOverridden = false,
+                            monthStartOverridden = false
                         )
                     repository.insertOrUpdateMonthSettings(updatedSettings)
                 }
@@ -176,9 +172,11 @@ class MonthlyCalendarViewModel(
                 for (day in 1..daysInMonth) {
                     val dayExpenses = expensesByDay[day] ?: emptyList()
                     val daySpending = spendingByDay[day] ?: emptyList()
-                    val assigned = assignmentMap[day]?.mapNotNull { incomesById[it.incomeId] } ?: emptyList()
+                    val assigned =
+                        assignmentMap[day]?.mapNotNull { incomesById[it.incomeId] } ?: emptyList()
                     val dayIncomeTotal = assigned.sumOf { it.amount }
-                    val dayExpenseTotal = dayExpenses.sumOf { it.amount } + daySpending.sumOf { it.amount }
+                    val dayExpenseTotal =
+                        dayExpenses.sumOf { it.amount } + daySpending.sumOf { it.amount }
                     val dayTotal = dayIncomeTotal - dayExpenseTotal - (savingsByDay[day] ?: 0.0)
                     allDays.add(
                         CalendarDay(
@@ -188,8 +186,8 @@ class MonthlyCalendarViewModel(
                             spendingEntries = daySpending,
                             assignedIncomes = assigned,
                             dayTotal = dayTotal,
-                            savingsDistributed = savingsByDay[day] ?: 0.0,
-                        ),
+                            savingsDistributed = savingsByDay[day] ?: 0.0
+                        )
                     )
                 }
                 while (allDays.size % 7 != 0) {
@@ -206,8 +204,8 @@ class MonthlyCalendarViewModel(
                     weekEndTotals.add(
                         WeekEndTotal(
                             weekNumber = weekIndex + 1,
-                            total = runningTotal,
-                        ),
+                            total = runningTotal
+                        )
                     )
                 }
                 val monthEndAmount = runningTotal
@@ -221,8 +219,8 @@ class MonthlyCalendarViewModel(
                             weeks = weeks,
                             weekEndTotals = weekEndTotals,
                             monthEndAmount = monthEndAmount,
-                            unassignedIncomes = unassignedIncomes,
-                        ),
+                            unassignedIncomes = unassignedIncomes
+                        )
                     )
             } catch (e: Exception) {
                 Timber.e(e, "loadData() failed")
@@ -238,53 +236,41 @@ class MonthlyCalendarViewModel(
         return cal.get(Calendar.DAY_OF_MONTH)
     }
 
-    private fun isInMonth(
-        timestamp: Long,
-        month: Month,
-    ): Boolean {
+    private fun isInMonth(timestamp: Long, month: Month): Boolean {
         val cal = Calendar.getInstance().apply { timeInMillis = timestamp }
         return cal.get(Calendar.YEAR) == month.year &&
             cal.get(Calendar.MONTH) + 1 == month.month
     }
 
-    private fun getDaysInMonth(
-        year: Int,
-        month: Int,
-    ): Int =
-        when (month) {
-            1 -> 31
-            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
-            3 -> 31
-            4 -> 30
-            5 -> 31
-            6 -> 30
-            7 -> 31
-            8 -> 31
-            9 -> 30
-            10 -> 31
-            11 -> 30
-            12 -> 31
-            else -> throw IllegalArgumentException("Invalid month: $month")
-        }
+    private fun getDaysInMonth(year: Int, month: Int): Int = when (month) {
+        1 -> 31
+        2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+        3 -> 31
+        4 -> 30
+        5 -> 31
+        6 -> 30
+        7 -> 31
+        8 -> 31
+        9 -> 30
+        10 -> 31
+        11 -> 30
+        12 -> 31
+        else -> throw IllegalArgumentException("Invalid month: $month")
+    }
 
-    private fun getFirstDayOfWeek(
-        year: Int,
-        month: Int,
-    ): Int {
+    private fun getFirstDayOfWeek(year: Int, month: Int): Int {
         val cal = Calendar.getInstance().apply { set(year, month - 1, 1) }
         return cal.get(Calendar.DAY_OF_WEEK)
     }
 
     private suspend fun getPreviousMonthEndAmount(current: Month): Double {
-        val previousBudget = repository.findPreviousBudget(current.month, current.year) ?: return 0.0
+        val previousBudget =
+            repository.findPreviousBudget(current.month, current.year) ?: return 0.0
         repository.ensureMonthSettings(previousBudget.id)
         return repository.getMonthEndAmount(previousBudget.id)
     }
 
-    fun assignIncomeToDay(
-        day: Int,
-        income: Income,
-    ) {
+    fun assignIncomeToDay(day: Int, income: Income) {
         viewModelScope.launch {
             repository.assignIncomeToDay(budgetId, income.id, day)
             val assignment = repository.getIncomeAssignment(budgetId, income.id)

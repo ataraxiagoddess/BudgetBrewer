@@ -21,33 +21,30 @@ import kotlin.math.abs
 
 class TransactionHistoryAdapter(
     private val onEditClick: ((SavingsTransaction) -> Unit)? = null,
-    private val onDeleteClick: ((SavingsTransaction) -> Unit)? = null,
+    private val onDeleteClick: ((SavingsTransaction) -> Unit)? = null
 ) : ListAdapter<SavingsTransaction, TransactionHistoryAdapter.ViewHolder>(DiffCallback) {
     private val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
 
-    class ViewHolder(
-        val binding: ItemTransactionHistoryBinding,
-    ) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemTransactionHistoryBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): ViewHolder {
-        val binding = ItemTransactionHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemTransactionHistoryBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(
-        holder: ViewHolder,
-        position: Int,
-    ) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tx = getItem(position)
         holder.binding.tvDate.text = dateFormat.format(tx.date)
         val amount = tx.amount
         val sign = if (amount >= 0) "+" else "-"
         val color = if (amount >= 0) R.color.net_positive else R.color.net_negative
         val formattedAmount = CurrencyPrefs.format(abs(amount), Locale.getDefault())
-        holder.binding.tvAmount.text = holder.itemView.context.getString(R.string.amount_signed, sign, formattedAmount)
+        holder.binding.tvAmount.text =
+            holder.itemView.context.getString(R.string.amount_signed, sign, formattedAmount)
         holder.binding.tvAmount.setTextColor(ContextCompat.getColor(holder.itemView.context, color))
 
         // Show edit/delete buttons only when callbacks are provided
@@ -71,7 +68,7 @@ class TransactionHistoryAdapter(
                 dateStr,
                 signStr,
                 amountStr,
-                editSuffix,
+                editSuffix
             )
     }
 
@@ -80,12 +77,12 @@ class TransactionHistoryAdapter(
             object : DiffUtil.ItemCallback<SavingsTransaction>() {
                 override fun areItemsTheSame(
                     oldItem: SavingsTransaction,
-                    newItem: SavingsTransaction,
+                    newItem: SavingsTransaction
                 ): Boolean = oldItem.id == newItem.id
 
                 override fun areContentsTheSame(
                     oldItem: SavingsTransaction,
-                    newItem: SavingsTransaction,
+                    newItem: SavingsTransaction
                 ): Boolean = oldItem == newItem
             }
     }

@@ -15,17 +15,13 @@ import kotlinx.serialization.Serializable
 import timber.log.Timber
 
 @Serializable
-private data class IdResponse(
-    val id: String,
-)
+private data class IdResponse(val id: String)
 
 /**
  * Manages synchronization between local Room database and Supabase.
  * Uses UUID primary keys for all entities (stored as String in local, as UUID in Supabase).
  */
-class SyncManager(
-    context: Context,
-) {
+class SyncManager(context: Context) {
     private val db = AppDatabase.getDatabase(context)
     private val supabase = SupabaseClient.client
 
@@ -33,14 +29,14 @@ class SyncManager(
         operation: String,
         table: String,
         recordId: String,
-        userId: String,
+        userId: String
     ) {
         val pending =
             PendingSync(
                 operation = operation,
                 table = table,
                 recordId = recordId,
-                userId = userId,
+                userId = userId
             )
         db.pendingSyncDao().insert(pending)
     }
@@ -73,31 +69,27 @@ class SyncManager(
         }
     }
 
-    suspend fun userHasData(userId: String): Boolean =
-        withContext(Dispatchers.IO) {
-            try {
-                val result =
-                    supabase.postgrest["budgets"]
-                        .select(Columns.raw("id")) {
-                            filter { eq("user_id", userId) }
-                            limit(1)
-                        }.decodeList<IdResponse>()
-                val hasData = result.isNotEmpty()
-                Timber.d("userHasData for $userId: $hasData")
-                hasData
-            } catch (e: Exception) {
-                Timber.e(e, "userHasData failed for $userId")
-                false
-            }
+    suspend fun userHasData(userId: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val result =
+                supabase.postgrest["budgets"]
+                    .select(Columns.raw("id")) {
+                        filter { eq("user_id", userId) }
+                        limit(1)
+                    }.decodeList<IdResponse>()
+            val hasData = result.isNotEmpty()
+            Timber.d("userHasData for $userId: $hasData")
+            hasData
+        } catch (e: Exception) {
+            Timber.e(e, "userHasData failed for $userId")
+            false
         }
+    }
 
     /**
      * Upload a single budget.
      */
-    suspend fun uploadBudget(
-        budget: Budget,
-        userId: String,
-    ) {
+    suspend fun uploadBudget(budget: Budget, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -107,7 +99,7 @@ class SyncManager(
                         year = budget.year,
                         created_at = budget.createdAt,
                         updated_at = budget.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["budgets"].upsert(payload)
             } catch (e: Exception) {
@@ -120,10 +112,7 @@ class SyncManager(
     /**
      * Upload a single income.
      */
-    suspend fun uploadIncome(
-        income: Income,
-        userId: String,
-    ) {
+    suspend fun uploadIncome(income: Income, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -139,7 +128,7 @@ class SyncManager(
                         tips_order = income.tipsOrder,
                         created_at = income.createdAt,
                         updated_at = income.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["incomes"].upsert(payload)
             } catch (e: Exception) {
@@ -152,10 +141,7 @@ class SyncManager(
     /**
      * Upload a single expense category.
      */
-    suspend fun uploadCategory(
-        category: ExpenseCategory,
-        userId: String,
-    ) {
+    suspend fun uploadCategory(category: ExpenseCategory, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -167,7 +153,7 @@ class SyncManager(
                         display_order = category.displayOrder,
                         created_at = category.createdAt,
                         updated_at = category.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["expense_categories"].upsert(payload)
             } catch (e: Exception) {
@@ -180,10 +166,7 @@ class SyncManager(
     /**
      * Upload a single expense.
      */
-    suspend fun uploadExpense(
-        expense: Expense,
-        userId: String,
-    ) {
+    suspend fun uploadExpense(expense: Expense, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val category = db.expenseCategoryDao().getCategoryById(expense.categoryId)
@@ -212,7 +195,7 @@ class SyncManager(
                         created_at = expense.createdAt,
                         is_active = expense.isActive,
                         updated_at = expense.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["expenses"].upsert(payload)
             } catch (e: Exception) {
@@ -225,10 +208,7 @@ class SyncManager(
     /**
      * Upload a single allocation.
      */
-    suspend fun uploadAllocation(
-        allocation: Allocation,
-        userId: String,
-    ) {
+    suspend fun uploadAllocation(allocation: Allocation, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -241,7 +221,7 @@ class SyncManager(
                         spending_is_percentage = allocation.spendingIsPercentage,
                         created_at = allocation.createdAt,
                         updated_at = allocation.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["allocations"].upsert(payload)
             } catch (e: Exception) {
@@ -254,10 +234,7 @@ class SyncManager(
     /**
      * Upload a single daily checklist item.
      */
-    suspend fun uploadDailyChecklistItem(
-        item: DailyChecklist,
-        userId: String,
-    ) {
+    suspend fun uploadDailyChecklistItem(item: DailyChecklist, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -267,7 +244,7 @@ class SyncManager(
                         day_of_month = item.dayOfMonth,
                         is_checked = item.isChecked,
                         updated_at = item.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["daily_checklist"].upsert(payload)
             } catch (e: Exception) {
@@ -280,10 +257,7 @@ class SyncManager(
     /**
      * Upload a single spending entry.
      */
-    suspend fun uploadSpendingEntry(
-        entry: SpendingEntry,
-        userId: String,
-    ) {
+    suspend fun uploadSpendingEntry(entry: SpendingEntry, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -297,7 +271,7 @@ class SyncManager(
                         note = entry.note,
                         created_at = entry.createdAt,
                         updated_at = entry.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["spending_entries"].upsert(payload)
             } catch (e: Exception) {
@@ -308,10 +282,7 @@ class SyncManager(
     }
 
     // --- Savings Buckets Sync ---
-    suspend fun uploadSavingsBucket(
-        bucket: SavingsBucket,
-        userId: String,
-    ) {
+    suspend fun uploadSavingsBucket(bucket: SavingsBucket, userId: String) {
         withContext(Dispatchers.IO) {
             Timber.d("uploadSavingsBucket – userId = $userId")
             Timber.d("uploadSavingsBucket – upsert completed")
@@ -327,7 +298,7 @@ class SyncManager(
                         color_hex = bucket.color_hex,
                         is_archived = bucket.is_archived,
                         created_at = bucket.created_at,
-                        updated_at = bucket.updated_at,
+                        updated_at = bucket.updated_at
                     )
                 supabase.postgrest["savings_buckets"].upsert(payload)
             } catch (e: Exception) {
@@ -338,10 +309,7 @@ class SyncManager(
     }
 
     // --- Savings Transactions Sync ---
-    suspend fun uploadSavingsTransaction(
-        transaction: SavingsTransaction,
-        userId: String,
-    ) {
+    suspend fun uploadSavingsTransaction(transaction: SavingsTransaction, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -352,7 +320,7 @@ class SyncManager(
                         date = transaction.date,
                         type = transaction.type.name,
                         created_at = transaction.created_at,
-                        updated_at = transaction.updated_at,
+                        updated_at = transaction.updated_at
                     )
                 supabase.postgrest["savings_transactions"].upsert(payload)
             } catch (e: Exception) {
@@ -365,10 +333,7 @@ class SyncManager(
     /**
      * Upload a single month setting.
      */
-    suspend fun uploadMonthSetting(
-        setting: MonthSettings,
-        userId: String,
-    ) {
+    suspend fun uploadMonthSetting(setting: MonthSettings, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -381,7 +346,7 @@ class SyncManager(
                         pay_frequency = setting.payFrequency,
                         created_at = setting.createdAt,
                         updated_at = setting.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["month_settings"].upsert(payload)
             } catch (e: Exception) {
@@ -394,10 +359,7 @@ class SyncManager(
     /**
      * Upload a single daily income assignment.
      */
-    suspend fun uploadDailyIncomeAssignment(
-        assignment: DailyIncomeAssignment,
-        userId: String,
-    ) {
+    suspend fun uploadDailyIncomeAssignment(assignment: DailyIncomeAssignment, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 val payload =
@@ -408,7 +370,7 @@ class SyncManager(
                         day_of_month = assignment.dayOfMonth,
                         created_at = assignment.createdAt,
                         updated_at = assignment.updatedAt,
-                        user_id = userId,
+                        user_id = userId
                     )
                 supabase.postgrest["daily_income_assignments"].upsert(payload)
             } catch (e: Exception) {
@@ -423,10 +385,7 @@ class SyncManager(
     /**
      * Delete an income from Supabase.
      */
-    suspend fun deleteIncome(
-        incomeId: String,
-        userId: String,
-    ) {
+    suspend fun deleteIncome(incomeId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["incomes"].delete {
@@ -445,10 +404,7 @@ class SyncManager(
     /**
      * Delete a category from Supabase.
      */
-    suspend fun deleteCategory(
-        categoryId: String,
-        userId: String,
-    ) {
+    suspend fun deleteCategory(categoryId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["expense_categories"].delete {
@@ -467,10 +423,7 @@ class SyncManager(
     /**
      * Delete an expense from Supabase.
      */
-    suspend fun deleteExpense(
-        expenseId: String,
-        userId: String,
-    ) {
+    suspend fun deleteExpense(expenseId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["expenses"].delete {
@@ -489,10 +442,7 @@ class SyncManager(
     /**
      * Delete an allocation from Supabase.
      */
-    suspend fun deleteAllocation(
-        allocationId: String,
-        userId: String,
-    ) {
+    suspend fun deleteAllocation(allocationId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["allocations"].delete {
@@ -511,10 +461,7 @@ class SyncManager(
     /**
      * Delete a spending entry from Supabase.
      */
-    suspend fun deleteSpendingEntry(
-        entryId: String,
-        userId: String,
-    ) {
+    suspend fun deleteSpendingEntry(entryId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["spending_entries"].delete {
@@ -533,10 +480,7 @@ class SyncManager(
     /**
      * Delete a savings bucket from Supabase.
      */
-    suspend fun deleteSavingsBucket(
-        bucketId: String,
-        userId: String,
-    ) {
+    suspend fun deleteSavingsBucket(bucketId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["savings_buckets"].delete {
@@ -554,10 +498,7 @@ class SyncManager(
     /**
      * Delete a savings bucket transaction from Supabase.
      */
-    suspend fun deleteSavingsTransaction(
-        transactionId: String,
-        userId: String,
-    ) {
+    suspend fun deleteSavingsTransaction(transactionId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["savings_transactions"].delete {
@@ -573,10 +514,7 @@ class SyncManager(
         }
     }
 
-    suspend fun deleteDailyChecklistItem(
-        itemId: String,
-        userId: String,
-    ) {
+    suspend fun deleteDailyChecklistItem(itemId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["daily_checklist"].delete {
@@ -595,10 +533,7 @@ class SyncManager(
     /**
      * Delete a daily income assignment from Supabase.
      */
-    suspend fun deleteDailyIncomeAssignment(
-        assignmentId: String,
-        userId: String,
-    ) {
+    suspend fun deleteDailyIncomeAssignment(assignmentId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["daily_income_assignments"].delete {
@@ -614,10 +549,7 @@ class SyncManager(
         }
     }
 
-    suspend fun deleteMonthSetting(
-        settingId: String,
-        userId: String,
-    ) {
+    suspend fun deleteMonthSetting(settingId: String, userId: String) {
         withContext(Dispatchers.IO) {
             try {
                 supabase.postgrest["month_settings"].delete {
@@ -794,11 +726,15 @@ class SyncManager(
     }
 
     private suspend fun uploadAllDailyChecklist(userId: String) {
-        db.dailyChecklistDao().getAllChecklistSync().forEach { uploadDailyChecklistItem(it, userId) }
+        db.dailyChecklistDao().getAllChecklistSync().forEach {
+            uploadDailyChecklistItem(it, userId)
+        }
     }
 
     private suspend fun uploadAllSpendingEntries(userId: String) {
-        db.spendingEntryDao().getAllSpendingEntriesSync().forEach { uploadSpendingEntry(it, userId) }
+        db.spendingEntryDao().getAllSpendingEntriesSync().forEach {
+            uploadSpendingEntry(it, userId)
+        }
     }
 
     private suspend fun uploadAllSavingsBuckets(userId: String) {
@@ -806,7 +742,9 @@ class SyncManager(
     }
 
     private suspend fun uploadAllSavingsTransactions(userId: String) {
-        db.savingsTransactionDao().getAllTransactionsSync().forEach { uploadSavingsTransaction(it, userId) }
+        db.savingsTransactionDao().getAllTransactionsSync().forEach {
+            uploadSavingsTransaction(it, userId)
+        }
     }
 
     private suspend fun uploadAllMonthSettings(userId: String) {
@@ -814,7 +752,9 @@ class SyncManager(
     }
 
     private suspend fun uploadAllDailyIncomeAssignments(userId: String) {
-        db.dailyIncomeAssignmentDao().getAllAssignmentsSync().forEach { uploadDailyIncomeAssignment(it, userId) }
+        db.dailyIncomeAssignmentDao().getAllAssignmentsSync().forEach {
+            uploadDailyIncomeAssignment(it, userId)
+        }
     }
 
     // ========== LOCAL CLEAR ==========

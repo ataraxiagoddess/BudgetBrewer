@@ -17,32 +17,32 @@ import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.databinding.ItemMonthlyExpenseDayBinding
 
 class MonthlyExpenseListAdapter(
-    private val onCheckboxChanged: (day: Int, isChecked: Boolean) -> Unit,
-) : ListAdapter<MonthlyExpenseListViewModel.DayExpenses, MonthlyExpenseListAdapter.DayViewHolder>(DayDiffCallback()) {
+    private val onCheckboxChanged: (day: Int, isChecked: Boolean) -> Unit
+) : ListAdapter<MonthlyExpenseListViewModel.DayExpenses, MonthlyExpenseListAdapter.DayViewHolder>(
+    DayDiffCallback()
+) {
     init {
         setHasStableIds(true)
     }
 
     override fun getItemId(position: Int): Long = getItem(position).day.toLong()
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): DayViewHolder {
-        val binding = ItemMonthlyExpenseDayBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
+        val binding = ItemMonthlyExpenseDayBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return DayViewHolder(binding, onCheckboxChanged)
     }
 
-    override fun onBindViewHolder(
-        holder: DayViewHolder,
-        position: Int,
-    ) {
+    override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
     class DayViewHolder(
         private val binding: ItemMonthlyExpenseDayBinding,
-        private val onCheckboxChanged: (Int, Boolean) -> Unit,
+        private val onCheckboxChanged: (Int, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(dayExpenses: MonthlyExpenseListViewModel.DayExpenses) {
             binding.tvDayNumber.text = dayExpenses.day.toString()
@@ -70,11 +70,12 @@ class MonthlyExpenseListAdapter(
 
             if (dayExpenses.expenses.isEmpty()) {
                 binding.root.setBackgroundColor(
-                    ContextCompat.getColor(binding.root.context, R.color.bg_container_empty),
+                    ContextCompat.getColor(binding.root.context, R.color.bg_container_empty)
                 )
                 binding.checkbox.visibility = View.INVISIBLE
                 binding.tvExpenses.text = ""
-                binding.tvExpenses.typeface = ResourcesCompat.getFont(binding.root.context, R.font.exo_regular)
+                binding.tvExpenses.typeface =
+                    ResourcesCompat.getFont(binding.root.context, R.font.exo_regular)
             } else {
                 binding.root.setBackgroundResource(R.drawable.category_background)
                 binding.checkbox.visibility = View.VISIBLE
@@ -83,7 +84,7 @@ class MonthlyExpenseListAdapter(
 
                 if (dayExpenses.isChecked) {
                     binding.root.setBackgroundColor(
-                        ContextCompat.getColor(context, R.color.bg_container_disabled),
+                        ContextCompat.getColor(context, R.color.bg_container_disabled)
                     )
                     binding.tvExpenses.paint.isStrikeThruText = true
                     binding.tvExpenses.typeface = exoItalic
@@ -102,13 +103,13 @@ class MonthlyExpenseListAdapter(
     class DayDiffCallback : DiffUtil.ItemCallback<MonthlyExpenseListViewModel.DayExpenses>() {
         override fun areItemsTheSame(
             oldItem: MonthlyExpenseListViewModel.DayExpenses,
-            newItem: MonthlyExpenseListViewModel.DayExpenses,
+            newItem: MonthlyExpenseListViewModel.DayExpenses
         ): Boolean = oldItem.day == newItem.day
 
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(
             oldItem: MonthlyExpenseListViewModel.DayExpenses,
-            newItem: MonthlyExpenseListViewModel.DayExpenses,
+            newItem: MonthlyExpenseListViewModel.DayExpenses
         ): Boolean = oldItem.isChecked == newItem.isChecked && oldItem.expenses == newItem.expenses
     }
 }
