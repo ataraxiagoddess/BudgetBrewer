@@ -11,14 +11,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ataraxiagoddess.budgetbrewer.data.BudgetRepository
 import com.ataraxiagoddess.budgetbrewer.util.SpendingPrefs
-import kotlinx.coroutines.runBlocking
 import java.util.Calendar
+import kotlinx.coroutines.runBlocking
 
 @Suppress("UNCHECKED_CAST")
-class HomeViewModelFactory(
-    private val repository: BudgetRepository,
-    private val context: Context,
-) : ViewModelProvider.Factory {
+class HomeViewModelFactory(private val repository: BudgetRepository, private val context: Context) : ViewModelProvider.Factory {
     @SuppressLint("VisibleForTests")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val prefs = context.getSharedPreferences("budget_prefs", Context.MODE_PRIVATE)

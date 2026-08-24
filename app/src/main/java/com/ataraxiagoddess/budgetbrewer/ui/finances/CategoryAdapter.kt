@@ -19,9 +19,9 @@ import com.ataraxiagoddess.budgetbrewer.data.RecurrenceType
 import com.ataraxiagoddess.budgetbrewer.util.SHORT
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.google.android.material.button.MaterialButton
-import timber.log.Timber
 import java.text.DateFormat
 import java.util.Date
+import timber.log.Timber
 
 class CategoryAdapter(
     var categories: List<ExpenseCategory>,
@@ -33,12 +33,9 @@ class CategoryAdapter(
     private val onDeleteCategory: (ExpenseCategory) -> Unit,
     private val onAddExpense: (ExpenseCategory) -> Unit,
     private val onEditExpense: (Expense) -> Unit,
-    private val onDeleteExpense: (Expense) -> Unit,
+    private val onDeleteExpense: (Expense) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-    fun updateData(
-        categories: List<ExpenseCategory>,
-        expenses: List<Expense>,
-    ) {
+    fun updateData(categories: List<ExpenseCategory>, expenses: List<Expense>) {
         this.categories = categories
         this.allExpenses = expenses
         if (isGrid) {
@@ -56,10 +53,7 @@ class CategoryAdapter(
 
     override fun getItemCount(): Int = if (isGrid) categories.size else Int.MAX_VALUE
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): CategoryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view =
             LayoutInflater
                 .from(parent.context)
@@ -69,7 +63,7 @@ class CategoryAdapter(
             view.layoutParams =
                 ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
                 )
         } else {
             val lp = ViewGroup.MarginLayoutParams(contentWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -81,16 +75,15 @@ class CategoryAdapter(
         return CategoryViewHolder(view)
     }
 
-    override fun onBindViewHolder(
-        holder: CategoryViewHolder,
-        position: Int,
-    ) {
+    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         if (categories.isEmpty()) return
 
         val actualPosition =
             if (isGrid) {
                 if (position >= categories.size) {
-                    Timber.w("CategoryAdapter: Invalid grid position $position, size=${categories.size}. Clamping.")
+                    Timber.w(
+                        "CategoryAdapter: Invalid grid position $position, size=${categories.size}. Clamping."
+                    )
                     categories.size - 1
                 } else {
                     position
@@ -101,9 +94,7 @@ class CategoryAdapter(
         holder.bind(categories[actualPosition])
     }
 
-    inner class CategoryViewHolder(
-        itemView: View,
-    ) : RecyclerView.ViewHolder(itemView) {
+    inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvName: TextView = itemView.findViewById(R.id.tvCategoryName)
         private val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditCategory)
         private val btnDelete: MaterialButton = itemView.findViewById(R.id.btnDeleteCategory)
@@ -147,11 +138,25 @@ class CategoryAdapter(
             tvDueDay.text = SHORT.format(Date(expense.dueDate))
 
             if (expense.recurrenceType != RecurrenceType.NONE) {
-                val drawable = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_recurring, null)
+                val drawable = ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.ic_recurring,
+                    null
+                )
                 drawable?.setTint(ContextCompat.getColor(context, R.color.text_on_container))
-                tvDescription.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null)
+                tvDescription.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    null,
+                    null,
+                    drawable,
+                    null
+                )
             } else {
-                tvDescription.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null)
+                tvDescription.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    null,
+                    null,
+                    null,
+                    null
+                )
             }
 
             btnEdit.setOnClickListener { onEditExpense(expense) }
@@ -163,7 +168,9 @@ class CategoryAdapter(
                     append(", ")
                     append(expense.amount.toCurrencyDisplay(itemView.resources))
                     append(", due ")
-                    append(DateFormat.getDateInstance(DateFormat.FULL).format(Date(expense.dueDate)))
+                    append(
+                        DateFormat.getDateInstance(DateFormat.FULL).format(Date(expense.dueDate))
+                    )
                     if (expense.recurrenceType != RecurrenceType.NONE) {
                         append(", recurring")
                     }

@@ -64,14 +64,14 @@ class MainActivity : BaseActivity() {
                                 Constraints
                                     .Builder()
                                     .setRequiredNetworkType(NetworkType.CONNECTED)
-                                    .build(),
+                                    .build()
                             ).build()
                     WorkManager
                         .getInstance(this@MainActivity)
                         .enqueueUniqueWork(
                             "initial_download",
                             ExistingWorkPolicy.KEEP,
-                            workRequest,
+                            workRequest
                         )
                 }
             }
@@ -124,7 +124,7 @@ class MainActivity : BaseActivity() {
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 }

@@ -28,6 +28,6 @@ object SavingsBucketColors {
             R.color.bucket_color_17,
             R.color.bucket_color_18,
             R.color.bucket_color_19,
-            R.color.bucket_color_20,
+            R.color.bucket_color_20
         )
 }

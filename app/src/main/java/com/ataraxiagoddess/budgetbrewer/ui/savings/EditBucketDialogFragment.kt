@@ -24,7 +24,7 @@ import com.ataraxiagoddess.budgetbrewer.util.ValidationUtils
 class EditBucketDialogFragment(
     private val existingBucket: SavingsBucket,
     private val onBucketUpdated: (SavingsBucket) -> Unit,
-    private val onShowSnackbar: (String) -> Unit,
+    private val onShowSnackbar: (String) -> Unit
 ) : DialogFragment() {
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
@@ -41,7 +41,7 @@ class EditBucketDialogFragment(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = DialogCreateBucketBinding.inflate(inflater, container, false)
         return binding.root
@@ -51,29 +51,35 @@ class EditBucketDialogFragment(
         super.onStart()
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextBucketName.requestFocus()
         binding.editTextBucketName.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         binding.editTextTargetAmount.filters = arrayOf(DecimalDigitsInputFilter())
 
         binding.tvBucketNameCounter.text =
-            getString(R.string.character_counter, existingBucket.name.length, ValidationUtils.MAX_LENGTH_NAME)
+            getString(
+                R.string.character_counter,
+                existingBucket.name.length,
+                ValidationUtils.MAX_LENGTH_NAME
+            )
 
         // Pre-fill data
         binding.editTextBucketName.setText(ValidationUtils.sanitizeString(existingBucket.name))
         if (existingBucket.type == SavingsBucketType.GOAL) {
             binding.radioGoal.isChecked = true
             binding.editTextTargetAmount.visibility = View.VISIBLE
-            existingBucket.target_amount?.let { binding.editTextTargetAmount.setText(it.toString()) }
+            existingBucket.target_amount?.let {
+                binding.editTextTargetAmount.setText(it.toString())
+            }
         } else {
             binding.radioGrowth.isChecked = true
             binding.editTextTargetAmount.visibility = View.GONE
@@ -94,7 +100,7 @@ class EditBucketDialogFragment(
                         colorAdapter.notifyItemChanged(oldPosition)
                         colorAdapter.notifyItemChanged(position)
                     }
-                },
+                }
             )
         binding.recyclerViewColors.adapter = colorAdapter
 
@@ -127,19 +133,19 @@ class EditBucketDialogFragment(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
                     val name = binding.editTextBucketName.text.toString()
-                    binding.tvBucketNameCounter.text = getString(R.string.character_counter, name.length, ValidationUtils.MAX_LENGTH_NAME)
+                    binding.tvBucketNameCounter.text =
+                        getString(
+                            R.string.character_counter,
+                            name.length,
+                            ValidationUtils.MAX_LENGTH_NAME
+                        )
                     validateInputs()
                 }
             }
@@ -179,7 +185,7 @@ class EditBucketDialogFragment(
                     type = bucketType,
                     target_amount = targetAmount,
                     color_hex = colorResToHex(selectedColorRes),
-                    updated_at = System.currentTimeMillis(),
+                    updated_at = System.currentTimeMillis()
                 )
             onBucketUpdated(updatedBucket)
             dismiss()
@@ -199,7 +205,8 @@ class EditBucketDialogFragment(
                 if (amountStr.isNotEmpty()) {
                     val amount = amountStr.toDoubleOrNull()
                     if (amount != null && !ValidationUtils.isValidAmount(amount)) {
-                        binding.tvTargetAmountError.text = getString(R.string.amount_exceeds_maximum)
+                        binding.tvTargetAmountError.text =
+                            getString(R.string.amount_exceeds_maximum)
                         binding.tvTargetAmountError.visibility = View.VISIBLE
                         false
                     } else {
@@ -218,13 +225,12 @@ class EditBucketDialogFragment(
         binding.buttonCreate.isEnabled = isNameValid && isAmountValid
     }
 
-    private fun colorResToHex(colorRes: Int): String =
-        try {
-            val colorInt = ContextCompat.getColor(requireContext(), colorRes)
-            String.format("#%06X", 0xFFFFFF and colorInt)
-        } catch (_: Exception) {
-            "#FF6B6B"
-        }
+    private fun colorResToHex(colorRes: Int): String = try {
+        val colorInt = ContextCompat.getColor(requireContext(), colorRes)
+        String.format("#%06X", 0xFFFFFF and colorInt)
+    } catch (_: Exception) {
+        "#FF6B6B"
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

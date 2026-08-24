@@ -27,9 +27,6 @@ import androidx.core.graphics.toColorInt
 import com.ataraxiagoddess.budgetbrewer.R
 import com.ataraxiagoddess.budgetbrewer.data.RecurrenceType
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -37,6 +34,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 
 object ExportHelper {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
@@ -45,22 +45,14 @@ object ExportHelper {
     // ========================================================================
     // Budget‑scoped CSV export
     // ========================================================================
-    suspend fun exportBudgetToCSV(
-        context: Context,
-        budgetId: String,
-        monthLabel: String,
-    ): Uri? =
-        withContext(Dispatchers.IO) {
-            CurrencyPrefs.init(context)
-            val db = AppDatabase.getDatabase(context)
-            val csvContent = buildCSVForBudget(db, budgetId)
-            saveToDownloads(context, "BudgetBrewer_$monthLabel.csv", csvContent)
-        }
+    suspend fun exportBudgetToCSV(context: Context, budgetId: String, monthLabel: String): Uri? = withContext(Dispatchers.IO) {
+        CurrencyPrefs.init(context)
+        val db = AppDatabase.getDatabase(context)
+        val csvContent = buildCSVForBudget(db, budgetId)
+        saveToDownloads(context, "BudgetBrewer_$monthLabel.csv", csvContent)
+    }
 
-    private suspend fun buildCSVForBudget(
-        db: AppDatabase,
-        budgetId: String,
-    ): ByteArray {
+    private suspend fun buildCSVForBudget(db: AppDatabase, budgetId: String): ByteArray {
         val sb = StringBuilder()
         val locale = Locale.getDefault()
 
@@ -74,10 +66,7 @@ object ExportHelper {
 
         fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
 
-        fun formatWithCurrency(
-            amount: Double,
-            currencyValue: String,
-        ) = CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
+        fun formatWithCurrency(amount: Double, currencyValue: String) = CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
 
         val budget = db.budgetDao().getBudgetById(budgetId) ?: return byteArrayOf()
         val monthYear = "${budget.month}/${budget.year}"
@@ -95,7 +84,7 @@ object ExportHelper {
                 inc.sourceName,
                 formatWithCurrency(inc.amount, inc.currency),
                 inc.frequency.name,
-                if (inc.isTips) "Yes" else "No",
+                if (inc.isTips) "Yes" else "No"
             )
         }
 
@@ -128,7 +117,7 @@ object ExportHelper {
                     exp.description,
                     formatCurrent(exp.amount),
                     shortDateFormat.format(Date(exp.dueDate)),
-                    recurrence,
+                    recurrence
                 )
             }
 
@@ -136,8 +125,20 @@ object ExportHelper {
         writeSection("ALLOCATIONS")
         writeRow("Savings", "Spending")
         db.allocationDao().getAllocationForBudget(budgetId).first()?.let { alloc ->
-            val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
-            val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
+            val savings = if (alloc.savingsIsPercentage) {
+                "${alloc.savingsAmount}%"
+            } else {
+                formatCurrent(
+                    alloc.savingsAmount
+                )
+            }
+            val spending = if (alloc.spendingIsPercentage) {
+                "${alloc.spendingAmount}%"
+            } else {
+                formatCurrent(
+                    alloc.spendingAmount
+                )
+            }
             writeRow(savings, spending)
         }
 
@@ -152,7 +153,7 @@ object ExportHelper {
                 bucket.type.name,
                 target,
                 formatCurrent(bucket.current_amount),
-                if (bucket.is_archived) "Yes" else "No",
+                if (bucket.is_archived) "Yes" else "No"
             )
         }
 
@@ -170,7 +171,7 @@ object ExportHelper {
                     bucketName,
                     formatCurrent(tx.amount),
                     shortDateFormat.format(Date(tx.date)),
-                    tx.type.name,
+                    tx.type.name
                 )
             }
 
@@ -188,7 +189,7 @@ object ExportHelper {
                     entry.source,
                     formatCurrent(entry.amount),
                     entry.tag ?: "",
-                    entry.note ?: "",
+                    entry.note ?: ""
                 )
             }
 
@@ -210,7 +211,10 @@ object ExportHelper {
         writeSection("MONTH SETTINGS")
         writeRow("Start Amount", "Overridden?")
         db.monthSettingsDao().getSettingsForBudget(budgetId).first()?.let { ms ->
-            writeRow(formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No")
+            writeRow(
+                formatCurrent(ms.monthStartAmount),
+                if (ms.monthStartOverridden) "Yes" else "No"
+            )
         }
 
         // Daily Income Assignments
@@ -230,39 +234,35 @@ object ExportHelper {
         return sb.toString().toByteArray()
     }
 
-    private fun escapeCSV(value: String): String =
-        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
-            "\"" + value.replace("\"", "\"\"") + "\""
-        } else {
-            value
-        }
+    private fun escapeCSV(value: String): String = if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+        "\"" + value.replace("\"", "\"\"") + "\""
+    } else {
+        value
+    }
 
     // ========================================================================
     // Budget‑scoped PDF export (beautified with tables and branded header)
     // ========================================================================
-    suspend fun exportBudgetToPDF(
-        context: Context,
-        budgetId: String,
-        monthLabel: String,
-    ): Uri? =
-        withContext(Dispatchers.IO) {
-            CurrencyPrefs.init(context)
-            val db = AppDatabase.getDatabase(context)
-            val pdfBytes = buildPDFForBudget(context, db, budgetId)
-            saveToDownloads(context, "BudgetBrewer_$monthLabel.pdf", pdfBytes)
-        }
+    suspend fun exportBudgetToPDF(context: Context, budgetId: String, monthLabel: String): Uri? = withContext(Dispatchers.IO) {
+        CurrencyPrefs.init(context)
+        val db = AppDatabase.getDatabase(context)
+        val pdfBytes = buildPDFForBudget(context, db, budgetId)
+        saveToDownloads(context, "BudgetBrewer_$monthLabel.pdf", pdfBytes)
+    }
 
     private suspend fun buildPDFForBudget(
         context: Context,
         db: AppDatabase,
-        budgetId: String,
+        budgetId: String
     ): ByteArray {
         val document = PdfDocument()
         val locale = Locale.getDefault()
         val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
 
-        val regularTypeface = ResourcesCompat.getFont(context, R.font.exo_regular) ?: Typeface.DEFAULT
-        val boldTypeface = ResourcesCompat.getFont(context, R.font.exo_semi_bold) ?: Typeface.DEFAULT_BOLD
+        val regularTypeface =
+            ResourcesCompat.getFont(context, R.font.exo_regular) ?: Typeface.DEFAULT
+        val boldTypeface =
+            ResourcesCompat.getFont(context, R.font.exo_semi_bold) ?: Typeface.DEFAULT_BOLD
 
         val teal = ContextCompat.getColor(context, R.color.bg_main)
         val lavender = ContextCompat.getColor(context, R.color.bg_container)
@@ -310,16 +310,17 @@ object ExportHelper {
                 inPreferredConfig = Bitmap.Config.ARGB_8888
             }
 
-        val originalLogo = BitmapFactory.decodeResource(context.resources, R.drawable.budget_brewer_logo, options)
+        val originalLogo = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.budget_brewer_logo,
+            options
+        )
 
         val logoPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
         fun formatCurrent(amount: Double) = CurrencyPrefs.format(amount, locale)
 
-        fun formatWithCurrency(
-            amount: Double,
-            currencyValue: String,
-        ) = CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
+        fun formatWithCurrency(amount: Double, currencyValue: String) = CurrencyPrefs.formatWithCurrency(amount, currencyValue, locale)
 
         val margin = 30f
         val tableStartX = margin + 15f
@@ -331,7 +332,13 @@ object ExportHelper {
         // Initialize first page
         var page = document.startPage(pageInfo)
         var canvas = page.canvas
-        canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
+        canvas.drawRect(
+            margin,
+            margin,
+            pageInfo.pageWidth - margin,
+            pageInfo.pageHeight - margin,
+            borderPaint
+        )
 
         // Header background (same on every page)
         val headerBgPaint =
@@ -341,16 +348,18 @@ object ExportHelper {
             }
 
         // ---- Page‑header drawing lambda (used for first page and page breaks) ----
-        fun drawPageHeader(
-            canvas: Canvas,
-            startingY: Float,
-        ): Float {
+        fun drawPageHeader(canvas: Canvas, startingY: Float): Float {
             var yPos = startingY
             // Teal strip
             canvas.drawRect(margin, yPos, pageInfo.pageWidth - margin, yPos + 80f, headerBgPaint)
             // Titles
             canvas.drawText("Budget Brewer", margin + 20f, yPos + 45f, titlePaint)
-            canvas.drawText("${budget.month}/${budget.year}", margin + 20f, yPos + 70f, subtitlePaint)
+            canvas.drawText(
+                "${budget.month}/${budget.year}",
+                margin + 20f,
+                yPos + 70f,
+                subtitlePaint
+            )
             // Logo
             val logoWidth = 60f
             val logoHeight = 60f
@@ -378,7 +387,13 @@ object ExportHelper {
                     color = lavender
                     style = Paint.Style.FILL
                 }
-            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 22f, headerRectPaint)
+            canvas.drawRect(
+                tableStartX - 5f,
+                y,
+                tableStartX + usableWidth - 25f,
+                y + 22f,
+                headerRectPaint
+            )
             for ((label, weight) in cols) {
                 val colWidth = (usableWidth - 30f) * (weight / totalWeight)
                 canvas.drawText(label, x + 3f, y + 15f, headingPaint)
@@ -387,11 +402,7 @@ object ExportHelper {
             y += 24f
         }
 
-        fun drawRow(
-            cells: List<String>,
-            cols: List<Pair<String, Float>>,
-            isAlternate: Boolean,
-        ) {
+        fun drawRow(cells: List<String>, cols: List<Pair<String, Float>>, isAlternate: Boolean) {
             if (isAlternate) {
                 val altPaint =
                     Paint().apply {
@@ -399,7 +410,13 @@ object ExportHelper {
                         style = Paint.Style.FILL
                         alpha = 80
                     }
-                canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 20f, altPaint)
+                canvas.drawRect(
+                    tableStartX - 5f,
+                    y,
+                    tableStartX + usableWidth - 25f,
+                    y + 20f,
+                    altPaint
+                )
             }
             val totalWeight = cols.sumOf { it.second.toDouble() }.toFloat()
             var x = tableStartX
@@ -414,27 +431,41 @@ object ExportHelper {
 
         fun checkNewPage() {
             if (y > pageInfo.pageHeight - margin - 60f) {
-                drawFooter(canvas, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
+                drawFooter(
+                    canvas,
+                    pageInfo.pageWidth - margin,
+                    pageInfo.pageHeight - margin,
+                    teal,
+                    regularTypeface
+                )
                 document.finishPage(page)
                 page = document.startPage(pageInfo)
                 canvas = page.canvas
-                canvas.drawRect(margin, margin, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, borderPaint)
+                canvas.drawRect(
+                    margin,
+                    margin,
+                    pageInfo.pageWidth - margin,
+                    pageInfo.pageHeight - margin,
+                    borderPaint
+                )
                 y = drawPageHeader(canvas, margin) // full header on new page
             }
         }
 
-        fun drawSection(
-            title: String,
-            cols: List<Pair<String, Float>>,
-            rows: List<List<String>>,
-        ) {
+        fun drawSection(title: String, cols: List<Pair<String, Float>>, rows: List<List<String>>) {
             checkNewPage()
             val sectionPaint =
                 Paint().apply {
                     color = teal
                     style = Paint.Style.FILL
                 }
-            canvas.drawRect(tableStartX - 5f, y, tableStartX + usableWidth - 25f, y + 24f, sectionPaint)
+            canvas.drawRect(
+                tableStartX - 5f,
+                y,
+                tableStartX + usableWidth - 25f,
+                y + 24f,
+                sectionPaint
+            )
             val sectionTextPaint =
                 Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     typeface = boldTypeface
@@ -461,10 +492,19 @@ object ExportHelper {
                     inc.sourceName,
                     formatWithCurrency(inc.amount, inc.currency),
                     inc.frequency.name,
-                    if (inc.isTips) "Yes" else "No",
+                    if (inc.isTips) "Yes" else "No"
                 )
             }
-        drawSection("INCOMES", listOf("Source" to 1.5f, "Amount" to 1f, "Frequency" to 0.8f, "Tips?" to 0.5f), incomeRows)
+        drawSection(
+            "INCOMES",
+            listOf(
+                "Source" to 1.5f,
+                "Amount" to 1f,
+                "Frequency" to 0.8f,
+                "Tips?" to 0.5f
+            ),
+            incomeRows
+        )
 
         val catRows =
             db
@@ -494,7 +534,7 @@ object ExportHelper {
                         exp.description,
                         formatCurrent(exp.amount),
                         shortDateFormat.format(Date(exp.dueDate)),
-                        recurrence,
+                        recurrence
                     )
                 }
         drawSection(
@@ -504,15 +544,27 @@ object ExportHelper {
                 "Description" to 2f,
                 "Amount" to 1f,
                 "Due Date" to 1.5f,
-                "Recurrence" to 1.5f,
+                "Recurrence" to 1.5f
             ),
-            expenseRows,
+            expenseRows
         )
 
         val allocRows =
             db.allocationDao().getAllocationForBudget(budgetId).first()?.let { alloc ->
-                val savings = if (alloc.savingsIsPercentage) "${alloc.savingsAmount}%" else formatCurrent(alloc.savingsAmount)
-                val spending = if (alloc.spendingIsPercentage) "${alloc.spendingAmount}%" else formatCurrent(alloc.spendingAmount)
+                val savings = if (alloc.savingsIsPercentage) {
+                    "${alloc.savingsAmount}%"
+                } else {
+                    formatCurrent(
+                        alloc.savingsAmount
+                    )
+                }
+                val spending = if (alloc.spendingIsPercentage) {
+                    "${alloc.spendingAmount}%"
+                } else {
+                    formatCurrent(
+                        alloc.spendingAmount
+                    )
+                }
                 listOf(listOf(savings, spending))
             } ?: emptyList()
         if (allocRows.isNotEmpty()) {
@@ -528,7 +580,7 @@ object ExportHelper {
                     bucket.type.name,
                     target,
                     formatCurrent(bucket.current_amount),
-                    if (bucket.is_archived) "Yes" else "No",
+                    if (bucket.is_archived) "Yes" else "No"
                 )
             }
         drawSection(
@@ -538,9 +590,9 @@ object ExportHelper {
                 "Type" to 1f,
                 "Target" to 1f,
                 "Current" to 1f,
-                "Archived" to 1f,
+                "Archived" to 1f
             ),
-            bucketRows,
+            bucketRows
         )
 
         val txRows =
@@ -549,8 +601,14 @@ object ExportHelper {
                 .getAllTransactionsSync()
                 .sortedBy { it.date }
                 .map { tx ->
-                    val bucketName = allBuckets.associateBy { it.id }[tx.bucket_id]?.name ?: "Unknown"
-                    listOf(bucketName, formatCurrent(tx.amount), shortDateFormat.format(Date(tx.date)), tx.type.name)
+                    val bucketName =
+                        allBuckets.associateBy { it.id }[tx.bucket_id]?.name ?: "Unknown"
+                    listOf(
+                        bucketName,
+                        formatCurrent(tx.amount),
+                        shortDateFormat.format(Date(tx.date)),
+                        tx.type.name
+                    )
                 }
         drawSection(
             "SAVINGS TRANSACTIONS",
@@ -558,9 +616,9 @@ object ExportHelper {
                 "Bucket Name" to 2f,
                 "Amount" to 1f,
                 "Date" to 1.5f,
-                "Type" to 1f,
+                "Type" to 1f
             ),
-            txRows,
+            txRows
         )
 
         val spendingRows =
@@ -575,10 +633,20 @@ object ExportHelper {
                         entry.source,
                         formatCurrent(entry.amount),
                         entry.tag ?: "",
-                        entry.note ?: "",
+                        entry.note ?: ""
                     )
                 }
-        drawSection("SPENDING ENTRIES", listOf("Date" to 1f, "Source" to 1.2f, "Amount" to 1f, "Tag" to 1f, "Note" to 1.5f), spendingRows)
+        drawSection(
+            "SPENDING ENTRIES",
+            listOf(
+                "Date" to 1f,
+                "Source" to 1.2f,
+                "Amount" to 1f,
+                "Tag" to 1f,
+                "Note" to 1.5f
+            ),
+            spendingRows
+        )
 
         val activeDays = getActiveDaysForBudget(db, budgetId)
         val checklistRows =
@@ -593,10 +661,19 @@ object ExportHelper {
 
         val monthSettingRows =
             db.monthSettingsDao().getSettingsForBudget(budgetId).first()?.let { ms ->
-                listOf(listOf(formatCurrent(ms.monthStartAmount), if (ms.monthStartOverridden) "Yes" else "No"))
+                listOf(
+                    listOf(
+                        formatCurrent(ms.monthStartAmount),
+                        if (ms.monthStartOverridden) "Yes" else "No"
+                    )
+                )
             } ?: emptyList()
         if (monthSettingRows.isNotEmpty()) {
-            drawSection("MONTH SETTINGS", listOf("Start Amount" to 1f, "Overridden?" to 1f), monthSettingRows)
+            drawSection(
+                "MONTH SETTINGS",
+                listOf("Start Amount" to 1f, "Overridden?" to 1f),
+                monthSettingRows
+            )
         }
 
         val diaRows =
@@ -612,7 +689,13 @@ object ExportHelper {
                 }
         drawSection("DAILY INCOME ASSIGNMENTS", listOf("Income Source" to 2f, "Day" to 1f), diaRows)
 
-        drawFooter(canvas, pageInfo.pageWidth - margin, pageInfo.pageHeight - margin, teal, regularTypeface)
+        drawFooter(
+            canvas,
+            pageInfo.pageWidth - margin,
+            pageInfo.pageHeight - margin,
+            teal,
+            regularTypeface
+        )
 
         document.finishPage(page)
         val stream = ByteArrayOutputStream()
@@ -624,13 +707,7 @@ object ExportHelper {
     // ========================================================================
     // Helper functions
     // ========================================================================
-    private fun drawFooter(
-        canvas: Canvas,
-        right: Float,
-        bottom: Float,
-        teal: Int,
-        font: Typeface,
-    ) {
+    private fun drawFooter(canvas: Canvas, right: Float, bottom: Float, teal: Int, font: Typeface) {
         val footerPaint =
             Paint().apply {
                 color = teal
@@ -643,23 +720,27 @@ object ExportHelper {
                 color = Color.WHITE
             }
         canvas.drawRect(30f, bottom - 30f, right, bottom, footerPaint)
-        canvas.drawText("Budget Brewer – Your zero‑dollar budget companion", 50f, bottom - 10f, textPaint)
+        canvas.drawText(
+            "Budget Brewer – Your zero‑dollar budget companion",
+            50f,
+            bottom - 10f,
+            textPaint
+        )
         val generatedText = "Generated: ${dateFormat.format(Date())}"
         val textWidth = textPaint.measureText(generatedText)
         canvas.drawText(generatedText, right - textWidth - 20f, bottom - 10f, textPaint)
     }
 
-    private fun saveToDownloads(
-        context: Context,
-        fileName: String,
-        data: ByteArray,
-    ): Uri? {
+    private fun saveToDownloads(context: Context, fileName: String, data: ByteArray): Uri? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val resolver = context.contentResolver
             val contentValues =
                 ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                    put(MediaStore.MediaColumns.MIME_TYPE, if (fileName.endsWith(".csv")) "text/csv" else "application/pdf")
+                    put(
+                        MediaStore.MediaColumns.MIME_TYPE,
+                        if (fileName.endsWith(".csv")) "text/csv" else "application/pdf"
+                    )
                     put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
                 }
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
@@ -669,12 +750,18 @@ object ExportHelper {
             }
             null
         } else {
-            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS
+            )
             if (!downloadsDir.exists()) downloadsDir.mkdirs()
             val file = File(downloadsDir, fileName)
             try {
                 FileOutputStream(file).use { stream -> stream.write(data) }
-                return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+                return FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 return null
@@ -682,11 +769,7 @@ object ExportHelper {
         }
     }
 
-    fun shareFile(
-        context: Context,
-        uri: Uri,
-        title: String,
-    ) {
+    fun shareFile(context: Context, uri: Uri, title: String) {
         val intent =
             Intent(Intent.ACTION_SEND).apply {
                 type = if (uri.toString().endsWith(".csv")) "text/csv" else "application/pdf"
@@ -703,7 +786,7 @@ object ExportHelper {
 
     private suspend fun getActiveDaysForBudget(
         db: AppDatabase,
-        budgetId: String,
+        budgetId: String
     ): Set<Pair<String, Int>> {
         val expenses = db.expenseDao().getExpensesForBudget(budgetId).first()
         val activeDays = mutableSetOf<Pair<String, Int>>()

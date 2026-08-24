@@ -7,14 +7,14 @@ package com.ataraxiagoddess.budgetbrewer.data
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.UUID
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 @Entity(
     tableName = "expense_categories",
-    indices = [Index(value = ["budgetId"])],
+    indices = [Index(value = ["budgetId"])]
 )
 data class ExpenseCategory(
     @PrimaryKey
@@ -31,5 +31,5 @@ data class ExpenseCategory(
     @SerialName("created_at")
     val createdAt: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
-    val updatedAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis()
 )

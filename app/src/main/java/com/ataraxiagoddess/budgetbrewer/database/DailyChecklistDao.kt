@@ -19,10 +19,7 @@ interface DailyChecklistDao {
     fun getChecklistForBudget(budgetId: String): Flow<List<DailyChecklist>>
 
     @Query("SELECT * FROM daily_checklist WHERE budgetId = :budgetId AND dayOfMonth = :day")
-    suspend fun getChecklistItem(
-        budgetId: String,
-        day: Int,
-    ): DailyChecklist?
+    suspend fun getChecklistItem(budgetId: String, day: Int): DailyChecklist?
 
     // For sync
     @Query("SELECT * FROM daily_checklist")

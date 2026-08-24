@@ -11,5 +11,5 @@ enum class NavDestination {
     EXPENSES,
     SPENDING,
     CALENDAR,
-    SETTINGS,
+    SETTINGS
 }

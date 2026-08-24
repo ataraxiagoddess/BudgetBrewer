@@ -23,18 +23,18 @@ import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.util.CategoryColors
 import com.ataraxiagoddess.budgetbrewer.util.CurrencyPrefs
+import java.util.Calendar
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
 
 class IncomeExpensesViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context,
+    private val appContext: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
@@ -57,23 +57,25 @@ class IncomeExpensesViewModel(
         loadData()
     }
 
-    private fun normalizeToMidnight(timestamp: Long): Long =
-        Calendar
-            .getInstance()
-            .apply {
-                timeInMillis = timestamp
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }.timeInMillis
+    private fun normalizeToMidnight(timestamp: Long): Long = Calendar
+        .getInstance()
+        .apply {
+            timeInMillis = timestamp
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
 
     // ---------- Public API ----------
 
     fun updateMonth(month: Month) {
         viewModelScope.launch {
             _selectedPayFrequency.value = null
-            val (newBudgetId, wasCreated) = repository.getOrCreateBudgetChain(month.month, month.year)
+            val (newBudgetId, wasCreated) = repository.getOrCreateBudgetChain(
+                month.month,
+                month.year
+            )
             budgetId = newBudgetId
             savedStateHandle["budgetId"] = newBudgetId
 
@@ -115,7 +117,7 @@ class IncomeExpensesViewModel(
             if (amount < distributedTotal) {
                 emitError(
                     R.string.savings_allocation_conflict,
-                    Exception("Requested $amount but distributed $distributedTotal"),
+                    Exception("Requested $amount but distributed $distributedTotal")
                 )
                 _event.emit(UiEvent.SavingsAllocationConflict(amount, distributedTotal))
                 return@safeLaunch
@@ -136,7 +138,7 @@ class IncomeExpensesViewModel(
                         savingsAmount = amount,
                         spendingAmount = 0.0,
                         savingsIsPercentage = false,
-                        spendingIsPercentage = false,
+                        spendingIsPercentage = false
                     )
                 repository.insertAllocation(newAllocation)
                 val userId = AuthManager.getUserId(appContext)
@@ -169,7 +171,7 @@ class IncomeExpensesViewModel(
                         savingsAmount = 0.0,
                         spendingAmount = amount,
                         savingsIsPercentage = false,
-                        spendingIsPercentage = false,
+                        spendingIsPercentage = false
                     )
                 repository.insertAllocation(newAllocation)
                 val userId = AuthManager.getUserId(appContext)
@@ -246,7 +248,10 @@ class IncomeExpensesViewModel(
         viewModelScope.launch {
             val currentState = _uiState.value
             if (currentState is IncomeExpensesUiState.Success) {
-                val incomesToDelete = currentState.incomes.filter { !it.isTips && it.frequency != frequency }
+                val incomesToDelete = currentState.incomes.filter {
+                    !it.isTips &&
+                        it.frequency != frequency
+                }
                 incomesToDelete.forEach { income ->
                     repository.deleteIncome(income)
                     val userId = AuthManager.getUserId(appContext)
@@ -264,7 +269,7 @@ class IncomeExpensesViewModel(
         amount: Double,
         frequency: Frequency,
         weekNumber: Int? = null,
-        currency: String? = null,
+        currency: String? = null
     ) {
         safeLaunch(R.string.error_add_income) {
             val income =
@@ -274,7 +279,7 @@ class IncomeExpensesViewModel(
                     amount = amount,
                     currency = currency ?: CurrencyPrefs.currentCode,
                     frequency = frequency,
-                    weekNumber = weekNumber,
+                    weekNumber = weekNumber
                 )
             repository.insertIncome(income)
             val userId = AuthManager.getUserId(appContext)
@@ -317,12 +322,7 @@ class IncomeExpensesViewModel(
 
     // ---------- Tips ----------
 
-    fun addTip(
-        sourceName: String,
-        amount: Double,
-        tipsOrder: Int,
-        currency: String? = null,
-    ) {
+    fun addTip(sourceName: String, amount: Double, tipsOrder: Int, currency: String? = null) {
         safeLaunch(R.string.error_add_tip) {
             val tip =
                 Income(
@@ -332,7 +332,7 @@ class IncomeExpensesViewModel(
                     frequency = Frequency.MONTHLY,
                     isTips = true,
                     tipsOrder = tipsOrder,
-                    currency = currency ?: CurrencyPrefs.currentCode,
+                    currency = currency ?: CurrencyPrefs.currentCode
                 )
             repository.insertIncome(tip)
             val userId = AuthManager.getUserId(appContext)
@@ -377,7 +377,8 @@ class IncomeExpensesViewModel(
 
     fun addCategory(name: String) {
         safeLaunch(R.string.error_add_category) {
-            val currentCategories = (uiState.value as? IncomeExpensesUiState.Success)?.categories ?: emptyList()
+            val currentCategories =
+                (uiState.value as? IncomeExpensesUiState.Success)?.categories ?: emptyList()
             val colorRes = CategoryColors.colors[currentCategories.size % CategoryColors.colors.size]
             val colorInt =
                 androidx.core.content.ContextCompat
@@ -387,7 +388,7 @@ class IncomeExpensesViewModel(
                     budgetId = budgetId,
                     name = name,
                     color = colorInt,
-                    displayOrder = currentCategories.size,
+                    displayOrder = currentCategories.size
                 )
             repository.insertCategory(category)
             val userId = AuthManager.getUserId(appContext)
@@ -431,14 +432,16 @@ class IncomeExpensesViewModel(
     // ---------- Expenses ----------
 
     private suspend fun ensureChecklistItemForExpense(expense: Expense) {
-        val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
+        val day = Calendar.getInstance().apply {
+            timeInMillis = expense.dueDate
+        }.get(Calendar.DAY_OF_MONTH)
         val existing = repository.getChecklistItem(budgetId, day)
         if (existing == null) {
             val newItem =
                 DailyChecklist(
                     budgetId = budgetId,
                     dayOfMonth = day,
-                    isChecked = false,
+                    isChecked = false
                 )
             repository.insertChecklistItem(newItem)
             val userId = AuthManager.getUserId(appContext)
@@ -454,7 +457,7 @@ class IncomeExpensesViewModel(
         amount: Double,
         dueDate: Long,
         recurrenceType: RecurrenceType = RecurrenceType.NONE,
-        recurrenceInterval: Int? = null,
+        recurrenceInterval: Int? = null
     ) {
         safeLaunch(R.string.error_add_expense) {
             val now = System.currentTimeMillis()
@@ -467,7 +470,7 @@ class IncomeExpensesViewModel(
                     recurrenceType = recurrenceType,
                     recurrenceInterval = recurrenceInterval,
                     createdAt = now,
-                    updatedAt = now,
+                    updatedAt = now
                 )
             repository.insertExpense(master)
             ensureChecklistItemForExpense(master)
@@ -482,7 +485,7 @@ class IncomeExpensesViewModel(
                             baseDate = dueDate,
                             intervalDays = recurrenceInterval,
                             targetMonth = budget.month,
-                            targetYear = budget.year,
+                            targetYear = budget.year
                         )
                     val masterDueDate = normalizeToMidnight(dueDate)
                     for (date in dates) {
@@ -497,7 +500,7 @@ class IncomeExpensesViewModel(
                                 recurrenceInterval = recurrenceInterval,
                                 sourceExpenseId = master.id,
                                 createdAt = now,
-                                updatedAt = now,
+                                updatedAt = now
                             )
                         repository.insertExpense(child)
                         ensureChecklistItemForExpense(child)
@@ -535,7 +538,7 @@ class IncomeExpensesViewModel(
             val updated =
                 expense.copy(
                     updatedAt = now,
-                    isOverridden = expense.sourceExpenseId != null || expense.isOverridden,
+                    isOverridden = expense.sourceExpenseId != null || expense.isOverridden
                 )
             repository.updateExpense(updated)
 
@@ -545,14 +548,19 @@ class IncomeExpensesViewModel(
 
             // Handle checklist changes when due date shifts
             if (originalDueDate != null && originalDueDate != expense.dueDate) {
-                val oldDay = Calendar.getInstance().apply { timeInMillis = originalDueDate }.get(Calendar.DAY_OF_MONTH)
+                val oldDay = Calendar.getInstance().apply {
+                    timeInMillis = originalDueDate
+                }.get(Calendar.DAY_OF_MONTH)
 
                 val remainingOnOldDay =
                     repository
                         .getExpensesForBudget(budgetId)
                         .first()
                         .any {
-                            Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH) == oldDay &&
+                            Calendar.getInstance().apply {
+                                timeInMillis = it.dueDate
+                            }.get(Calendar.DAY_OF_MONTH) ==
+                                oldDay &&
                                 it.id != expense.id
                         }
                 if (!remainingOnOldDay) {
@@ -560,7 +568,9 @@ class IncomeExpensesViewModel(
                     if (oldChecklistItem != null) {
                         repository.deleteChecklistItem(oldChecklistItem)
                         if (userId != null) {
-                            SyncManager(appContext).deleteDailyChecklistItem(oldChecklistItem.id, userId)
+                            SyncManager(
+                                appContext
+                            ).deleteDailyChecklistItem(oldChecklistItem.id, userId)
                         }
                     }
                 }
@@ -587,7 +597,9 @@ class IncomeExpensesViewModel(
                             if (userId != null) {
                                 SyncManager(appContext).deleteExpense(child.id, userId)
                                 if (deletedChecklistId != null) {
-                                    SyncManager(appContext).deleteDailyChecklistItem(deletedChecklistId, userId)
+                                    SyncManager(
+                                        appContext
+                                    ).deleteDailyChecklistItem(deletedChecklistId, userId)
                                 }
                             }
                         }
@@ -603,7 +615,7 @@ class IncomeExpensesViewModel(
                             baseDate = expense.dueDate,
                             intervalDays = expense.recurrenceInterval ?: 30,
                             targetMonth = month,
-                            targetYear = year,
+                            targetYear = year
                         )
 
                     val editedDueDate = normalizeToMidnight(expense.dueDate)
@@ -619,7 +631,7 @@ class IncomeExpensesViewModel(
                                 recurrenceInterval = expense.recurrenceInterval,
                                 sourceExpenseId = masterId,
                                 createdAt = now,
-                                updatedAt = now,
+                                updatedAt = now
                             )
                         repository.insertExpense(child)
                         ensureChecklistItemForExpense(child)
@@ -658,7 +670,7 @@ class IncomeExpensesViewModel(
             val updated =
                 current.copy(
                     tipsEnabled = enabled,
-                    updatedAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
                 )
             repository.insertOrUpdateMonthSettings(updated)
             _monthSettings.value = updated
@@ -680,7 +692,7 @@ class IncomeExpensesViewModel(
             val updated =
                 current.copy(
                     payFrequency = frequency.name,
-                    updatedAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
                 )
             repository.insertOrUpdateMonthSettings(updated)
             _monthSettings.value = updated

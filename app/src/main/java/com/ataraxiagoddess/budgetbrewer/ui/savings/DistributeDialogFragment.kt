@@ -21,7 +21,7 @@ class DistributeDialogFragment(
     private val bucket: SavingsBucket,
     private val availablePool: Double,
     private val isDeduction: Boolean = false,
-    private val onDistribute: (Double) -> Unit,
+    private val onDistribute: (Double) -> Unit
 ) : DialogFragment() {
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
@@ -33,7 +33,7 @@ class DistributeDialogFragment(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = DialogDistributeBinding.inflate(inflater, container, false)
         return binding.root
@@ -43,14 +43,11 @@ class DistributeDialogFragment(
         super.onStart()
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvBucketName.text = bucket.name
@@ -68,7 +65,12 @@ class DistributeDialogFragment(
         val locales = resources.configuration.locales
         val locale = if (locales.isEmpty) java.util.Locale.getDefault() else locales[0]
         binding.etAmount.filters =
-            arrayOf(DecimalDigitsInputFilter(CurrencyPrefs.currentFractionDigits, CurrencyPrefs.decimalSeparators(locale)))
+            arrayOf(
+                DecimalDigitsInputFilter(
+                    CurrencyPrefs.currentFractionDigits,
+                    CurrencyPrefs.decimalSeparators(locale)
+                )
+            )
 
         val saveButton = binding.buttonSave
         saveButton.isEnabled = false
@@ -79,23 +81,21 @@ class DistributeDialogFragment(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val amount = s.toString().toDoubleOrNull() ?: 0.0
                     val errorMessage =
                         when {
                             amount <= 0.0 -> getString(R.string.amount_must_be_greater_than_zero)
-                            amount > maxAllowed -> getString(R.string.amount_exceeds_maximum_allowed)
+                            amount > maxAllowed -> getString(
+                                R.string.amount_exceeds_maximum_allowed
+                            )
                             else -> null
                         }
-                    binding.tvError.visibility = if (errorMessage != null) View.VISIBLE else View.INVISIBLE
+                    binding.tvError.visibility =
+                        if (errorMessage != null) View.VISIBLE else View.INVISIBLE
                     binding.tvError.text = errorMessage ?: ""
                     if (errorMessage != null) {
                         binding.tvError.contentDescription = errorMessage
@@ -104,7 +104,7 @@ class DistributeDialogFragment(
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
 
         binding.buttonCancel.setOnClickListener { dismiss() }

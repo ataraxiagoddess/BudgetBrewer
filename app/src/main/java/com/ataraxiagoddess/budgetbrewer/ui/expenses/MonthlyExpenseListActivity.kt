@@ -67,7 +67,7 @@ class MonthlyExpenseListActivity :
             MonthlyExpenseListAdapter(
                 onCheckboxChanged = { day, isChecked ->
                     viewModel.toggleDayChecked(day, isChecked)
-                },
+                }
             )
 
         val isTablet = resources.getBoolean(R.bool.is_tablet)
@@ -113,11 +113,15 @@ class MonthlyExpenseListActivity :
                         binding.progressBar.visibility = android.view.View.GONE
                         adapter.submitList(state.days)
                         binding.tvTotalAmount.text = state.totalAmount.toCurrencyDisplay(resources)
-                        binding.tvRemainingAmount.text = state.remainingAmount.toCurrencyDisplay(resources)
+                        binding.tvRemainingAmount.text =
+                            state.remainingAmount.toCurrencyDisplay(resources)
                     }
                     is MonthlyExpenseListViewModel.MonthlyExpenseListUiState.Error -> {
                         binding.progressBar.visibility = android.view.View.GONE
-                        showSnackbar(state.message, com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+                        showSnackbar(
+                            state.message,
+                            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                        )
                     }
                 }
             }
@@ -157,7 +161,7 @@ class MonthlyExpenseListActivity :
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 

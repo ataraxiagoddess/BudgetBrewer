@@ -14,10 +14,8 @@ sealed class IncomeExpensesUiState {
     data class Success(
         val incomes: List<Income> = emptyList(),
         val categories: List<ExpenseCategory> = emptyList(),
-        val expenses: List<Expense> = emptyList(),
+        val expenses: List<Expense> = emptyList()
     ) : IncomeExpensesUiState()
 
-    data class Error(
-        val message: String,
-    ) : IncomeExpensesUiState()
+    data class Error(val message: String) : IncomeExpensesUiState()
 }
