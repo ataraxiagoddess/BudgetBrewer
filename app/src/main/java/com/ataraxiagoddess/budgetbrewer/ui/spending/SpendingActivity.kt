@@ -44,9 +44,9 @@ import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.google.android.material.snackbar.Snackbar
+import java.util.Calendar
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
 
 class SpendingActivity :
     BaseActivity(),
@@ -87,7 +87,7 @@ class SpendingActivity :
                 },
                 onItemClick = { entry ->
                     showSpendingDetailDialog(entry)
-                },
+                }
             )
 
         setupRecyclerView()
@@ -121,8 +121,8 @@ class SpendingActivity :
         return arrayOf(
             DecimalDigitsInputFilter(
                 CurrencyPrefs.currentFractionDigits,
-                CurrencyPrefs.decimalSeparators(locale),
-            ),
+                CurrencyPrefs.decimalSeparators(locale)
+            )
         )
     }
 
@@ -142,11 +142,13 @@ class SpendingActivity :
                     is SpendingViewModel.SpendingUiState.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
+
                     is SpendingViewModel.SpendingUiState.Success -> {
                         binding.progressBar.visibility = View.GONE
                         updateTransactionList(state.data.entries)
                         updateBubbles(state.data)
                     }
+
                     is SpendingViewModel.SpendingUiState.Error -> {
                         binding.progressBar.visibility = View.GONE
                         Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
@@ -197,24 +199,38 @@ class SpendingActivity :
 
     private fun updateBubbles(data: SpendingViewModel.SpendingUiData) {
         val spendingAmount = data.allocation?.spendingAmount ?: 0.0
-        binding.tvSpendingAllocation.text = getString(R.string.spending_bubble, spendingAmount.toCurrencyDisplay(resources))
-        binding.tvRemaining.text = getString(R.string.remaining_bubble, data.remaining.toCurrencyDisplay(resources))
+        binding.tvSpendingAllocation.text =
+            getString(R.string.spending_bubble, spendingAmount.toCurrencyDisplay(resources))
+        binding.tvRemaining.text =
+            getString(R.string.remaining_bubble, data.remaining.toCurrencyDisplay(resources))
     }
 
     private fun showAddTransactionDialog(remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
         dialogBinding.etSource.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.etTag.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.etNote.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
-        dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
-        dialogBinding.tvTagCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
-        dialogBinding.tvNoteCounter.text = getString(R.string.note_counter, 0, ValidationUtils.MAX_LENGTH_NOTE)
+        dialogBinding.tvSourceCounter.text =
+            getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvTagCounter.text =
+            getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        dialogBinding.tvNoteCounter.text =
+            getString(R.string.note_counter, 0, ValidationUtils.MAX_LENGTH_NOTE)
 
         var selectedDate: Long? = null
 
@@ -225,7 +241,7 @@ class SpendingActivity :
                 title = getString(R.string.add_transaction_title),
                 view = dialogBinding.root,
                 positiveButton = getString(R.string.add),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialogBinding.btnSelectDate.setOnClickListener {
@@ -241,7 +257,7 @@ class SpendingActivity :
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
@@ -251,15 +267,10 @@ class SpendingActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validateAddDialog(dialog, dialogBinding, selectedDate, remaining)
                 }
 
@@ -303,7 +314,12 @@ class SpendingActivity :
                         .toString()
                         .trim()
                         .takeIf { it.isNotEmpty() }
-                if (date != null && ValidationUtils.isValidName(source) && amount != null && amount > 0 && amount <= remaining) {
+                if (date != null &&
+                    ValidationUtils.isValidName(source) &&
+                    amount != null &&
+                    amount > 0 &&
+                    amount <= remaining
+                ) {
                     viewModel.addEntry(date, source, amount, tag, note)
                     dialog.dismiss()
                 }
@@ -317,7 +333,7 @@ class SpendingActivity :
         dialog: AlertDialog,
         binding: DialogAddTransactionBinding,
         date: Long?,
-        remaining: Double,
+        remaining: Double
     ) {
         val source =
             binding.etSource.text
@@ -331,9 +347,20 @@ class SpendingActivity :
         val withinLimit = amount != null && amount <= remaining
 
         // Character counters
-        binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
-        binding.tvTagCounter.text = getString(R.string.character_counter, binding.etTag.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
-        binding.tvNoteCounter.text = getString(R.string.note_counter, binding.etNote.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+        binding.tvSourceCounter.text =
+            getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvTagCounter.text =
+            getString(
+                R.string.character_counter,
+                binding.etTag.text?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NAME
+            )
+        binding.tvNoteCounter.text =
+            getString(
+                R.string.note_counter,
+                binding.etNote.text?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NOTE
+            )
 
         // Inline amount error
         val showAmountError = amount != null && amount > 0 && !withinLimit
@@ -343,26 +370,51 @@ class SpendingActivity :
         // Warning (instructional)
         binding.tvWarning.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+            sourceValid &&
+            amountValid &&
+            dateValid &&
+            withinLimit
     }
 
-    private fun showEditTransactionDialog(
-        entry: SpendingEntry,
-        remaining: Double,
-    ) {
+    private fun showEditTransactionDialog(entry: SpendingEntry, remaining: Double) {
         val dialogBinding = DialogAddTransactionBinding.inflate(layoutInflater)
         dialogBinding.etAmount.filters = currencyInputFilters()
         dialogBinding.etSource.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.etTag.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.etNote.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NOTE),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         dialogBinding.tvWarning.accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
 
-        dialogBinding.tvSourceCounter.text = getString(R.string.character_counter, entry.source.length, ValidationUtils.MAX_LENGTH_NAME)
-        dialogBinding.tvTagCounter.text = getString(R.string.character_counter, entry.tag?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
-        dialogBinding.tvNoteCounter.text = getString(R.string.note_counter, entry.note?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+        dialogBinding.tvSourceCounter.text =
+            getString(
+                R.string.character_counter,
+                entry.source.length,
+                ValidationUtils.MAX_LENGTH_NAME
+            )
+        dialogBinding.tvTagCounter.text =
+            getString(
+                R.string.character_counter,
+                entry.tag?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NAME
+            )
+        dialogBinding.tvNoteCounter.text =
+            getString(
+                R.string.note_counter,
+                entry.note?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NOTE
+            )
 
         // Pre-fill
         dialogBinding.etSource.setText(ValidationUtils.sanitizeString(entry.source))
@@ -386,7 +438,7 @@ class SpendingActivity :
                 title = getString(R.string.edit_transaction_title),
                 view = dialogBinding.root,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialogBinding.btnSelectDate.setOnClickListener {
@@ -407,12 +459,12 @@ class SpendingActivity :
                         originalDate,
                         originalNote,
                         originalTag,
-                        remaining,
+                        remaining
                     )
                 },
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
@@ -422,15 +474,10 @@ class SpendingActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validateEditDialog(
                         dialog,
                         dialogBinding,
@@ -440,7 +487,7 @@ class SpendingActivity :
                         originalDate,
                         originalNote,
                         originalTag,
-                        remaining,
+                        remaining
                     )
                 }
 
@@ -463,7 +510,7 @@ class SpendingActivity :
                 originalDate,
                 originalNote,
                 originalTag,
-                remaining,
+                remaining
             )
             // Show/hide tag layout based on tagsEnabled state
             val tagsEnabled = viewModel.tagsEnabled.value
@@ -501,7 +548,11 @@ class SpendingActivity :
                         val difference = newAmount?.minus(originalAmount)
                         difference!! <= remaining
                     }
-                if (newDate != null && ValidationUtils.isValidName(newSource) && newAmount > 0 && amountWithinLimit) {
+                if (newDate != null &&
+                    ValidationUtils.isValidName(newSource) &&
+                    newAmount > 0 &&
+                    amountWithinLimit
+                ) {
                     val updatedEntry =
                         entry.copy(
                             source = newSource,
@@ -509,7 +560,7 @@ class SpendingActivity :
                             date = newDate,
                             tag = newTag,
                             note = newNote,
-                            updatedAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis()
                         )
                     viewModel.updateEntry(updatedEntry)
                     dialog.dismiss()
@@ -529,7 +580,7 @@ class SpendingActivity :
         originalDate: Long,
         originalNote: String?,
         originalTag: String?,
-        remaining: Double,
+        remaining: Double
     ) {
         val source =
             binding.etSource.text
@@ -565,12 +616,27 @@ class SpendingActivity :
 
         val amountValue = amount ?: 0.0
         val changed =
-            source != originalSource || amountValue != originalAmount || date != originalDate || note != originalNote || tag != originalTag
+            source != originalSource ||
+                amountValue != originalAmount ||
+                date != originalDate ||
+                note != originalNote ||
+                tag != originalTag
 
         // Character counters
-        binding.tvSourceCounter.text = getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
-        binding.tvTagCounter.text = getString(R.string.character_counter, binding.etTag.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NAME)
-        binding.tvNoteCounter.text = getString(R.string.note_counter, binding.etNote.text?.length ?: 0, ValidationUtils.MAX_LENGTH_NOTE)
+        binding.tvSourceCounter.text =
+            getString(R.string.character_counter, source.length, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvTagCounter.text =
+            getString(
+                R.string.character_counter,
+                binding.etTag.text?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NAME
+            )
+        binding.tvNoteCounter.text =
+            getString(
+                R.string.note_counter,
+                binding.etNote.text?.length ?: 0,
+                ValidationUtils.MAX_LENGTH_NOTE
+            )
 
         // Inline amount error
         val showAmountError = amount != null && amount > 0 && !withinLimit
@@ -580,7 +646,12 @@ class SpendingActivity :
         // Warning (instructional)
         binding.tvWarning.visibility = if (showAmountError) View.VISIBLE else View.INVISIBLE
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = sourceValid && amountValid && dateValid && withinLimit && changed
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+            sourceValid &&
+            amountValid &&
+            dateValid &&
+            withinLimit &&
+            changed
     }
 
     private fun showDeleteConfirmationDialog(entry: SpendingEntry) {
@@ -593,7 +664,7 @@ class SpendingActivity :
             negativeButton = getString(R.string.cancel),
             onPositive = {
                 viewModel.deleteEntry(entry)
-            },
+            }
         ).show()
     }
 
@@ -634,7 +705,7 @@ class SpendingActivity :
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 

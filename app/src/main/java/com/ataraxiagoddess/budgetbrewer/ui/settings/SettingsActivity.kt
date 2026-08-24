@@ -69,6 +69,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import java.util.Calendar
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -77,21 +79,17 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import timber.log.Timber
-import java.util.Calendar
-import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 private data class DeleteAccountResponse(
     val success: Boolean? = null,
     val error: String? = null,
     val code: Int? = null,
-    val message: String? = null,
+    val message: String? = null
 )
 
 @Serializable
-private data class SavingsBucketIdResponse(
-    val id: String,
-)
+private data class SavingsBucketIdResponse(val id: String)
 
 class SettingsActivity : BaseActivity() {
     override val currentNavDestination: NavDestination
@@ -173,16 +171,27 @@ class SettingsActivity : BaseActivity() {
     private fun setupSectionToggles() {
         // Apply saved expanded states
         binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
-        binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
+        binding.themeButtonContainer.visibility =
+            if (isAppearanceExpanded) View.VISIBLE else View.GONE
         binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
         binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
         binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
 
-        binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-        binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-        binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
-        binding.btnArchive.setIconResource((if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right))
-        binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+        binding.btnAccount.setIconResource(
+            if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+        )
+        binding.btnAppearance.setIconResource(
+            if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+        )
+        binding.btnCurrency.setIconResource(
+            if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+        )
+        binding.btnArchive.setIconResource(
+            (if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+        )
+        binding.btnLegal.setIconResource(
+            if (isLegalExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+        )
 
         binding.btnAccount.contentDescription = getString(R.string.account_section)
         binding.btnAppearance.contentDescription = getString(R.string.appearance_section)
@@ -194,37 +203,46 @@ class SettingsActivity : BaseActivity() {
         binding.btnAccount.setOnClickListener {
             isAccountExpanded = !isAccountExpanded
             binding.accountContent.visibility = if (isAccountExpanded) View.VISIBLE else View.GONE
-            binding.btnAccount.setIconResource(if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnAccount.setIconResource(
+                if (isAccountExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+            )
             androidx.core.view.ViewCompat.setStateDescription(
                 binding.btnAccount,
-                getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed),
+                getString(if (isAccountExpanded) R.string.expanded else R.string.collapsed)
             )
         }
         binding.btnAppearance.setOnClickListener {
             isAppearanceExpanded = !isAppearanceExpanded
-            binding.themeButtonContainer.visibility = if (isAppearanceExpanded) View.VISIBLE else View.GONE
-            binding.btnAppearance.setIconResource(if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.themeButtonContainer.visibility =
+                if (isAppearanceExpanded) View.VISIBLE else View.GONE
+            binding.btnAppearance.setIconResource(
+                if (isAppearanceExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+            )
             androidx.core.view.ViewCompat.setStateDescription(
                 binding.btnAppearance,
-                getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed),
+                getString(if (isAppearanceExpanded) R.string.expanded else R.string.collapsed)
             )
         }
         binding.btnCurrency.setOnClickListener {
             isCurrencyExpanded = !isCurrencyExpanded
             binding.spinnerCurrency.visibility = if (isCurrencyExpanded) View.VISIBLE else View.GONE
-            binding.btnCurrency.setIconResource(if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnCurrency.setIconResource(
+                if (isCurrencyExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+            )
             androidx.core.view.ViewCompat.setStateDescription(
                 binding.btnCurrency,
-                getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed),
+                getString(if (isCurrencyExpanded) R.string.expanded else R.string.collapsed)
             )
         }
         binding.btnArchive.setOnClickListener {
             isArchiveExpanded = !isArchiveExpanded
             binding.archiveContent.visibility = if (isArchiveExpanded) View.VISIBLE else View.GONE
-            binding.btnArchive.setIconResource(if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right)
+            binding.btnArchive.setIconResource(
+                if (isArchiveExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+            )
             androidx.core.view.ViewCompat.setStateDescription(
                 binding.btnArchive,
-                getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed),
+                getString(if (isArchiveExpanded) R.string.expanded else R.string.collapsed)
             )
         }
         binding.btnPastMonths.setOnClickListener {
@@ -238,25 +256,37 @@ class SettingsActivity : BaseActivity() {
         binding.btnLegal.setOnClickListener {
             isLegalExpanded = !isLegalExpanded
             binding.legalContent.visibility = if (isLegalExpanded) View.VISIBLE else View.GONE
-            binding.btnLegal.setIconResource(if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down)
+            binding.btnLegal.setIconResource(
+                if (isLegalExpanded) R.drawable.ic_chevron_right else R.drawable.ic_chevron_down
+            )
             androidx.core.view.ViewCompat.setStateDescription(
                 binding.btnLegal,
-                getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed),
+                getString(if (isLegalExpanded) R.string.expanded else R.string.collapsed)
             )
         }
         binding.btnPrivacyPolicy.setOnClickListener {
             val intent =
-                Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri())
+                Intent(
+                    Intent.ACTION_VIEW,
+                    "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerPrivacyPolicy.md".toUri()
+                )
             startActivity(intent)
         }
         binding.btnTermsOfService.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerTOS.md".toUri())
+            val intent =
+                Intent(
+                    Intent.ACTION_VIEW,
+                    "https://github.com/ataraxiagoddess/BudgetBrewer/blob/main/BudgetBrewerTOS.md".toUri()
+                )
             startActivity(intent)
         }
     }
 
     private fun setupAppearance() {
-        val currentMode = settingsPrefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val currentMode = settingsPrefs.getInt(
+            "theme_mode",
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
 
         // Set initial checked state
         updateThemeButtons(currentMode)
@@ -296,23 +326,22 @@ class SettingsActivity : BaseActivity() {
             object : ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                currencies,
+                currencies
             ) {
-                override fun getView(
-                    position: Int,
-                    convertView: View?,
-                    parent: ViewGroup,
-                ): View {
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                     val view = super.getView(position, convertView, parent) as TextView
-                    view.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
-                    view.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
+                    view.typeface =
+                        ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
+                    view.setTextColor(
+                        ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog)
+                    )
                     return view
                 }
 
                 override fun getDropDownView(
                     position: Int,
                     convertView: View?,
-                    parent: ViewGroup,
+                    parent: ViewGroup
                 ): View {
                     val view =
                         convertView ?: LayoutInflater
@@ -320,8 +349,11 @@ class SettingsActivity : BaseActivity() {
                             .inflate(R.layout.spinner_dropdown_item, parent, false)
                     val textView = view.findViewById<TextView>(android.R.id.text1)
                     textView.text = getItem(position)
-                    textView.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
-                    textView.setTextColor(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog))
+                    textView.typeface =
+                        ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
+                    textView.setTextColor(
+                        ContextCompat.getColor(this@SettingsActivity, R.color.text_on_dialog)
+                    )
                     return view
                 }
             }
@@ -342,7 +374,7 @@ class SettingsActivity : BaseActivity() {
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long,
+                    id: Long
                 ) {
                     val selected = currencies[position]
                     val code = CurrencyPrefs.extractCode(selected)
@@ -385,11 +417,14 @@ class SettingsActivity : BaseActivity() {
             binding.switchPinLock.visibility = View.VISIBLE
             binding.switchBiometrics.visibility = View.VISIBLE
             binding.btnChangePin.visibility = View.VISIBLE
-            binding.btnChangePin.visibility = if (AppLockManager.isPinEnabled()) View.VISIBLE else View.GONE
+            binding.btnChangePin.visibility =
+                if (AppLockManager.isPinEnabled()) View.VISIBLE else View.GONE
 
             binding.switchPinLock.isChecked = AppLockManager.isPinEnabled()
             binding.switchBiometrics.isChecked = AppLockManager.isBiometricsEnabled()
-            binding.switchBiometrics.isEnabled = AppLockManager.isPinEnabled() && isBiometricAvailable()
+            binding.switchBiometrics.isEnabled =
+                AppLockManager.isPinEnabled() &&
+                isBiometricAvailable()
 
             binding.switchPinLock.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
@@ -459,7 +494,7 @@ class SettingsActivity : BaseActivity() {
                         binding.switchPinLock.isChecked = false
                         updateAccountSection()
                         showSnackbar(getString(R.string.pin_deleted))
-                    },
+                    }
                 ).show()
             }
 
@@ -504,7 +539,7 @@ class SettingsActivity : BaseActivity() {
                     ExportHelper.exportBudgetToCSV(
                         this@SettingsActivity,
                         budgetId,
-                        label,
+                        label
                     )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, true)
@@ -525,7 +560,7 @@ class SettingsActivity : BaseActivity() {
                     ExportHelper.exportBudgetToPDF(
                         this@SettingsActivity,
                         budgetId,
-                        label,
+                        label
                     )
                 if (uri != null) {
                     showExportSuccessSnackbar(uri, false)
@@ -579,17 +614,24 @@ class SettingsActivity : BaseActivity() {
 
         // Apply password length filter
         etPassword.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
 
         // Toggle password visibility
         btnToggle.setOnClickListener {
             val currentInputType = etPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
+                etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 btnToggle.setImageResource(R.drawable.ic_visibility_off)
                 btnToggle.contentDescription = getString(R.string.show_password)
             } else {
-                etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 btnToggle.setImageResource(R.drawable.ic_visibility_on)
                 btnToggle.contentDescription = getString(R.string.hide_password)
             }
@@ -605,7 +647,7 @@ class SettingsActivity : BaseActivity() {
                 title = getString(R.string.delete_account),
                 view = dialogView,
                 positiveButton = getString(R.string.delete),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -618,20 +660,20 @@ class SettingsActivity : BaseActivity() {
                         s: CharSequence?,
                         start: Int,
                         count: Int,
-                        after: Int,
+                        after: Int
                     ) {}
 
                     override fun onTextChanged(
                         s: CharSequence?,
                         start: Int,
                         before: Int,
-                        count: Int,
+                        count: Int
                     ) {
                         deleteButton.isEnabled = !s.isNullOrBlank()
                     }
 
                     override fun afterTextChanged(s: Editable?) {}
-                },
+                }
             )
 
             deleteButton.setOnClickListener {
@@ -676,21 +718,41 @@ class SettingsActivity : BaseActivity() {
                         }.decodeList<SavingsBucketIdResponse>()
                         .map { it.id }
 
-                SupabaseClient.client.postgrest["daily_income_assignments"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["spending_entries"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["daily_checklist"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["expenses"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["expense_categories"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["incomes"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["allocations"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["month_settings"].delete { filter { eq("user_id", userId) } }
+                SupabaseClient.client.postgrest["daily_income_assignments"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["spending_entries"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["daily_checklist"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["expenses"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["expense_categories"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["incomes"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["allocations"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["month_settings"].delete {
+                    filter { eq("user_id", userId) }
+                }
                 savingsBucketIds.forEach { bucketId ->
                     SupabaseClient.client.postgrest["savings_transactions"].delete {
                         filter { eq("bucket_id", bucketId) }
                     }
                 }
-                SupabaseClient.client.postgrest["savings_buckets"].delete { filter { eq("user_id", userId) } }
-                SupabaseClient.client.postgrest["budgets"].delete { filter { eq("user_id", userId) } }
+                SupabaseClient.client.postgrest["savings_buckets"].delete {
+                    filter { eq("user_id", userId) }
+                }
+                SupabaseClient.client.postgrest["budgets"].delete {
+                    filter { eq("user_id", userId) }
+                }
 
                 // 3. Delete the user's auth account via Edge Function
                 withContext(Dispatchers.IO) {
@@ -759,7 +821,8 @@ class SettingsActivity : BaseActivity() {
     // Helper to check biometric availability
     private fun isBiometricAvailable(): Boolean {
         val biometricManager = BiometricManager.from(this)
-        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
+            BiometricManager.BIOMETRIC_SUCCESS
     }
 
     // Dialog to set/change PIN
@@ -776,7 +839,7 @@ class SettingsActivity : BaseActivity() {
         val pinFilters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
-                ValidationUtils.getDigitsOnlyFilter(),
+                ValidationUtils.getDigitsOnlyFilter()
             )
         etPin.filters = pinFilters
         etConfirmPin.filters = pinFilters
@@ -787,12 +850,15 @@ class SettingsActivity : BaseActivity() {
         // Toggle for PIN field
         btnTogglePin.setOnClickListener {
             val current = etPin.inputType
-            if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
+            if (current ==
+                (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+            ) {
                 etPin.inputType = InputType.TYPE_CLASS_NUMBER
                 btnTogglePin.setImageResource(R.drawable.ic_visibility_on)
                 btnTogglePin.contentDescription = getString(R.string.show_password)
             } else {
-                etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                etPin.inputType =
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 btnTogglePin.setImageResource(R.drawable.ic_visibility_off)
                 btnTogglePin.contentDescription = getString(R.string.hide_password)
             }
@@ -803,16 +869,20 @@ class SettingsActivity : BaseActivity() {
         // Toggle for confirm PIN field
         btnToggleConfirmPin.setOnClickListener {
             val current = etConfirmPin.inputType
-            if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
+            if (current ==
+                (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+            ) {
                 etConfirmPin.inputType = InputType.TYPE_CLASS_NUMBER
                 btnToggleConfirmPin.setImageResource(R.drawable.ic_visibility_on)
                 btnToggleConfirmPin.contentDescription = getString(R.string.show_password)
             } else {
-                etConfirmPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                etConfirmPin.inputType =
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 btnToggleConfirmPin.setImageResource(R.drawable.ic_visibility_off)
                 btnToggleConfirmPin.contentDescription = getString(R.string.hide_password)
             }
-            etConfirmPin.typeface = ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
+            etConfirmPin.typeface =
+                ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_regular)
             etConfirmPin.text?.let { etConfirmPin.setSelection(it.length) }
         }
 
@@ -823,7 +893,7 @@ class SettingsActivity : BaseActivity() {
                 title = getString(R.string.set_pin),
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -837,14 +907,14 @@ class SettingsActivity : BaseActivity() {
                         s: CharSequence?,
                         start: Int,
                         count: Int,
-                        after: Int,
+                        after: Int
                     ) {}
 
                     override fun onTextChanged(
                         s: CharSequence?,
                         start: Int,
                         before: Int,
-                        count: Int,
+                        count: Int
                     ) {
                         val pin = etPin.text.toString()
                         val confirm = etConfirmPin.text.toString()
@@ -877,14 +947,14 @@ class SettingsActivity : BaseActivity() {
     override fun navigateToHome() {
         startActivity(
             Intent(this, MainActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToFinances() {
         startActivity(
             Intent(this, IncomeExpensesActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
@@ -896,32 +966,27 @@ class SettingsActivity : BaseActivity() {
     override fun navigateToExpenses() {
         startActivity(
             Intent(this, MonthlyExpenseListActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToSpending() {
         startActivity(
             Intent(this, SpendingActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToCalendar() {
         startActivity(
             Intent(this, MonthlyCalendarActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
-    private fun showExportSuccessSnackbar(
-        uri: Uri,
-        isCsv: Boolean,
-    ) {
+    private fun showExportSuccessSnackbar(uri: Uri, isCsv: Boolean) {
         // Custom span to apply typeface (works on all API levels)
-        class CustomTypefaceSpan(
-            private val typeface: Typeface,
-        ) : MetricAffectingSpan() {
+        class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
             override fun updateMeasureState(textPaint: TextPaint) {
                 textPaint.typeface = typeface
             }
@@ -938,13 +1003,20 @@ class SettingsActivity : BaseActivity() {
                     ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_semi_bold)
                         ?: ResourcesCompat.getFont(this@SettingsActivity, R.font.exo_bold)
                 if (exoBold != null) {
-                    setSpan(CustomTypefaceSpan(exoBold), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(
+                        CustomTypefaceSpan(exoBold),
+                        0,
+                        length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                 }
                 setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(this@SettingsActivity, R.color.text_on_main)),
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(this@SettingsActivity, R.color.text_on_main)
+                    ),
                     0,
                     length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
@@ -956,7 +1028,9 @@ class SettingsActivity : BaseActivity() {
         snackbarView.background = ContextCompat.getDrawable(this, R.drawable.snackbar_background)
 
         // Style the default text
-        val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val defaultText = snackbarView.findViewById<TextView>(
+            com.google.android.material.R.id.snackbar_text
+        )
         defaultText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
         defaultText.setTextColor(ContextCompat.getColor(this, R.color.text_on_container))
         defaultText.textSize = 18f
@@ -964,7 +1038,11 @@ class SettingsActivity : BaseActivity() {
 
         // Set action with styled text
         snackbar.setAction(shareText) {
-            ExportHelper.shareFile(this, uri, getString(if (isCsv) R.string.share_csv else R.string.share_pdf))
+            ExportHelper.shareFile(
+                this,
+                uri,
+                getString(if (isCsv) R.string.share_csv else R.string.share_pdf)
+            )
         }
 
         // Position above bottom navigation

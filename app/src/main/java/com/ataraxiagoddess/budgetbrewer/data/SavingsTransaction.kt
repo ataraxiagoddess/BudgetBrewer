@@ -9,9 +9,9 @@ package com.ataraxiagoddess.budgetbrewer.data
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.UUID
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 @Entity(
@@ -19,8 +19,8 @@ import java.util.UUID
     indices = [
         Index(value = ["bucket_id"]),
         Index(value = ["date"]),
-        Index(value = ["type"]),
-    ],
+        Index(value = ["type"])
+    ]
 )
 data class SavingsTransaction(
     @PrimaryKey
@@ -37,12 +37,12 @@ data class SavingsTransaction(
     @SerialName("created_at")
     val created_at: Long = System.currentTimeMillis(),
     @SerialName("updated_at")
-    val updated_at: Long = System.currentTimeMillis(),
+    val updated_at: Long = System.currentTimeMillis()
 )
 
 @Serializable
 enum class SavingsTransactionType {
     ALLOCATION,
     DEDUCTION,
-    WITHDRAWAL,
+    WITHDRAWAL
 }

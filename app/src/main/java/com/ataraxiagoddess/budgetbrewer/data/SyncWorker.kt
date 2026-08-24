@@ -10,10 +10,7 @@ import androidx.work.WorkerParameters
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
 import timber.log.Timber
 
-class SyncWorker(
-    context: Context,
-    params: WorkerParameters,
-) : CoroutineWorker(context, params) {
+class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     companion object {
         const val KEY_DOWNLOAD_ALL = "download_all"
     }
@@ -72,7 +69,8 @@ class SyncWorker(
         suspend fun processCategory(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val category = db.expenseCategoryDao().getCategoryById(pending.recordId) ?: return
+                    val category =
+                        db.expenseCategoryDao().getCategoryById(pending.recordId) ?: return
                     syncManager.uploadCategory(category, pending.userId)
                 }
                 "DELETE" -> {
@@ -84,7 +82,8 @@ class SyncWorker(
         suspend fun processAllocation(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val allocation = db.allocationDao().getAllocationById(pending.recordId) ?: return
+                    val allocation =
+                        db.allocationDao().getAllocationById(pending.recordId) ?: return
                     syncManager.uploadAllocation(allocation, pending.userId)
                 }
                 "DELETE" -> {
@@ -96,7 +95,8 @@ class SyncWorker(
         suspend fun processSpending(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val spending = db.spendingEntryDao().getSpendingEntryById(pending.recordId) ?: return
+                    val spending =
+                        db.spendingEntryDao().getSpendingEntryById(pending.recordId) ?: return
                     syncManager.uploadSpendingEntry(spending, pending.userId)
                 }
                 "DELETE" -> {
@@ -120,7 +120,8 @@ class SyncWorker(
         suspend fun processSavingsTransaction(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val transaction = db.savingsTransactionDao().getTransactionById(pending.recordId) ?: return
+                    val transaction =
+                        db.savingsTransactionDao().getTransactionById(pending.recordId) ?: return
                     syncManager.uploadSavingsTransaction(transaction, pending.userId)
                 }
                 "DELETE" -> {
@@ -132,7 +133,8 @@ class SyncWorker(
         suspend fun processDailyChecklist(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val item = db.dailyChecklistDao().getChecklistItemById(pending.recordId) ?: return
+                    val item =
+                        db.dailyChecklistDao().getChecklistItemById(pending.recordId) ?: return
                     syncManager.uploadDailyChecklistItem(item, pending.userId)
                 }
                 "DELETE" -> {
@@ -144,7 +146,8 @@ class SyncWorker(
         suspend fun processMonthSettings(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val settings = db.monthSettingsDao().getMonthSettingsById(pending.recordId) ?: return
+                    val settings =
+                        db.monthSettingsDao().getMonthSettingsById(pending.recordId) ?: return
                     syncManager.uploadMonthSetting(settings, pending.userId)
                 }
                 "DELETE" -> {
@@ -157,7 +160,8 @@ class SyncWorker(
         suspend fun processDailyIncomeAssignment(pending: PendingSync) {
             when (pending.operation) {
                 "INSERT", "UPDATE" -> {
-                    val assignment = db.dailyIncomeAssignmentDao().getAssignmentById(pending.recordId) ?: return
+                    val assignment =
+                        db.dailyIncomeAssignmentDao().getAssignmentById(pending.recordId) ?: return
                     syncManager.uploadDailyIncomeAssignment(assignment, pending.userId)
                 }
                 "DELETE" -> {

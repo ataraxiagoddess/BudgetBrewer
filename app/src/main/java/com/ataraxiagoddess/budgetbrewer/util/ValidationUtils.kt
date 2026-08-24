@@ -34,10 +34,7 @@ object ValidationUtils {
 
     fun isValidAmount(amount: Double): Boolean = amount in 0.0..MAX_AMOUNT
 
-    fun isValidName(
-        name: String,
-        maxLength: Int = MAX_LENGTH_NAME,
-    ): Boolean {
+    fun isValidName(name: String, maxLength: Int = MAX_LENGTH_NAME): Boolean {
         val cleanName = sanitizeString(name)
         return cleanName.isNotEmpty() && cleanName.length <= maxLength
     }
@@ -55,23 +52,21 @@ object ValidationUtils {
      * Returns an InputFilter that only allows digits (0-9).
      * Useful for PIN fields.
      */
-    fun getDigitsOnlyFilter(): InputFilter =
-        InputFilter { source, start, end, _, _, _ ->
-            val filtered = source.subSequence(start, end).filter { it.isDigit() }
-            if (filtered.length != end - start) filtered else null
-        }
+    fun getDigitsOnlyFilter(): InputFilter = InputFilter { source, start, end, _, _, _ ->
+        val filtered = source.subSequence(start, end).filter { it.isDigit() }
+        if (filtered.length != end - start) filtered else null
+    }
 
     /**
      * Returns an InputFilter that blocks invisible control characters
      * (like newlines, tabs, or null bytes) from being typed.
      */
-    fun getControlCharactersBlockFilter(): InputFilter =
-        InputFilter { source, start, end, _, _, _ ->
-            val sub = source.subSequence(start, end).toString()
-            if (sub.contains(Regex("[\\x00-\\x1F\\x7F]"))) {
-                sub.replace(Regex("[\\x00-\\x1F\\x7F]"), "")
-            } else {
-                null
-            }
+    fun getControlCharactersBlockFilter(): InputFilter = InputFilter { source, start, end, _, _, _ ->
+        val sub = source.subSequence(start, end).toString()
+        if (sub.contains(Regex("[\\x00-\\x1F\\x7F]"))) {
+            sub.replace(Regex("[\\x00-\\x1F\\x7F]"), "")
+        } else {
+            null
         }
+    }
 }

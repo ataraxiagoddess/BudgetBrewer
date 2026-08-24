@@ -13,10 +13,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ataraxiagoddess.budgetbrewer.data.SyncWorker
 import com.ataraxiagoddess.budgetbrewer.database.AppDatabase
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 object SyncHelper {
     suspend fun triggerSyncIfNeeded(context: Context) {
@@ -33,13 +33,13 @@ object SyncHelper {
                         Constraints
                             .Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build(),
+                            .build()
                     ).setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
                     .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
                 "instant_sync",
                 ExistingWorkPolicy.REPLACE,
-                workRequest,
+                workRequest
             )
         }
     }

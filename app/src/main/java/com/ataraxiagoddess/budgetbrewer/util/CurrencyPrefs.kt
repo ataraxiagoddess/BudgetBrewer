@@ -45,24 +45,14 @@ object CurrencyPrefs {
         return symbolToCode(trimmed)
     }
 
-    fun format(
-        amount: Double,
-        locale: Locale,
-    ): String = formatWithCode(amount, currentCode, locale)
+    fun format(amount: Double, locale: Locale): String = formatWithCode(amount, currentCode, locale)
 
-    fun formatWithCurrency(
-        amount: Double,
-        currencyValue: String,
-        locale: Locale,
-    ): String {
+    fun formatWithCurrency(amount: Double, currencyValue: String, locale: Locale): String {
         val code = extractCode(currencyValue)
         return formatWithCode(amount, code, locale)
     }
 
-    fun formatPlain(
-        amount: Double,
-        locale: Locale,
-    ): String {
+    fun formatPlain(amount: Double, locale: Locale): String {
         val formatter = NumberFormat.getNumberInstance(locale)
         formatter.minimumFractionDigits = currentFractionDigits
         formatter.maximumFractionDigits = currentFractionDigits
@@ -70,16 +60,15 @@ object CurrencyPrefs {
         return formatter.format(amount)
     }
 
-    fun parseAmount(
-        input: String,
-        locale: Locale,
-    ): Double? {
+    fun parseAmount(input: String, locale: Locale): Double? {
         val trimmed = input.trim()
         if (trimmed.isEmpty()) return null
         val formatter = NumberFormat.getNumberInstance(locale)
         val parsed = runCatching { formatter.parse(trimmed) }.getOrNull()
         if (parsed != null) return parsed.toDouble()
-        val fallback = runCatching { NumberFormat.getNumberInstance(Locale.US).parse(trimmed) }.getOrNull()
+        val fallback = runCatching {
+            NumberFormat.getNumberInstance(Locale.US).parse(trimmed)
+        }.getOrNull()
         return fallback?.toDouble()
     }
 
@@ -88,23 +77,18 @@ object CurrencyPrefs {
         return if (separator == '.') setOf('.') else setOf(separator, '.')
     }
 
-    private fun symbolToCode(symbol: String): String =
-        when (symbol) {
-            "$" -> "USD"
-            "€" -> "EUR"
-            "£" -> "GBP"
-            "¥" -> "JPY"
-            "₹" -> "INR"
-            "₱" -> "PHP"
-            "R$" -> "BRL"
-            else -> "USD"
-        }
+    private fun symbolToCode(symbol: String): String = when (symbol) {
+        "$" -> "USD"
+        "€" -> "EUR"
+        "£" -> "GBP"
+        "¥" -> "JPY"
+        "₹" -> "INR"
+        "₱" -> "PHP"
+        "R$" -> "BRL"
+        else -> "USD"
+    }
 
-    private fun formatWithCode(
-        amount: Double,
-        code: String,
-        locale: Locale,
-    ): String {
+    private fun formatWithCode(amount: Double, code: String, locale: Locale): String {
         val currency = Currency.getInstance(code)
         val formatter = NumberFormat.getCurrencyInstance(locale)
         val digits = max(0, currency.defaultFractionDigits)

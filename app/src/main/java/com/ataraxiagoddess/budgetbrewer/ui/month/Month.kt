@@ -11,7 +11,7 @@ import java.util.Locale
 
 data class Month(
     val year: Int,
-    val month: Int, // 1-12 (January = 1)
+    val month: Int // 1-12 (January = 1)
 ) {
     fun getDisplayName(context: Context): String {
         val calendar = Calendar.getInstance()
@@ -25,7 +25,7 @@ data class Month(
             val calendar = Calendar.getInstance()
             return Month(
                 year = calendar.get(Calendar.YEAR),
-                month = calendar.get(Calendar.MONTH) + 1,
+                month = calendar.get(Calendar.MONTH) + 1
             )
         }
     }

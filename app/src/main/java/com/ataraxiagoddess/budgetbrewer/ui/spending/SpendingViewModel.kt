@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 class SpendingViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context,
+    private val appContext: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
@@ -43,19 +43,15 @@ class SpendingViewModel(
     data class SpendingUiData(
         val entries: List<SpendingEntry> = emptyList(),
         val allocation: Allocation? = null,
-        val remaining: Double = 0.0,
+        val remaining: Double = 0.0
     )
 
     sealed class SpendingUiState {
         object Loading : SpendingUiState()
 
-        data class Success(
-            val data: SpendingUiData,
-        ) : SpendingUiState()
+        data class Success(val data: SpendingUiData) : SpendingUiState()
 
-        data class Error(
-            val message: String,
-        ) : SpendingUiState()
+        data class Error(val message: String) : SpendingUiState()
     }
 
     fun toggleTagsEnabled() {
@@ -91,7 +87,7 @@ class SpendingViewModel(
                     }
                     combine(
                         repository.getSpendingEntriesForBudget(budgetId),
-                        repository.getAllocationForBudget(budgetId),
+                        repository.getAllocationForBudget(budgetId)
                     ) { entries, allocation ->
                         val totalSpent = entries.sumOf { it.amount }
                         val spendingAmount = allocation?.spendingAmount ?: 0.0
@@ -103,7 +99,8 @@ class SpendingViewModel(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    _uiState.value = SpendingUiState.Error("Failed to load transactions: ${e.message}")
+                    _uiState.value =
+                        SpendingUiState.Error("Failed to load transactions: ${e.message}")
                     emitError(R.string.error_load_transactions, e)
                 }
             }
@@ -114,7 +111,7 @@ class SpendingViewModel(
         source: String,
         amount: Double,
         tag: String? = null,
-        note: String? = null,
+        note: String? = null
     ) {
         safeLaunch(R.string.error_add_transaction) {
             val entry =
@@ -124,7 +121,7 @@ class SpendingViewModel(
                     source = source,
                     amount = amount,
                     tag = tag,
-                    note = note,
+                    note = note
                 )
             repository.insertSpendingEntry(entry)
             // Sync after insert

@@ -23,30 +23,27 @@ object BiometricCryptoManager {
     private const val KEY_ALIAS = "budget_brewer_biometric_unlock"
 
     /** A cipher bound to the Keystore key, or null if unavailable (fall back to PIN). */
-    fun createCipher(): Cipher? =
-        runCatching {
+    fun createCipher(): Cipher? = runCatching {
+        newCipher(getOrCreateKey())
+    }.recoverCatching { e ->
+        if (e is KeyPermanentlyInvalidatedException) {
+            // Biometric enrollment changed since the key was created: start fresh.
+            deleteKey()
             newCipher(getOrCreateKey())
-        }.recoverCatching { e ->
-            if (e is KeyPermanentlyInvalidatedException) {
-                // Biometric enrollment changed since the key was created: start fresh.
-                deleteKey()
-                newCipher(getOrCreateKey())
-            } else {
-                throw e
-            }
-        }.getOrNull()
+        } else {
+            throw e
+        }
+    }.getOrNull()
 
     /** True only if the Keystore released the key — i.e. real biometric auth happened. */
-    fun probe(cipher: Cipher): Boolean =
-        runCatching {
-            cipher.doFinal(byteArrayOf(0))
-            true
-        }.getOrDefault(false)
+    fun probe(cipher: Cipher): Boolean = runCatching {
+        cipher.doFinal(byteArrayOf(0))
+        true
+    }.getOrDefault(false)
 
-    private fun newCipher(key: SecretKey): Cipher =
-        Cipher.getInstance("AES/GCM/NoPadding").apply {
-            init(Cipher.ENCRYPT_MODE, key)
-        }
+    private fun newCipher(key: SecretKey): Cipher = Cipher.getInstance("AES/GCM/NoPadding").apply {
+        init(Cipher.ENCRYPT_MODE, key)
+    }
 
     private fun getOrCreateKey(): SecretKey {
         val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
@@ -66,18 +63,15 @@ object BiometricCryptoManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
+    // SonarLint S6291 false positive: setUserAuthenticationParameters(0, AUTH_BIOMETRIC_STRONG)
+    // is the API-30 replacement for setUserAuthenticationRequired(true), which this rule
+    // doesn't recognize. STRONG-only binding is intentional: the key must never be
+    // released on device-credential auth alone. // NOSONAR
     private fun buildStrongBiometricKeySpec(): KeyGenParameterSpec =
-        /**
-         * SonarLint S6291 false positive: setUserAuthenticationParameters(0,
-         * AUTH_BIOMETRIC_STRONG) is the API-30 replacement for
-         * setUserAuthenticationRequired(true), which this rule doesn't recognize.
-         * We intentionally keep STRONG-only binding so the key is never released on
-         * device-credential auth alone.
-         */
         KeyGenParameterSpec
             .Builder( // NOSONAR
                 KEY_ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
             ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .setInvalidatedByBiometricEnrollment(true)
@@ -85,19 +79,17 @@ object BiometricCryptoManager {
             .build()
 
     @Suppress("DEPRECATION")
-    private fun buildLegacyKeySpec(): KeyGenParameterSpec =
-        KeyGenParameterSpec
-            .Builder(
-                KEY_ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
-            ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-            .setInvalidatedByBiometricEnrollment(true)
-            .setUserAuthenticationRequired(true)
-            .build()
+    private fun buildLegacyKeySpec(): KeyGenParameterSpec = KeyGenParameterSpec
+        .Builder(
+            KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+        .setInvalidatedByBiometricEnrollment(true)
+        .setUserAuthenticationRequired(true)
+        .build()
 
-    private fun deleteKey() =
-        runCatching {
-            KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.deleteEntry(KEY_ALIAS)
-        }
+    private fun deleteKey() = runCatching {
+        KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.deleteEntry(KEY_ALIAS)
+    }
 }

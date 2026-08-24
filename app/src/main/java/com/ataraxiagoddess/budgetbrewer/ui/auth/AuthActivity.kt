@@ -43,7 +43,10 @@ class AuthActivity :
         supportFragmentManager.commit {
             replace(R.id.fragment_container, SignInFragment())
             // Clear back stack to avoid piling up fragments
-            supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            supportFragmentManager.popBackStack(
+                null,
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
         }
     }
 
@@ -69,10 +72,7 @@ class AuthActivity :
         }
     }
 
-    fun showSnackbar(
-        message: String,
-        duration: Int = Snackbar.LENGTH_SHORT,
-    ) {
+    fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
         val snackbar = Snackbar.make(findViewById(android.R.id.content), "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view
@@ -88,12 +88,18 @@ class AuthActivity :
         snackbarView.background = ContextCompat.getDrawable(this, R.drawable.snackbar_background)
 
         // Hide default text
-        val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val defaultText = snackbarView.findViewById<TextView>(
+            com.google.android.material.R.id.snackbar_text
+        )
         defaultText.text = message
         defaultText.visibility = View.GONE
 
         // Add custom text
-        val customText = layoutInflater.inflate(R.layout.snackbar_custom, snackbarView as ViewGroup, false) as TextView
+        val customText = layoutInflater.inflate(
+            R.layout.snackbar_custom,
+            snackbarView as ViewGroup,
+            false
+        ) as TextView
         customText.text = message
         customText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
         customText.setTextColor(ContextCompat.getColor(this, R.color.text_on_container))

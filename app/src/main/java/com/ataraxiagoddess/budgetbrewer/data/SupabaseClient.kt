@@ -23,7 +23,7 @@ object SupabaseClient {
         client =
             createSupabaseClient(
                 supabaseUrl = SUPABASE_URL,
-                supabaseKey = SUPABASE_PUBLISHABLE_KEY,
+                supabaseKey = SUPABASE_PUBLISHABLE_KEY
             ) {
                 install(Postgrest)
                 install(Auth) {

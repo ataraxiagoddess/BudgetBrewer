@@ -44,18 +44,18 @@ import com.ataraxiagoddess.budgetbrewer.util.toAmountOrNull
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyEdit
 import com.google.android.material.snackbar.Snackbar
+import com.kizitonwose.calendar.core.CalendarDay as LibCalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
-import com.kizitonwose.calendar.core.CalendarDay as LibCalendarDay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MonthlyCalendarActivity :
     BaseActivity(),
@@ -80,22 +80,18 @@ class MonthlyCalendarActivity :
 
         override fun create(view: View) = DayViewContainer(view)
 
-        override fun bind(
-            container: DayViewContainer,
-            data: LibCalendarDay,
-        ) {
+        override fun bind(container: DayViewContainer, data: LibCalendarDay) {
             container.bind(data)
         }
     }
 
-    inner class DayViewContainer(
-        view: View,
-    ) : ViewContainer(view) {
+    inner class DayViewContainer(view: View) : ViewContainer(view) {
         private val tvDayNumber: TextView? = view.findViewById(R.id.tvDayNumber)
         private val dotContainer: GridLayout? = view.findViewById(R.id.dotContainer)
 
         init {
-            tvDayNumber?.typeface = ResourcesCompat.getFont(this@MonthlyCalendarActivity, R.font.exo_regular)
+            tvDayNumber?.typeface =
+                ResourcesCompat.getFont(this@MonthlyCalendarActivity, R.font.exo_regular)
         }
 
         fun bind(calendarDay: LibCalendarDay) {
@@ -118,7 +114,12 @@ class MonthlyCalendarActivity :
                         }
                     }
                 } else {
-                    view.setBackgroundColor(ContextCompat.getColor(this@MonthlyCalendarActivity, android.R.color.transparent))
+                    view.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@MonthlyCalendarActivity,
+                            android.R.color.transparent
+                        )
+                    )
                     dotContainer?.removeAllViews()
                     view.setOnClickListener(null)
                 }
@@ -136,7 +137,11 @@ class MonthlyCalendarActivity :
                     append("Day ${dayData.dayOfMonth}")
                     val expenseCount = dayData.expenses.size + dayData.spendingEntries.size
                     if (expenseCount > 0) append(", $expenseCount expenses")
-                    if (dayData.assignedIncomes.isNotEmpty()) append(", ${dayData.assignedIncomes.size} incomes")
+                    if (dayData.assignedIncomes.isNotEmpty()) {
+                        append(
+                            ", ${dayData.assignedIncomes.size} incomes"
+                        )
+                    }
                     append(", net total ${dayData.dayTotal.toCurrencyDisplay(resources)}")
                     append(", double tap for details")
                 }
@@ -155,24 +160,23 @@ class MonthlyCalendarActivity :
             }
         }
 
-        private fun createDot(drawableRes: Int): ImageView =
-            ImageView(view.context).apply {
-                setImageResource(drawableRes)
-                importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        private fun createDot(drawableRes: Int): ImageView = ImageView(view.context).apply {
+            setImageResource(drawableRes)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 
-                val dotSize = resources.getDimensionPixelSize(R.dimen.dot_size)
-                // Use an existing dimen like dot_margin, or create R.dimen.dot_spacing in dimens.xml
-                val spacing = resources.getDimensionPixelSize(R.dimen.dot_spacing)
+            val dotSize = resources.getDimensionPixelSize(R.dimen.dot_size)
+            // Use an existing dimen like dot_margin, or create R.dimen.dot_spacing in dimens.xml
+            val spacing = resources.getDimensionPixelSize(R.dimen.dot_spacing)
 
-                // Use MarginLayoutParams to control grid spacing
-                layoutParams =
-                    ViewGroup.MarginLayoutParams(dotSize, dotSize).apply {
-                        leftMargin = spacing
-                        topMargin = spacing
-                        rightMargin = spacing
-                        bottomMargin = spacing
-                    }
-            }
+            // Use MarginLayoutParams to control grid spacing
+            layoutParams =
+                ViewGroup.MarginLayoutParams(dotSize, dotSize).apply {
+                    leftMargin = spacing
+                    topMargin = spacing
+                    rightMargin = spacing
+                    bottomMargin = spacing
+                }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +198,9 @@ class MonthlyCalendarActivity :
 
     private fun populateWeekEndGrid(weekEndTotals: List<MonthlyCalendarViewModel.WeekEndTotal>) {
         val container = binding.weekEndGridContainer ?: return
-        Timber.d("populateWeekEndGrid: container=$container, weekEndTotals.size=${weekEndTotals.size}")
+        Timber.d(
+            "populateWeekEndGrid: container=$container, weekEndTotals.size=${weekEndTotals.size}"
+        )
         container.removeAllViews()
 
         val exoRegular = ResourcesCompat.getFont(this, R.font.exo_regular)
@@ -207,7 +213,8 @@ class MonthlyCalendarActivity :
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val weekPillTextSize =
             if (isTablet && isLandscape) {
-                resources.getDimension(R.dimen.week_pill_text_size_tablet_land) / resources.displayMetrics.density
+                resources.getDimension(R.dimen.week_pill_text_size_tablet_land) /
+                    resources.displayMetrics.density
             } else {
                 null
             }
@@ -219,7 +226,7 @@ class MonthlyCalendarActivity :
                         LinearLayout
                             .LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
                             ).apply { bottomMargin = rowSpacing }
                     orientation = LinearLayout.HORIZONTAL
                 }
@@ -236,20 +243,27 @@ class MonthlyCalendarActivity :
                 typeface = exoRegular
                 if (weekPillTextSize != null) textSize = weekPillTextSize
             }
-            pill1.contentDescription = "Week ${weekEndTotals[i].weekNumber} total, ${weekEndTotals[i].total.toCurrencyDisplay(resources)}"
+            pill1.contentDescription =
+                "Week ${weekEndTotals[i].weekNumber} total, ${weekEndTotals[i].total.toCurrencyDisplay(
+                    resources
+                )}"
             pill1.setOnClickListener { showSnackbar(getString(R.string.week_end_not_editable)) }
             pill1.layoutParams =
                 LinearLayout
                     .LayoutParams(
                         0,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
-                        1f,
+                        1f
                     ).apply { setMargins(0, 0, pillSpacing, 0) }
             row.addView(pill1)
 
             // Second pill or spacer
             if (i + 1 < weekEndTotals.size) {
-                val pill2 = inflater.inflate(R.layout.item_week_end_pill, row, false) as LinearLayout
+                val pill2 = inflater.inflate(
+                    R.layout.item_week_end_pill,
+                    row,
+                    false
+                ) as LinearLayout
                 pill2.findViewById<TextView>(R.id.tvWeek).apply {
                     text = getString(R.string.week_x, weekEndTotals[i + 1].weekNumber)
                     typeface = exoRegular
@@ -261,14 +275,16 @@ class MonthlyCalendarActivity :
                     if (weekPillTextSize != null) textSize = weekPillTextSize
                 }
                 pill2.contentDescription =
-                    "Week ${weekEndTotals[i + 1].weekNumber} total, ${weekEndTotals[i + 1].total.toCurrencyDisplay(resources)}"
+                    "Week ${weekEndTotals[i + 1].weekNumber} total, ${weekEndTotals[i + 1].total.toCurrencyDisplay(
+                        resources
+                    )}"
                 pill2.setOnClickListener { showSnackbar(getString(R.string.week_end_not_editable)) }
                 pill2.layoutParams =
                     LinearLayout
                         .LayoutParams(
                             0,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
-                            1f,
+                            1f
                         ).apply { setMargins(pillSpacing, 0, 0, 0) }
                 row.addView(pill2)
             } else {
@@ -279,7 +295,7 @@ class MonthlyCalendarActivity :
                                 .LayoutParams(
                                     0,
                                     ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    1f,
+                                    1f
                                 ).apply { setMargins(pillSpacing, 0, 0, 0) }
                     }
                 row.addView(spacer)
@@ -304,12 +320,18 @@ class MonthlyCalendarActivity :
                     TextView(this).apply {
                         text = dayName
                         gravity = Gravity.CENTER
-                        layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-                        setTextColor(ContextCompat.getColor(this@MonthlyCalendarActivity, R.color.text_on_main))
+                        layoutParams =
+                            LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+                        setTextColor(
+                            ContextCompat.getColor(
+                                this@MonthlyCalendarActivity,
+                                R.color.text_on_main
+                            )
+                        )
                         typeface = exoRegular
                         androidx.core.view.ViewCompat
                             .setAccessibilityHeading(this, true)
-                    },
+                    }
                 )
             }
         } else {
@@ -328,12 +350,14 @@ class MonthlyCalendarActivity :
                     is MonthlyCalendarViewModel.CalendarUiState.Loading -> {
                         binding.progressBar?.visibility = View.VISIBLE
                     }
+
                     is MonthlyCalendarViewModel.CalendarUiState.Success -> {
                         binding.progressBar?.visibility = View.GONE
                         buildNativeHeaderFooter(state.data)
                         loadCalendar(state.data)
                         populateWeekEndGrid(state.data.weekEndTotals)
                     }
+
                     is MonthlyCalendarViewModel.CalendarUiState.Error -> {
                         binding.progressBar?.visibility = View.GONE
                         Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
@@ -353,8 +377,10 @@ class MonthlyCalendarActivity :
                 .flatten()
                 .filter { it.isCurrentMonth && it.dayOfMonth != 0 }
                 .associateBy(
-                    keySelector = { day -> LocalDate.of(data.month.year, data.month.month, day.dayOfMonth) },
-                    valueTransform = { it },
+                    keySelector = { day ->
+                        LocalDate.of(data.month.year, data.month.month, day.dayOfMonth)
+                    },
+                    valueTransform = { it }
                 )
 
         (binding.calendarView.dayBinder as DayViewBinder).dayDataMap = dayDataMap
@@ -384,9 +410,9 @@ class MonthlyCalendarActivity :
                     LinearLayout
                         .LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
                         ).apply { marginEnd = endMargin }
-            },
+            }
         )
 
         binding.monthStartRow.addView(
@@ -395,20 +421,20 @@ class MonthlyCalendarActivity :
                 setTextColor(ContextCompat.getColor(context, R.color.text_on_container))
                 typeface = exoRegular
                 textSize = monthRowTextSizeSp
-            },
+            }
         )
 
         binding.monthStartRow.setOnClickListener {
             showEditAmountDialog(
                 title =
-                    if (data.monthStartOverridden) {
-                        getString(R.string.overwrite_month_start)
-                    } else {
-                        getString(R.string.edit_month_start)
-                    },
+                if (data.monthStartOverridden) {
+                    getString(R.string.overwrite_month_start)
+                } else {
+                    getString(R.string.edit_month_start)
+                },
                 currentAmount = data.monthStartAmount,
                 isOverridden = data.monthStartOverridden,
-                onSave = { newAmount -> viewModel.updateMonthStartAmount(newAmount) },
+                onSave = { newAmount -> viewModel.updateMonthStartAmount(newAmount) }
             )
         }
 
@@ -428,9 +454,9 @@ class MonthlyCalendarActivity :
                     LinearLayout
                         .LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
                         ).apply { marginEnd = spacingMedium }
-            },
+            }
         )
 
         binding.monthEndRow.addView(
@@ -439,7 +465,7 @@ class MonthlyCalendarActivity :
                 setTextColor(ContextCompat.getColor(context, R.color.text_on_container))
                 typeface = exoRegular
                 textSize = monthRowTextSizeSp
-            },
+            }
         )
 
         binding.monthEndRow.setOnClickListener {
@@ -449,7 +475,11 @@ class MonthlyCalendarActivity :
         // Week End Totals Row (horizontal container for portrait)
         binding.weekEndContainer?.removeAllViews()
         data.weekEndTotals.forEachIndexed { index, weekEnd ->
-            val pill = layoutInflater.inflate(R.layout.item_week_end_pill, binding.weekEndContainer, false) as LinearLayout
+            val pill = layoutInflater.inflate(
+                R.layout.item_week_end_pill,
+                binding.weekEndContainer,
+                false
+            ) as LinearLayout
             pill.findViewById<TextView>(R.id.tvWeek).apply {
                 text = getString(R.string.week_x, index + 1)
                 typeface = exoRegular
@@ -458,7 +488,8 @@ class MonthlyCalendarActivity :
                 text = weekEnd.total.toCurrencyDisplay(resources)
                 typeface = exoRegular
             }
-            pill.contentDescription = "Week ${index + 1} total, ${weekEnd.total.toCurrencyDisplay(resources)}"
+            pill.contentDescription =
+                "Week ${index + 1} total, ${weekEnd.total.toCurrencyDisplay(resources)}"
             pill.setOnClickListener {
                 showSnackbar(getString(R.string.week_end_not_editable))
             }
@@ -478,9 +509,9 @@ class MonthlyCalendarActivity :
                             spendingEntries = dayData.spendingEntries,
                             assignedIncomes = dayData.assignedIncomes,
                             dayTotal = dayData.dayTotal,
-                            savingsDistributed = dayData.savingsDistributed,
+                            savingsDistributed = dayData.savingsDistributed
                         ),
-                        state.data.unassignedIncomes,
+                        state.data.unassignedIncomes
                     ).apply {
                         setOnAssignIncomeListener { selectedIncome ->
                             viewModel.assignIncomeToDay(dayData.dayOfMonth, selectedIncome)
@@ -500,8 +531,8 @@ class MonthlyCalendarActivity :
         return arrayOf(
             DecimalDigitsInputFilter(
                 CurrencyPrefs.currentFractionDigits,
-                CurrencyPrefs.decimalSeparators(locale),
-            ),
+                CurrencyPrefs.decimalSeparators(locale)
+            )
         )
     }
 
@@ -511,7 +542,7 @@ class MonthlyCalendarActivity :
         currentAmount: Double,
         isOverridden: Boolean,
         confirmationMessageResId: Int = R.string.overwrite_confirmation,
-        onSave: (Double) -> Unit,
+        onSave: (Double) -> Unit
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_allocation, null, false)
         val etAmount = dialogView.findViewById<EditText>(R.id.etAllocationAmount)
@@ -527,7 +558,7 @@ class MonthlyCalendarActivity :
                 title = title,
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -544,21 +575,25 @@ class MonthlyCalendarActivity :
                         s: CharSequence?,
                         start: Int,
                         count: Int,
-                        after: Int,
+                        after: Int
                     ) {}
 
                     override fun onTextChanged(
                         s: CharSequence?,
                         start: Int,
                         before: Int,
-                        count: Int,
+                        count: Int
                     ) {}
 
                     override fun afterTextChanged(s: android.text.Editable?) {
                         val text = s.toString().trim()
                         val newAmount = text.toAmountOrNull(resources)
                         val isEmpty = text.isEmpty()
-                        val isValid = !isEmpty && newAmount != null && newAmount >= 0 && ValidationUtils.isValidAmount(newAmount)
+                        val isValid =
+                            !isEmpty &&
+                                newAmount != null &&
+                                newAmount >= 0 &&
+                                ValidationUtils.isValidAmount(newAmount)
 
                         if (isEmpty) {
                             tvWarning.visibility = View.INVISIBLE
@@ -577,12 +612,15 @@ class MonthlyCalendarActivity :
                             saveButton.isEnabled = true
                         }
                     }
-                },
+                }
             )
 
             saveButton.setOnClickListener {
                 val newAmount = etAmount.text.toString().toAmountOrNull(resources)
-                if (newAmount != null && newAmount >= 0 && ValidationUtils.isValidAmount(newAmount)) {
+                if (newAmount != null &&
+                    newAmount >= 0 &&
+                    ValidationUtils.isValidAmount(newAmount)
+                ) {
                     showConfirmationDialog(newAmount, onSave, dialog, confirmationMessageResId)
                 }
             }
@@ -595,7 +633,7 @@ class MonthlyCalendarActivity :
         newAmount: Double,
         onSave: (Double) -> Unit,
         parentDialog: AlertDialog,
-        messageResId: Int,
+        messageResId: Int
     ) {
         val confirmDialog =
             showBudgetBrewerDialog(
@@ -604,7 +642,7 @@ class MonthlyCalendarActivity :
                 title = getString(R.string.confirm),
                 message = getString(messageResId),
                 positiveButton = getString(R.string.yes),
-                negativeButton = getString(R.string.no),
+                negativeButton = getString(R.string.no)
             )
 
         confirmDialog.setOnShowListener {
@@ -626,14 +664,14 @@ class MonthlyCalendarActivity :
     override fun navigateToHome() {
         startActivity(
             Intent(this, MainActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToFinances() {
         startActivity(
             Intent(this, IncomeExpensesActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
@@ -644,22 +682,25 @@ class MonthlyCalendarActivity :
 
     override fun navigateToExpenses() {
         startActivity(
-            Intent(this, com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            Intent(
+                this,
+                com.ataraxiagoddess.budgetbrewer.ui.expenses.MonthlyExpenseListActivity::class.java
+            ),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToSpending() {
         startActivity(
             Intent(this, com.ataraxiagoddess.budgetbrewer.ui.spending.SpendingActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 

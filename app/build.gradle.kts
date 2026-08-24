@@ -15,6 +15,7 @@ plugins {
 detekt {
     buildUponDefaultConfig = true
     baseline = file("config/detekt/baseline.xml")
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
 }
 
 extensions.configure<ApplicationExtension> {
@@ -44,7 +45,7 @@ extensions.configure<ApplicationExtension> {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
