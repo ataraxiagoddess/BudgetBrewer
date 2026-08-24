@@ -31,6 +31,9 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -209,6 +212,31 @@ class IncomeExpensesActivity :
         )
 
         binding.categoriesRecyclerView.itemAnimator = null
+
+        ViewCompat.setAccessibilityDelegate(
+            binding.categoriesRecyclerView,
+            object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityNodeInfo(
+                    host: View,
+                    info: AccessibilityNodeInfoCompat,
+                ) {
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                    val realCount = categoriesList.size
+                    if (realCount > 0) {
+                        info.setCollectionInfo(
+                            AccessibilityNodeInfoCompat.CollectionInfoCompat.obtain(
+                                realCount,
+                                1,
+                                false,
+                                AccessibilityNodeInfoCompat.CollectionInfoCompat.SELECTION_MODE_NONE,
+                            ),
+                        )
+                    } else {
+                        info.setCollectionInfo(null)
+                    }
+                }
+            },
+        )
 
         val db = AppDatabase.getDatabase(this)
         repository = BudgetRepository(db)
