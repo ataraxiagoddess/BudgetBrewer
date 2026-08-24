@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ArchivedBucketsViewModel(
-    private val repository: BudgetRepository,
-) : ViewModel() {
+class ArchivedBucketsViewModel(private val repository: BudgetRepository) : ViewModel() {
     private val _uiState = MutableStateFlow<ArchivedBucketsUiState>(ArchivedBucketsUiState.Loading)
     val uiState: StateFlow<ArchivedBucketsUiState> = _uiState.asStateFlow()
 
@@ -59,13 +57,9 @@ class ArchivedBucketsViewModel(
 sealed class ArchivedBucketsUiState {
     object Loading : ArchivedBucketsUiState()
 
-    data class Success(
-        val buckets: List<SavingsBucket>,
-    ) : ArchivedBucketsUiState()
+    data class Success(val buckets: List<SavingsBucket>) : ArchivedBucketsUiState()
 
-    data class Error(
-        val message: String,
-    ) : ArchivedBucketsUiState()
+    data class Error(val message: String) : ArchivedBucketsUiState()
 }
 
 sealed class ArchivedBucketsEvent {

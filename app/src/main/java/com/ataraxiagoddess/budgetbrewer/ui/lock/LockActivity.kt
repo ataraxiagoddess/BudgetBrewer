@@ -38,7 +38,7 @@ class LockActivity : AppCompatActivity() {
         binding.etPin.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PIN),
-                ValidationUtils.getDigitsOnlyFilter(),
+                ValidationUtils.getDigitsOnlyFilter()
             )
 
         setupBiometricPrompt()
@@ -68,12 +68,15 @@ class LockActivity : AppCompatActivity() {
         binding.btnTogglePassword.setOnClickListener {
             val et = binding.etPin
             val current = et.inputType
-            if (current == (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)) {
+            if (current ==
+                (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+            ) {
                 et.inputType = InputType.TYPE_CLASS_NUMBER
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
                 binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
-                et.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                et.inputType =
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
                 binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
@@ -95,14 +98,17 @@ class LockActivity : AppCompatActivity() {
 
     private fun isBiometricAvailable(): Boolean {
         val biometricManager = BiometricManager.from(this)
-        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+        return biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
+            BiometricManager.BIOMETRIC_SUCCESS
     }
 
     private fun setupBiometricPrompt() {
         val executor = ContextCompat.getMainExecutor(this)
         val callback =
             object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult
+                ) {
                     val cipher = result.cryptoObject?.cipher
                     if (cipher != null && BiometricCryptoManager.probe(cipher)) {
                         unlockAndProceed()
@@ -111,10 +117,7 @@ class LockActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onAuthenticationError(
-                    errorCode: Int,
-                    errString: CharSequence,
-                ) {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     if (errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON &&
                         errorCode != BiometricPrompt.ERROR_USER_CANCELED
                     ) {
@@ -152,15 +155,12 @@ class LockActivity : AppCompatActivity() {
         startActivity(
             Intent(this, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            },
+            }
         )
         finish()
     }
 
-    private fun showSnackbar(
-        message: String,
-        duration: Int = Snackbar.LENGTH_SHORT,
-    ) {
+    private fun showSnackbar(message: String, duration: Int = Snackbar.LENGTH_SHORT) {
         val snackbar = Snackbar.make(findViewById(android.R.id.content), "", duration)
         snackbar.animationMode = Snackbar.ANIMATION_MODE_FADE
         val snackbarView = snackbar.view
@@ -175,11 +175,17 @@ class LockActivity : AppCompatActivity() {
 
         snackbarView.background = ContextCompat.getDrawable(this, R.drawable.snackbar_background)
 
-        val defaultText = snackbarView.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val defaultText = snackbarView.findViewById<TextView>(
+            com.google.android.material.R.id.snackbar_text
+        )
         defaultText.text = message
         defaultText.visibility = View.GONE
 
-        val customText = layoutInflater.inflate(R.layout.snackbar_custom, snackbarView as ViewGroup, false) as TextView
+        val customText = layoutInflater.inflate(
+            R.layout.snackbar_custom,
+            snackbarView as ViewGroup,
+            false
+        ) as TextView
         customText.text = message
         customText.typeface = ResourcesCompat.getFont(this, R.font.blkchcry)
         customText.setTextColor(ContextCompat.getColor(this, R.color.text_on_container))

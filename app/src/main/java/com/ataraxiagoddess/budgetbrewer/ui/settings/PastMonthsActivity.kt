@@ -20,9 +20,9 @@ import com.ataraxiagoddess.budgetbrewer.ui.base.BaseActivity
 import com.ataraxiagoddess.budgetbrewer.ui.navigation.NavDestination
 import com.ataraxiagoddess.budgetbrewer.util.ExportHelper
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
+import java.util.Calendar
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class PastMonthsActivity : BaseActivity() {
     override val currentNavDestination: NavDestination
@@ -80,15 +80,16 @@ class PastMonthsActivity : BaseActivity() {
             object : ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                monthNames,
+                monthNames
             ) {
                 override fun getView(
                     position: Int,
                     convertView: View?,
-                    parent: android.view.ViewGroup,
+                    parent: android.view.ViewGroup
                 ): View {
                     val view = super.getView(position, convertView, parent) as TextView
-                    view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
+                    view.typeface =
+                        ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
                     view.setTextColor(getColor(R.color.text_on_main))
                     return view
                 }
@@ -96,10 +97,11 @@ class PastMonthsActivity : BaseActivity() {
                 override fun getDropDownView(
                     position: Int,
                     convertView: View?,
-                    parent: android.view.ViewGroup,
+                    parent: android.view.ViewGroup
                 ): View {
                     val view = super.getDropDownView(position, convertView, parent) as TextView
-                    view.typeface = ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
+                    view.typeface =
+                        ResourcesCompat.getFont(this@PastMonthsActivity, R.font.exo_regular)
                     return view
                 }
             }
@@ -113,7 +115,7 @@ class PastMonthsActivity : BaseActivity() {
                     parent: AdapterView<*>?,
                     view: View?,
                     position: Int,
-                    id: Long,
+                    id: Long
                 ) {
                     selectedBudget = budgets[position]
                     loadPreview(budgets[position])
@@ -165,10 +167,7 @@ class PastMonthsActivity : BaseActivity() {
         binding.previewContainer.addView(tv)
     }
 
-    private fun addDataRow(
-        label: String,
-        value: String,
-    ) {
+    private fun addDataRow(label: String, value: String) {
         val row =
             android.widget.LinearLayout(this).apply {
                 orientation = android.widget.LinearLayout.HORIZONTAL
@@ -181,7 +180,12 @@ class PastMonthsActivity : BaseActivity() {
                 setTextColor(getColor(R.color.text_on_main))
                 textSize = 14f
                 typeface = exoRegular
-                layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        0,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
             }
         val valueTv =
             TextView(this).apply {
@@ -200,7 +204,11 @@ class PastMonthsActivity : BaseActivity() {
         binding.btnExportCSV.setOnClickListener {
             selectedBudget?.let { budget ->
                 lifecycleScope.launch {
-                    val uri = ExportHelper.exportBudgetToCSV(this@PastMonthsActivity, budget.id, "${budget.month}_${budget.year}")
+                    val uri = ExportHelper.exportBudgetToCSV(
+                        this@PastMonthsActivity,
+                        budget.id,
+                        "${budget.month}_${budget.year}"
+                    )
                     if (uri != null) {
                         showSnackbar(getString(R.string.export_saved))
                     } else {
@@ -212,7 +220,11 @@ class PastMonthsActivity : BaseActivity() {
         binding.btnExportPDF.setOnClickListener {
             selectedBudget?.let { budget ->
                 lifecycleScope.launch {
-                    val uri = ExportHelper.exportBudgetToPDF(this@PastMonthsActivity, budget.id, "${budget.month}_${budget.year}")
+                    val uri = ExportHelper.exportBudgetToPDF(
+                        this@PastMonthsActivity,
+                        budget.id,
+                        "${budget.month}_${budget.year}"
+                    )
                     if (uri != null) {
                         showSnackbar(getString(R.string.export_saved))
                     } else {

@@ -36,14 +36,18 @@ class SignInFragment : Fragment() {
     private fun setupPasswordToggle() {
         binding.btnTogglePassword.setOnClickListener {
             val currentInputType = binding.etPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
                 // Switch to hidden
-                binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
                 binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
                 // Switch to visible
-                binding.etPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
                 binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
@@ -65,25 +69,28 @@ class SignInFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSignInBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupPasswordToggle()
 
         // Apply length filters
         binding.etEmail.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         binding.etPassword.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
 
         binding.btnSignIn.setOnClickListener {
             val email =
@@ -112,13 +119,20 @@ class SignInFragment : Fragment() {
     }
 
     private fun showForgotPasswordDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_single_edittext, binding.root, false)
+        val dialogView = layoutInflater.inflate(
+            R.layout.dialog_single_edittext,
+            binding.root,
+            false
+        )
         val editText = dialogView.findViewById<EditText>(R.id.etInput)
         editText.hint = getString(R.string.email)
 
         // Apply email length filter
         editText.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_EMAIL),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
 
         val dialog =
             showBudgetBrewerDialog(
@@ -142,15 +156,12 @@ class SignInFragment : Fragment() {
                     } else {
                         showError(getString(R.string.enter_email))
                     }
-                },
+                }
             )
         dialog.show()
     }
 
-    private fun signIn(
-        email: String,
-        password: String,
-    ) {
+    private fun signIn(email: String, password: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnSignIn.isEnabled = false
 
@@ -179,7 +190,9 @@ class SignInFragment : Fragment() {
                         (activity as? AuthActivity)?.showSnackbar(getString(R.string.data_restored))
                     } else {
                         syncManager.uploadAllData(userId)
-                        (activity as? AuthActivity)?.showSnackbar(getString(R.string.data_backed_up))
+                        (activity as? AuthActivity)?.showSnackbar(
+                            getString(R.string.data_backed_up)
+                        )
                     }
                 }
 
@@ -188,7 +201,10 @@ class SignInFragment : Fragment() {
             } catch (e: Exception) {
                 val message =
                     when {
-                        e.message?.contains("Invalid login credentials", ignoreCase = true) == true ->
+                        e.message?.contains(
+                            "Invalid login credentials",
+                            ignoreCase = true
+                        ) == true ->
                             getString(R.string.error_invalid_credentials)
                         e.message?.contains("Email not confirmed", ignoreCase = true) == true ->
                             getString(R.string.error_email_not_confirmed)

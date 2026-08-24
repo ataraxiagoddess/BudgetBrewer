@@ -46,16 +46,13 @@ class ResetPasswordFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentResetPasswordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvEmailSent.text = getString(R.string.reset_code_sent, email ?: "")
@@ -67,11 +64,14 @@ class ResetPasswordFragment : Fragment() {
         binding.etCode.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(6),
-                ValidationUtils.getDigitsOnlyFilter(),
+                ValidationUtils.getDigitsOnlyFilter()
             )
 
         val passwordFilter =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_PASSWORD),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         binding.etNewPassword.filters = passwordFilter
         binding.etConfirmPassword.filters = passwordFilter
 
@@ -92,11 +92,15 @@ class ResetPasswordFragment : Fragment() {
                 return@setOnClickListener
             }
             if (!newPassword.matches(Regex(".*[A-Z].*"))) {
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_uppercase))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.password_need_uppercase)
+                )
                 return@setOnClickListener
             }
             if (!newPassword.matches(Regex(".*[a-z].*"))) {
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_need_lowercase))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.password_need_lowercase)
+                )
                 return@setOnClickListener
             }
             if (!newPassword.matches(Regex(".*[0-9].*"))) {
@@ -108,7 +112,9 @@ class ResetPasswordFragment : Fragment() {
                 return@setOnClickListener
             }
             if (newPassword != confirmPassword) {
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.passwords_do_not_match))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.passwords_do_not_match)
+                )
                 return@setOnClickListener
             }
 
@@ -129,12 +135,16 @@ class ResetPasswordFragment : Fragment() {
     private fun setupPasswordToggle() {
         binding.btnTogglePassword.setOnClickListener {
             val currentInputType = binding.etNewPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-                binding.etNewPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
+                binding.etNewPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_off)
                 binding.btnTogglePassword.contentDescription = getString(R.string.show_password)
             } else {
-                binding.etNewPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.etNewPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnTogglePassword.setImageResource(R.drawable.ic_visibility_on)
                 binding.btnTogglePassword.contentDescription = getString(R.string.hide_password)
             }
@@ -143,16 +153,24 @@ class ResetPasswordFragment : Fragment() {
 
         binding.btnToggleConfirmPassword.setOnClickListener {
             val currentInputType = binding.etConfirmPassword.inputType
-            if (currentInputType == (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)) {
-                binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if (currentInputType ==
+                (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD)
+            ) {
+                binding.etConfirmPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_off)
-                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.show_password)
+                binding.btnToggleConfirmPassword.contentDescription =
+                    getString(R.string.show_password)
             } else {
-                binding.etConfirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.etConfirmPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 binding.btnToggleConfirmPassword.setImageResource(R.drawable.ic_visibility_on)
-                binding.btnToggleConfirmPassword.contentDescription = getString(R.string.hide_password)
+                binding.btnToggleConfirmPassword.contentDescription =
+                    getString(R.string.hide_password)
             }
-            binding.etConfirmPassword.text?.let { binding.etConfirmPassword.setSelection(it.length) }
+            binding.etConfirmPassword.text?.let {
+                binding.etConfirmPassword.setSelection(it.length)
+            }
         }
     }
 
@@ -168,7 +186,9 @@ class ResetPasswordFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
                 binding.btnResend.isEnabled = true
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.reset_code_sent_snackbar))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.reset_code_sent_snackbar)
+                )
             } catch (e: Exception) {
                 binding.progressBar.visibility = View.GONE
                 binding.btnVerify.isEnabled = true
@@ -184,10 +204,7 @@ class ResetPasswordFragment : Fragment() {
         }
     }
 
-    private fun verifyCodeAndResetPassword(
-        code: String,
-        newPassword: String,
-    ) {
+    private fun verifyCodeAndResetPassword(code: String, newPassword: String) {
         binding.progressBar.visibility = View.VISIBLE
         binding.btnVerify.isEnabled = false
 
@@ -199,7 +216,7 @@ class ResetPasswordFragment : Fragment() {
                 SupabaseClient.client.auth.verifyEmailOtp(
                     type = OtpType.Email.RECOVERY,
                     email = email,
-                    token = code,
+                    token = code
                 )
 
                 // After verification, update the password
@@ -207,7 +224,9 @@ class ResetPasswordFragment : Fragment() {
                 AppLockManager.unlock()
 
                 // Success
-                (activity as? AuthActivity)?.showSnackbar(getString(R.string.password_reset_success))
+                (activity as? AuthActivity)?.showSnackbar(
+                    getString(R.string.password_reset_success)
+                )
                 navigationListener?.navigateToSignIn()
             } catch (e: Exception) {
                 binding.progressBar.visibility = View.GONE
@@ -215,7 +234,8 @@ class ResetPasswordFragment : Fragment() {
 
                 val message =
                     when {
-                        e.message?.contains("Cannot reuse previous password", ignoreCase = true) == true ->
+                        e.message?.contains("Cannot reuse previous password", ignoreCase = true) ==
+                            true ->
                             getString(R.string.password_same_as_old)
                         e.message?.contains("weak", ignoreCase = true) == true ->
                             getString(R.string.password_too_weak)

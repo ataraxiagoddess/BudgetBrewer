@@ -10,7 +10,7 @@ import timber.log.Timber
 
 class NavigationManager(
     binding: LayoutBottomNavBinding,
-    private val onNavigate: (NavDestination) -> Unit,
+    private val onNavigate: (NavDestination) -> Unit
 ) {
     private var currentDestination: NavDestination = NavDestination.HOME
 
@@ -23,7 +23,7 @@ class NavigationManager(
             binding.navButtonExpenses to NavDestination.EXPENSES,
             binding.navButtonSpending to NavDestination.SPENDING,
             binding.navButtonCalendar to NavDestination.CALENDAR,
-            binding.navButtonSettings to NavDestination.SETTINGS,
+            binding.navButtonSettings to NavDestination.SETTINGS
         )
 
     init {
@@ -33,7 +33,9 @@ class NavigationManager(
     private fun setupClickListeners() {
         buttonMap.forEach { (button, destination) ->
             button.setOnClickListener {
-                Timber.d("Button clicked: ${button.text} (destination=$destination, current=$currentDestination)")
+                Timber.d(
+                    "Button clicked: ${button.text} (destination=$destination, current=$currentDestination)"
+                )
                 if (currentDestination != destination) {
                     Timber.d("Navigating to $destination")
                     onNavigate(destination)

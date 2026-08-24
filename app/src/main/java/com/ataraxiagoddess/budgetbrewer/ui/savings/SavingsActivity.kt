@@ -61,7 +61,7 @@ class SavingsActivity : BaseActivity() {
                 onWithdrawClick = { bucket -> showWithdrawDialog(bucket) },
                 onEditClick = { bucket -> showEditBucketDialog(bucket) },
                 onDeleteClick = { bucket -> showDeleteConfirmationDialog(bucket) },
-                onCardClick = { bucket -> showHistoryDialog(bucket) },
+                onCardClick = { bucket -> showHistoryDialog(bucket) }
             )
         val isTablet = resources.getBoolean(R.bool.is_tablet)
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -75,7 +75,7 @@ class SavingsActivity : BaseActivity() {
                     binding.recyclerViewBuckets.removeItemDecorationAt(0)
                 }
                 binding.recyclerViewBuckets.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true),
+                    GridSpacingItemDecoration(2, spacing, true)
                 )
             }
             !isTablet && isLandscape -> {
@@ -86,7 +86,7 @@ class SavingsActivity : BaseActivity() {
                     binding.recyclerViewBuckets.removeItemDecorationAt(0)
                 }
                 binding.recyclerViewBuckets.addItemDecoration(
-                    GridSpacingItemDecoration(2, spacing, true),
+                    GridSpacingItemDecoration(2, spacing, true)
                 )
             }
             else -> {
@@ -136,9 +136,19 @@ class SavingsActivity : BaseActivity() {
                         binding.fabAddBucket.isEnabled = !state.maxBucketsReached
                         binding.fabAddBucket.backgroundTintList =
                             if (state.maxBucketsReached) {
-                                ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.text_disabled))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this@SavingsActivity,
+                                        R.color.text_disabled
+                                    )
+                                )
                             } else {
-                                ColorStateList.valueOf(ContextCompat.getColor(this@SavingsActivity, R.color.btn_on_main))
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this@SavingsActivity,
+                                        R.color.btn_on_main
+                                    )
+                                )
                             }
                     }
                     is SavingsUiState.Error -> {
@@ -154,20 +164,36 @@ class SavingsActivity : BaseActivity() {
             viewModel.events.collect { event ->
                 when (event) {
                     is SavingsUiEvent.BucketAdded -> showSnackbar(getString(R.string.bucket_added))
-                    is SavingsUiEvent.BucketUpdated -> showSnackbar(getString(R.string.bucket_updated))
-                    is SavingsUiEvent.BucketDeleted -> showSnackbar(getString(R.string.bucket_deleted))
-                    is SavingsUiEvent.FundsDistributed -> showSnackbar(getString(R.string.funds_distributed))
+                    is SavingsUiEvent.BucketUpdated -> showSnackbar(
+                        getString(R.string.bucket_updated)
+                    )
+                    is SavingsUiEvent.BucketDeleted -> showSnackbar(
+                        getString(R.string.bucket_deleted)
+                    )
+                    is SavingsUiEvent.FundsDistributed -> showSnackbar(
+                        getString(R.string.funds_distributed)
+                    )
                     is SavingsUiEvent.ShowError -> {
                         showSnackbar(event.message)
                     }
                     is SavingsUiEvent.ShowMessage -> {
                         showSnackbar(event.message)
                     }
-                    is SavingsUiEvent.BucketWithdrawn -> showSnackbar(getString(R.string.funds_withdrawn))
-                    is SavingsUiEvent.BucketArchived -> showSnackbar(getString(R.string.bucket_archived))
-                    is SavingsUiEvent.BucketRestored -> showSnackbar(getString(R.string.bucket_restored))
-                    is SavingsUiEvent.TransactionEdited -> showSnackbar(getString(R.string.transaction_edited))
-                    is SavingsUiEvent.TransactionDeleted -> showSnackbar(getString(R.string.transaction_deleted))
+                    is SavingsUiEvent.BucketWithdrawn -> showSnackbar(
+                        getString(R.string.funds_withdrawn)
+                    )
+                    is SavingsUiEvent.BucketArchived -> showSnackbar(
+                        getString(R.string.bucket_archived)
+                    )
+                    is SavingsUiEvent.BucketRestored -> showSnackbar(
+                        getString(R.string.bucket_restored)
+                    )
+                    is SavingsUiEvent.TransactionEdited -> showSnackbar(
+                        getString(R.string.transaction_edited)
+                    )
+                    is SavingsUiEvent.TransactionDeleted -> showSnackbar(
+                        getString(R.string.transaction_deleted)
+                    )
                 }
             }
         }
@@ -187,7 +213,7 @@ class SavingsActivity : BaseActivity() {
         val dialog =
             CreateBucketDialogFragment(
                 onBucketCreated = { bucket -> viewModel.createBucket(bucket) },
-                onShowSnackbar = { message -> this.showSnackbar(message) },
+                onShowSnackbar = { message -> this.showSnackbar(message) }
             )
         dialog.show(supportFragmentManager, "CreateBucketDialog")
     }
@@ -198,15 +224,14 @@ class SavingsActivity : BaseActivity() {
                 bucket = bucket,
                 availablePool = 0.0, // not used
                 isDeduction = true,
-                onDistribute = { amount -> viewModel.distributeFunds(bucket, -amount, viewModel.availablePool.value) },
+                onDistribute = { amount ->
+                    viewModel.distributeFunds(bucket, -amount, viewModel.availablePool.value)
+                }
             )
         dialog.show(supportFragmentManager, "DeductDialog")
     }
 
-    private fun showEditTransactionDialog(
-        transaction: SavingsTransaction,
-        bucket: SavingsBucket,
-    ) {
+    private fun showEditTransactionDialog(transaction: SavingsTransaction, bucket: SavingsBucket) {
         val originalAmount = kotlin.math.abs(transaction.amount)
         val maxAllowed =
             if (transaction.amount > 0) {
@@ -220,7 +245,7 @@ class SavingsActivity : BaseActivity() {
             EditTransactionDialogFragment(
                 transaction = transaction,
                 maxAllowed = maxAllowed,
-                onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) },
+                onSave = { newAmount -> viewModel.editTransaction(transaction, newAmount) }
             )
         dialog.show(supportFragmentManager, "EditTransactionDialog")
     }
@@ -231,12 +256,16 @@ class SavingsActivity : BaseActivity() {
             inflater = layoutInflater,
             context = this,
             title = getString(R.string.withdraw_title),
-            message = getString(R.string.withdraw_confirmation, bucket.name, bucket.current_amount.toCurrencyDisplay(resources)),
+            message = getString(
+                R.string.withdraw_confirmation,
+                bucket.name,
+                bucket.current_amount.toCurrencyDisplay(resources)
+            ),
             positiveButton = getString(R.string.withdraw),
             negativeButton = getString(R.string.cancel),
             onPositive = {
                 viewModel.archiveBucket(bucket)
-            },
+            }
         ).show()
     }
 
@@ -245,21 +274,20 @@ class SavingsActivity : BaseActivity() {
             EditBucketDialogFragment(
                 existingBucket = bucket,
                 onBucketUpdated = { updated -> viewModel.editBucket(updated) },
-                onShowSnackbar = { message -> showSnackbar(message) },
+                onShowSnackbar = { message -> showSnackbar(message) }
             )
         dialog.show(supportFragmentManager, "EditBucketDialog")
     }
 
-    private fun showDistributeDialog(
-        bucket: SavingsBucket,
-        availablePool: Double,
-    ) {
+    private fun showDistributeDialog(bucket: SavingsBucket, availablePool: Double) {
         val dialog =
             DistributeDialogFragment(
                 bucket = bucket,
                 availablePool = availablePool,
                 isDeduction = false,
-                onDistribute = { amount -> viewModel.distributeFunds(bucket, amount, availablePool) },
+                onDistribute = { amount ->
+                    viewModel.distributeFunds(bucket, amount, availablePool)
+                }
             )
         dialog.show(supportFragmentManager, "DistributeDialog")
     }
@@ -274,7 +302,7 @@ class SavingsActivity : BaseActivity() {
                 repository = repository,
                 isArchived = false,
                 onEditTransaction = { tx -> showEditTransactionDialog(tx, bucket) },
-                onDeleteTransaction = { tx -> viewModel.deleteTransaction(tx) },
+                onDeleteTransaction = { tx -> viewModel.deleteTransaction(tx) }
             )
         dialog.show(supportFragmentManager, "BucketHistory")
     }
@@ -289,7 +317,7 @@ class SavingsActivity : BaseActivity() {
             negativeButton = getString(R.string.cancel),
             onPositive = {
                 viewModel.deleteBucket(bucket)
-            },
+            }
         ).show()
     }
 

@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 class SavingsViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context,
+    private val appContext: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
@@ -69,7 +69,7 @@ class SavingsViewModel(
             try {
                 combine(
                     repository.getActiveSavingsBuckets(),
-                    repository.getAllSavingsTransactionsFlow(),
+                    repository.getAllSavingsTransactionsFlow()
                 ) { buckets, transactions ->
                     val transactionCounts = transactions.groupingBy { it.bucket_id }.eachCount()
                     Pair(buckets, transactionCounts)
@@ -82,7 +82,7 @@ class SavingsViewModel(
                             buckets = buckets,
                             isEmpty = buckets.isEmpty(),
                             maxBucketsReached = buckets.size >= Constants.MAX_SAVINGS_BUCKETS,
-                            transactionCounts = transactionCounts,
+                            transactionCounts = transactionCounts
                         )
                 }
             } catch (e: Exception) {
@@ -125,11 +125,7 @@ class SavingsViewModel(
         }
     }
 
-    fun distributeFunds(
-        bucket: SavingsBucket,
-        amount: Double,
-        availablePool: Double,
-    ) {
+    fun distributeFunds(bucket: SavingsBucket, amount: Double, availablePool: Double) {
         safeLaunch(R.string.error_distribute) {
             // Validate against the provided pool (which is the current value at the time the dialog was shown)
             if (amount > availablePool && amount > 0) {
@@ -141,7 +137,10 @@ class SavingsViewModel(
             // Sync the updated bucket (the flow will recalculate the pool automatically)
             val userId = AuthManager.getUserId(appContext)
             if (userId != null) {
-                val updatedBucket = repository.getActiveSavingsBuckets().first().find { it.id == bucket.id }
+                val updatedBucket = repository.getActiveSavingsBuckets().first().find {
+                    it.id ==
+                        bucket.id
+                }
                 if (updatedBucket != null) {
                     SyncManager(appContext).uploadSavingsBucket(updatedBucket, userId)
                 }
@@ -149,7 +148,9 @@ class SavingsViewModel(
             }
 
             if (amount < 0) {
-                _events.emit(SavingsUiEvent.ShowMessage("Funds removed from bucket and added back to pool"))
+                _events.emit(
+                    SavingsUiEvent.ShowMessage("Funds removed from bucket and added back to pool")
+                )
             } else {
                 _events.emit(SavingsUiEvent.FundsDistributed)
             }
@@ -179,10 +180,7 @@ class SavingsViewModel(
         }
     }
 
-    fun editTransaction(
-        transaction: SavingsTransaction,
-        newAmount: Double,
-    ) {
+    fun editTransaction(transaction: SavingsTransaction, newAmount: Double) {
         safeLaunch(R.string.error_distribute) {
             repository.editTransactionAmount(transaction, newAmount)
             val updatedTransaction = transaction.copy(amount = newAmount)

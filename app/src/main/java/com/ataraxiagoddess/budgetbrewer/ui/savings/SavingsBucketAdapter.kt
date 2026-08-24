@@ -22,28 +22,24 @@ class SavingsBucketAdapter(
     private val onWithdrawClick: (SavingsBucket) -> Unit,
     private val onEditClick: (SavingsBucket) -> Unit,
     private val onDeleteClick: (SavingsBucket) -> Unit,
-    private val onCardClick: (SavingsBucket) -> Unit,
+    private val onCardClick: (SavingsBucket) -> Unit
 ) : ListAdapter<SavingsBucket, SavingsBucketAdapter.ViewHolder>(DiffCallback) {
     var transactionCounts: Map<String, Int> = emptyMap()
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): ViewHolder {
-        val binding = ItemSavingsBucketBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemSavingsBucketBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(
-        holder: ViewHolder,
-        position: Int,
-    ) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(
-        private val binding: ItemSavingsBucketBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: ItemSavingsBucketBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(bucket: SavingsBucket) {
             binding.tvBucketName.text = bucket.name
             binding.tvBucketType.text =
@@ -53,16 +49,24 @@ class SavingsBucketAdapter(
                     binding.root.context.getString(R.string.growth)
                 }
             binding.icBucketType.setImageResource(
-                if (bucket.type == SavingsBucketType.GOAL) R.drawable.ic_goal else R.drawable.ic_growth,
+                if (bucket.type ==
+                    SavingsBucketType.GOAL
+                ) {
+                    R.drawable.ic_goal
+                } else {
+                    R.drawable.ic_growth
+                }
             )
 
             // Actual amount
-            binding.tvActualAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
+            binding.tvActualAmount.text =
+                binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
 
             // Target amount
             if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
                 binding.tvTargetAmount.visibility = View.VISIBLE
-                binding.tvTargetAmount.text = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
+                binding.tvTargetAmount.text =
+                    binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
                 binding.tvTargetLabel.visibility = View.VISIBLE
             } else {
                 binding.tvTargetAmount.visibility = View.GONE
@@ -88,7 +92,8 @@ class SavingsBucketAdapter(
             liquidDrawable.level = level
 
             // Show withdraw button only when bucket has funds
-            binding.btnWithdraw.visibility = if (bucket.current_amount > 0) View.VISIBLE else View.GONE
+            binding.btnWithdraw.visibility =
+                if (bucket.current_amount > 0) View.VISIBLE else View.GONE
 
             // Wire buttons
             binding.btnDistribute.setOnClickListener { onDistributeClick(bucket) }
@@ -114,10 +119,16 @@ class SavingsBucketAdapter(
                 } else {
                     binding.root.context.getString(R.string.growth)
                 }
-            val currentAmt = binding.root.context.getString(R.string.amount_formatted, bucket.current_amount)
+            val currentAmt = binding.root.context.getString(
+                R.string.amount_formatted,
+                bucket.current_amount
+            )
             val goalSuffix =
                 if (bucket.type == SavingsBucketType.GOAL && bucket.target_amount != null) {
-                    val targetAmt = binding.root.context.getString(R.string.amount_formatted, bucket.target_amount)
+                    val targetAmt = binding.root.context.getString(
+                        R.string.amount_formatted,
+                        bucket.target_amount
+                    )
                     binding.root.context.getString(R.string.goal_suffix, targetAmt)
                 } else {
                     ""
@@ -129,7 +140,7 @@ class SavingsBucketAdapter(
                     bucket.name,
                     typeStr,
                     currentAmt,
-                    goalSuffix,
+                    goalSuffix
                 )
 
             binding.root.contentDescription =
@@ -140,23 +151,16 @@ class SavingsBucketAdapter(
                 }
         }
 
-        private fun parseColor(hex: String): Int =
-            try {
-                hex.toColorInt()
-            } catch (_: Exception) {
-                "#78b4e7".toColorInt()
-            }
+        private fun parseColor(hex: String): Int = try {
+            hex.toColorInt()
+        } catch (_: Exception) {
+            "#78b4e7".toColorInt()
+        }
     }
 
     object DiffCallback : DiffUtil.ItemCallback<SavingsBucket>() {
-        override fun areItemsTheSame(
-            oldItem: SavingsBucket,
-            oldItem2: SavingsBucket,
-        ): Boolean = oldItem.id == oldItem2.id
+        override fun areItemsTheSame(oldItem: SavingsBucket, oldItem2: SavingsBucket): Boolean = oldItem.id == oldItem2.id
 
-        override fun areContentsTheSame(
-            oldItem: SavingsBucket,
-            oldItem2: SavingsBucket,
-        ): Boolean = oldItem == oldItem2
+        override fun areContentsTheSame(oldItem: SavingsBucket, oldItem2: SavingsBucket): Boolean = oldItem == oldItem2
     }
 }

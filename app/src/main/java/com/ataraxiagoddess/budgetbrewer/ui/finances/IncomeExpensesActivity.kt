@@ -72,10 +72,10 @@ import com.ataraxiagoddess.budgetbrewer.util.toCurrencyFormat
 import com.ataraxiagoddess.budgetbrewer.util.toPercentDisplay
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Calendar
 import kotlin.math.abs
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class IncomeExpensesActivity :
     BaseActivity(),
@@ -100,15 +100,10 @@ class IncomeExpensesActivity :
     private val tipEntryHolders = mutableListOf<TipEntryHolder>()
 
     // Simple data class for income rows
-    data class IncomeRow(
-        val timeFrame: String,
-        val weekNumber: Int,
-    )
+    data class IncomeRow(val timeFrame: String, val weekNumber: Int)
 
     // ViewHolder for income rows (read‑only)
-    class IncomeRowHolder(
-        rowView: View,
-    ) {
+    class IncomeRowHolder(rowView: View) {
         val tvTimeFrame: TextView = rowView.findViewById(R.id.tvTimeFrame)
         val tvSource: TextView = rowView.findViewById(R.id.tvSource)
         val tvAmount: TextView = rowView.findViewById(R.id.tvAmount)
@@ -119,9 +114,7 @@ class IncomeExpensesActivity :
         var frequency: Frequency = Frequency.MONTHLY
     }
 
-    class TipEntryHolder(
-        itemView: View,
-    ) {
+    class TipEntryHolder(itemView: View) {
         val tvSource: TextView = itemView.findViewById(R.id.tvTipSource)
         val tvAmount: TextView = itemView.findViewById(R.id.tvTipAmount)
         val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEditTip)
@@ -138,35 +131,24 @@ class IncomeExpensesActivity :
         viewModel.updateMonth(month)
     }
 
-    private fun createSimpleTextWatcher(onTextChanged: (s: CharSequence?) -> Unit): TextWatcher =
-        object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int,
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int,
-            ) {
-                onTextChanged(s)
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
+    private fun createSimpleTextWatcher(onTextChanged: (s: CharSequence?) -> Unit): TextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            onTextChanged(s)
+        }
+
+        override fun afterTextChanged(s: Editable?) {}
+    }
 
     private fun currencyInputFilters(): Array<InputFilter> {
         val locale = resources.configuration.locales[0]
         return arrayOf(
             DecimalDigitsInputFilter(
                 CurrencyPrefs.currentFractionDigits,
-                CurrencyPrefs.decimalSeparators(locale),
-            ),
+                CurrencyPrefs.decimalSeparators(locale)
+            )
         )
     }
 
@@ -177,7 +159,9 @@ class IncomeExpensesActivity :
 
     private fun getCurrentFrequency(): Frequency = currentMonthFrequency
 
-    private fun String.toFrequencyOrDefault(): Frequency = runCatching { Frequency.valueOf(this) }.getOrDefault(Frequency.MONTHLY)
+    private fun String.toFrequencyOrDefault(): Frequency = runCatching {
+        Frequency.valueOf(this)
+    }.getOrDefault(Frequency.MONTHLY)
 
     // ==================== LIFECYCLE ====================
 
@@ -195,10 +179,7 @@ class IncomeExpensesActivity :
         // Add scroll listener to track current category
         binding.categoriesRecyclerView.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(
-                    recyclerView: RecyclerView,
-                    newState: Int,
-                ) {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         snapHelper?.findSnapView(layoutManager)?.let { snapView ->
@@ -209,7 +190,7 @@ class IncomeExpensesActivity :
                         }
                     }
                 }
-            },
+            }
         )
 
         binding.categoriesRecyclerView.itemAnimator = null
@@ -219,7 +200,7 @@ class IncomeExpensesActivity :
             object : AccessibilityDelegateCompat() {
                 override fun onInitializeAccessibilityNodeInfo(
                     host: View,
-                    info: AccessibilityNodeInfoCompat,
+                    info: AccessibilityNodeInfoCompat
                 ) {
                     super.onInitializeAccessibilityNodeInfo(host, info)
                     val realCount = categoriesList.size
@@ -229,14 +210,14 @@ class IncomeExpensesActivity :
                                 realCount,
                                 1,
                                 false,
-                                AccessibilityNodeInfoCompat.CollectionInfoCompat.SELECTION_MODE_NONE,
-                            ),
+                                AccessibilityNodeInfoCompat.CollectionInfoCompat.SELECTION_MODE_NONE
+                            )
                         )
                     } else {
                         info.setCollectionInfo(null)
                     }
                 }
-            },
+            }
         )
 
         val db = AppDatabase.getDatabase(this)
@@ -396,11 +377,11 @@ class IncomeExpensesActivity :
                             message =
                                 getString(
                                     R.string.savings_allocation_conflict_message,
-                                    event.distributedTotal.toCurrencyDisplay(resources),
+                                    event.distributedTotal.toCurrencyDisplay(resources)
                                 ),
                             positiveButton = getString(R.string.ok),
                             negativeButton = null,
-                            onPositive = { /* do nothing, just dismiss */ },
+                            onPositive = { /* do nothing, just dismiss */ }
                         ).show()
                     }
                 }
@@ -476,7 +457,7 @@ class IncomeExpensesActivity :
     override fun navigateToSettings() {
         startActivity(
             Intent(this, SettingsActivity::class.java),
-            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle(),
+            ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
         )
     }
 
@@ -495,12 +476,12 @@ class IncomeExpensesActivity :
                 this,
                 R.layout.spinner_closed,
                 android.R.id.text1,
-                frequencyDisplayNames,
+                frequencyDisplayNames
             ) {
                 override fun getDropDownView(
                     position: Int,
                     convertView: View?,
-                    parent: ViewGroup,
+                    parent: ViewGroup
                 ): View {
                     val view = layoutInflater.inflate(R.layout.spinner_dropdown_item, parent, false)
                     val textView = view.findViewById<TextView>(android.R.id.text1)
@@ -525,7 +506,7 @@ class IncomeExpensesActivity :
                     parent: AdapterView<*>?,
                     view: View?,
                     pos: Int,
-                    id: Long,
+                    id: Long
                 ) {
                     if (isProgrammaticChange) {
                         isProgrammaticChange = false
@@ -582,7 +563,7 @@ class IncomeExpensesActivity :
                             title = getString(R.string.change_frequency_title),
                             message = getString(R.string.change_frequency_message),
                             positiveButton = getString(R.string.ok),
-                            negativeButton = getString(R.string.cancel),
+                            negativeButton = getString(R.string.cancel)
                         )
 
                     dialog.setOnShowListener {
@@ -623,16 +604,13 @@ class IncomeExpensesActivity :
 
     // ==================== INCOME ROWS ====================
 
-    private fun rebuildIncomeRows(
-        frequency: Frequency,
-        incomes: List<Income>,
-    ) {
+    private fun rebuildIncomeRows(frequency: Frequency, incomes: List<Income>) {
         val rows =
             when (frequency) {
                 Frequency.MONTHLY -> {
                     listOf(
                         IncomeRow(getString(R.string.monthly_income), 1),
-                        IncomeRow(getString(R.string.other_income), 2),
+                        IncomeRow(getString(R.string.other_income), 2)
                     )
                 }
 
@@ -640,7 +618,7 @@ class IncomeExpensesActivity :
                     listOf(
                         IncomeRow(getString(R.string.weeks_1_2), 1),
                         IncomeRow(getString(R.string.weeks_3_4), 2),
-                        IncomeRow(getString(R.string.week_5_other), 3),
+                        IncomeRow(getString(R.string.week_5_other), 3)
                     )
                 }
 
@@ -650,7 +628,7 @@ class IncomeExpensesActivity :
                         IncomeRow(getString(R.string.week_2), 2),
                         IncomeRow(getString(R.string.week_3), 3),
                         IncomeRow(getString(R.string.week_4), 4),
-                        IncomeRow(getString(R.string.week_5), 5),
+                        IncomeRow(getString(R.string.week_5), 5)
                     )
                 }
             }
@@ -661,7 +639,7 @@ class IncomeExpensesActivity :
                 layoutInflater.inflate(
                     R.layout.item_income_row,
                     binding.incomeFieldsContainer,
-                    false,
+                    false
                 )
             val holder = IncomeRowHolder(rowView)
             holder.weekNumber = row.weekNumber
@@ -736,7 +714,7 @@ class IncomeExpensesActivity :
                         message = getString(R.string.tips_delete_warning),
                         positiveButton = getString(R.string.yes),
                         negativeButton = getString(R.string.no),
-                        onPositive = { }, // Override this in the listener
+                        onPositive = { } // Override this in the listener
                     )
 
                 dialog.setOnShowListener {
@@ -790,7 +768,7 @@ class IncomeExpensesActivity :
                     message = getString(R.string.delete_tip_confirm),
                     positiveButton = getString(R.string.delete),
                     negativeButton = getString(R.string.cancel),
-                    onPositive = { viewModel.deleteTip(tip) },
+                    onPositive = { viewModel.deleteTip(tip) }
                 ).show()
             }
 
@@ -811,7 +789,13 @@ class IncomeExpensesActivity :
 
     private fun updateAddTipButtonVisibility() {
         binding.btnAddTip.visibility =
-            if (tipEntryHolders.size < Constants.MAX_TIPS && binding.checkBoxTips.isChecked) View.VISIBLE else View.GONE
+            if (tipEntryHolders.size < Constants.MAX_TIPS &&
+                binding.checkBoxTips.isChecked
+            ) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
     }
 
     // ==================== INCOME DIALOGS ====================
@@ -827,7 +811,7 @@ class IncomeExpensesActivity :
         etSource.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
@@ -839,7 +823,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.add_income_dialog_title),
                 view = dialogView,
                 positiveButton = getString(R.string.add),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -852,7 +836,7 @@ class IncomeExpensesActivity :
                         s: CharSequence?,
                         start: Int,
                         count: Int,
-                        after: Int,
+                        after: Int
                     ) {
                     }
 
@@ -860,14 +844,14 @@ class IncomeExpensesActivity :
                         s: CharSequence?,
                         start: Int,
                         before: Int,
-                        count: Int,
+                        count: Int
                     ) {
                         val source = etSource.text.toString()
                         tvSourceCounter.text =
                             getString(
                                 R.string.character_counter,
                                 source.length,
-                                ValidationUtils.MAX_LENGTH_NAME,
+                                ValidationUtils.MAX_LENGTH_NAME
                             )
 
                         val amount = etAmount.text.toString().toAmountOrNull(resources)
@@ -910,7 +894,7 @@ class IncomeExpensesActivity :
         etSource.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etIncomeAmount)
         etAmount.filters = currencyInputFilters()
@@ -919,7 +903,7 @@ class IncomeExpensesActivity :
             getString(
                 R.string.character_counter,
                 income.sourceName.length,
-                ValidationUtils.MAX_LENGTH_NAME,
+                ValidationUtils.MAX_LENGTH_NAME
             )
         etAmount.setText(income.amount.toCurrencyEdit(resources))
 
@@ -933,7 +917,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.edit_income_dialog_title),
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         fun validate() {
@@ -959,22 +943,17 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val source = etSource.text.toString()
                     tvSourceCounter.text =
                         getString(
                             R.string.character_counter,
                             source.length,
-                            ValidationUtils.MAX_LENGTH_NAME,
+                            ValidationUtils.MAX_LENGTH_NAME
                         )
                     validate()
                 }
@@ -992,9 +971,10 @@ class IncomeExpensesActivity :
                 val amount =
                     etAmount.text.toString().toAmountOrNull(resources)
                         ?: 0.0
-                if (ValidationUtils.isValidName(source) && amount > 0 &&
+                if (ValidationUtils.isValidName(source) &&
+                    amount > 0 &&
                     ValidationUtils.isValidAmount(
-                        amount,
+                        amount
                     )
                 ) {
                     val updated = income.copy(sourceName = source, amount = amount)
@@ -1020,7 +1000,7 @@ class IncomeExpensesActivity :
         etSource.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
@@ -1032,7 +1012,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.add_tip_dialog_title),
                 view = dialogView,
                 positiveButton = getString(R.string.add),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -1045,7 +1025,7 @@ class IncomeExpensesActivity :
                         s: CharSequence?,
                         start: Int,
                         count: Int,
-                        after: Int,
+                        after: Int
                     ) {
                     }
 
@@ -1053,14 +1033,14 @@ class IncomeExpensesActivity :
                         s: CharSequence?,
                         start: Int,
                         before: Int,
-                        count: Int,
+                        count: Int
                     ) {
                         val source = etSource.text.toString()
                         tvSourceCounter.text =
                             getString(
                                 R.string.character_counter,
                                 source.length,
-                                ValidationUtils.MAX_LENGTH_NAME,
+                                ValidationUtils.MAX_LENGTH_NAME
                             )
 
                         val amount = etAmount.text.toString().toAmountOrNull(resources)
@@ -1103,7 +1083,7 @@ class IncomeExpensesActivity :
         etSource.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etTipAmount)
         etAmount.filters = currencyInputFilters()
@@ -1112,7 +1092,7 @@ class IncomeExpensesActivity :
             getString(
                 R.string.character_counter,
                 tip.sourceName.length,
-                ValidationUtils.MAX_LENGTH_NAME,
+                ValidationUtils.MAX_LENGTH_NAME
             )
         etAmount.setText(tip.amount.toCurrencyEdit(resources))
 
@@ -1126,7 +1106,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.edit_tip_dialog_title),
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         fun validate() {
@@ -1152,22 +1132,17 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val source = etSource.text.toString()
                     tvSourceCounter.text =
                         getString(
                             R.string.character_counter,
                             source.length,
-                            ValidationUtils.MAX_LENGTH_NAME,
+                            ValidationUtils.MAX_LENGTH_NAME
                         )
                     validate()
                 }
@@ -1182,9 +1157,10 @@ class IncomeExpensesActivity :
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val source = etSource.text.toString().trim()
                 val amount = etAmount.text.toString().toAmountOrNull(resources) ?: 0.0
-                if (ValidationUtils.isValidName(source) && amount > 0 &&
+                if (ValidationUtils.isValidName(source) &&
+                    amount > 0 &&
                     ValidationUtils.isValidAmount(
-                        amount,
+                        amount
                     )
                 ) {
                     val updated = tip.copy(sourceName = source, amount = amount)
@@ -1207,8 +1183,8 @@ class IncomeExpensesActivity :
                     showSnackbar(
                         getString(
                             R.string.max_categories_reached,
-                            Constants.MAX_CATEGORIES,
-                        ),
+                            Constants.MAX_CATEGORIES
+                        )
                     )
                 } else {
                     showAddCategoryDialog()
@@ -1224,7 +1200,7 @@ class IncomeExpensesActivity :
         etName.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
 
         val dialog =
@@ -1234,7 +1210,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.add_category_title),
                 view = dialogView,
                 positiveButton = getString(R.string.add),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -1244,7 +1220,7 @@ class IncomeExpensesActivity :
             etName.addTextChangedListener(
                 createSimpleTextWatcher {
                     addButton.isEnabled = !it.isNullOrBlank()
-                },
+                }
             )
 
             addButton.setOnClickListener {
@@ -1266,7 +1242,7 @@ class IncomeExpensesActivity :
         etName.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         etName.setText(ValidationUtils.sanitizeString(category.name))
 
@@ -1279,13 +1255,14 @@ class IncomeExpensesActivity :
                 title = getString(R.string.edit_category_title),
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         fun validate() {
             val newName = etName.text.toString().trim()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                newName.isNotEmpty() && newName != originalName
+                newName.isNotEmpty() &&
+                newName != originalName
         }
 
         etName.addTextChangedListener(
@@ -1294,21 +1271,16 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validate()
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
 
         dialog.setOnShowListener {
@@ -1335,7 +1307,7 @@ class IncomeExpensesActivity :
                 message = getString(R.string.delete_category_message, category.name),
                 positiveButton = getString(R.string.delete),
                 negativeButton = getString(R.string.cancel),
-                onPositive = { viewModel.deleteCategory(category) },
+                onPositive = { viewModel.deleteCategory(category) }
             )
 
         // Need to handle the custom button behavior
@@ -1362,7 +1334,7 @@ class IncomeExpensesActivity :
         etDescription.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
@@ -1402,7 +1374,7 @@ class IncomeExpensesActivity :
                 title = getString(R.string.add_expense_title, category.name),
                 view = dialogView,
                 positiveButton = getString(R.string.add),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         fun validateAndEnable() {
@@ -1412,7 +1384,7 @@ class IncomeExpensesActivity :
                 getString(
                     R.string.character_counter,
                     description.length,
-                    ValidationUtils.MAX_LENGTH_NAME,
+                    ValidationUtils.MAX_LENGTH_NAME
                 )
             val descriptionValid = !description.isBlank()
 
@@ -1492,7 +1464,7 @@ class IncomeExpensesActivity :
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
@@ -1529,7 +1501,7 @@ class IncomeExpensesActivity :
                         amount,
                         date,
                         recurrenceType,
-                        interval,
+                        interval
                     )
                     dialog.dismiss()
                 }
@@ -1549,7 +1521,7 @@ class IncomeExpensesActivity :
         etDescription.filters =
             arrayOf(
                 ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
-                ValidationUtils.getControlCharactersBlockFilter(),
+                ValidationUtils.getControlCharactersBlockFilter()
             )
         val etAmount = dialogView.findViewById<EditText>(R.id.etExpenseAmount)
         etAmount.filters = currencyInputFilters()
@@ -1570,7 +1542,7 @@ class IncomeExpensesActivity :
             getString(
                 R.string.character_counter,
                 expense.description.length,
-                ValidationUtils.MAX_LENGTH_NAME,
+                ValidationUtils.MAX_LENGTH_NAME
             )
         etAmount.setText(expense.amount.toCurrencyEdit(resources))
         val cal = Calendar.getInstance().apply { timeInMillis = expense.dueDate }
@@ -1618,26 +1590,24 @@ class IncomeExpensesActivity :
                 title = getString(R.string.edit_expense_title),
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
-        fun getCurrentRecurrenceType(): RecurrenceType =
-            if (cbRecurring.isChecked) {
-                when {
-                    radioMonthly.isChecked -> RecurrenceType.MONTHLY_SAME_DAY
-                    radioEveryX.isChecked -> RecurrenceType.EVERY_X_DAYS
-                    else -> RecurrenceType.NONE
-                }
-            } else {
-                RecurrenceType.NONE
+        fun getCurrentRecurrenceType(): RecurrenceType = if (cbRecurring.isChecked) {
+            when {
+                radioMonthly.isChecked -> RecurrenceType.MONTHLY_SAME_DAY
+                radioEveryX.isChecked -> RecurrenceType.EVERY_X_DAYS
+                else -> RecurrenceType.NONE
             }
+        } else {
+            RecurrenceType.NONE
+        }
 
-        fun getCurrentInterval(): Int? =
-            if (getCurrentRecurrenceType() == RecurrenceType.EVERY_X_DAYS) {
-                etEveryXDays.text.toString().toIntOrNull()
-            } else {
-                null
-            }
+        fun getCurrentInterval(): Int? = if (getCurrentRecurrenceType() == RecurrenceType.EVERY_X_DAYS) {
+            etEveryXDays.text.toString().toIntOrNull()
+        } else {
+            null
+        }
 
         fun validate() {
             val description = etDescription.text.toString()
@@ -1645,7 +1615,7 @@ class IncomeExpensesActivity :
                 getString(
                     R.string.character_counter,
                     description.length,
-                    ValidationUtils.MAX_LENGTH_NAME,
+                    ValidationUtils.MAX_LENGTH_NAME
                 )
             val descriptionTrimmed = description.trim()
             val amountText = etAmount.text.toString().trim()
@@ -1716,21 +1686,16 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validate()
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
         etAmount.addTextChangedListener(
             object : TextWatcher {
@@ -1738,21 +1703,16 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validate()
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
         etEveryXDays.addTextChangedListener(
             object : TextWatcher {
@@ -1760,21 +1720,16 @@ class IncomeExpensesActivity :
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     validate()
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
-            },
+            }
         )
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -1803,7 +1758,7 @@ class IncomeExpensesActivity :
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
@@ -1823,7 +1778,7 @@ class IncomeExpensesActivity :
                             amount = amount,
                             dueDate = date,
                             recurrenceType = recurrenceType,
-                            recurrenceInterval = interval,
+                            recurrenceInterval = interval
                         )
                     viewModel.updateExpense(updatedExpense)
                     dialog.dismiss()
@@ -1836,10 +1791,7 @@ class IncomeExpensesActivity :
 
     // ==================== ALLOCATION SECTION ====================
 
-    private fun showAllocationDialog(
-        type: AllocationType,
-        existingAmount: Double = 0.0,
-    ) {
+    private fun showAllocationDialog(type: AllocationType, existingAmount: Double = 0.0) {
         @SuppressLint("InflateParams")
         val dialogView = layoutInflater.inflate(R.layout.dialog_allocation, null, false)
         val etAmount = dialogView.findViewById<EditText>(R.id.etAllocationAmount)
@@ -1854,7 +1806,7 @@ class IncomeExpensesActivity :
                 title = type.displayName,
                 view = dialogView,
                 positiveButton = getString(R.string.save),
-                negativeButton = getString(R.string.cancel),
+                negativeButton = getString(R.string.cancel)
             )
 
         dialog.setOnShowListener {
@@ -1888,13 +1840,13 @@ class IncomeExpensesActivity :
                         tvError.text =
                             getString(
                                 R.string.allocation_exceeds_funds,
-                                excess.toCurrencyDisplay(resources),
+                                excess.toCurrencyDisplay(resources)
                             )
                         tvError.visibility = View.VISIBLE
                     } else {
                         tvError.visibility = View.INVISIBLE
                     }
-                },
+                }
             )
 
             saveButton.setOnClickListener {
@@ -1929,7 +1881,7 @@ class IncomeExpensesActivity :
                 } else {
                     viewModel.deleteSpendingAllocation()
                 }
-            },
+            }
         ).show()
     }
 
@@ -1937,10 +1889,16 @@ class IncomeExpensesActivity :
         type: AllocationType,
         amount: Double,
         totalIncome: Double,
-        leftover: Double,
+        leftover: Double
     ) {
         val placeholder =
-            if (type == AllocationType.Savings) binding.savingsPlaceholder else binding.spendingPlaceholder
+            if (type ==
+                AllocationType.Savings
+            ) {
+                binding.savingsPlaceholder
+            } else {
+                binding.spendingPlaceholder
+            }
         placeholder.removeAllViews()
 
         if (amount > 0) {
@@ -1977,7 +1935,7 @@ class IncomeExpensesActivity :
                     layoutInflater.inflate(
                         R.layout.button_add_allocation,
                         placeholder,
-                        false,
+                        false
                     ) as MaterialButton
                 addButton.setOnClickListener {
                     showAllocationDialog(type)
@@ -2007,13 +1965,13 @@ class IncomeExpensesActivity :
             AllocationType.Savings,
             allocation?.savingsAmount ?: 0.0,
             totalIncome,
-            leftover,
+            leftover
         )
         updateAllocationRow(
             AllocationType.Spending,
             allocation?.spendingAmount ?: 0.0,
             totalIncome,
-            leftover,
+            leftover
         )
 
         val allocated = (allocation?.savingsAmount ?: 0.0) + (allocation?.spendingAmount ?: 0.0)
@@ -2021,9 +1979,17 @@ class IncomeExpensesActivity :
         val status =
             when {
                 totalExpenses > totalIncome -> getString(R.string.allocation_status_expenses_exceed)
+
                 leftover <= 0 -> getString(R.string.allocation_status_no_funds)
-                allocated > leftover + Constants.EPSILON -> getString(R.string.allocation_status_overallocated)
-                abs(allocated - leftover) < Constants.EPSILON -> getString(R.string.allocation_status_fully_allocated)
+
+                allocated > leftover + Constants.EPSILON -> getString(
+                    R.string.allocation_status_overallocated
+                )
+
+                abs(
+                    allocated - leftover
+                ) < Constants.EPSILON -> getString(R.string.allocation_status_fully_allocated)
+
                 else -> getString(R.string.allocation_status_available)
             }
         binding.tvAllocationStatus.text = status
@@ -2034,10 +2000,15 @@ class IncomeExpensesActivity :
 
     private fun updateCategoriesUI(
         categories: List<ExpenseCategory>,
-        expenses: List<Expense> = emptyList(),
+        expenses: List<Expense> = emptyList()
     ) {
         // Guard: if nothing changed and adapter exists, skip entirely
-        if (categoriesList == categories && expensesList == expenses && binding.categoriesRecyclerView.adapter != null) return
+        if (categoriesList == categories &&
+            expensesList == expenses &&
+            binding.categoriesRecyclerView.adapter != null
+        ) {
+            return
+        }
         val categoriesChanged = categoriesList != categories
         categoriesList = categories
         expensesList = expenses
@@ -2061,7 +2032,7 @@ class IncomeExpensesActivity :
                 leftArrow,
                 null,
                 rightArrow,
-                null,
+                null
             )
             binding.tvSwipeHint.compoundDrawablePadding =
                 resources.getDimensionPixelSize(R.dimen.spacing_small)
@@ -2114,7 +2085,7 @@ class IncomeExpensesActivity :
                 val availableWidth = screenWidth - horizontalPadding - gap
                 contentWidth =
                     (availableWidth * 0.40f).toInt().coerceAtMost(
-                        resources.getDimensionPixelSize(R.dimen.category_card_width_land),
+                        resources.getDimensionPixelSize(R.dimen.category_card_width_land)
                     )
                 halfMargin = gap / 2
             } else {
@@ -2156,8 +2127,8 @@ class IncomeExpensesActivity :
                             showSnackbar(
                                 getString(
                                     R.string.max_expenses_per_category_reached,
-                                    Constants.MAX_EXPENSES_PER_CATEGORY,
-                                ),
+                                    Constants.MAX_EXPENSES_PER_CATEGORY
+                                )
                             )
                         } else {
                             showAddExpenseDialog(category)
@@ -2165,7 +2136,7 @@ class IncomeExpensesActivity :
                     }
                 },
                 onEditExpense = { expense -> showEditExpenseDialog(expense) },
-                onDeleteExpense = { expense -> viewModel.deleteExpense(expense) },
+                onDeleteExpense = { expense -> viewModel.deleteExpense(expense) }
             )
         binding.categoriesRecyclerView.adapter = adapter
 
@@ -2184,7 +2155,8 @@ class IncomeExpensesActivity :
                     binding.categoriesRecyclerView.layoutManager as LinearLayoutManager
                 val recyclerViewWidth = binding.categoriesRecyclerView.width
                 val contentAreaWidth =
-                    recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft - binding.categoriesRecyclerView.paddingRight
+                    recyclerViewWidth - binding.categoriesRecyclerView.paddingLeft -
+                        binding.categoriesRecyclerView.paddingRight
                 val itemTotalWidth = contentWidth + (halfMargin * 2)
                 val targetOffset = (contentAreaWidth - itemTotalWidth) / 2
                 layoutManager.scrollToPositionWithOffset(startPosition, targetOffset)
