@@ -22,6 +22,7 @@ import com.ataraxiagoddess.budgetbrewer.data.SyncManager
 import com.ataraxiagoddess.budgetbrewer.ui.base.BaseViewModel
 import com.ataraxiagoddess.budgetbrewer.ui.month.Month
 import com.ataraxiagoddess.budgetbrewer.util.toCurrencyDisplay
+import java.util.Calendar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,23 +30,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 
 class MonthlyExpenseListViewModel(
     private val repository: BudgetRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val appContext: Context,
+    private val appContext: Context
 ) : BaseViewModel() {
     private var budgetId: String = savedStateHandle.get<String>("budgetId") ?: ""
 
-    private val _uiState = MutableStateFlow<MonthlyExpenseListUiState>(MonthlyExpenseListUiState.Loading)
+    private val _uiState =
+        MutableStateFlow<MonthlyExpenseListUiState>(MonthlyExpenseListUiState.Loading)
     val uiState: StateFlow<MonthlyExpenseListUiState> = _uiState.asStateFlow()
 
     data class DayExpenses(
         val day: Int,
         val expenses: List<Expense>,
         val isChecked: Boolean = false,
-        val formattedExpenses: CharSequence = "",
+        val formattedExpenses: CharSequence = ""
     )
 
     sealed class MonthlyExpenseListUiState {
@@ -54,12 +55,10 @@ class MonthlyExpenseListViewModel(
         data class Success(
             val days: List<DayExpenses>,
             val totalAmount: Double,
-            val remainingAmount: Double,
+            val remainingAmount: Double
         ) : MonthlyExpenseListUiState()
 
-        data class Error(
-            val message: String,
-        ) : MonthlyExpenseListUiState()
+        data class Error(val message: String) : MonthlyExpenseListUiState()
     }
 
     fun updateMonth(month: Month) {
@@ -82,13 +81,18 @@ class MonthlyExpenseListViewModel(
                     SyncManager(appContext).uploadBudget(budget, userId)
                 }
                 val expenses = repository.getExpensesForBudget(budgetId).first()
-                val checklist = repository.getDailyChecklist(budgetId).first().associate { it.dayOfMonth to it.isChecked }
+                val checklist = repository.getDailyChecklist(budgetId).first().associate {
+                    it.dayOfMonth to
+                        it.isChecked
+                }
 
                 val (days, totalAmount, remainingAmount) =
                     withContext(Dispatchers.Default) {
                         val dayMap = mutableMapOf<Int, MutableList<Expense>>()
                         expenses.forEach { expense ->
-                            val day = Calendar.getInstance().apply { timeInMillis = expense.dueDate }.get(Calendar.DAY_OF_MONTH)
+                            val day = Calendar.getInstance().apply {
+                                timeInMillis = expense.dueDate
+                            }.get(Calendar.DAY_OF_MONTH)
                             dayMap.getOrPut(day) { mutableListOf() }.add(expense)
                         }
 
@@ -101,7 +105,7 @@ class MonthlyExpenseListViewModel(
                                     day = day,
                                     expenses = dayExpenses,
                                     isChecked = checklist[day] ?: false,
-                                    formattedExpenses = formatted,
+                                    formattedExpenses = formatted
                                 )
                             }
 
@@ -110,7 +114,10 @@ class MonthlyExpenseListViewModel(
                         val checkedAmount =
                             expenses
                                 .filter {
-                                    val day = Calendar.getInstance().apply { timeInMillis = it.dueDate }.get(Calendar.DAY_OF_MONTH)
+                                    val day = Calendar.getInstance().apply {
+                                        timeInMillis =
+                                            it.dueDate
+                                    }.get(Calendar.DAY_OF_MONTH)
                                     checkedDays.contains(day)
                                 }.sumOf { it.amount }
                         val remainingAmount = totalAmount - checkedAmount
@@ -118,9 +125,11 @@ class MonthlyExpenseListViewModel(
                         Triple(days, totalAmount, remainingAmount)
                     }
 
-                _uiState.value = MonthlyExpenseListUiState.Success(days, totalAmount, remainingAmount)
+                _uiState.value =
+                    MonthlyExpenseListUiState.Success(days, totalAmount, remainingAmount)
             } catch (e: Exception) {
-                _uiState.value = MonthlyExpenseListUiState.Error("Failed to load data: ${e.message}")
+                _uiState.value =
+                    MonthlyExpenseListUiState.Error("Failed to load data: ${e.message}")
                 emitError(R.string.error_load_data, e)
             }
         }
@@ -133,14 +142,21 @@ class MonthlyExpenseListViewModel(
         val recurringSpan = getRecurringIconSpan()
 
         expenses.forEachIndexed { index, expense ->
-            val expenseText = "${expense.description}: ${expense.amount.toCurrencyDisplay(appContext.resources)}"
+            val expenseText = "${expense.description}: ${expense.amount.toCurrencyDisplay(
+                appContext.resources
+            )}"
             ssb.append(expenseText)
 
             if (expense.recurrenceType != RecurrenceType.NONE && recurringSpan != null) {
                 val iconPlaceholderStart = ssb.length
                 ssb.append("  ")
                 val iconPlaceholderEnd = ssb.length
-                ssb.setSpan(recurringSpan, iconPlaceholderStart, iconPlaceholderEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSpan(
+                    recurringSpan,
+                    iconPlaceholderStart,
+                    iconPlaceholderEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
 
             if (index < expenses.size - 1) {
@@ -155,17 +171,14 @@ class MonthlyExpenseListViewModel(
             ResourcesCompat.getDrawable(
                 appContext.resources,
                 R.drawable.ic_recurring,
-                null,
+                null
             ) ?: return null
         drawable.setTint(ContextCompat.getColor(appContext, R.color.text_on_container))
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         return ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
     }
 
-    fun toggleDayChecked(
-        day: Int,
-        isChecked: Boolean,
-    ) {
+    fun toggleDayChecked(day: Int, isChecked: Boolean) {
         viewModelScope.launch {
             val existing = repository.getChecklistItem(budgetId, day)
             if (existing != null) {
@@ -181,7 +194,8 @@ class MonthlyExpenseListViewModel(
                     SyncManager(appContext).uploadDailyChecklistItem(updated, userId)
                 }
             } else {
-                val newItem = DailyChecklist(budgetId = budgetId, dayOfMonth = day, isChecked = isChecked)
+                val newItem =
+                    DailyChecklist(budgetId = budgetId, dayOfMonth = day, isChecked = isChecked)
                 repository.insertChecklistItem(newItem)
                 // Sync after insert
                 val userId = AuthManager.getUserId(appContext)
@@ -198,7 +212,13 @@ class MonthlyExpenseListViewModel(
             if (currentState is MonthlyExpenseListUiState.Success) {
                 val updatedDays =
                     currentState.days.map { dayExpenses ->
-                        if (dayExpenses.day == day) dayExpenses.copy(isChecked = isChecked) else dayExpenses
+                        if (dayExpenses.day ==
+                            day
+                        ) {
+                            dayExpenses.copy(isChecked = isChecked)
+                        } else {
+                            dayExpenses
+                        }
                     }
                 val totalAmount = currentState.totalAmount
                 val checkedAmount =
@@ -210,16 +230,13 @@ class MonthlyExpenseListViewModel(
                 _uiState.value =
                     currentState.copy(
                         days = updatedDays,
-                        remainingAmount = remainingAmount,
+                        remainingAmount = remainingAmount
                     )
             }
         }
     }
 
-    private fun getDaysInMonth(
-        year: Int,
-        month: Int,
-    ): Int {
+    private fun getDaysInMonth(year: Int, month: Int): Int {
         val calendar = Calendar.getInstance()
         calendar.set(year, month - 1, 1)
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH)

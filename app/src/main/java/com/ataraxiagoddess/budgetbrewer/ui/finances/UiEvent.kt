@@ -44,18 +44,16 @@ sealed class UiEvent {
 
     data class SavingsAllocationConflict(
         val requestedAmount: Double,
-        val distributedTotal: Double,
+        val distributedTotal: Double
     ) : UiEvent()
 
     // Messages with string resources (for localized text)
-    data class ShowMessage(
-        @param:StringRes val messageResId: Int,
-    ) : UiEvent()
+    data class ShowMessage(@param:StringRes val messageResId: Int) : UiEvent()
 
     // Error messages that may include dynamic content
     data class ShowError(
         @param:StringRes
         val errorResId: Int,
-        val errorMessage: String? = null,
+        val errorMessage: String? = null
     ) : UiEvent()
 }

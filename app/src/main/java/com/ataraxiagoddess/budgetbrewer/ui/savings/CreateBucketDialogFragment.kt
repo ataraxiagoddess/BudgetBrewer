@@ -24,7 +24,7 @@ import java.util.UUID
 
 class CreateBucketDialogFragment(
     private val onBucketCreated: (SavingsBucket) -> Unit,
-    private val onShowSnackbar: (String) -> Unit,
+    private val onShowSnackbar: (String) -> Unit
 ) : DialogFragment() {
     init {
         setStyle(STYLE_NORMAL, R.style.AlertDialogTheme_BudgetBrewer)
@@ -41,7 +41,7 @@ class CreateBucketDialogFragment(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = DialogCreateBucketBinding.inflate(inflater, container, false)
         return binding.root
@@ -52,20 +52,21 @@ class CreateBucketDialogFragment(
         // Fill 90% width and wrap height
         dialog?.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.editTextBucketName.requestFocus()
         binding.editTextBucketName.filters =
-            arrayOf(ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME), ValidationUtils.getControlCharactersBlockFilter())
+            arrayOf(
+                ValidationUtils.getLengthFilter(ValidationUtils.MAX_LENGTH_NAME),
+                ValidationUtils.getControlCharactersBlockFilter()
+            )
         binding.editTextBucketName.setText("")
-        binding.tvBucketNameCounter.text = getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
+        binding.tvBucketNameCounter.text =
+            getString(R.string.character_counter, 0, ValidationUtils.MAX_LENGTH_NAME)
         binding.editTextTargetAmount.filters = arrayOf(DecimalDigitsInputFilter())
 
         // Setup color RecyclerView with GridLayoutManager (4 columns)
@@ -101,19 +102,19 @@ class CreateBucketDialogFragment(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int,
-                ) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable?) {
                     val name = binding.editTextBucketName.text.toString()
-                    binding.tvBucketNameCounter.text = getString(R.string.character_counter, name.length, ValidationUtils.MAX_LENGTH_NAME)
+                    binding.tvBucketNameCounter.text =
+                        getString(
+                            R.string.character_counter,
+                            name.length,
+                            ValidationUtils.MAX_LENGTH_NAME
+                        )
                     validateInputs()
                 }
             }
@@ -157,7 +158,7 @@ class CreateBucketDialogFragment(
                     color_hex = colorResToHex(selectedColorRes),
                     is_archived = false,
                     created_at = System.currentTimeMillis(),
-                    updated_at = System.currentTimeMillis(),
+                    updated_at = System.currentTimeMillis()
                 )
             onBucketCreated(bucket)
             dismiss()
@@ -177,7 +178,8 @@ class CreateBucketDialogFragment(
                 if (amountStr.isNotEmpty()) {
                     val amount = amountStr.toDoubleOrNull()
                     if (amount != null && !ValidationUtils.isValidAmount(amount)) {
-                        binding.tvTargetAmountError.text = getString(R.string.amount_exceeds_maximum)
+                        binding.tvTargetAmountError.text =
+                            getString(R.string.amount_exceeds_maximum)
                         binding.tvTargetAmountError.visibility = View.VISIBLE
                         false
                     } else {
@@ -196,13 +198,12 @@ class CreateBucketDialogFragment(
         binding.buttonCreate.isEnabled = isNameValid && isAmountValid
     }
 
-    private fun colorResToHex(colorRes: Int): String =
-        try {
-            val colorInt = ContextCompat.getColor(requireContext(), colorRes)
-            String.format("#%06X", 0xFFFFFF and colorInt)
-        } catch (_: Exception) {
-            "#FF6B6B"
-        }
+    private fun colorResToHex(colorRes: Int): String = try {
+        val colorInt = ContextCompat.getColor(requireContext(), colorRes)
+        String.format("#%06X", 0xFFFFFF and colorInt)
+    } catch (_: Exception) {
+        "#FF6B6B"
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -21,7 +21,7 @@ fun Double.toPercentDisplay(resources: Resources): String = String.format(resour
 
 fun Double.toCurrencyFormat(
     currency: String = CurrencyPrefs.currentCode,
-    resources: Resources,
+    resources: Resources
 ): String = CurrencyPrefs.formatWithCurrency(this, currency, localeFrom(resources))
 
 fun String.toAmountOrNull(resources: Resources): Double? = CurrencyPrefs.parseAmount(this, localeFrom(resources))
